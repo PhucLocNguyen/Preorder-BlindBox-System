@@ -12,19 +12,26 @@ const RenderRoute = (route, index, isPrivate = false) => {
         index={route.index}
         path={index != null ? route.path : undefined} // Use path if it's defined
         element={
-          <Layout>
-            <Page />
-          </Layout>
+          Page != null ? (
+            <Layout>
+              <Page />
+            </Layout>
+          ) : null
         }
       >
         {route.children?.map((childRoute, childIndex) => {
           const ChildPage = childRoute.component;
+          const LayoutChild = childRoute.layout || Layout;
           return (
             <Route
               key={childIndex}
               index={childRoute.index}
               path={childRoute.path}
-              element={<ChildPage />}
+              element={
+                <LayoutChild>
+                  <ChildPage />
+                </LayoutChild>
+              }
             />
           );
         })}

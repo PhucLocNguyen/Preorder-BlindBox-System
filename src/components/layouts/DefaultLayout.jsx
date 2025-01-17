@@ -1,7 +1,8 @@
 function DefaultLayout({ children }) {
   return (
     <div className="relative">
-      <>{children}</>
+      <p>Default layout</p>
+      <div>{children}</div>
     </div>
   );
 }
