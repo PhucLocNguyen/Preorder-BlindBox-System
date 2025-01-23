@@ -10,7 +10,7 @@ namespace PreOrderBlindBox.Data.GenericRepository
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {
-        Task<List<TEntity>> Get(
+        Task<List<TEntity>> GetAll(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             int? pageIndex = null, // Optional parameter for pagination (page number)

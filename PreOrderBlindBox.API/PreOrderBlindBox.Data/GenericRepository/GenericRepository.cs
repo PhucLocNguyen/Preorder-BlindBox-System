@@ -19,7 +19,7 @@ namespace PreOrderBlindBox.Data.GenericRepository
             this.dbSet = context.Set<TEntity>();
         }
 
-        public Task<List<TEntity>> Get(
+        public Task<List<TEntity>> GetAll (
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             int? pageIndex = null, // Optional parameter for pagination (page number)
