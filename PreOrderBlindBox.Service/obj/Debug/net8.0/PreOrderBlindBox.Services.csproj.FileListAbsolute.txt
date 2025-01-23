@@ -1,0 +1,15 @@
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\PreOrderBlindBox.Services.csproj.AssemblyReference.cache
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\PreOrderBlindBox.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\PreOrderBlindBox.Services.AssemblyInfoInputs.cache
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\PreOrderBlindBox.Services.AssemblyInfo.cs
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\PreOrderBlindBox.Services.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\bin\Debug\net8.0\PreOrderBlindBox.Services.deps.json
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\bin\Debug\net8.0\PreOrderBlindBox.Services.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\bin\Debug\net8.0\PreOrderBlindBox.Services.pdb
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\bin\Debug\net8.0\PreOrderBlindBox.Data.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\bin\Debug\net8.0\PreOrderBlindBox.Data.pdb
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\PreOrder.ABA26CA2.Up2Date
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\PreOrderBlindBox.Services.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\refint\PreOrderBlindBox.Services.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\PreOrderBlindBox.Services.pdb
+C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.Service\obj\Debug\net8.0\ref\PreOrderBlindBox.Services.dll
