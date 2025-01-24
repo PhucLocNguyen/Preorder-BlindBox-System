@@ -1,0 +1,101 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|c:\\users\\admin\\desktop\\preorderblindbox.api\\preorderblindbox.data\\genericrepository\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|solutionrelative:preorderblindbox.data\\genericrepository\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|c:\\users\\admin\\desktop\\preorderblindbox.api\\preorderblindbox.data\\genericrepository\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|solutionrelative:preorderblindbox.data\\genericrepository\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|c:\\users\\admin\\desktop\\preorderblindbox.api\\preorderblindbox.data\\commons\\paginationparameter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|solutionrelative:preorderblindbox.data\\commons\\paginationparameter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|c:\\users\\admin\\desktop\\preorderblindbox.api\\preorderblindbox.data\\commons\\pagination.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|solutionrelative:preorderblindbox.data\\commons\\pagination.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|c:\\users\\admin\\desktop\\preorderblindbox.api\\preorderblindbox.data\\entities\\blindbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD02C6CA-E811-4984-AE74-142F0A51E344}|PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj|solutionrelative:preorderblindbox.data\\entities\\blindbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\GenericRepository\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "PreOrderBlindBox.Data\\GenericRepository\\GenericRepository.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\GenericRepository\\GenericRepository.cs",
+              "RelativeToolTip": "PreOrderBlindBox.Data\\GenericRepository\\GenericRepository.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAxwBUAAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-23T15:17:41.059Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "IGenericRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\GenericRepository\\IGenericRepository.cs",
+              "RelativeDocumentMoniker": "PreOrderBlindBox.Data\\GenericRepository\\IGenericRepository.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\GenericRepository\\IGenericRepository.cs",
+              "RelativeToolTip": "PreOrderBlindBox.Data\\GenericRepository\\IGenericRepository.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAwAAAAjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-23T15:17:36.48Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PaginationParameter.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\Commons\\PaginationParameter.cs",
+              "RelativeDocumentMoniker": "PreOrderBlindBox.Data\\Commons\\PaginationParameter.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\Commons\\PaginationParameter.cs",
+              "RelativeToolTip": "PreOrderBlindBox.Data\\Commons\\PaginationParameter.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-23T15:09:24.078Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BlindBox.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\Entities\\BlindBox.cs",
+              "RelativeDocumentMoniker": "PreOrderBlindBox.Data\\Entities\\BlindBox.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\Entities\\BlindBox.cs",
+              "RelativeToolTip": "PreOrderBlindBox.Data\\Entities\\BlindBox.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-23T15:09:05.839Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Pagination.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\Commons\\Pagination.cs",
+              "RelativeDocumentMoniker": "PreOrderBlindBox.Data\\Commons\\Pagination.cs",
+              "ToolTip": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox.API\\PreOrderBlindBox.Data\\Commons\\Pagination.cs",
+              "RelativeToolTip": "PreOrderBlindBox.Data\\Commons\\Pagination.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAsAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-23T15:08:58.142Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
