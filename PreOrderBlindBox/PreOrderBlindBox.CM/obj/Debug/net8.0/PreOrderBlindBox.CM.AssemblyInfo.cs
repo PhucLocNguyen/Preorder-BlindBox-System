@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PreOrderBlindBox.CM")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9d07f9d37f3c4fc785fa63ae489c7437b52e7386")]
 [assembly: System.Reflection.AssemblyProductAttribute("PreOrderBlindBox.CM")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PreOrderBlindBox.CM")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
