@@ -32,7 +32,7 @@
   {
     "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
     "Method": "CreateDepositUrl",
-    "RelativePath": "api/Wallet/CreatePayment",
+    "RelativePath": "api/Wallet/CreatePaymentUrl",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -47,8 +47,8 @@
   },
   {
     "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
-    "Method": "Deposit",
-    "RelativePath": "api/Wallet/deposit",
+    "Method": "DepositConfirm",
+    "RelativePath": "api/Wallet/DepositConfirm",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

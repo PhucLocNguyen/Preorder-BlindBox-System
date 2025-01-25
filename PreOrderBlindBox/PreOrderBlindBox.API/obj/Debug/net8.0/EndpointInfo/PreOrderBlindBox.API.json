@@ -55,7 +55,7 @@
         }
       }
     },
-    "/api/Wallet/CreatePayment": {
+    "/api/Wallet/CreatePaymentUrl": {
       "post": {
         "tags": [
           "Wallet"
@@ -86,7 +86,7 @@
         }
       }
     },
-    "/api/Wallet/deposit": {
+    "/api/Wallet/DepositConfirm": {
       "post": {
         "tags": [
           "Wallet"
