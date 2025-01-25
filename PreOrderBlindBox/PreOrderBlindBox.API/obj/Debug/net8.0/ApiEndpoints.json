@@ -1,0 +1,64 @@
+[
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BlindBoxController",
+    "Method": "GetAll",
+    "RelativePath": "api/BlindBox",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[PreOrderBlindBox.Data.Entities.BlindBox, PreOrderBlindBox.Data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "GetWallet",
+    "RelativePath": "api/Wallet",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "CreateDepositUrl",
+    "RelativePath": "api/Wallet/CreatePayment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.WalletModel.RequestDepositWallet",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "Deposit",
+    "RelativePath": "api/Wallet/deposit",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.WalletModel.RequestDepositWallet",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

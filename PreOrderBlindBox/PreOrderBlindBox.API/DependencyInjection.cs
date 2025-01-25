@@ -5,6 +5,7 @@ using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Service.Services;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Services;
+using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.API
 {
@@ -47,6 +48,9 @@ namespace PreOrderBlindBox.API
             services.AddScoped<IUserVoucherService, UserVoucherService>();
             services.AddScoped<IVoucherCampaignService, VoucherCampaignService>();
             services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<IPaymentSerivce, PaymentService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
             return services;
         }
     }

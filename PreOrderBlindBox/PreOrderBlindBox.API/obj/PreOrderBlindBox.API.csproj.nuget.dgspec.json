@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.API\\PreOrderBlindBox.API.csproj": {}
+    "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.API\\PreOrderBlindBox.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.API\\PreOrderBlindBox.API.csproj": {
+    "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.API\\PreOrderBlindBox.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.API\\PreOrderBlindBox.API.csproj",
+        "projectUniqueName": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.API\\PreOrderBlindBox.API.csproj",
         "projectName": "PreOrderBlindBox.API",
-        "projectPath": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.API\\PreOrderBlindBox.API.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.API\\obj\\",
+        "projectPath": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.API\\PreOrderBlindBox.API.csproj",
+        "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
+        "outputPath": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.API\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,14 +26,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj": {
-                "projectPath": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj"
+              "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj": {
+                "projectPath": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj"
               }
             }
           }
@@ -43,12 +48,17 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -83,21 +93,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj": {
+    "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj",
+        "projectUniqueName": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj",
         "projectName": "PreOrderBlindBox.Data",
-        "projectPath": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Data\\obj\\",
+        "projectPath": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj",
+        "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
+        "outputPath": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Data\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -105,6 +119,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -122,7 +137,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -173,21 +189,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj": {
+    "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj",
+        "projectUniqueName": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj",
         "projectName": "PreOrderBlindBox.Services",
-        "projectPath": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Service\\obj\\",
+        "projectPath": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Service\\PreOrderBlindBox.Services.csproj",
+        "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
+        "outputPath": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Service\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -195,14 +215,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj": {
-                "projectPath": "C:\\Users\\Admin\\Desktop\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj"
+              "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj": {
+                "projectPath": "E:\\DataDiskInD\\HocTap\\4_DevelopmentProjects\\PreorderBlindBoxSystem\\BE\\PreOrderBlindBox\\PreOrderBlindBox.Data\\PreOrderBlindBox.Data.csproj"
               }
             }
           }
@@ -216,11 +237,30 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
+            "Microsoft.AspNetCore.Mvc.Core": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -237,7 +277,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
