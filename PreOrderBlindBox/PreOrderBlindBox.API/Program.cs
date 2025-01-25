@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PreOrderBlindBox.API;
 using PreOrderBlindBox.Data.DBContext;
+using PreOrderBlindBox.Services;
 
 namespace PreOrderBlindBox.Api
 {
@@ -10,7 +11,7 @@ namespace PreOrderBlindBox.Api
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddWebAPI();
-
+            
             builder.Services.AddDbContext<Preorder_BlindBoxContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbContext"));
@@ -21,6 +22,11 @@ namespace PreOrderBlindBox.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                               .Where(a => !a.IsDynamic)
+                               .ToArray();
+
+            builder.Services.AddAutoMapper(assemblies);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
