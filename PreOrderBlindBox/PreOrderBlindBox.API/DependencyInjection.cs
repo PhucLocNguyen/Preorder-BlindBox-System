@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Data.GenericRepository;
+﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
+using PreOrderBlindBox.Data.GenericRepository;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.Repositories;
 using PreOrderBlindBox.Data.UnitOfWork;
@@ -50,8 +51,8 @@ namespace PreOrderBlindBox.API
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<IPaymentSerivce, PaymentService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
-
-            return services;
+			services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+			return services;
         }
     }
 }
