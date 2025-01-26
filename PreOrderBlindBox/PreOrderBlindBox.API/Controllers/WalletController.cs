@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Services.DTO.RequestDTO.MomoModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.VnPayModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.WalletModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.PaymentModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.WalletModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Utils;
@@ -16,11 +17,13 @@ namespace PreOrderBlindBox.API.Controllers
         private readonly IWalletService _walletService;
         private readonly IPaymentSerivce _paymentSerivce;
         private readonly ICurrentUserService _currentUserService;
-        public WalletController(IWalletService walletService, IPaymentSerivce paymentSerivce, ICurrentUserService currentUserService)
+        private readonly IConfiguration _configuration;
+        public WalletController(IWalletService walletService, IPaymentSerivce paymentSerivce, ICurrentUserService currentUserService, IConfiguration configuration)
         {
             _walletService = walletService;
             _paymentSerivce = paymentSerivce;
             _currentUserService = currentUserService;
+            _configuration = configuration;
         }
         [HttpGet]
         public async Task<IActionResult> GetWallet()
@@ -78,39 +81,21 @@ namespace PreOrderBlindBox.API.Controllers
             }
             return BadRequest();
         }
+        [HttpGet("paymentVnPayCallBack")]
+        public async Task<IActionResult> PaymentVnPayCallBack()
+        {
+          
+            IQueryCollection requestQueryString = Request.Query;
+            
+            var result = await _paymentSerivce.VerifySignatureFromVnPay(requestQueryString);
+            if (result.ResponseCode=="00")
+            {
+                return Redirect(_configuration["Vnpay:ReturnUrl"]);
+            }
+          
 
-        //[HttpPost("request")]
-        //public async Task<IActionResult> RequestVNPay(int transactionid, decimal price)
-        //{
-        //    try
-        //    {
-        //        string url = _paymentSerivce.RequestVNPay(transactionid, price, HttpContext);
-        //        return Ok(url);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
+            return BadRequest();
+        }
 
-        //[HttpGet("return")]
-        //public async Task<IActionResult> VNPayReturn([FromQuery] RequestVnPayCreate model)
-        //{
-        //    try
-        //    {
-        //        var result = await _VNPayService.ReturnFromVNPay(model);
-        //        if (result.Status == false)
-        //        {
-        //            return BadRequest(result);
-        //        }
-        //        else
-        //        {
-        //            return Redirect("");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest();
-        //    }
     }
 }

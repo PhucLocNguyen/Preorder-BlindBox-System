@@ -147,6 +147,18 @@
           }
         }
       }
+    },
+    "/api/Wallet/paymentVnPayCallBack": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
   },
   "components": {

@@ -1,6 +1,8 @@
-﻿using PreOrderBlindBox.Data.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.RequestDTO.MomoModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.VnPayModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.PaymentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,6 @@ namespace PreOrderBlindBox.Services.IServices
         public Task<bool> VerifySignatureFromMomo(User user, RequestMomoConfirm request);
 
         public Task<string> CreatePaymentInVnPayAsync(int userId, decimal amount);
-        public Task<bool> VerifySignatureFromVnPay(User user, RequestVnPayCreate request);
+        public Task<ResponsePaymentResult> VerifySignatureFromVnPay(IQueryCollection request);
     }
 }

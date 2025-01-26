@@ -6,8 +6,10 @@ using PreOrderBlindBox.CM.Helpers;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.Repositories;
+using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.MomoModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.VnPayModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.PaymentModel;
 using PreOrderBlindBox.Services.IServices;
 using System;
 using System.Collections.Generic;
@@ -25,10 +27,15 @@ namespace PreOrderBlindBox.Services.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
-        public PaymentService(IUserRepository userRepository, IConfiguration configuration)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ITransactionRepository _transaction;
+
+        public PaymentService(IUserRepository userRepository, IConfiguration configuration, IUnitOfWork unitOfWork, ITransactionRepository transaction)
         {
             _userRepository = userRepository;
             _configuration = configuration;
+            _unitOfWork = unitOfWork;
+            _transaction = transaction;
         }
         //MOMO payment
         public async Task<string> CreatePaymentInMomoAsync(int userId, decimal amount)
@@ -118,7 +125,7 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-      
+
         public Task<bool> VerifySignatureFromMomo(User user, RequestMomoConfirm request)
         {
             string endpoint = _configuration["MomoPayment:BaseUrl"];
@@ -179,6 +186,7 @@ namespace PreOrderBlindBox.Services.Services
                 string command = _configuration["Vnpay:Command"];
                 string tmnCode = _configuration["Vnpay:TmnCode"];
                 string currCode = _configuration["Vnpay:CurrCode"];
+                string vnpayBank = _configuration["Vnpay:BankCode"];
                 string locale = _configuration["Vnpay:Locale"];
                 string returnUrl = _configuration["Vnpay:ReturnUrl"];
                 string baseUrl = _configuration["Vnpay:BaseUrl"];
@@ -192,19 +200,30 @@ namespace PreOrderBlindBox.Services.Services
 
                 // Tạo thông tin giao dịch
                 string orderInfo = $"Thanh toan cho user: {userId}";
-                string transactionId = Guid.NewGuid().ToString(); // Mã giao dịch (thay bằng cách bạn quản lý ID nếu cần)
+                // Đúng: Phải await để nhận về Transaction thật
+                var transaction =  _transaction.AddTransaction(new Transaction
+                {
+                    Money = amount,
+                    Description = "Deposit",
+                    Status = "Pending",
+                    WalletId = user.WalletId,
+                });
+
+                // Lúc này transaction.Id mới chính xác
+                string transactionId = transaction.TransactionId.ToString();
 
                 // Thêm dữ liệu vào request VNPay
                 pay.AddRequestData("vnp_Version", version);
                 pay.AddRequestData("vnp_Command", command);
                 pay.AddRequestData("vnp_TmnCode", tmnCode);
                 pay.AddRequestData("vnp_Amount", ((int)(amount * 100)).ToString());
+                pay.AddRequestData("vnp_BankCode", vnpayBank);
                 pay.AddRequestData("vnp_CreateDate", dateTime.ToString("yyyyMMddHHmmss"));
                 pay.AddRequestData("vnp_CurrCode", currCode);
                 pay.AddRequestData("vnp_IpAddr", ipAddress);
                 pay.AddRequestData("vnp_Locale", locale);
                 pay.AddRequestData("vnp_OrderInfo", orderInfo);
-                pay.AddRequestData("vnp_OrderType", "25000"); 
+                pay.AddRequestData("vnp_OrderType", "topup");
                 pay.AddRequestData("vnp_TxnRef", transactionId);
                 pay.AddRequestData("vnp_ReturnUrl", returnUrl);
 
@@ -226,10 +245,55 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-
-        public Task<bool> VerifySignatureFromVnPay(User user, RequestVnPayCreate request)
+        public async Task<ResponsePaymentResult> VerifySignatureFromVnPay(IQueryCollection request)
         {
-            throw new NotImplementedException();
+            var vnpay = new VnPayLibrary();
+            foreach (var (key, value) in request)
+            {
+                if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
+                {
+                    vnpay.AddResponseData(key, value.ToString());
+                }
+            }
+
+            var vnp_SecureHash = request.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
+            bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _configuration["Vnpay:HashSecret"]);
+            var transactionDetail = await _transaction.GetByIdAsync(int.Parse(vnpay.GetResponseData("vnp_TxnRef")));
+            //_cache.Remove(vnpay.GetResponseData("vnp_TxnRef"));
+            if (checkSignature)
+            {
+                if (transactionDetail != null)
+                {
+                    if (vnpay.GetResponseData("vnp_ResponseCode") == "00")
+                    {
+                        transactionDetail.Status = "Completed";
+                        await _transaction.UpdateAsync(transactionDetail);
+                        await _unitOfWork.SaveChanges();
+                        return new ResponsePaymentResult()
+                        {
+                            ResponseCode = vnpay.GetResponseData("vnp_ResponseCode"),
+                            Message = "Confirm Success",
+                        };
+                    }
+                    transactionDetail.Status = "Failed";
+                    await _transaction.UpdateAsync(transactionDetail);
+                }
+                else
+                {
+                    return new ResponsePaymentResult()
+                    {
+                        ResponseCode = vnpay.GetResponseData("vnp_ResponseCode"),
+                        Message = "Có lỗi xảy ra trong quá trình xử lý",
+                    };
+                }
+            }
+            await _unitOfWork.SaveChanges();
+
+            return new ResponsePaymentResult()
+            {
+                ResponseCode = vnpay.GetResponseData("vnp_ResponseCode"),
+                Message = "Có lỗi xảy ra trong quá trình xử lý",
+            };
         }
 
         private string ComputeHmacSha256(string message, string secretKey)

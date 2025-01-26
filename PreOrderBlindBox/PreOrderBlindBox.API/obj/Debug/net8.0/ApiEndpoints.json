@@ -76,5 +76,15 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "PaymentVnPayCallBack",
+    "RelativePath": "api/Wallet/paymentVnPayCallBack",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
   }
 ]
