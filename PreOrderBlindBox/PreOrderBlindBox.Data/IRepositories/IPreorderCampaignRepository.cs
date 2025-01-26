@@ -10,6 +10,5 @@ namespace PreOrderBlindBox.Data.IRepositories
 {
     public interface IPreorderCampaignRepository : IGenericRepository<PreorderCampaign>
     {
-        Task<PreorderCampaign?> GetPreorderCampaignBySlugAsync(string? slug);
     }
 }

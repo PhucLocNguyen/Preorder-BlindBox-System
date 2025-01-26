@@ -1,4 +1,5 @@
 ﻿using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Services.DTO.RequestDTO.MomoModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.WalletModel;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace PreOrderBlindBox.Services.IServices
         // Lay thong tin wallet cua nguoi dung
         public Task<ResponseShowWallet> GetWalletByUserIdAsync(int userId);
         // Nap tien vao wallet
-        public Task<bool> DepositAsync(int userId, decimal amount);
+        public Task<bool> DepositAsync(RequestMomoConfirm request);
         // Rut tien tu wallet
         public Task<bool> WithdrawAsync(int userId, decimal amount);
 
