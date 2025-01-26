@@ -52,7 +52,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         if (!optionsBuilder.IsConfigured)
         {
-            
+
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             string ConnectionStr = config.GetConnectionString("DefaultConnectionStringDB");
 
@@ -60,15 +60,11 @@ public partial class Preorder_BlindBoxContext : DbContext
         }
 
     }
-    /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=MSI;Initial Catalog=Preorder_BlindBox;Persist Security Info=True;User ID=sa;Password=12345");
-*/
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<BlindBox>(entity =>
         {
-            entity.HasKey(e => e.BlindBoxId).HasName("PK__BlindBox__4FDFECB291C71803");
+            entity.HasKey(e => e.BlindBoxId).HasName("PK__BlindBox__4FDFECB26B9647C7");
 
             entity.Property(e => e.BlindBoxId).HasColumnName("BlindBoxID");
             entity.Property(e => e.Category).HasMaxLength(100);
@@ -84,7 +80,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD79752C3AB66");
+            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD79782A9AAE1");
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -102,7 +98,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__Images__7516F4EC20F85887");
+            entity.HasKey(e => e.ImageId).HasName("PK__Images__7516F4EC693360A7");
 
             entity.Property(e => e.ImageId).HasColumnName("ImageID");
             entity.Property(e => e.BlindBoxId).HasColumnName("BlindBoxID");
@@ -119,7 +115,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E326AF7AEB3");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32588A0FFC");
 
             entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
             entity.Property(e => e.CreatedDate)
@@ -137,7 +133,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF3F1631DA");
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF9E5EB3D3");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
@@ -169,7 +165,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C10152D0E");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CD2A9E925");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
@@ -188,7 +184,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<PreorderCampaign>(entity =>
         {
-            entity.HasKey(e => e.PreorderCampaignId).HasName("PK__Preorder__4FE60AAE0422710C");
+            entity.HasKey(e => e.PreorderCampaignId).HasName("PK__Preorder__4FE60AAE3249D152");
 
             entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
             entity.Property(e => e.BlindBoxId).HasColumnName("BlindBoxID");
@@ -213,7 +209,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<PreorderMilestone>(entity =>
         {
-            entity.HasKey(e => e.PreorderMilestoneId).HasName("PK__Preorder__EF1156A94656C3D0");
+            entity.HasKey(e => e.PreorderMilestoneId).HasName("PK__Preorder__EF1156A9079D92C0");
 
             entity.Property(e => e.PreorderMilestoneId).HasColumnName("PreorderMilestoneID");
             entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
@@ -226,7 +222,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3A7DEAA924");
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3ABCFA7702");
 
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.RoleName)
@@ -236,7 +232,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A4B3F8CAC6B");
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A4BD9621BFF");
 
             entity.Property(e => e.TransactionId).HasColumnName("TransactionID");
             entity.Property(e => e.BalanceAtTime).HasColumnType("decimal(18, 2)");
@@ -256,7 +252,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC3A68722B");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACB2788A30");
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.Address).HasMaxLength(300);
@@ -291,7 +287,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<UserVoucher>(entity =>
         {
-            entity.HasKey(e => e.UserVoucherId).HasName("PK__UserVouc__8017D4B91D5599EB");
+            entity.HasKey(e => e.UserVoucherId).HasName("PK__UserVouc__8017D4B9BF9A4549");
 
             entity.Property(e => e.UserVoucherId).HasColumnName("UserVoucherID");
             entity.Property(e => e.CreatedDate)
@@ -316,7 +312,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<VoucherCampaign>(entity =>
         {
-            entity.HasKey(e => e.VoucherCampaignId).HasName("PK__VoucherC__0E161B2FA21AF985");
+            entity.HasKey(e => e.VoucherCampaignId).HasName("PK__VoucherC__0E161B2FFD11ABB7");
 
             entity.Property(e => e.VoucherCampaignId).HasColumnName("VoucherCampaignID");
             entity.Property(e => e.CreatedDate)
@@ -337,7 +333,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<Wallet>(entity =>
         {
-            entity.HasKey(e => e.WalletId).HasName("PK__Wallets__84D4F92E643E5A99");
+            entity.HasKey(e => e.WalletId).HasName("PK__Wallets__84D4F92E9158C0A3");
 
             entity.Property(e => e.WalletId).HasColumnName("WalletID");
             entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)");

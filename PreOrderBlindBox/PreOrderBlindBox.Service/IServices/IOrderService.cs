@@ -1,5 +1,6 @@
 ﻿using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace PreOrderBlindBox.Services.IServices
     {
         Task<Pagination<Order>> GetAllOrder(PaginationParameter page);
         Task<Order> GetOrderById(int id);
+        Task<int> CreateOrder(RequestCreateOrder requestCreateOrder);
     }
 }

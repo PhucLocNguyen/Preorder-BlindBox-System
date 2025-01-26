@@ -10,5 +10,6 @@ namespace PreOrderBlindBox.Data.IRepositories
 {
     public interface IOrderDetailRepository : IGenericRepository<OrderDetail>
     {
+
     }
 }

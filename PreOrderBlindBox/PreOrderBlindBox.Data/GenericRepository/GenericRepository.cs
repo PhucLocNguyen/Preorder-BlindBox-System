@@ -61,7 +61,7 @@ namespace PreOrderBlindBox.Data.GenericRepository
         }*/
 
         public Task<List<TEntity>> GetAll (
-            PaginationParameter? pagination,
+            PaginationParameter? pagination = null,
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             params Expression<Func<TEntity, object>>[] includes)  // Optional parameter for pagination (number of records per page)
@@ -103,6 +103,13 @@ namespace PreOrderBlindBox.Data.GenericRepository
 
             await dbSet.AddAsync(entity);
         }
+        public async Task InsertAsync(IEnumerable<TEntity> entities)
+        {
+            if (entities == null || !entities.Any())
+                throw new ArgumentNullException(nameof(entities), "Entities list cannot be null or empty.");
+
+            await dbSet.AddRangeAsync(entities);
+        }
 
         public virtual async Task UpdateAsync(TEntity entity)
         {
@@ -126,5 +133,6 @@ namespace PreOrderBlindBox.Data.GenericRepository
             }
         }
 
+        
     }
 }

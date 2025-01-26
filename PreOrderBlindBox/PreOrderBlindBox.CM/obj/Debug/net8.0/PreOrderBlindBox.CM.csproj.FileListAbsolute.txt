@@ -9,3 +9,14 @@ C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.CM\obj\Debug\net8.0
 C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.CM\obj\Debug\net8.0\refint\PreOrderBlindBox.CM.dll
 C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.CM\obj\Debug\net8.0\PreOrderBlindBox.CM.pdb
 C:\Users\Admin\Desktop\PreOrderBlindBox.API\PreOrderBlindBox.CM\obj\Debug\net8.0\ref\PreOrderBlindBox.CM.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\bin\Debug\net8.0\PreOrderBlindBox.CM.deps.json
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\bin\Debug\net8.0\PreOrderBlindBox.CM.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\bin\Debug\net8.0\PreOrderBlindBox.CM.pdb
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\obj\Debug\net8.0\PreOrderBlindBox.CM.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\obj\Debug\net8.0\PreOrderBlindBox.CM.AssemblyInfoInputs.cache
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\obj\Debug\net8.0\PreOrderBlindBox.CM.AssemblyInfo.cs
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\obj\Debug\net8.0\PreOrderBlindBox.CM.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\obj\Debug\net8.0\PreOrderBlindBox.CM.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\obj\Debug\net8.0\refint\PreOrderBlindBox.CM.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\obj\Debug\net8.0\PreOrderBlindBox.CM.pdb
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.CM\obj\Debug\net8.0\ref\PreOrderBlindBox.CM.dll

@@ -524,3 +524,7 @@ C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.API\obj\Debug\net8.0\re
 C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.API\obj\Debug\net8.0\PreOrderBlindBox.API.pdb
 C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.API\obj\Debug\net8.0\PreOrderBlindBox.API.genruntimeconfig.cache
 C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.API\obj\Debug\net8.0\ref\PreOrderBlindBox.API.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.API\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.API\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.API\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+C:\Users\Admin\Desktop\PreOrderBlindBox\PreOrderBlindBox.API\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
