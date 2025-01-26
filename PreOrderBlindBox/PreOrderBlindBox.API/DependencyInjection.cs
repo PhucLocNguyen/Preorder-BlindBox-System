@@ -51,9 +51,8 @@ namespace PreOrderBlindBox.API
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<IPaymentSerivce, PaymentService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-
-            return services;
+			services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+			return services;
         }
     }
 }
