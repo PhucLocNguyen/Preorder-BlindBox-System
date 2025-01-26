@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PreOrderBlindBox.Services.IServices
+namespace PreOrderBlindBox.Services.DTO.ResponeDTO
 {
-    public interface IPreorderCampaignService
+    internal class Class1
     {
     }
 }
