@@ -90,7 +90,7 @@ namespace PreOrderBlindBox.API.Controllers
             var result = await _paymentSerivce.VerifySignatureFromVnPay(requestQueryString);
             if (result.ResponseCode=="00")
             {
-                return Redirect(_configuration["Vnpay:ReturnUrl"]);
+                return Redirect(_configuration["Vnpay:RedirectUrl"]);
             }
           
 
