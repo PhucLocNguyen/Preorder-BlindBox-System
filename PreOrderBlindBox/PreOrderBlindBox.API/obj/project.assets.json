@@ -3338,6 +3338,19 @@
           }
         }
       },
+      "PreOrderBlindBox.CM/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Abstractions": "2.3.0"
+        },
+        "compile": {
+          "bin/placeholder/PreOrderBlindBox.CM.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PreOrderBlindBox.CM.dll": {}
+        }
+      },
       "PreOrderBlindBox.Data/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -3362,6 +3375,7 @@
           "Microsoft.AspNetCore.Http.Abstractions": "2.3.0",
           "Microsoft.AspNetCore.Mvc.Core": "2.3.0",
           "Newtonsoft.Json": "13.0.3",
+          "PreOrderBlindBox.CM": "1.0.0",
           "PreOrderBlindBox.Data": "1.0.0"
         },
         "compile": {
@@ -9171,6 +9185,11 @@
         "system.windows.extensions.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "PreOrderBlindBox.CM/1.0.0": {
+      "type": "project",
+      "path": "../PreOrderBlindBox.CM/PreOrderBlindBox.CM.csproj",
+      "msbuildProject": "../PreOrderBlindBox.CM/PreOrderBlindBox.CM.csproj"
     },
     "PreOrderBlindBox.Data/1.0.0": {
       "type": "project",
