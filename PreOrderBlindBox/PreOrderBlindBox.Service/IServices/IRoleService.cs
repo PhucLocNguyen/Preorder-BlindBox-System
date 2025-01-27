@@ -1,4 +1,6 @@
 ﻿using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Services.DTO.RequestDTO.RoleModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.RoleModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +11,9 @@ namespace PreOrderBlindBox.Services.IServices
 {
 	public interface IRoleService
 	{
-		public Task<Role> GetRoleByIdAsync(int roleId);
-		public void CreateRoleAsync(string roleName);
-		public void DeleteRoleByIdAsync(int roleId);
-		public void UpdateRoleByIdAsync(int roleId);
+		public Task<ResponseRole> GetRoleByIdAsync(int roleId);
+		public Task<int> CreateRoleAsync(string roleName);
+		public Task<int> DeleteRoleByIdAsync(int roleId);
+		public Task<int> UpdateRoleAsync(RequestRole role);
 	}
 }
