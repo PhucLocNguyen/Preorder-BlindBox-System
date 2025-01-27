@@ -67,5 +67,20 @@ namespace PreOrderBlindBox.Services.Services
 
             return preorderMilestone;
         }
+
+        public async Task<List<PreorderMilestone>> GetAllPreorderMilestoneByCampaignID(int campaignID)
+        {
+           return await _preorderMilestoneRepo.GetAll(filter: x=>x.PreorderCampaignId == campaignID);   
+        }
+
+        public async Task<int> CalculateRemainingQuantity(int milestoneID, int quantityOrderDetails)
+        {
+            var milestone = await GetPreorderMilestoneById(milestoneID);
+            if (quantityOrderDetails >= milestone.Quantity)
+            {
+                return 0;
+            }
+            return milestone.Quantity - quantityOrderDetails;
+        }
     }
 }

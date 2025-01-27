@@ -84,7 +84,7 @@ public partial class Preorder_BlindBoxContext : DbContext
 
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD79752C3AB66");
+            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD79782A9AAE1");
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");

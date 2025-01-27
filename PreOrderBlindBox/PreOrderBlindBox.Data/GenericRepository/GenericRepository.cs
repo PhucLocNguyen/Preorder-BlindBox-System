@@ -85,8 +85,12 @@ namespace PreOrderBlindBox.Data.GenericRepository
             {
                 query = orderBy(query);
             }
-            query = query.Skip((pagination.PageIndex - 1) * pagination.PageSize)
+            if(pagination != null)
+            {
+                query = query.Skip((pagination.PageIndex - 1) * pagination.PageSize)
                 .Take(pagination.PageSize);
+            }
+            
 
             return query.ToListAsync();
         }
@@ -102,6 +106,13 @@ namespace PreOrderBlindBox.Data.GenericRepository
                 throw new ArgumentNullException(nameof(entity));
 
             await dbSet.AddAsync(entity);
+        }
+        public async Task InsertAsync(IEnumerable<TEntity> entities)
+        {
+            if (entities == null || !entities.Any())
+                throw new ArgumentNullException(nameof(entities), "Entities list cannot be null or empty.");
+
+            await dbSet.AddRangeAsync(entities);
         }
 
         public virtual async Task UpdateAsync(TEntity entity)
@@ -125,6 +136,15 @@ namespace PreOrderBlindBox.Data.GenericRepository
                 throw new ArgumentException("Entity not found");
             }
         }
+        public virtual void Delete(TEntity entityToDelete)
+        {
+            if (_context.Entry(entityToDelete).State == EntityState.Detached)
+            {
+                dbSet.Attach(entityToDelete);
+            }
+            dbSet.Remove(entityToDelete);
+        }
+
 
     }
 }
