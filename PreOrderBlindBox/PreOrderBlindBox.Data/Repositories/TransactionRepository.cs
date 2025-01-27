@@ -15,5 +15,12 @@ namespace PreOrderBlindBox.Data.Repositories
         public TransactionRepository(Preorder_BlindBoxContext context) : base(context)
         {
         }
+
+        public Transaction AddTransaction(Transaction transaction)
+        {
+            _context.Transactions.Add(transaction);
+            _context.SaveChanges();
+            return transaction;
+        }
     }
 }
