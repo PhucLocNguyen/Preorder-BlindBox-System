@@ -1,5 +1,5 @@
 import { Steps } from "antd";
-import Countdown from "../../components/Countdown";
+import CountdownSection from "../../components/Sections/CountdownSection";
 const description = 'This is a description.';
 function Home() {
   return (
@@ -23,7 +23,7 @@ function Home() {
           },
         ]}
       />
-      <Countdown/>
+      <CountdownSection/>
     </div>
   );
 }
