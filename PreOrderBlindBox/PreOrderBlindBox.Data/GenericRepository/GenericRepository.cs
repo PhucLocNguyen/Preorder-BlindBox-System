@@ -20,7 +20,7 @@ namespace PreOrderBlindBox.Data.GenericRepository
 			this.dbSet = context.Set<TEntity>();
 		}
 
-		/* public virtual IEnumerable<TEntity> Get(
+        /* public virtual IEnumerable<TEntity> Get(
 			 Expression<Func<TEntity, bool>> filter = null,
 			 Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
 			 int? pageIndex = null, // Optional parameter for pagination (page number)
@@ -60,38 +60,41 @@ namespace PreOrderBlindBox.Data.GenericRepository
 			 return query.ToList();
 		 }*/
 
-		public Task<List<TEntity>> GetAll(
-			PaginationParameter? pagination,
-			Expression<Func<TEntity, bool>>? filter = null,
-			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-			params Expression<Func<TEntity, object>>[] includes)  // Optional parameter for pagination (number of records per page)
-		{
-			IQueryable<TEntity> query = dbSet;
+        public Task<List<TEntity>> GetAll(
+            PaginationParameter? pagination = null,
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            params Expression<Func<TEntity, object>>[] includes)  // Optional parameter for pagination (number of records per page)
+        {
+            IQueryable<TEntity> query = dbSet;
 
-			if (filter != null)
-			{
-				query = query.Where(filter);
-			}
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
 
-			foreach (var includeProperty in includes)
-			{
-				if (includeProperty.Body is MemberExpression memberExpression)
-				{
-					query = query.Include(memberExpression.Member.Name);
-				}
-			}
+            foreach (var includeProperty in includes)
+            {
+                if (includeProperty.Body is MemberExpression memberExpression)
+                {
+                    query = query.Include(memberExpression.Member.Name);
+                }
+            }
 
-			if (orderBy != null)
-			{
-				query = orderBy(query);
-			}
-			query = query.Skip((pagination.PageIndex - 1) * pagination.PageSize)
-				.Take(pagination.PageSize);
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+            if (pagination != null)
+            {
+                query = query.Skip((pagination.PageIndex - 1) * pagination.PageSize)
+                    .Take(pagination.PageSize);
+            }
 
-			return query.ToListAsync();
-		}
+            return query.ToListAsync();
+        }
 
-		public virtual async Task<TEntity> GetByIdAsync(object id)
+        public virtual async Task<TEntity> GetByIdAsync(object id)
 		{
 			return await dbSet.FindAsync(id);
 		}
