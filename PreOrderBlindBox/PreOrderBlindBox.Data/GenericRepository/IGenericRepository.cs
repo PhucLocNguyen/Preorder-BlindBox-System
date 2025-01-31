@@ -12,7 +12,7 @@ namespace PreOrderBlindBox.Data.GenericRepository
 	public interface IGenericRepository<TEntity> where TEntity : class
 	{
 		Task<List<TEntity>> GetAll(
-			PaginationParameter pagination,
+			PaginationParameter pagination = null,
 			Expression<Func<TEntity, bool>>? filter = null,
 			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
 			params Expression<Func<TEntity, object>>[] includes); // Optional parameter for pagination (number of records per page)
