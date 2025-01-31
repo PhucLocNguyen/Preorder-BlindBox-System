@@ -22,6 +22,29 @@ namespace PreOrderBlindBox.Service.Services
 			_roleRepository = roleRepository;
 			_mailService = mailService;
 		}
+
+		public async Task<bool> ConfirmEmailByTokenAsync(string confirmToken)
+		{
+			if (String.IsNullOrEmpty(confirmToken))
+			{
+				throw new ArgumentNullException(nameof(confirmToken));
+			}
+			var user = await _userRepository.GetUserByEmailConfirmToken(confirmToken);
+			if (user == null)
+			{
+				throw new Exception("Confirm token invalid");
+			}
+
+			user.EmailConfirmToken = "";
+			user.IsActive = true;
+			user.IsEmailConfirm = true;
+
+			await _userRepository.UpdateAsync(user);
+			await _unitOfWork.SaveChanges();
+
+			return true;
+		}
+
 		public Task LoginByEmailAndPassword(string email, string password)
 		{
 			throw new NotImplementedException();
