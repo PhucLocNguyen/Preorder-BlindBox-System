@@ -24,5 +24,10 @@ namespace PreOrderBlindBox.Data.Repositories
 		{
 			return await _context.Users.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
 		}
+
+		public async Task<User?> GetUserByEmailConfirmToken(string confirmToken)
+		{
+			return await _context.Users.SingleOrDefaultAsync(x => x.EmailConfirmToken.ToLower() == confirmToken.ToLower());
+		}
 	}
 }

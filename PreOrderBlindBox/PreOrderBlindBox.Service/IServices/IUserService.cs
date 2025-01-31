@@ -11,5 +11,6 @@ namespace PreOrderBlindBox.Services.IServices
 	{
 		public Task LoginByEmailAndPassword(string email, string password);
 		public Task<bool> RegisterAccountAsync(RequestRegisterAccount registerAccount);
+		public Task<bool> ConfirmEmailByTokenAsync(string confirmToken);
 	}
 }

@@ -35,5 +35,23 @@ namespace PreOrderBlindBox.API.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
+
+		[HttpPost("confirm-email")]
+		public async Task<IActionResult> ConfirmEmail(string confirmToken)
+		{
+			try
+			{
+				var result = await _userService.ConfirmEmailByTokenAsync(confirmToken);
+				if (result)
+				{
+					return Ok(new { Message = "Email confirmation successful" });
+				}
+				return NotFound(new { Message = "Email confirmation failed" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
 	}
 }
