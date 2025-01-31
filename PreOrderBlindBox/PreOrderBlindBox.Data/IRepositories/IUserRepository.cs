@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Data.IRepositories
 {
-    public interface IUserRepository : IGenericRepository<User>
-    {
-    }
+	public interface IUserRepository : IGenericRepository<User>
+	{
+		public Task<User?> GetUserByEmailAsync(string email);
+	}
 }

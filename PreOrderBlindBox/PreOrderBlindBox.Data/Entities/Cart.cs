@@ -13,6 +13,8 @@ public partial class Cart
 
     public int? PreorderCampaignId { get; set; }
 
+    public int Quantity { get; set; }
+
     public DateTime CreateDate { get; set; }
 
     public bool IsDeleted { get; set; }
