@@ -1,10 +1,15 @@
-﻿using PreOrderBlindBox.Data.Entities;
+﻿using Microsoft.Extensions.Configuration;
+using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.MailModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.UserModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.UserModel;
 using PreOrderBlindBox.Services.Helpers;
 using PreOrderBlindBox.Services.IServices;
+using PreOrderBlindBox.Services.Utils;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace PreOrderBlindBox.Service.Services
 {
@@ -14,13 +19,18 @@ namespace PreOrderBlindBox.Service.Services
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IRoleRepository _roleRepository;
 		private readonly IMailService _mailService;
+		private readonly IConfiguration _configuration;
+		private readonly IWalletService _walletService;
 
-		public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMailService mailService)
+		public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMailService mailService,
+			IConfiguration configuration, IWalletService walletService)
 		{
 			_userRepository = userRepository;
 			_unitOfWork = unitOfWork;
 			_roleRepository = roleRepository;
 			_mailService = mailService;
+			_configuration = configuration;
+			_walletService = walletService;
 		}
 
 		public async Task<bool> ConfirmEmailByTokenAsync(string confirmToken)
@@ -29,25 +39,64 @@ namespace PreOrderBlindBox.Service.Services
 			{
 				throw new ArgumentNullException(nameof(confirmToken));
 			}
-			var user = await _userRepository.GetUserByEmailConfirmToken(confirmToken);
-			if (user == null)
+			await _unitOfWork.BeginTransactionAsync();
+			try
 			{
-				throw new Exception("Confirm token invalid");
+				var user = await _userRepository.GetUserByEmailConfirmToken(confirmToken);
+				if (user == null)
+				{
+					throw new Exception("Confirm token invalid");
+				}
+
+				user.EmailConfirmToken = "";
+				user.IsActive = true;
+				user.IsEmailConfirm = true;
+
+				await _userRepository.UpdateAsync(user);
+				// Tạo wallet cho User
+				bool walletCreated = await _walletService.CreateWalletAsync(user.UserId);
+				if (!walletCreated)
+				{
+					throw new Exception("Failed to create wallet");
+				}
+
+				await _unitOfWork.SaveChanges();
+				await _unitOfWork.CommitTransactionAsync();
+				return true;
 			}
-
-			user.EmailConfirmToken = "";
-			user.IsActive = true;
-			user.IsEmailConfirm = true;
-
-			await _userRepository.UpdateAsync(user);
-			await _unitOfWork.SaveChanges();
-
-			return true;
+			catch (Exception ex)
+			{
+				await _unitOfWork.RollbackTransactionAsync();
+				throw;
+			}
 		}
 
-		public Task LoginByEmailAndPassword(string email, string password)
+		public async Task<ResponseLogin> LoginByEmailAndPasswordAsync(string email, string password)
 		{
-			throw new NotImplementedException();
+			var user = await _userRepository.GetUserByEmailAsync(email);
+
+			if (user == null || !PasswordUtils.VerifyPassword(password, user.Password))
+			{
+				throw new Exception("Incorrect email or password");
+			}
+
+			if (user.IsActive == false)
+			{
+				throw new Exception("Inactive account");
+			}
+
+			if (user.IsEmailConfirm == false)
+			{
+				throw new Exception("Please confirm your email");
+			}
+
+			var accessToken = GenerateAccessToken(user);
+			return new ResponseLogin
+			{
+				AccessToken = accessToken,
+				RefreshToken = ""
+			};
+
 		}
 
 		public async Task<bool> RegisterAccountAsync(RequestRegisterAccount registerAccount)
@@ -81,7 +130,7 @@ namespace PreOrderBlindBox.Service.Services
 					IsActive = false,
 					EmailConfirmToken = Guid.NewGuid().ToString(),
 					RoleId = registerAccount.RoleId,
-					Password = registerAccount.Password
+					Password = PasswordUtils.HashPassword(registerAccount.Password)
 				};
 
 				await _userRepository.InsertAsync(newUser);
@@ -105,5 +154,17 @@ namespace PreOrderBlindBox.Service.Services
 				throw;
 			}
 		}
+
+		public string GenerateAccessToken(User user)
+		{
+			var claimList = new List<Claim>
+			{
+				new Claim(ClaimTypes.Role, user.Role.RoleName.ToString()),
+				new Claim("userID", user.UserId.ToString())
+			};
+			var accessToken = GenerateJwtToken.AccessToken(claimList, _configuration);
+			return new JwtSecurityTokenHandler().WriteToken(accessToken);
+		}
+
 	}
 }

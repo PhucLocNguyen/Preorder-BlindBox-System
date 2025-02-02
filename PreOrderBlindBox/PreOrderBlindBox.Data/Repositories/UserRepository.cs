@@ -22,7 +22,7 @@ namespace PreOrderBlindBox.Data.Repositories
 
 		public async Task<User?> GetUserByEmailAsync(string email)
 		{
-			return await _context.Users.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
+			return await _context.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower());
 		}
 
 		public async Task<User?> GetUserByEmailConfirmToken(string confirmToken)
