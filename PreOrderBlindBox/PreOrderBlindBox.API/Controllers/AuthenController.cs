@@ -71,7 +71,7 @@ namespace PreOrderBlindBox.API.Controllers
 						HttpOnly = true,
 						Secure = true,
 						SameSite = SameSiteMode.Strict,
-						Expires = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes - 5)
+						Expires = DateTime.Now.AddMinutes(tokenValidityInMinutes - 5)
 					};
 
 					Response.Cookies.Append("accessToken", result.AccessToken, cookieOptions);
