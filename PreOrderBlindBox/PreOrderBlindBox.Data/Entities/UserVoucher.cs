@@ -17,6 +17,8 @@ public partial class UserVoucher
 
     public int Quantity { get; set; }
 
+    public int UsedQuantity { get; set; }
+
     public DateTime ExpiringDate { get; set; }
 
     public DateTime? UsedAt { get; set; }
