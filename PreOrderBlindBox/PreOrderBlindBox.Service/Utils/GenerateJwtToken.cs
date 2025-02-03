@@ -20,11 +20,11 @@ namespace PreOrderBlindBox.Services.Utils
 			var token = new JwtSecurityToken(
 				issuer: configuration["JwtSettings:ValidIssuer"],
 				audience: configuration["JwtSettings:ValidAudience"],
-				expires: DateTime.UtcNow.AddMinutes(tokenValidityInMinutes),
+				expires: DateTime.Now.AddMinutes(tokenValidityInMinutes),
 				claims: listClaim,
 				signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
 				);
-			return token;	
+			return token;
 		}
 	}
 }

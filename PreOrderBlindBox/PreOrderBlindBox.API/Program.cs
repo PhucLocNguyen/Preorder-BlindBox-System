@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using PreOrderBlindBox.API;
 using PreOrderBlindBox.Data.DBContext;
 using PreOrderBlindBox.Services;
+using PreOrderBlindBox.Services.Helpers;
 using PreOrderBlindBox.Services.Utils;
 using System.Text;
 
@@ -83,6 +84,8 @@ namespace PreOrderBlindBox.Api
 				};
 			});
 
+			//Background service cho voucher campaign
+			builder.Services.AddHostedService<VoucherCampaignBackgroundService>();
 
 			var app = builder.Build();
 
