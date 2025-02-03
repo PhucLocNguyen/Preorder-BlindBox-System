@@ -37,7 +37,7 @@ const useStyle = createStyles(({ token, css, prefixCls }) => ({
   `,
 }));
 
-const GradientButton = ({text, onClick, style}) => {
+const GradientButton = ({text, onClick, style, disabled = false}) => {
   const { styles } = useStyle();
 
   return (
@@ -54,7 +54,7 @@ const GradientButton = ({text, onClick, style}) => {
       <div className={styles.linearGradientButton}>
         <Space>
           {/* Gradient Button */}
-          <Button type="primary" onClick={onClick} size="large" style={style}>
+          <Button type="primary" onClick={onClick} size="large" style={style} disabled={disabled}>
             {text}
           </Button>
         </Space>
