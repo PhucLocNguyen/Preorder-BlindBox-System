@@ -3,6 +3,7 @@ using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.NotificationRequestModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.NotificationResponseModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Mappers.NotificationMapper;
 
@@ -17,14 +18,14 @@ namespace PreOrderBlindBox.Services.Services
             _notificationRepository = notificationRepository;
             _unitOfWork = unitOfWork;
         }
-        public async Task<Notification> CreatNotification(RequestCreateNotification requestCreateNotification)
+        public async Task<ResponseNotification> CreatNotification(RequestCreateNotification requestCreateNotification)
         {
             try
             {
                 var NotificationEntity = requestCreateNotification.toNotificationEntity();
                 await _notificationRepository.InsertAsync(NotificationEntity);
                 await _unitOfWork.SaveChanges();
-                return NotificationEntity;
+                return NotificationEntity.toNotificationResponse();
             }
             catch (Exception ex)
             {
@@ -32,26 +33,30 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-        public async Task<Pagination<Notification>> GetAllNotificationByUserId(int userId, PaginationParameter paginationParameter)
+        public async Task<Pagination<ResponseNotification>> GetAllNotificationByUserId(int userId, PaginationParameter paginationParameter)
         {
             var listNotification = await _notificationRepository.GetAll(filter: x => x.ReceiverId == userId,
                 pagination: paginationParameter);
-            return new Pagination<Notification>(listNotification, listNotification.Count, paginationParameter.PageIndex, paginationParameter.PageSize);
+            return new Pagination<ResponseNotification>(listNotification.Select(x => x.toNotificationResponse()).ToList(), listNotification.Count, paginationParameter.PageIndex, paginationParameter.PageSize);
         }
 
-        public async Task<Notification> GetNotificationById(int notificationId)
+        public async Task<ResponseNotification> GetNotificationById(int notificationId)
         {
-            return await _notificationRepository.GetByIdAsync(notificationId);
+            return (await _notificationRepository.GetByIdAsync(notificationId)).toNotificationResponse();
         }
 
-        public async Task<Notification> IsNotificationReaded(int notificationId, bool isRead)
+        public async Task<ResponseNotification?> MarkNotificationAsRead(int notificationId)
         {
             var existingNoti = await _notificationRepository.GetByIdAsync(notificationId);
-            if (existingNoti != null)
+            if (existingNoti == null)
             {
-                existingNoti.IsRead = isRead;
+                return null;
             }
-            return existingNoti;
+            existingNoti.IsRead = true;
+            await _notificationRepository.UpdateAsync(existingNoti);
+            await _unitOfWork.SaveChanges();
+
+            return existingNoti.toNotificationResponse();
         }
     }
 }

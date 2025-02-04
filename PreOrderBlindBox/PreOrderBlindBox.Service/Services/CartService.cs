@@ -2,7 +2,7 @@
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
-using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponeModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Mappers.CartMapper;
 
@@ -74,9 +74,9 @@ namespace PreOrderBlindBox.Services.Services
                 (x.UserId == customerID))).FirstOrDefault();
         }
 
-        public async Task<List<ResponeCart>> IdentifyPriceForCartItem(int customerID)
+        public async Task<List<ResponseCart>> IdentifyPriceForCartItem(int customerID)
         {
-            List<ResponeCart> cartItemPrices = new List<ResponeCart>();
+            List<ResponseCart> cartItemPrices = new List<ResponseCart>();
             List<Cart> listCart = await GetAllCartByCustomerID(customerID);
             foreach (var cart in listCart)
             {
@@ -101,7 +101,7 @@ namespace PreOrderBlindBox.Services.Services
                         // Nếu số lượng còn lại trong mốc nhiều hơn số lượng khác hàng mua trong cart
                         if (remainQuantity >= cart.Quantity)
                         {
-                            cartItemPrices.Add(new ResponeCart()
+                            cartItemPrices.Add(new ResponseCart()
                             {
                                 PreorderCampaignId = cart.PreorderCampaignId,
                                 UserId = cart.UserId,
@@ -116,7 +116,7 @@ namespace PreOrderBlindBox.Services.Services
                             var cartTemp = cart;
                             cartTemp.Quantity = remainQuantity;
                             cart.Quantity = cart.Quantity - remainQuantity;
-                            cartItemPrices.Add(new ResponeCart()
+                            cartItemPrices.Add(new ResponseCart()
                             {
                                 PreorderCampaignId = cart.PreorderCampaignId,
                                 UserId = cart.UserId,
@@ -131,7 +131,7 @@ namespace PreOrderBlindBox.Services.Services
                             cartTemp.Quantity = remainQuantity;
                             cart.Quantity = cart.Quantity - remainQuantity;
                             // Thêm vào giá và số lượng sản phẩm ứng với mốc đó 
-                            cartItemPrices.Add(new ResponeCart()
+                            cartItemPrices.Add(new ResponseCart()
                             {
                                 PreorderCampaignId = cart.PreorderCampaignId,
                                 UserId = cart.UserId,
@@ -139,7 +139,7 @@ namespace PreOrderBlindBox.Services.Services
                                 Quantity = remainQuantity
                             });
                             // Do hết hàng nên số lượng sản phẩm còn lại không có giá
-                            cartItemPrices.Add(new ResponeCart()
+                            cartItemPrices.Add(new ResponseCart()
                             {
                                 PreorderCampaignId = cart.PreorderCampaignId,
                                 UserId = cart.UserId,

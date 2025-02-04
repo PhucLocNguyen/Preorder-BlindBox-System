@@ -33,5 +33,11 @@ namespace PreOrderBlindBox.API.Controllers
         {
             return Ok(await _cartService.CreateCart(requestCreateCart));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPriceInCart(int userID)
+        {
+            return Ok(await _cartService.IdentifyPriceForCartItem(userID));
+        }
     }
 }

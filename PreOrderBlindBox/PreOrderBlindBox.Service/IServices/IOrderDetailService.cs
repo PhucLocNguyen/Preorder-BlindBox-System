@@ -14,7 +14,7 @@ namespace PreOrderBlindBox.Services.IServices
     {
         Task<List<OrderDetail>> GetAllOrderDetailsByOrderID(PaginationParameter? page, int orderId);
 
-        Task<bool> CreateOrderDetail(List<ResponeCart> carts, int orderID);
+        Task<bool> CreateOrderDetail(List<ResponseCart> carts, int orderID);
 
         Task<int> GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc(int preorderCampaignID);
     }

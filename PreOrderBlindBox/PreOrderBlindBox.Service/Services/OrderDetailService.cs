@@ -22,7 +22,7 @@ namespace PreOrderBlindBox.Services.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CreateOrderDetail(List<ResponeCart> carts, int orderID)
+        public async Task<bool> CreateOrderDetail(List<ResponseCart> carts, int orderID)
         {
             try
             {

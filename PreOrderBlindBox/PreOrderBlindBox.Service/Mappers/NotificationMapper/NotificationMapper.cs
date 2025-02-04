@@ -1,10 +1,6 @@
 ﻿using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.RequestDTO.NotificationRequestModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.NotificationResponseModel;
 
 namespace PreOrderBlindBox.Services.Mappers.NotificationMapper
 {
@@ -20,6 +16,16 @@ namespace PreOrderBlindBox.Services.Mappers.NotificationMapper
                 IsDeleted = false,
                 Title = requestCreateNotification.Title,
                 CreatedDate = DateTime.Now,
+            };
+        }
+
+        public static ResponseNotification toNotificationResponse(this Notification notification)
+        {
+            return new ResponseNotification()
+            {
+                Description = notification.Description,
+                IsRead = notification.IsRead,
+                Title = notification.Title,
             };
         }
     }

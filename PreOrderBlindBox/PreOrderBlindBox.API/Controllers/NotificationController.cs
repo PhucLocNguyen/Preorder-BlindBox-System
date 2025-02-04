@@ -27,6 +27,7 @@ namespace PreOrderBlindBox.API.Controllers
             var existingNoti = await _notificationService.GetNotificationById(notificationId);
             if (existingNoti != null)
             {
+                await _notificationService.MarkNotificationAsRead(notificationId);
                 return Ok(existingNoti);
             }
             return NotFound();

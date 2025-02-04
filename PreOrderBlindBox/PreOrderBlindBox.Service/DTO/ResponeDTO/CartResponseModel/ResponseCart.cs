@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponeModel
+namespace PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel
 {
-    public class ResponeCart
+    public class ResponseCart
     {
         public int? UserId { get; set; }
         public int? PreorderCampaignId { get; set; }

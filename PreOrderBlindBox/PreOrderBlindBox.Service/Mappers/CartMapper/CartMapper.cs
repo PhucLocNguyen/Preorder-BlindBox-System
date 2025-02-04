@@ -1,11 +1,6 @@
 ﻿using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
-using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponeModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 
 namespace PreOrderBlindBox.Services.Mappers.CartMapper
 {
@@ -23,9 +18,9 @@ namespace PreOrderBlindBox.Services.Mappers.CartMapper
             };
         }
 
-        public static ResponeCart toResponeCart(this Cart cart)
+        public static ResponseCart toCartResponse(this Cart cart)
         {
-            return new ResponeCart()
+            return new ResponseCart()
             {
                 PreorderCampaignId = cart.PreorderCampaignId,
                 Quantity = cart.Quantity,

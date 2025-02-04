@@ -41,7 +41,11 @@ namespace PreOrderBlindBox.Services.Services
                 var staff = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).FirstOrDefault();
                 var notificationForCustomer = (new RequestCreateNotification()).NotificationForCustomer(requestCreateOrder.CustomerId);
                 var notificationForStaff = (new RequestCreateNotification()).NotificationForStaff(customer.FullName, staff.UserId);
-                List<ResponeCart> priceForCarts = await _cartService.IdentifyPriceForCartItem(requestCreateOrder.CustomerId);
+                List<ResponseCart> priceForCarts = await _cartService.IdentifyPriceForCartItem(requestCreateOrder.CustomerId);
+                if(priceForCarts.ToList().Any(x=>x.Price < 0)) 
+                {
+                    throw new Exception("The cart contains an item with an incorrect price");
+                }
                 requestCreateOrder.Amount = priceForCarts.Sum(x => x.Price);
 
                 var orderEntity = requestCreateOrder.toOrderEntity();
