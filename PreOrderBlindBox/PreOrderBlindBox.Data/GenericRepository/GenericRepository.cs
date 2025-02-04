@@ -104,8 +104,15 @@ namespace PreOrderBlindBox.Data.GenericRepository
 			if (entity == null)
 				throw new ArgumentNullException(nameof(entity));
 
-			await dbSet.AddAsync(entity);
-		}
+            await dbSet.AddAsync(entity);
+        }
+        public async Task InsertAsync(IEnumerable<TEntity> entities)
+        {
+            if (entities == null || !entities.Any())
+                throw new ArgumentNullException(nameof(entities), "Entities list cannot be null or empty.");
+
+            await dbSet.AddRangeAsync(entities);
+        }
 
 		public virtual async Task UpdateAsync(TEntity entity)
 		{
