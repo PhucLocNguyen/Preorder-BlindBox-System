@@ -15,14 +15,14 @@ namespace PreOrderBlindBox.API.Controllers
             _notificationService = notificationService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllNotification(int userID,[FromQuery]PaginationParameter paginationParameter) 
+        [HttpGet("{userID}")]
+        public async Task<IActionResult> GetAllNotification([FromRoute]int userID,[FromQuery]PaginationParameter paginationParameter) 
         {
             return Ok(await _notificationService.GetAllNotificationByUserId(userID, paginationParameter));
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNotificationById(int notificationId)
+        public async Task<IActionResult> GetNotificationById([FromRoute]int notificationId)
         {
             var existingNoti = await _notificationService.GetNotificationById(notificationId);
             if (existingNoti != null)

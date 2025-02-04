@@ -25,10 +25,10 @@ namespace PreOrderBlindBox.API.Controllers
             return  Ok(listOrder);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetOrderById([FromQuery] int id)
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrderById([FromRoute] int orderId)
         {
-            var existingOrder = await _orderService.GetOrderById(id);
+            var existingOrder = await _orderService.GetOrderById(orderId);
             if(existingOrder != null)
             {
                 return Ok(existingOrder);

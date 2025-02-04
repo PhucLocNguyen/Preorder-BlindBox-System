@@ -1,12 +1,6 @@
 ﻿using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
-using PreOrderBlindBox.Services.DTO.RequestDTO.OrderDetailRequestModel;
-using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponeModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 
 namespace PreOrderBlindBox.Services.IServices
 {
