@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Data.Entities;
+﻿using PreOrderBlindBox.Data.Commons;
+using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderCampaignModel;
@@ -10,18 +11,23 @@ namespace PreOrderBlindBox.Services.Services
     {
         private readonly IPreorderCampaignRepository _preorderCampaignRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPreorderMilestoneService _preorderMilestoneService;
 
         public PreorderCampaignService(IPreorderCampaignRepository preorderCampaignRepo
-            , IUnitOfWork unitOfWork)
+            , IUnitOfWork unitOfWork
+            , IPreorderMilestoneService preorderMilestoneService)
         {
             _preorderCampaignRepo = preorderCampaignRepo;
             _unitOfWork = unitOfWork;
+            _preorderMilestoneService = preorderMilestoneService;
         }
 
-        /*public async Task<List<PreorderCampaign>> GetAll()
+        public async Task<Pagination<PreorderCampaign>> GetAllPreorderCampaign(PaginationParameter page)
         {
-
-        }*/
+            var preorderCampaigns = await _preorderCampaignRepo.GetAll(pagination: page);
+            var result = new Pagination<PreorderCampaign>(preorderCampaigns, preorderCampaigns.Count, page.PageIndex, page.PageSize);
+            return result;
+        }
 
         public static string GenerateShortUniqueString()
         {
@@ -84,7 +90,7 @@ namespace PreOrderBlindBox.Services.Services
 
         public async Task<bool> DeletePreorderCampaign(int id)
         {
-            var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
+            /*var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
 
             if (preorderCampaign == null)
             {
@@ -98,6 +104,45 @@ namespace PreOrderBlindBox.Services.Services
                 await _unitOfWork.SaveChanges();
                 return true;
             }
+            return false;*/
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
+
+                if (preorderCampaign == null)
+                {
+                    return false;
+                }
+
+                if (!preorderCampaign.IsDeleted)
+                {
+                    // Đánh dấu PreorderCampaign là đã xóa
+                    preorderCampaign.IsDeleted = true;
+                    await _preorderCampaignRepo.UpdateAsync(preorderCampaign);
+
+                    // Lấy danh sách tất cả PreorderMilestone liên quan
+                    var milestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID(id);
+                    // Đánh dấu tất cả milestones là đã xóa
+                    foreach (var milestone in milestones)
+                    {
+                        //milestone.IsDeleted = true;
+                        await _preorderMilestoneService.DeletePreorderMilestone(milestone.PreorderMilestoneId);
+                    }
+
+                    // Lưu thay đổi vào database
+                    await _unitOfWork.SaveChanges();
+                    await _unitOfWork.CommitTransactionAsync();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
+
             return false;
         }
 

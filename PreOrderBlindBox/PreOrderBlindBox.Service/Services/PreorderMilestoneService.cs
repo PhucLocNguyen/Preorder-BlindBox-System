@@ -21,6 +21,11 @@ namespace PreOrderBlindBox.Services.Services
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<List<PreorderMilestone>> GetAllPreorderMilestoneByPreorderCampaignID(int preorderCampaignId)
+        {
+            return await _preorderMilestoneRepo.GetAll(filter: x => x.PreorderCampaignId == preorderCampaignId);
+        }
+
         public async Task<PreorderMilestone?> GetPreorderMilestoneById(int id)
         {
             var result = await _preorderMilestoneRepo.GetByIdAsync(id);

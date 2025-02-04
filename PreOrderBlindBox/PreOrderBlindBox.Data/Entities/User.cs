@@ -37,6 +37,10 @@ public partial class User
 
     public bool IsActive { get; set; }
 
+    public string EmailConfirmToken { get; set; }
+
+    public bool IsEmailConfirm { get; set; }
+
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();

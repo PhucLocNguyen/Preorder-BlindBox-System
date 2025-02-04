@@ -10,6 +10,7 @@ namespace PreOrderBlindBox.Services.IServices
 {
     public interface IPreorderMilestoneService
     {
+        Task<List<PreorderMilestone>> GetAllPreorderMilestoneByPreorderCampaignID(int preorderCampaignId);
         Task<PreorderMilestone?> GetPreorderMilestoneById(int id);
         Task<PreorderMilestone> AddPreorderMilestoneAsync(CreatePreorderMilestoneRequest createPreorderMilestoneRequest);
         Task<bool> DeletePreorderMilestone(int id);

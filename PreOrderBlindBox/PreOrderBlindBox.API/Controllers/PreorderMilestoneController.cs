@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderMilestoneModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Services;
@@ -15,6 +16,13 @@ namespace PreOrderBlindBox.API.Controllers
         public PreorderMilestoneController(IPreorderMilestoneService preorderMilestoneService)
         {
             _preorderMilestoneService = preorderMilestoneService;
+        }
+
+        [HttpGet("GetAllPreorderMilestoneByPreorderCampaignID")]
+        public async Task<IActionResult> GetAllPreorderMilestoneByPreorderCampaignID([FromQuery] int id)
+        {
+            var result = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID(id);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
