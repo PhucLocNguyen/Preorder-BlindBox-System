@@ -25,8 +25,6 @@ public partial class VoucherCampaign
 
     public decimal? MaximumMoneyDiscount { get; set; }
 
-    public decimal? MaximumDiscount { get; set; }
-
     public string Status { get; set; }
 
     public DateTime CreatedDate { get; set; }

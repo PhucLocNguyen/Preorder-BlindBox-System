@@ -20,6 +20,6 @@ namespace PreOrderBlindBox.Data.GenericRepository
         Task InsertAsync(TEntity entity);
         Task InsertAsync(IEnumerable<TEntity> entities);
         Task UpdateAsync(TEntity entity);
-        void Delete(object id);
+        Task Delete(TEntity entityToDelete);
     }
 }
