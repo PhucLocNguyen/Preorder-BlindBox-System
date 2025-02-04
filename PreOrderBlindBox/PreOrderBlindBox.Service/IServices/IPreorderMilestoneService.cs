@@ -15,5 +15,7 @@ namespace PreOrderBlindBox.Services.IServices
         Task<PreorderMilestone> AddPreorderMilestoneAsync(CreatePreorderMilestoneRequest createPreorderMilestoneRequest);
         Task<bool> DeletePreorderMilestone(int id);
         Task<PreorderMilestone?> UpdatePreorderMilestone(int id, UpdatePreorderMilestoneRequest request);
+        Task<List<PreorderMilestone>> GetAllPreorderMilestoneByCampaignID(int campaignID);
+        Task<int> CalculateRemainingQuantity(int milestoneID, int quantityOrderDetails);
     }
 }

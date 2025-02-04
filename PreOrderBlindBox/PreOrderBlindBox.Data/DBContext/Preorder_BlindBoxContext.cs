@@ -83,9 +83,9 @@ public partial class Preorder_BlindBoxContext : DbContext
 			entity.Property(e => e.Size).HasMaxLength(50);
 		});
 
-		modelBuilder.Entity<Cart>(entity =>
-		{
-			entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD7976CC43939");
+        modelBuilder.Entity<Cart>(entity =>
+        {
+            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD79782A9AAE1");
 
 			entity.Property(e => e.CartId).HasColumnName("CartID");
 			entity.Property(e => e.CreateDate).HasColumnType("datetime");
