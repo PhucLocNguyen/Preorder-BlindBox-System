@@ -12,5 +12,6 @@ namespace PreOrderBlindBox.Data.IRepositories
 	{
 		public Task<List<VoucherCampaign>> GetAllVoucherCampaign();
 		public Task UpdateRangeAsync(IEnumerable<VoucherCampaign> voucherCampaigns);
+		public Task DeleteVoucherCampaignAsync(int voucherCampaignId);
 	}
 }
