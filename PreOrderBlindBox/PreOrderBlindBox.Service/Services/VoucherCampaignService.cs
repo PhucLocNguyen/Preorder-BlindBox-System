@@ -2,9 +2,12 @@
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.IRepositories;
+using PreOrderBlindBox.Data.Repositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.VoucherCampaignModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.VoucherCampaignModel;
 using PreOrderBlindBox.Services.IServices;
+using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.Service.Services
 {
@@ -13,12 +16,17 @@ namespace PreOrderBlindBox.Service.Services
 		private readonly IVoucherCampaignRepository _voucherCampaignRepository;
 		private readonly IMapper _mapper;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly IUserVoucherRepository _userVoucherRepository;
 
-		public VoucherCampaignService(IVoucherCampaignRepository voucherCampaignRepository, IMapper mapper, IUnitOfWork unitOfWork)
+		public VoucherCampaignService(IVoucherCampaignRepository voucherCampaignRepository, IMapper mapper, IUnitOfWork unitOfWork
+			, ICurrentUserService currentUserService, IUserVoucherRepository userVoucherRepository)
 		{
 			_voucherCampaignRepository = voucherCampaignRepository;
 			_mapper = mapper;
 			_unitOfWork = unitOfWork;
+			_currentUserService = currentUserService;
+			_userVoucherRepository = userVoucherRepository;
 		}
 
 		public async Task<int> CreateVoucherCampaignAsync(RequestCreateVoucherCompaign voucherCompaign)
@@ -160,6 +168,10 @@ namespace PreOrderBlindBox.Service.Services
 
 					foreach (var voucherCampaign in listVoucherCampaign)
 					{
+						if (voucherCampaign.Status == AdminVoucherCampaignEnum.Close.ToString())
+						{
+							continue;
+						}
 						if (voucherCampaign.StartDate <= DateTime.Now && DateTime.Now <= voucherCampaign.EndDate)
 						{
 							voucherCampaign.Status = VoucherCampaignEnum.Active.ToString();
@@ -186,5 +198,43 @@ namespace PreOrderBlindBox.Service.Services
 			}
 		}
 
+		public async Task<List<ResponseVoucherCampaign>> GetAllVoucherCampaign()
+		{
+			var listVoucherCampaign = await _voucherCampaignRepository.GetAllVoucherCampaign();
+			return _mapper.Map<List<ResponseVoucherCampaign>>(listVoucherCampaign) ?? [];
+		}
+
+		public async Task<ResponseVoucherCampaign> GetVoucherCampaignById(int voucherCampaignId)
+		{
+			VoucherCampaign voucherCampaign = await _voucherCampaignRepository.GetByIdAsync(voucherCampaignId);
+			if (voucherCampaign == null)
+			{
+				throw new KeyNotFoundException("Invalid voucher campaign id");
+			}
+			return _mapper.Map<ResponseVoucherCampaign>(voucherCampaign);
+		}
+
+		public async Task<List<ResponseVoucherCampaignBaseUser>> GetAllVoucherCampaignBaseCustomer()
+		{
+			int userId = _currentUserService.GetUserId();
+			var listVoucherCampaign = await _voucherCampaignRepository.GetAllVoucherCampaign();
+			var listUserVoucher = await _userVoucherRepository.GetAllCollectedVoucherCampaignIdByUserId(userId);
+
+			var result = listVoucherCampaign.Select(x => new ResponseVoucherCampaignBaseUser
+			{
+				VoucherCampaignId = x.VoucherCampaignId,
+				Name = x.Name,
+				StartDate = x.StartDate,
+				EndDate = x.EndDate,
+				Quantity = x.Quantity,
+				TakenQuantity = x.TakenQuantity,
+				MaximumUserCanGet = x.MaximumUserCanGet,
+				PercentDiscount = x.PercentDiscount,
+				MaximumMoneyDiscount = x.MaximumMoneyDiscount,
+				IsCollected = listUserVoucher.Contains(x.VoucherCampaignId),
+			}).ToList();
+
+			return result;
+		}
 	}
 }

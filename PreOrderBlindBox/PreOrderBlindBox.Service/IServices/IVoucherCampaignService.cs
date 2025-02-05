@@ -1,4 +1,5 @@
 ﻿using PreOrderBlindBox.Services.DTO.RequestDTO.VoucherCampaignModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.VoucherCampaignModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,8 @@ namespace PreOrderBlindBox.Services.IServices
 		public Task<int> DeleteVoucherCampaignAsync(int voucherCampaignId);
 		public Task ViewVoucherCampaign();
 		public Task BackGroundUpdateVoucherCampaign();
+		public Task<List<ResponseVoucherCampaign>> GetAllVoucherCampaign();
+		public Task<ResponseVoucherCampaign> GetVoucherCampaignById(int voucherCampaignId);
+		public Task<List<ResponseVoucherCampaignBaseUser>> GetAllVoucherCampaignBaseCustomer();
 	}
 }
