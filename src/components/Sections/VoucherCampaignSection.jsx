@@ -1,6 +1,11 @@
+import { useEffect } from "react";
+import { useState } from "react";
+import { GetTheActiveVoucherCampaign } from "../../api/VoucherCampaign/ApiVoucherCampaign";
+import useFetchData from "../../hooks/useFetchData";
 import Voucher from "../Voucher";
-
+import { Spin } from "antd";
 function VoucherCampaignSection() {
+  const { data, loading, refetch } = useFetchData(GetTheActiveVoucherCampaign);
   return (
     <section className="bg-gray-100 py-12 md:min-h-[500px]">
       <div
@@ -33,27 +38,20 @@ function VoucherCampaignSection() {
             Trợ giá với mã giảm giá với số lượng có hạn
           </h2>
           <div className="grid grid-cols-12">
-            <div className="col-span-4 mb-4">
-              <Voucher />
-            </div>
-
-            <div className="col-span-4 mb-4">
-              <Voucher />
-            </div>
-            <div className="col-span-4 mb-4">
-              <Voucher />
-            </div>
-
-            <div className="col-span-4 mb-4">
-              <Voucher />
-            </div>
-
-            <div className="col-span-4 mb-4">
-              <Voucher />
-            </div>
-            <div className="col-span-4 mb-4">
-              <Voucher />
-            </div>
+            {loading ? (
+              <Spin />
+            ) : (
+              data.map((item) => {
+                return (
+                  <div className="col-span-4 mb-4">
+                    <Voucher
+                      VoucherDetail={item}
+                      key={item.voucherCampaignId}
+                    />
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>
