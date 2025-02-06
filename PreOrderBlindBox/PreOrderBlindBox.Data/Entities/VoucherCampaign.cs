@@ -17,13 +17,13 @@ public partial class VoucherCampaign
 
     public int Quantity { get; set; }
 
+    public int TakenQuantity { get; set; }
+
     public int MaximumUserCanGet { get; set; }
 
     public decimal? PercentDiscount { get; set; }
 
     public decimal? MaximumMoneyDiscount { get; set; }
-
-    public decimal? MaximumDiscount { get; set; }
 
     public string Status { get; set; }
 

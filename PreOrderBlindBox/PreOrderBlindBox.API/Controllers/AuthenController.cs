@@ -10,10 +10,12 @@ namespace PreOrderBlindBox.API.Controllers
 	public class AuthenController : ControllerBase
 	{
 		private readonly IUserService _userService;
+		private readonly IConfiguration _configuration;
 
-		public AuthenController(IUserService userService)
+		public AuthenController(IUserService userService, IConfiguration configuration)
 		{
 			_userService = userService;
+			_configuration = configuration;
 		}
 		[HttpPost("register")]
 		public async Task<IActionResult> CreateUserByEmailAndPassword(RequestRegisterAccount registerModel)
@@ -32,7 +34,7 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				return BadRequest(ex.Message);
+				return BadRequest(new { Message = $"{ex.Message}" });
 			}
 		}
 
@@ -50,8 +52,53 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				return BadRequest(ex.Message);
+				return BadRequest(new { Message = $"{ex.Message}" });
 			}
 		}
+
+		[HttpPost("login")]
+		public async Task<IActionResult> LoginWithEmailAndPassword([FromBody] RequestLoginByEmailAndPassword loginModel)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					var result = await _userService.LoginByEmailAndPasswordAsync(loginModel.Email, loginModel.Password);
+					_ = int.TryParse(_configuration["JwtSettings:TokenValidityInMinutes"], out int tokenValidityInMinutes);
+
+					var cookieOptions = new CookieOptions
+					{
+						HttpOnly = true,
+						Secure = true,
+						SameSite = SameSiteMode.Strict,
+						Expires = DateTime.Now.AddMinutes(tokenValidityInMinutes - 5)
+					};
+
+					Response.Cookies.Append("accessToken", result.AccessToken, cookieOptions);
+
+					return Ok(new { Message = "Login successful" });
+				}
+				return BadRequest(new { Message = "Login failed" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
+		[HttpPost("logout")]
+		public async Task<IActionResult> Logout()
+		{
+			try
+			{
+				Response.Cookies.Delete("accessToken");
+				return Ok(new { Message = "Logout successful" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = "Logout failed" });
+			}
+		}
+
 	}
 }

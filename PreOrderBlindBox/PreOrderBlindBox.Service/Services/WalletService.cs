@@ -43,6 +43,7 @@ namespace PreOrderBlindBox.Service.Services
             };
 
             await _walletRepository.InsertAsync(wallet);
+            await _unitOfWork.SaveChanges();
             userDetail.WalletId = wallet.WalletId;
             await _userRepository.UpdateAsync(userDetail);
             return true;

@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Data.IRepositories
 {
-    public interface IVoucherCampaignRepository : IGenericRepository<VoucherCampaign>
-    {
-    }
+	public interface IVoucherCampaignRepository : IGenericRepository<VoucherCampaign>
+	{
+		public Task<List<VoucherCampaign>> GetAllVoucherCampaign();
+		public Task UpdateRangeAsync(IEnumerable<VoucherCampaign> voucherCampaigns);
+		public Task DeleteVoucherCampaignAsync(int voucherCampaignId);
+	}
 }
