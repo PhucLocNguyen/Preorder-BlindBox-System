@@ -17,6 +17,21 @@ namespace PreOrderBlindBox.Data.Repositories
 		{
 		}
 
+		public async Task DeleteVoucherCampaignAsync(int voucherCampaignId)
+		{
+			VoucherCampaign voucherCampaign = await _context.VoucherCampaigns.FindAsync(voucherCampaignId);
+			if (voucherCampaign == null)
+			{
+				throw new KeyNotFoundException("Not found voucher campaign");
+			}
+			if (voucherCampaign.IsDeleted)
+			{
+				throw new Exception("Voucher campaign has been deleted");
+			}
+			voucherCampaign.IsDeleted = true;
+			_context.VoucherCampaigns.Update(voucherCampaign);
+		}
+
 		public async Task<List<VoucherCampaign>> GetAllVoucherCampaign()
 		{
 			return await _context.VoucherCampaigns.Where(x => x.IsDeleted == false).ToListAsync();

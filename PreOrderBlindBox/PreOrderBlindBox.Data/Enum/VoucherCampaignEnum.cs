@@ -12,4 +12,8 @@ namespace PreOrderBlindBox.Data.Enum
 		Active,
 		Expired
 	}
+	public enum AdminVoucherCampaignEnum
+	{
+		Close
+	}
 }

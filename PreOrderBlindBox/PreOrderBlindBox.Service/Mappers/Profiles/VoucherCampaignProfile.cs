@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.RequestDTO.VoucherCampaignModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.VoucherCampaignModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace PreOrderBlindBox.Services.Mappers.Profiles
 		public VoucherCampaignProfile()
 		{
 			CreateMap<RequestCreateVoucherCompaign, VoucherCampaign>().ReverseMap();
+			CreateMap<VoucherCampaign, ResponseVoucherCampaign>().ReverseMap();
 		}
 	}
 }

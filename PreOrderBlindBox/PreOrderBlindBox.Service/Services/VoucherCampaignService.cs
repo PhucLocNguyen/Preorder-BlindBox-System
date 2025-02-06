@@ -2,9 +2,12 @@
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.IRepositories;
+using PreOrderBlindBox.Data.Repositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.VoucherCampaignModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.VoucherCampaignModel;
 using PreOrderBlindBox.Services.IServices;
+using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.Service.Services
 {
@@ -13,12 +16,17 @@ namespace PreOrderBlindBox.Service.Services
 		private readonly IVoucherCampaignRepository _voucherCampaignRepository;
 		private readonly IMapper _mapper;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly IUserVoucherRepository _userVoucherRepository;
 
-		public VoucherCampaignService(IVoucherCampaignRepository voucherCampaignRepository, IMapper mapper, IUnitOfWork unitOfWork)
+		public VoucherCampaignService(IVoucherCampaignRepository voucherCampaignRepository, IMapper mapper, IUnitOfWork unitOfWork
+			, ICurrentUserService currentUserService, IUserVoucherRepository userVoucherRepository)
 		{
 			_voucherCampaignRepository = voucherCampaignRepository;
 			_mapper = mapper;
 			_unitOfWork = unitOfWork;
+			_currentUserService = currentUserService;
+			_userVoucherRepository = userVoucherRepository;
 		}
 
 		public async Task<int> CreateVoucherCampaignAsync(RequestCreateVoucherCompaign voucherCompaign)
@@ -47,6 +55,7 @@ namespace PreOrderBlindBox.Service.Services
 			VoucherCampaign newVoucherCampaign = _mapper.Map<VoucherCampaign>(voucherCompaign);
 			newVoucherCampaign.CreatedDate = DateTime.Now;
 			newVoucherCampaign.IsDeleted = false;
+			newVoucherCampaign.TakenQuantity = 0;
 
 			if (newVoucherCampaign.StartDate > DateTime.Now)
 			{
@@ -66,14 +75,81 @@ namespace PreOrderBlindBox.Service.Services
 			return await _unitOfWork.SaveChanges();
 		}
 
-		public Task DeleteVoucherCampaignAsync()
+		public async Task<int> DeleteVoucherCampaignAsync(int voucherCampaignId)
 		{
-			throw new NotImplementedException();
+			await _voucherCampaignRepository.DeleteVoucherCampaignAsync(voucherCampaignId);
+			return await _unitOfWork.SaveChanges();
 		}
 
-		public Task UpdateVoucherCampaignAsync()
+		public async Task<int> UpdateVoucherCampaignAsync(int voucherCampaignId, RequestUpdateVoucherCampaign updateVoucher)
 		{
-			throw new NotImplementedException();
+			if (updateVoucher == null)
+			{
+				throw new ArgumentNullException("Invalid update voucher campaign data");
+			}
+			VoucherCampaign voucherCampaign = await _voucherCampaignRepository.GetByIdAsync(voucherCampaignId);
+			if (voucherCampaign == null)
+			{
+				throw new Exception("Invalid voucher campaign ID");
+			}
+			if (voucherCampaign.Status == VoucherCampaignEnum.Expired.ToString()
+				|| voucherCampaign.Status == AdminVoucherCampaignEnum.Close.ToString())
+			{
+				throw new Exception("Cannot update voucher campaign with Expired or Close status");
+			}
+
+			// Khi mà voucher campaign đang ở trạng thái Active
+			if (voucherCampaign.Status == VoucherCampaignEnum.Active.ToString())
+			{
+				if (updateVoucher.StartDate != voucherCampaign.StartDate)
+				{
+					throw new Exception("Active voucher campaign cannot update start date");
+				}
+				if (updateVoucher.PercentDiscount != voucherCampaign.PercentDiscount)
+				{
+					throw new Exception("Active voucher campaign cannot update percent discount");
+				}
+				if (updateVoucher.MaximumMoneyDiscount != voucherCampaign.MaximumMoneyDiscount)
+				{
+					throw new Exception("Active voucher campaign cannot update maximum money discount");
+				}
+				if (updateVoucher.Quantity != voucherCampaign.Quantity)
+				{
+					throw new Exception("Active voucher campaign cannot update quantity");
+				}
+			}
+
+			// Khi mà voucher campaign đang ở trạng thái Pending
+			if (voucherCampaign.Status == VoucherCampaignEnum.Pending.ToString())
+			{
+				if (updateVoucher.StartDate < voucherCampaign.StartDate || updateVoucher.EndDate < voucherCampaign.StartDate)
+				{
+					throw new ArgumentException("Start date and end date invalid");
+				}
+				if (updateVoucher.StartDate >= updateVoucher.EndDate)
+				{
+					throw new ArgumentException("End date must be later than start date.");
+				}
+				if (updateVoucher.StartDate.AddDays(1) > updateVoucher.EndDate)
+				{
+					throw new ArgumentException("End date must be at least 1 day after start date");
+				}
+			}
+
+			voucherCampaign.StartDate = updateVoucher.StartDate;
+			voucherCampaign.EndDate = updateVoucher.EndDate;
+			voucherCampaign.Quantity = updateVoucher.Quantity;
+			voucherCampaign.PercentDiscount = updateVoucher.PercentDiscount;
+			voucherCampaign.MaximumMoneyDiscount = updateVoucher.MaximumMoneyDiscount;
+
+			if (updateVoucher.Status.HasValue)
+			{
+				voucherCampaign.Status = updateVoucher.Status.Value.ToString();
+			}
+
+			await _voucherCampaignRepository.UpdateAsync(voucherCampaign);
+
+			return await _unitOfWork.SaveChanges();
 		}
 
 		public Task ViewVoucherCampaign()
@@ -86,26 +162,33 @@ namespace PreOrderBlindBox.Service.Services
 			try
 			{
 				var listVoucherCampaign = await _voucherCampaignRepository.GetAllVoucherCampaign();
-				var updateListVoucherCampaign = new List<VoucherCampaign>();
-
-				foreach (var voucherCampaign in listVoucherCampaign)
+				if (listVoucherCampaign.Count != 0)
 				{
-					if (voucherCampaign.StartDate <= DateTime.Now && DateTime.Now <= voucherCampaign.EndDate)
-					{
-						voucherCampaign.Status = VoucherCampaignEnum.Active.ToString();
-						updateListVoucherCampaign.Add(voucherCampaign);
-					}
-					else if (voucherCampaign.StartDate <= DateTime.Now && voucherCampaign.EndDate <= DateTime.Now)
-					{
-						voucherCampaign.Status = VoucherCampaignEnum.Expired.ToString();
-						updateListVoucherCampaign.Add(voucherCampaign);
-					}
-				}
+					var updateListVoucherCampaign = new List<VoucherCampaign>();
 
-				if (updateListVoucherCampaign.Any())
-				{
-					_voucherCampaignRepository.UpdateRangeAsync(listVoucherCampaign);
-					await _unitOfWork.SaveChanges();
+					foreach (var voucherCampaign in listVoucherCampaign)
+					{
+						if (voucherCampaign.Status == AdminVoucherCampaignEnum.Close.ToString())
+						{
+							continue;
+						}
+						if (voucherCampaign.StartDate <= DateTime.Now && DateTime.Now <= voucherCampaign.EndDate)
+						{
+							voucherCampaign.Status = VoucherCampaignEnum.Active.ToString();
+							updateListVoucherCampaign.Add(voucherCampaign);
+						}
+						else if (voucherCampaign.EndDate <= DateTime.Now)
+						{
+							voucherCampaign.Status = VoucherCampaignEnum.Expired.ToString();
+							updateListVoucherCampaign.Add(voucherCampaign);
+						}
+					}
+
+					if (updateListVoucherCampaign.Any())
+					{
+						_voucherCampaignRepository.UpdateRangeAsync(listVoucherCampaign);
+						await _unitOfWork.SaveChanges();
+					}
 				}
 
 			}
@@ -115,5 +198,43 @@ namespace PreOrderBlindBox.Service.Services
 			}
 		}
 
+		public async Task<List<ResponseVoucherCampaign>> GetAllVoucherCampaign()
+		{
+			var listVoucherCampaign = await _voucherCampaignRepository.GetAllVoucherCampaign();
+			return _mapper.Map<List<ResponseVoucherCampaign>>(listVoucherCampaign) ?? [];
+		}
+
+		public async Task<ResponseVoucherCampaign> GetVoucherCampaignById(int voucherCampaignId)
+		{
+			VoucherCampaign voucherCampaign = await _voucherCampaignRepository.GetByIdAsync(voucherCampaignId);
+			if (voucherCampaign == null)
+			{
+				throw new KeyNotFoundException("Invalid voucher campaign id");
+			}
+			return _mapper.Map<ResponseVoucherCampaign>(voucherCampaign);
+		}
+
+		public async Task<List<ResponseVoucherCampaignBaseUser>> GetAllVoucherCampaignBaseCustomer()
+		{
+			int userId = _currentUserService.GetUserId();
+			var listVoucherCampaign = await _voucherCampaignRepository.GetAllVoucherCampaign();
+			var listUserVoucher = await _userVoucherRepository.GetAllCollectedVoucherCampaignIdByUserId(userId);
+
+			var result = listVoucherCampaign.Select(x => new ResponseVoucherCampaignBaseUser
+			{
+				VoucherCampaignId = x.VoucherCampaignId,
+				Name = x.Name,
+				StartDate = x.StartDate,
+				EndDate = x.EndDate,
+				Quantity = x.Quantity,
+				TakenQuantity = x.TakenQuantity,
+				MaximumUserCanGet = x.MaximumUserCanGet,
+				PercentDiscount = x.PercentDiscount,
+				MaximumMoneyDiscount = x.MaximumMoneyDiscount,
+				IsCollected = listUserVoucher.Contains(x.VoucherCampaignId),
+			}).ToList();
+
+			return result;
+		}
 	}
 }
