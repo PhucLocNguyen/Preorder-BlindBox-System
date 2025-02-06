@@ -6,14 +6,15 @@ import { formatShortVND } from "../utils/FormatMoney";
 import GradientButton from "./Buttons/GradientButton";
 function Voucher({
   VoucherDetail = {
-    VoucherCampaignID: 0,
-    Name: "Voucher giảm giá 10% tối đa 50k",
-    MaximumMoneyDiscount: 10000,
-    MaximumUserCanGet: 0,
-    TakenQuantity: 0,
-    Quantity: 0,
-    EndDate: "2025-02-18 13:56:40.637",
-    PercentDiscount: 10,
+    voucherCampaignId: 0,
+    name: "Voucher giảm giá 10% tối đa 50k",
+    maximumMoneyDiscount: 10000,
+    maximumUserCanGet: 0,
+    takenQuantity: 0,
+    quantity: 0,
+    startDate:"2025-02-16 13:56:40.637",
+    endDate: "2025-02-18 13:56:40.637",
+    percentDiscount: 10,
     isCollected: false,
   },
 }) {
@@ -28,7 +29,7 @@ function Voucher({
 
     // Hiển thị popup số lượng nhận được
     // setPopupReceiveQuantity(response.quantity);
-    setPopupReceiveQuantity(2);
+    setPopupReceiveQuantity(VoucherDetail.maximumUserCanGet);
 
     setIsCollectedState(true);
     setShowPopup(true);
@@ -58,27 +59,27 @@ function Voucher({
           <b>{VoucherDetail.Name}</b>
         </h3>
         <p>
-          Giảm giá {VoucherDetail.PercentDiscount + "%"} tối đa {formatShortVND(VoucherDetail.MaximumMoneyDiscount)}
+          Giảm giá {VoucherDetail.percentDiscount + "%"} tối đa {formatShortVND(VoucherDetail.maximumMoneyDiscount)}
         </p>
         <p>
-          Số lượng có hạn - đã lấy {VoucherDetail.TakenQuantity} trên {VoucherDetail.Quantity}
+          Số lượng có hạn - đã lấy {VoucherDetail.takenQuantity} trên {VoucherDetail.quantity}
         </p>
 
         {/* Badge số lượng tối đa user có thể lấy */}
         <div className="absolute badge z-[22] -right-2 top-4 w-fit h-fit bg-[#cf1e1e] py-2 px-4 rounded-lg border-2 border-white">
           <p className="text-white">
-            X {VoucherDetail.MaximumUserCanGet}
+            X {VoucherDetail.maximumUserCanGet}
           </p>
         </div>
 
         {/* Kiểm tra nếu hết hạn hoặc đã nhận voucher */}
-        {IsExpired(VoucherDetail.EndDate) ? (
+        {IsExpired(VoucherDetail.endDate) ? (
           <GradientButton text="Đã hết hạn rồi" />
         ) : !isCollectedState ? (
           <GradientButton
             text="Nhận voucher"
             onClick={() => {
-              collectVoucher(VoucherDetail.VoucherCampaignID);
+              collectVoucher(VoucherDetail.voucherCampaignId);
             }}
           />
         ) : (
