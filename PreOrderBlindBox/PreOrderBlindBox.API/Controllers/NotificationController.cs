@@ -18,19 +18,34 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpGet("{userID}")]
         public async Task<IActionResult> GetAllNotification([FromRoute]int userID,[FromQuery]PaginationParameter paginationParameter) 
         {
-            return Ok(await _notificationService.GetAllNotificationByUserId(userID, paginationParameter));
+            try
+            {
+                return Ok(await _notificationService.GetAllNotificationByUserId(userID, paginationParameter));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetNotificationById([FromRoute]int notificationId)
         {
-            var existingNoti = await _notificationService.GetNotificationById(notificationId);
-            if (existingNoti != null)
+            try
             {
-                await _notificationService.MarkNotificationAsRead(notificationId);
-                return Ok(existingNoti);
+                var existingNoti = await _notificationService.GetNotificationById(notificationId);
+                if (existingNoti != null)
+                {
+                    await _notificationService.MarkNotificationAsRead(notificationId);
+                    return Ok(existingNoti);
+                }
+                return NotFound();
             }
-            return NotFound();
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+            
         }
     }
 }
