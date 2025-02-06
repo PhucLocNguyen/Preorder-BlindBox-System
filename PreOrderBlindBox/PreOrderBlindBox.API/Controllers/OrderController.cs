@@ -21,26 +21,49 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllOrders([FromQuery]PaginationParameter pagination )
         {
-            var listOrder = await _orderService.GetAllOrder(pagination);
-            return  Ok(listOrder);
+            try
+            {
+                var listOrder = await _orderService.GetAllOrder(pagination);
+                return Ok(listOrder);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
         }
 
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrderById([FromRoute] int orderId)
         {
-            var existingOrder = await _orderService.GetOrderById(orderId);
-            if(existingOrder != null)
+            try
             {
-                return Ok(existingOrder);
+                var existingOrder = await _orderService.GetOrderById(orderId);
+                if (existingOrder != null)
+                {
+                    return Ok(existingOrder);
+                }
+                return NotFound();
             }
-            return NotFound();  
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateOrder(RequestCreateOrder requestCreateOrder)
         {
-            await _orderService.CreateOrder(requestCreateOrder);
-            return Ok();
+            try
+            {
+                var itemResult = await _orderService.CreateOrder(requestCreateOrder);
+                if (itemResult != null) return Ok(new { Message = "Create order successfully " });
+                return BadRequest(new { Message = "Create order failed " });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+            
         }
 
     }

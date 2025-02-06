@@ -18,26 +18,61 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCartByUserID(int userID) 
         {
-            var listCart = await _cartService.GetAllCartByCustomerID(userID);
-            return Ok(listCart);
+            try
+            {
+                var listCart = await _cartService.GetAllCartByCustomerID(userID);
+                return Ok(listCart);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+            
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateQuantityInCart(RequestCreateCart requestCreateCart)
         {
-            return Ok(await _cartService.ChangeQuantityOfCartByCustomerID(requestCreateCart));
+            try
+            {
+                return Ok(await _cartService.ChangeQuantityOfCartByCustomerID(requestCreateCart));
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCartItem(RequestCreateCart requestCreateCart)
         {
-            return Ok(await _cartService.CreateCart(requestCreateCart));
+            try
+            {
+                var itemResult = await _cartService.CreateCart(requestCreateCart);
+                if (itemResult != null) return Ok(itemResult);
+                return BadRequest(new {Message = "Add new item failed"});
+
+            }catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
         }
 
         [HttpGet("{userID}")]
         public async Task<IActionResult> GetPriceInCart([FromRoute]int userID)
         {
-            return Ok(await _cartService.IdentifyPriceForCartItem(userID));
+            try
+            {
+                var itemResult = await _cartService.IdentifyPriceForCartItem(userID);
+                if (itemResult != null) return Ok(itemResult);
+                return BadRequest(new { Message = "Something wrong when get price" });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
         }
     }
 }
