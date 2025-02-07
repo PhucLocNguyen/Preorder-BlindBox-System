@@ -25,6 +25,10 @@ public partial class VoucherCampaign
 
     public decimal? MaximumMoneyDiscount { get; set; }
 
+    public int SetNumberExpirationDate { get; set; }
+
+    public DateTime ExpiredDate { get; set; }
+
     public string Status { get; set; }
 
     public DateTime CreatedDate { get; set; }

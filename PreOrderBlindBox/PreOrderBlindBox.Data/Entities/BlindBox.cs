@@ -17,10 +17,6 @@ public partial class BlindBox
 
     public string Size { get; set; }
 
-    public string Category { get; set; }
-
-    public string ImageUrl { get; set; }
-
     public DateTime CreatedAt { get; set; }
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
