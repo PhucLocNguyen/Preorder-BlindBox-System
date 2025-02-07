@@ -10,5 +10,6 @@ namespace PreOrderBlindBox.Services.IServices
     public interface IBlindBoxService
     {
         Task<List<BlindBox>> GetBlindBoxesAsync();
+        Task<BlindBox> GetBlindBoxByIdAsync(string id);
     }
 }

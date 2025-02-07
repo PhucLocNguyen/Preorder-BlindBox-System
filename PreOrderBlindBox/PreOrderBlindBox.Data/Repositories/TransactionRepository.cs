@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Data.DBContext;
+﻿using Microsoft.EntityFrameworkCore;
+using PreOrderBlindBox.Data.DBContext;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.GenericRepository;
 using PreOrderBlindBox.Data.IRepositories;
@@ -21,6 +22,11 @@ namespace PreOrderBlindBox.Data.Repositories
             _context.Transactions.Add(transaction);
             _context.SaveChanges();
             return transaction;
+        }
+
+        public async Task<Transaction> GetDetailTransaction(int transactionId)
+        {
+            return await _context.Transactions.Include(x=>x.Wallet).FirstOrDefaultAsync(x => x.TransactionId == transactionId);
         }
     }
 }

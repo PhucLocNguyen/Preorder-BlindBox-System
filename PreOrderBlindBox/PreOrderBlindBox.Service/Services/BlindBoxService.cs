@@ -13,6 +13,11 @@ namespace PreOrderBlindBox.Services.Services
             _blindBoxRepository = blindBoxRepository;
         }
 
+        public Task<BlindBox> GetBlindBoxByIdAsync(string id)
+        {
+            return _blindBoxRepository.GetByIdAsync(id);
+        }
+
         public async Task<List<BlindBox>> GetBlindBoxesAsync()
         {
             return await _blindBoxRepository.GetAll();

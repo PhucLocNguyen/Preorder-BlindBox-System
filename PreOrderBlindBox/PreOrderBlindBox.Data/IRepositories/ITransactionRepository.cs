@@ -11,5 +11,6 @@ namespace PreOrderBlindBox.Data.IRepositories
     public interface ITransactionRepository : IGenericRepository<Transaction>
     {
         public Transaction AddTransaction(Transaction transaction);
+        public Task<Transaction> GetDetailTransaction(int transactionId);
     }
 }
