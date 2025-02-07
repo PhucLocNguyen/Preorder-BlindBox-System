@@ -93,7 +93,10 @@ namespace PreOrderBlindBox.Data.GenericRepository
 
             return query.ToListAsync();
         }
-
+        public virtual TEntity GetById(object id)
+        {
+            return dbSet.Find(id);
+        }
         public virtual async Task<TEntity> GetByIdAsync(object id)
 		{
 			return await dbSet.FindAsync(id);
