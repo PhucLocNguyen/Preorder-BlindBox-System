@@ -18,7 +18,17 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllOrderDetailsByOrderID(int orderID, [FromQuery] PaginationParameter paginationParameter)
         {
-            return Ok(await _orderDetailService.GetAllOrderDetailsByOrderID(paginationParameter, orderID));
+            try
+            {
+                var itemResult = await _orderDetailService.GetAllOrderDetailsByOrderID(paginationParameter, orderID);
+                if (itemResult != null) return Ok(itemResult);
+                return Ok(null);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+            
         }
     }
 }
