@@ -43,17 +43,24 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpPost("upload")]
         public async Task<IActionResult> UploadImage(AddImageRequest request)
         {
-            if (request.Files.Count != request.IsMainImage.Count)
-            {
-                return BadRequest("Each file must have status `isMainImage`.");
-            }
-
             var images = await _imageService.UploadImage(request);
             if (!images)
             {
                 return BadRequest("No files uploaded.");
             }
                 
+            return Ok(images);
+        }
+
+        [HttpPost("upload-main")]
+        public async Task<IActionResult> UploadMainImage(AddMainImageRequest request)
+        {
+            var images = await _imageService.UploadMainImage(request);
+            if (!images)
+            {
+                return BadRequest("No files uploaded.");
+            }
+
             return Ok(images);
         }
 

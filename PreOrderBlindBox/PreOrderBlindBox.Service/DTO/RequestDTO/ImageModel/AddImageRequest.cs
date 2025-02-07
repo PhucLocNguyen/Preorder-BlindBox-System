@@ -11,7 +11,11 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.ImageModel
     {
         public List<IFormFile>? Files { get; set; }
         public int? BlindBoxId { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public List<bool?> IsMainImage { get; set; }
+    }
+
+    public class AddMainImageRequest
+    {
+        public IFormFile? File { get; set; }
+        public int? BlindBoxId { get; set; }
     }
 }

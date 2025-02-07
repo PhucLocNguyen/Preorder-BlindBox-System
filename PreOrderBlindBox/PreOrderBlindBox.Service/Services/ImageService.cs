@@ -53,34 +53,52 @@ namespace PreOrderBlindBox.Services.Services
 				{
 					BlindBoxId = addImageRequest.BlindBoxId,
 					Url = imageUrl,
-					IsMainImage = (bool)addImageRequest.IsMainImage[i],  // Nhận trạng thái từ frontend
+					IsMainImage = false
 				};
 
 				await _imageRepo.InsertAsync(image);
-				//_context.Images.Add(image);
 				uploadedImages.Add(image);
 			}
 
 			await _unitOfWork.SaveChanges();
 
-			//return uploadedImages;
 			return true;
 		}
 
-		public async Task<bool> DeleteImage(int imageId)
+        public async Task<bool> UploadMainImage(AddMainImageRequest addMainImageRequest)
+        {
+            if (addMainImageRequest.File == null)
+                return false;
+
+            var file = addMainImageRequest.File;
+            var imageUrl = await _blobService.UploadFile(file);
+            if (string.IsNullOrEmpty(imageUrl)) return false;
+
+            var image = new Image
+            {
+                BlindBoxId = addMainImageRequest.BlindBoxId,
+                Url = imageUrl,
+                IsMainImage = true
+            };
+
+            await _imageRepo.InsertAsync(image);
+            await _unitOfWork.SaveChanges();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteImage(int imageId)
 		{
-			/*var image = await _imageRepo.GetByIdAsync(imageId);
-            if (image == null || image.IsDeleted) return false;
+			var image = await _imageRepo.GetByIdAsync(imageId);
+			if (image == null) return false;
 
-            image.IsDeleted = true;
-            await _imageRepo.UpdateAsync(image);
-            //await _context.SaveChangesAsync();
+			await _imageRepo.Delete(image);
 
-            // Xóa file trên Blob Storage
-            var fileName = Path.GetFileName(image.Url);
-            await _blobService.DeleteFile(fileName);
+			// Xóa file trên Blob Storage
+			var fileName = Path.GetFileName(image.Url);
+			await _blobService.DeleteFile(fileName);
 
-            await _unitOfWork.SaveChanges();*/
+			await _unitOfWork.SaveChanges();
 			return true;
 		}
 	}
