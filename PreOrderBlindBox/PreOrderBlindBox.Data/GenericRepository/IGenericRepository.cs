@@ -17,6 +17,8 @@ namespace PreOrderBlindBox.Data.GenericRepository
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             params Expression<Func<TEntity, object>>[] includes); // Optional parameter for pagination (number of records per page)
         Task<TEntity> GetByIdAsync(object id);
+        TEntity GetById(object id);
+
         Task InsertAsync(TEntity entity);
         Task InsertAsync(IEnumerable<TEntity> entities);
         Task UpdateAsync(TEntity entity);
