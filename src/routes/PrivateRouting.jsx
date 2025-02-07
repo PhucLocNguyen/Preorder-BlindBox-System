@@ -5,8 +5,9 @@ import { AuthContext } from "../context/AuthContext";
 function PrivateRouting() {
   const { user } = useContext(AuthContext);
   const location = useLocation();
-  if (user==null) {
+  if (user == null) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+
   } else {
     return <Outlet />;
   }

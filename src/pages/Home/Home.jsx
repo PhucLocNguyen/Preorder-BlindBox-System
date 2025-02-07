@@ -5,7 +5,7 @@ const description = 'This is a description.';
 function Home() {
   return (
     <div>
-        <p>Hello world</p>
+      <p>Hello world</p>
       <Steps
         current={1}
         items={[
@@ -24,8 +24,8 @@ function Home() {
           },
         ]}
       />
-      <CountdownSection/>
-      <VoucherCampaignSection/>
+      <CountdownSection />
+      <VoucherCampaignSection />
     </div>
   );
 }
