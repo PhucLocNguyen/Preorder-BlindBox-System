@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import { DownOutlined, UserOutlined } from '@ant-design/icons';
+import { Menu, Dropdown } from 'antd';
+import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Link } from "react-router";
 
 const NavBarStaff = () => {
     const orders = [
@@ -20,9 +24,6 @@ const NavBarStaff = () => {
         <div className="flex-1 h-full p-1 flex flex-col">
             <div className="flex justify-between items-center mb-2">
                 <h1 className="text-2xl font-bold">Order Management</h1>
-                {/* <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                    + New Product
-                </button> */}
             </div>
 
             <div className="bg-white p-4 rounded shadow flex-1 flex flex-col">
@@ -49,44 +50,95 @@ const NavBarStaff = () => {
                         </button>
                     </div>
                 </div>
-
-                <div className="flex-1 overflow-hidden">
-                    <table className="w-full text-left">
+                <div className="flex-1 overflow-x-auto">
+                    <table className="table-auto w-full border-collapse text-left">
                         <thead>
                             <tr className="text-gray-500">
-                                <th className="py-2">#</th>
-                                <th className="py-2">Order ID</th>
-                                <th className="py-2">Date</th>
-                                <th className="py-2">Items</th>
-                                <th className="py-2">Price</th>
-                                <th className="py-2">Paid</th>
-                                <th className="py-2">Address</th>
-                                <th className="py-2">Status</th>
-                                <th className="py-2">Action</th>
+                                <th className="px-2 py-1">#</th>
+                                <th className="px-2 py-1">Order ID</th>
+                                <th className="px-2 py-1">Date</th>
+                                <th className="px-2 py-1">Items</th>
+                                <th className="px-2 py-1">Price</th>
+                                <th className="px-2 py-1">Paid</th>
+                                <th className="px-2 py-1">Address</th>
+                                <th className="px-2 py-1">Status</th>
+                                <th className="px-2 py-1">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {orders
                                 .filter(order => order.orderId.toString().includes(search))
-                                .map(order => (
+                                .map((order) => (
                                     <tr key={order.id} className="border-t">
-                                        <td className="py-2">{order.id}</td>
-                                        <td className="py-2">{order.orderId}</td>
-                                        <td className="py-2">{order.date}</td>
-                                        <td className="py-2">{order.items}</td>
-                                        <td className="py-2">{order.price}</td>
-                                        <td className={`py-2 ${order.paid === 'Yes' ? 'text-green-500' : 'text-red-500'}`}>{order.paid}</td>
-                                        <td className="py-2">{order.address}</td>
-                                        <td className={`py-2 ${order.status === 'Complete' ? 'text-green-500' : 'text-red-500'}`}>{order.status}</td>
-                                        <td className="py-2">
-                                            <i className="fas fa-comment-dots text-gray-400 text-2xl"></i>
-                                            <i className="fas fa-ellipsis-v text-gray-400 text-2xl">...</i>
+                                        <td className="px-2 py-2">{order.id}</td>
+                                        <td className="px-2 py-2">{order.orderId}</td>
+                                        <td className="px-2 py-2">{order.date}</td>
+                                        <td className="px-2 py-2">{order.items}</td>
+                                        <td className="px-2 py-2">{order.price}</td>
+                                        <td
+                                            className={`px-2 py-2 ${order.paid === 'Yes' ? 'text-green-500' : 'text-red-500'
+                                                }`}
+                                        >
+                                            {order.paid}
+                                        </td>
+                                        <td className="px-2 py-2">{order.address}</td>
+                                        <td
+                                            className={`px-2 py-2 ${order.status === 'Complete' ? 'text-green-500' : 'text-red-500'
+                                                }`}
+                                        >
+                                            {order.status}
+                                        </td>
+                                        <td className="px-2 py-2 text-center align-middle">
+                                            <Dropdown
+                                                menu={{
+                                                    items: [
+                                                        {
+                                                            key: "0",
+                                                            label: (
+                                                                <Link
+                                                                    to={`${order.id}`}
+                                                                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                                >
+                                                                    <EditOutlined /> <span>Edit order</span>
+                                                                </Link>
+                                                            ),
+                                                        },
+                                                        {
+                                                            key: "1",
+                                                            label: (
+                                                                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                    Menu Item Two
+                                                                </div>
+                                                            ),
+                                                        },
+                                                        {
+                                                            key: "2",
+                                                            label: (
+                                                                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                                    <DeleteOutlined /> <span>Delete order</span>
+                                                                </div>
+                                                            ),
+                                                        },
+                                                    ]
+                                                }}
+                                                trigger={['click']}
+                                                placement="bottomLeft"
+                                            >
+                                                <button
+                                                    onClick={(e) => e.preventDefault()}
+                                                    className="inline-flex items-center justify-center text-gray-400 text-2xl gap-1"
+                                                >
+                                                    <i className="fas fa-ellipsis-v" />
+                                                    <MoreOutlined />
+                                                </button>
+                                            </Dropdown>
                                         </td>
                                     </tr>
                                 ))}
                         </tbody>
                     </table>
                 </div>
+
 
                 <div className="flex justify-between items-center mt-4 p-4 bg-white shadow rounded">
                     <div className="text-gray-500">Showing 1 to 10 of 256 entries</div>

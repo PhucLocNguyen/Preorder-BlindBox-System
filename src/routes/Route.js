@@ -1,5 +1,5 @@
 import { Fragment, lazy } from "react";
-import { Navigate } from "react-router";
+const OrderDetailView = lazy(() => import("../pages/Staff/OrderDetailView"));
 const AdminLayout = lazy(() => import("../components/layouts/AdminLayout"));
 const DefaultLayout = lazy(() => import("../components/layouts/DefaultLayout"));
 const Home = lazy(() => import("../pages/Home/Home"));
@@ -26,10 +26,12 @@ const publicRoutes = [
     children: [
       { index: true, component: ProductsView },
       { path: "products", component: ProductsView },
-      { path: "orders", component: OrdersView },
+      { path: "orders", component: OrdersView, },
+      { path: "orders/:id", component: OrderDetailView },
       { path: "notifications", component: NotificationsView },
     ],
   },
+
   {
     path: "/account",
     layout: DefaultLayout,
