@@ -6,10 +6,11 @@ const Home = lazy(() => import("../pages/Home/Home"));
 const LoginPage = lazy(() => import("../pages/Account/Login"));
 const Register = lazy(() => import("../pages/Account/Register"));
 const StaffView = lazy(() => import("../pages/Staff/StaffView"));
-const ProductsView = lazy(() => import("../pages/Staff/ProductsView"));
+const ProductsView = lazy(() => import("../pages/Staff/ProductManagement/ProductsView"));
 const OrdersView = lazy(() => import("../pages/Staff/OrdersView"));
 const NotificationsView = lazy(() => import("../pages/Staff/NotificationView"));
-
+const ProductCreatePage = lazy(()=> import("../pages/Staff/ProductManagement/ProductCreate"));
+const ProductEditPage = lazy(()=> import("../pages/Staff/ProductManagement/ProductEdit"));
 const publicRoutes = [
   {
     index: true,
@@ -29,8 +30,12 @@ const publicRoutes = [
       { path: "orders", component: OrdersView, },
       { path: "orders/:id", component: OrderDetailView },
       { path: "notifications", component: NotificationsView },
+      { path: "product/create", component: ProductCreatePage },
+      { path: "product/edit/:id", component: ProductEditPage },
+
     ],
   },
+  
 
   {
     path: "/account",
