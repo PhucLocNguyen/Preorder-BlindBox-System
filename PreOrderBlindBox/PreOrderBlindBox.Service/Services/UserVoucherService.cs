@@ -118,5 +118,57 @@ namespace PreOrderBlindBox.Service.Services
 			await _userVoucherRepository.UpdateAsync(userVoucher);
 			return await _unitOfWork.SaveChanges();
 		}
+
+		public async Task<int> DeleteUserVoucherAsync(int userVoucherId)
+		{
+			var userVoucher = await _userVoucherRepository.GetByIdAsync(userVoucherId);
+			if (userVoucher == null)
+			{
+				throw new KeyNotFoundException("Invalid user voucher id");
+			}
+			await _userVoucherRepository.Delete(userVoucher);
+			return await _unitOfWork.SaveChanges();
+		}
+
+		public async Task<List<ResponseUserVoucher>> GetAllUserVoucher()
+		{
+			int userId = _currentUserService.GetUserId();
+			var userVoucherList = await _userVoucherRepository.GetAllUserVoucher(userId);
+
+			List<ResponseUserVoucher> responseUserVoucherList = userVoucherList.Select(item => new ResponseUserVoucher
+			{
+				UserVoucherId = item.UserVoucherId,
+				VoucherCampaignId = item.VoucherCampaignId,
+				Name = item.VoucherCampaign.Name,
+				PercentDiscount = item.VoucherCampaign.PercentDiscount.Value,
+				MaximumMoneyDiscount = item.VoucherCampaign.MaximumMoneyDiscount.Value,
+				Quantity = item.Quantity,
+				UsedQuantity = item.UsedQuantity,
+				CreatedDate = item.CreatedDate
+			}).ToList();
+
+			return responseUserVoucherList ?? new List<ResponseUserVoucher>();
+		}
+
+		public async Task<ResponseUserVoucher> GetUserVoucherById(int userVoucherId)
+		{
+			var userVoucher = await _userVoucherRepository.GetUserVoucherById(userVoucherId);
+			if (userVoucher == null)
+			{
+				throw new Exception("User voucher does not exist");
+			}
+			ResponseUserVoucher responseUserVoucher = new ResponseUserVoucher()
+			{
+				UserVoucherId = userVoucher.UserVoucherId,
+				VoucherCampaignId = userVoucher.VoucherCampaignId,
+				Name = userVoucher.VoucherCampaign.Name,
+				PercentDiscount = userVoucher.VoucherCampaign.PercentDiscount.Value,
+				MaximumMoneyDiscount = userVoucher.VoucherCampaign.MaximumMoneyDiscount.Value,
+				Quantity = userVoucher.Quantity,
+				UsedQuantity = userVoucher.UsedQuantity,
+				CreatedDate = userVoucher.CreatedDate
+			};
+			return responseUserVoucher;
+		}
 	}
 }
