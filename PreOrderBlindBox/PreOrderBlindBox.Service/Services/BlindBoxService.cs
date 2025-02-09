@@ -37,7 +37,7 @@ namespace PreOrderBlindBox.Services.Services
                     IsDeleted = false,
                     Size = request.Size
                 };
-                await _blindBoxRepository.InsertAsync(blindbox);
+                _blindBoxRepository.InsertBlindBox(blindbox);
 
                 if (request.MainImage != null)
                 {
