@@ -28,5 +28,19 @@ namespace PreOrderBlindBox.Data.Repositories
         {
             return await _context.BlindBoxes.Include(x => x.Images).FirstOrDefaultAsync(x => x.BlindBoxId == id);
         }
+
+        public bool InsertBlindBox(BlindBox blindBox)
+        {
+            try
+            {
+                _context.BlindBoxes.Add(blindBox);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

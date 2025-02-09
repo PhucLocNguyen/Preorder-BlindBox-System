@@ -13,5 +13,6 @@ namespace PreOrderBlindBox.Data.IRepositories
     {
         Task<List<BlindBox>> GetAllActiveBlindBox(PaginationParameter paginationParameter);
         Task<BlindBox> GetDetailBlindBoxById(int id);
+        bool InsertBlindBox(BlindBox blindBox);
     }
 }

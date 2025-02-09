@@ -10,6 +10,7 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel
 {
     public class ResponseBlindBox
     {
+        public int BlindBoxId { get; set; }
         public string Name { get; set; }
 
         public string Description { get; set; }

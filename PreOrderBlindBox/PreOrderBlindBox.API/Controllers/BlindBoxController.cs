@@ -51,8 +51,12 @@ namespace PreOrderBlindBox.API.Controllers
             return Ok(item);
         }
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] RequestCreateBlindBox request)
+        public async Task<IActionResult> Create([FromForm] RequestCreateBlindBox request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var result = await _blindboxService.CreateBlindBox(request);
             if (result)
             {
@@ -61,8 +65,12 @@ namespace PreOrderBlindBox.API.Controllers
             return BadRequest();
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] RequestUpdateBlindBox request)
+        public async Task<IActionResult> Update(int id, [FromForm] RequestUpdateBlindBox request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var resultUpdate = await _blindboxService.UpdateBlindBox(id, request);
             if (resultUpdate)
             {
