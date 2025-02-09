@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Data.Entities;
+﻿using PreOrderBlindBox.Data.Commons;
+using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.GenericRepository;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace PreOrderBlindBox.Data.IRepositories
 {
     public interface IBlindBoxRepository : IGenericRepository<BlindBox>
     {
-        Task<List<BlindBox>> GetAll();
+        Task<List<BlindBox>> GetAllActiveBlindBox(PaginationParameter paginationParameter);
+        Task<BlindBox> GetDetailBlindBoxById(int id);
     }
 }
