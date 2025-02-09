@@ -1,5 +1,5 @@
 import api from '../instance';
-import axiosConfigHeader from '../AxiosConfigHeader';
+import {axiosConfigHeader} from '../axiosConfigHeader';
 
 const GetTheActiveVoucherCampaign = async () => {
     try {
