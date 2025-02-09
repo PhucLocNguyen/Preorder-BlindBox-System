@@ -236,5 +236,15 @@ namespace PreOrderBlindBox.Service.Services
 
 			return result;
 		}
+
+		public async Task<VoucherCampaign> GetVoucherCampaignEntityById(int voucherCampaignId)
+		{
+			VoucherCampaign voucherCampaign = await _voucherCampaignRepository.GetByIdAsync(voucherCampaignId);
+			if (voucherCampaign == null)
+			{
+				throw new KeyNotFoundException("Invalid voucher campaign id");
+			}
+			return voucherCampaign;
+		}
 	}
 }
