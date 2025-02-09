@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Services.DTO.RequestDTO.VoucherCampaignModel;
+﻿using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Services.DTO.RequestDTO.VoucherCampaignModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.VoucherCampaignModel;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,6 @@ namespace PreOrderBlindBox.Services.IServices
 		public Task<List<ResponseVoucherCampaign>> GetAllVoucherCampaign();
 		public Task<ResponseVoucherCampaign> GetVoucherCampaignById(int voucherCampaignId);
 		public Task<List<ResponseVoucherCampaignBaseUser>> GetAllVoucherCampaignBaseCustomer();
+		public Task<VoucherCampaign> GetVoucherCampaignEntityById(int voucherCampaignId);
 	}
 }
