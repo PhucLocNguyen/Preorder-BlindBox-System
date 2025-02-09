@@ -1,4 +1,5 @@
 ﻿using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.ImageModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,8 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel
 
         public string Size { get; set; }
 
-        public string Category { get; set; }
-
-        public string ImageUrl { get; set; }
-
         public DateTime CreatedAt { get; set; }
 
-        public virtual ICollection<Image> Images { get; set; } = new List<Image>();
-
+        public ResponseImageSplit Images { get; set; }
     }
 }

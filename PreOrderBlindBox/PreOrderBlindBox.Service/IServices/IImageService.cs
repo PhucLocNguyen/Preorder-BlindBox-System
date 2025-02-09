@@ -15,5 +15,7 @@ namespace PreOrderBlindBox.Services.IServices
         Task<bool> UploadImage(AddImageRequest addImageRequest);
         Task<bool> DeleteImage(int imageId);
         Task<bool> UploadMainImage(AddMainImageRequest addMainImageRequest);
+        Task<Image> GetMainImageIdByBlindBoxID(int blindBoxID);
+        Task<bool> DeleteImages(List<int> imageListId);
     }
 }

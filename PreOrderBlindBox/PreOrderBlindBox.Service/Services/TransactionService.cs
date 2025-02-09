@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.TransactionModel;
@@ -32,19 +33,29 @@ namespace PreOrderBlindBox.Service.Services
                 {
                     return null;
                 }
-                
-                if (transactionDetail.WalletId!= user.WalletId)
+
+                if (transactionDetail.WalletId != user.WalletId)
                 {
                     return null;
                 }
                 var detailTransaction = _mapper.Map<ResponseTransactionResult>(transactionDetail);
                 return detailTransaction;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return null;
             }
+        }
+
+        public async Task<Pagination<ResponseTransactionResult>> GetListOfAllTransaction(PaginationParameter paginationParameter)
+        {
+
+            List<Transaction> transactions = await _transactionRepository.GetAll(pagination: paginationParameter);
+            var response = _mapper.Map<List<ResponseTransactionResult>>(transactions);
+            int totalItemsCount = _transactionRepository.Count();
+            var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);
+            return responseMap;
         }
     }
 }
