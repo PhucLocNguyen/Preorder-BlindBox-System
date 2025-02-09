@@ -23,5 +23,7 @@ namespace PreOrderBlindBox.Data.GenericRepository
         Task InsertAsync(IEnumerable<TEntity> entities);
         Task UpdateAsync(TEntity entity);
         Task Delete(TEntity entityToDelete);
+        int Count(Expression<Func<TEntity, bool>>? filter = null);
+
     }
 }

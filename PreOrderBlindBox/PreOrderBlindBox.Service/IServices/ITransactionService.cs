@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Data.Entities;
+﻿using PreOrderBlindBox.Data.Commons;
+using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.TransactionModel;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,6 @@ namespace PreOrderBlindBox.Services.IServices
     public interface ITransactionService
     {
         public Task<ResponseTransactionResult> GetDetailTransactionVerifyUser(string transactionId, int userId);
-
+        public Task<Pagination<ResponseTransactionResult>> GetListOfAllTransaction(PaginationParameter paginationParameter);
     }
 }
