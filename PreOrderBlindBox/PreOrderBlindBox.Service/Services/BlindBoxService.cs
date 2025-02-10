@@ -2,7 +2,9 @@
 using Microsoft.IdentityModel.Tokens;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.IRepositories;
+using PreOrderBlindBox.Data.Repositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.BlindBoxModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.ImageModel;
@@ -17,12 +19,14 @@ namespace PreOrderBlindBox.Services.Services
         private readonly IImageService _imageService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public BlindBoxService(IBlindBoxRepository blindBoxRepository, IImageService imageService, IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IPreorderCampaignRepository _preorderCampaignRepository;
+        public BlindBoxService(IBlindBoxRepository blindBoxRepository, IImageService imageService, IUnitOfWork unitOfWork, IMapper mapper, IPreorderCampaignRepository preorderCampaignRepository)
         {
             _blindBoxRepository = blindBoxRepository;
             _imageService = imageService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _preorderCampaignRepository = preorderCampaignRepository;
         }
 
         public async Task<bool> CreateBlindBox(RequestCreateBlindBox request)
@@ -150,6 +154,31 @@ namespace PreOrderBlindBox.Services.Services
             catch (Exception e)
             {
                 await _unitOfWork.RollbackTransactionAsync();
+                Console.Error.WriteLine(e.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteBlindBox(int id)
+        {
+            try
+            {
+                var blindbox = await _blindBoxRepository.GetByIdAsync(id);
+                if (blindbox == null)
+                {
+                    return false;
+                }
+                var items = _preorderCampaignRepository.Count(x => x.BlindBoxId == id && x.Status.Equals(PreorderCampaignStatus.Active));
+                if (items > 0)
+                {
+                    return false;
+                }
+                blindbox.IsDeleted = true;
+                await _blindBoxRepository.UpdateAsync(blindbox);
+                return true;
+            }
+            catch (Exception e)
+            {
                 Console.Error.WriteLine(e.Message);
                 return false;
             }
