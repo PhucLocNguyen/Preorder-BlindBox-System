@@ -12,5 +12,8 @@ namespace PreOrderBlindBox.Services.IServices
 	{
 		public Task<ResponseCreateUserVoucher> CreateUserVoucherAsync(RequestCreateUserVoucher userVoucher);
 		public Task<int> UpdateUserVoucherAsync(RequestUpdateUserVoucher updateUserVoucher);
+		public Task<int> DeleteUserVoucherAsync(int userVoucherId);
+		public Task<List<ResponseUserVoucher>> GetAllUserVoucher();
+		public Task<ResponseUserVoucher> GetUserVoucherById(int userVoucherId);
 	}
 }

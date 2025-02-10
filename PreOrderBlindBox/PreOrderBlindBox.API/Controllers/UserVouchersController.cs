@@ -52,5 +52,51 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 		}
 
+		[HttpDelete("{userVoucherId}")]
+		public async Task<IActionResult> DeleteUserVoucher(int userVoucherId)
+		{
+			try
+			{
+				var result = await _userVoucherService.DeleteUserVoucherAsync(userVoucherId);
+				if (result > 0)
+				{
+					return Ok(new { Message = "Deleted successfully" });
+				}
+				return BadRequest(new { Message = "Delete failed" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetAllUserVoucerCanUse()
+		{
+			try
+			{
+				var listUserVoucher = await _userVoucherService.GetAllUserVoucher();
+				return Ok(listUserVoucher);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
+		[HttpGet("{userVoucherId}")]
+		public async Task<IActionResult> GetUserVoucherById(int userVoucherId)
+		{
+			try
+			{
+				var userVoucher = await _userVoucherService.GetUserVoucherById(userVoucherId);
+				return Ok(userVoucher);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
 	}
 }
