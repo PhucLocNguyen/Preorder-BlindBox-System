@@ -16,6 +16,6 @@ namespace PreOrderBlindBox.Services.IServices
         Task<ResponseBlindBox> GetBlindBoxByIdAsync(int id);
         Task<bool> CreateBlindBox(RequestCreateBlindBox request);
         Task<bool> UpdateBlindBox(int id, RequestUpdateBlindBox request);
-
+        Task<bool> DeleteBlindBox(int id);
     }
 }

@@ -78,5 +78,16 @@ namespace PreOrderBlindBox.API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _blindboxService.DeleteBlindBox(id);
+            if (result)
+            {
+                return Ok("Delete successful!");
+            }
+            return BadRequest("Failed to delete this blind box because it still in the campaign");
+        }
     }
 }
