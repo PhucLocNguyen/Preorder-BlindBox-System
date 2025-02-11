@@ -11,5 +11,7 @@ namespace PreOrderBlindBox.Data.IRepositories
     public interface IPreorderCampaignRepository : IGenericRepository<PreorderCampaign>
     {
         Task<PreorderCampaign?> GetPreorderCampaignBySlugAsync(string? slug);
+        Task<List<PreorderCampaign>> GetAllPreorderCampaign();
+        Task UpdateRangeAsync(IEnumerable<PreorderCampaign> preorderCampaigns);
     }
 }

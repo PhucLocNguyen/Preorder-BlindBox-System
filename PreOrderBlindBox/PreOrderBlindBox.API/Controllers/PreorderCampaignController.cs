@@ -53,7 +53,11 @@ namespace PreOrderBlindBox.API.Controllers
             try
             {
                 var preorderCampaign = await _preorderCampaignService.AddPreorderCampaignAsync(request);
-                return Ok(preorderCampaign);
+                if (preorderCampaign > 0)
+                {
+                    return Ok(preorderCampaign);
+                }
+                return BadRequest();
             }
             catch (ArgumentNullException ex)
             {
@@ -93,7 +97,7 @@ namespace PreOrderBlindBox.API.Controllers
             {
                 var preorderCampaign = await _preorderCampaignService.UpdatePreorderCampaign(id, request);
 
-                if (preorderCampaign == null)
+                if (preorderCampaign <= 0)
                 {
                     return NotFound(new { message = "Preorder campaign not found." });
                 }
