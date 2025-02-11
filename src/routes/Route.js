@@ -4,7 +4,7 @@ const AdminLayout = lazy(() => import("../components/layouts/AdminLayout"));
 const DefaultLayout = lazy(() => import("../components/layouts/DefaultLayout"));
 const Home = lazy(() => import("../pages/Home/Home"));
 const LoginPage = lazy(() => import("../pages/Account/Login"));
-const Register = lazy(() => import("../pages/Account/Register"));
+const RegisterPage = lazy(() => import("../pages/Account/Register"));
 const StaffView = lazy(() => import("../pages/Staff/StaffView"));
 const ProductsView = lazy(() => import("../pages/Staff/ProductsView"));
 const OrdersView = lazy(() => import("../pages/Staff/OrdersView"));
@@ -35,9 +35,13 @@ const publicRoutes = [
     layout: DefaultLayout,
     children: [
       { index: true, component: LoginPage },
-      { path: "register", component: Register },
+      { path: "register", component: RegisterPage },
     ],
   },
+  {
+    path: "/register",
+    component: RegisterPage
+  }
 ];
 
 const privateRoutes = [
