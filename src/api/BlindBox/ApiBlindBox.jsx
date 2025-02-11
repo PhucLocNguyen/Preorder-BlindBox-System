@@ -1,5 +1,5 @@
 import api from "../instance";
-import { axiosConfigHeader, axiosConfigSendFileHeader } from "../AxiosConfigHeader";
+import { axiosConfigHeader, axiosConfigSendFileHeader } from "../axiosConfigHeader";
 
 const GetTheActiveBlindBox = async (pageSize, pageIndex) => {
   try {
