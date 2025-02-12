@@ -1,56 +1,56 @@
 import React, { useState } from 'react';
 import { Button, Pagination } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-
+import BigSale from '../../../assets/Admin/BigSale.png';
 const projects = [
     {
         name: 'Slack Bot',
         description: "If everything I did failed - which it doesn't, I think that it actually succeeds.",
         participants: 5,
         dueDate: '02.03.22',
-        icon: 'slack-icon-url'
+        icon: BigSale
     },
     {
         name: 'Premium support',
         description: "Pink is obviously a better color. Everyone's born confident, and everything's taken away from you.",
         participants: 3,
         dueDate: '22.11.21',
-        icon: 'premium-support-icon-url'
+        icon: BigSale
     },
     {
         name: 'Design tools',
         description: "Constantly growing. We're constantly making mistakes from which we learn and improve.",
         participants: 4,
         dueDate: '06.03.20',
-        icon: 'design-tools-icon-url'
+        icon: BigSale
     },
     {
         name: 'Looking great',
         description: "You have the opportunity to play this game of life you need to appreciate every moment.",
         participants: 6,
         dueDate: '14.03.24',
-        icon: 'looking-great-icon-url'
+        icon: BigSale
     },
     {
         name: 'Developer First',
         description: "For standing out. But the time is now to be okay to be the greatest you.",
         participants: 4,
         dueDate: '16.01.22',
-        icon: 'developer-first-icon-url'
+        icon: BigSale
     },
     {
         name: 'Product Development',
         description: "We strive to embrace and drive change in our industry. We are happy to work at such a project.",
         participants: 4,
         dueDate: '16.01.22',
-        icon: 'product-development-icon-url'
+        icon: BigSale
     },
     {
         name: 'Marketing Campaign',
         description: "We strive to embrace and drive change in our industry. We are happy to work at such a project.",
         participants: 8,
         dueDate: '16.05.22',
-        icon: 'marketing-campaign-icon-url'
+        icon: BigSale
     }
 ];
 
