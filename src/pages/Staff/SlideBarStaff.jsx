@@ -1,5 +1,5 @@
 import React from "react";
-import LogoutButton from "../../assets/Logout/LogoutButton.jpg";
+import LogoutButton from "../../assets/Logout/logoutbutton.jpg";
 import { Link, useLocation } from "react-router-dom";
 
 
