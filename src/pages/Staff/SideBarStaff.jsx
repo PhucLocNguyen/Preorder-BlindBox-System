@@ -3,13 +3,13 @@ import LogoutButton from "../../assets/Logout/logoutbutton.jpg";
 import { Link, useLocation } from "react-router-dom";
 
 
-const SlideBarStaff = (props) => {
+const SideBarStaff = (props) => {
     const location = useLocation();
     return (
         //<SlideBarStaff />
         <div className="bg-white w-64 h-full shadow-lg p-4 flex flex-col">
             <div className="flex items-center mb-8">
-                <Link to="/staff/" className="flex items-center w-full">
+                <Link to="/staff" className="flex items-center w-full">
                     <i className="fas fa-home text-2xl text-black"></i>
                     <span className="ml-2 text-xl font-bold">BRESS</span>
                 </Link>
@@ -23,7 +23,7 @@ const SlideBarStaff = (props) => {
                     </Link>
 
                 </li>
-                <li className={`flex items-center ${location.pathname === "/staff/orders" ? `text-white bg-black rounded-lg p-2` : `text-gray-600`} `}>
+                <li className={`flex items-center ${location.pathname.startsWith("/staff/orders") ? `text-white bg-black rounded-lg p-2` : `text-gray-600`} `}>
                     <Link to="/staff/orders" className="flex items-center w-full">
                         <i className="fas fa-folder"></i>
                         <span className="ml-2">Orders</span>
@@ -80,4 +80,4 @@ const SlideBarStaff = (props) => {
         </div >
     );
 }
-export default SlideBarStaff;
+export default SideBarStaff;
