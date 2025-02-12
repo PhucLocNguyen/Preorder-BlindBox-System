@@ -5,7 +5,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { Row, Col } from "antd";
 import VoucherIcon from "../../assets/Admin/VoucherIcon.png";
 import DashboardIcon from "../../assets/Admin/DashboardIcon.jpg";
-import PreOrderIcon from "../../assets/Admin/Pre-OrderIcon.png";
+import PreOrderIcon from "../../assets/Admin/Pre-orderIcon.png";
 import CampaignIcon from "../../assets/Admin/CampaignIcon.png";
 
 const SideBarAdmin = () => {
@@ -23,7 +23,7 @@ const SideBarAdmin = () => {
 
             {/* Sidebar Menu */}
             <ul className="space-y-4">
-                {/* User Management */}
+                {/* Admin Management */}
                 <Link to="/admin/usermanagerment" className="w-full">
                     <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/usermanagerment" || location.pathname === "/admin"
                         ? "bg-blue-500 text-white"

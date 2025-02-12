@@ -3,8 +3,9 @@ import { Table, Tag, Space, Input, Button, Modal, Checkbox, message } from "antd
 import { EyeOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import Pre_orderCampaignEdit from "./Pre-orderCampaignEdit";
 import Pre_orderCampaignCreate from "./Pre-orderCampaignCreate";
-
-
+import Mofusandimg from "../../../assets/Admin/MofusandBlindBox.png";
+import Kuromiimg from "../../../assets/Admin/KuromiBlindBox.png";
+import CrayonShinimg from "../../../assets/Admin/CrayonShinBlindBox.png";
 const { Search } = Input;
 
 const Pre_orderCampaign = () => {
@@ -97,7 +98,7 @@ const Pre_orderCampaign = () => {
             title: "Price",
             dataIndex: "price",
             key: "price",
-            render: (price) => `$${price.toLocaleString()}`,
+            render: (price) => `${price.toLocaleString()}VND`,
         },
         {
             title: "Quantity",
@@ -126,11 +127,11 @@ const Pre_orderCampaign = () => {
     ];
 
     const [data, setData] = useState([
-        { key: "1", product: "BKLGO Full Zip Hoodie", category: "Clothing", price: 1321, quantity: 0, status: "OUT OF STOCK", image: "/images/hoodie.png" },
-        { key: "2", product: "MacBook Pro", category: "Electronics", price: 1869, quantity: 0, status: "OUT OF STOCK", image: "/images/macbook.png" },
-        { key: "3", product: "Metro Bar Stool", category: "Furniture", price: 99, quantity: 978, status: "IN STOCK", image: "/images/stool.png" },
-        { key: "4", product: "Alchimia Chair", category: "Furniture", price: 2999, quantity: 0, status: "OUT OF STOCK", image: "/images/chair.png" },
-        { key: "5", product: "MacBook Pro", category: "Electronics", price: 2000, quantity: 30, status: "IN STOCK", image: "/images/macbook.png" },
+        { key: "1", product: "Mofusand Blind Box", category: "Doll", price: 300000, quantity: 0, status: "OUT OF STOCK", image: Mofusandimg },
+        { key: "2", product: "Blind Box Kuromi", category: "Toy", price: 230000, quantity: 0, status: "OUT OF STOCK", image: Kuromiimg },
+        { key: "3", product: "Crayon Shin Blind Box", category: "Toy", price: 155000, quantity: 978, status: "IN STOCK", image: CrayonShinimg },
+        { key: "4", product: "Mofusand Blind Box", category: "Doll", price: 480000, quantity: 0, status: "OUT OF STOCK", image: Mofusandimg },
+        { key: "5", product: "Crayon Shin Blind Box", category: "Toy", price: 256000, quantity: 30, status: "IN STOCK", image: CrayonShinimg },
     ]);
 
     return (
