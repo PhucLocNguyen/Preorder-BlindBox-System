@@ -144,22 +144,12 @@ const Pre_orderCampaign = () => {
             </div>
             {warning && <div className="w-full text-right text-red-500 mt-2">{warning}</div>}
             <Table columns={columns} dataSource={data.filter((item) => item.product.toLowerCase().includes(search.toLowerCase()))} pagination={{ pageSize: 10 }} />
+
             <Modal open={isCreateModalVisible} onCancel={handleCancelCreate} footer={null} width={720} closable={false}>
                 <Pre_orderCampaignCreate onSuccess={handleCancelCreate} selectedProduct={selectedProduct} />
             </Modal>
             <Modal open={isEditModalVisible} onCancel={handleCancelEdit} footer={null} width={720} closable={false}>
-                <Pre_orderCampaignEdit onSuccess={handleCancelEdit} />
-            </Modal>
-            <Modal
-                open={isEditModalVisible}
-                onCancel={handleCancelEdit}
-                footer={null}
-                width={720}
-                height={250}
-                forceRender
-                closable={false}
-            >
-                <Pre_orderCampaignEdit onSuccess={() => setIsEditModalVisible(false)} />
+                <Pre_orderCampaignEdit onSuccess={handleCancelEdit} selectedProduct={selectedProduct} />
             </Modal>
 
             <Modal

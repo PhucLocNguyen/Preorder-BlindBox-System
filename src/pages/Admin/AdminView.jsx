@@ -1,13 +1,12 @@
-import React from "react";
-import AdminLayout from "../../components/layouts/AdminLayout";
-
-const Admin = () => {
+import React from 'react'
+import AdminLayout from '../../components/layouts/AdminLayout'
+const AdminView = () => {
     return (
         <div>
             <AdminLayout />
+
         </div>
-    );
-};
+    )
+}
 
-
-export default Admin;
+export default AdminView

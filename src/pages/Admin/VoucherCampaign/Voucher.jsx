@@ -1,79 +1,104 @@
 import React, { useState } from 'react';
 import { Button, Pagination } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import BigSale from '../../../assets/Admin/BigSale.png';
+import { useNavigate } from 'react-router-dom';
+
+
 const projects = [
     {
-        name: 'Slack Bot',
-        description: "If everything I did failed - which it doesn't, I think that it actually succeeds.",
+        key: '1',
+        name: 'SPRINGSALE',
+        description: "Big Sale in Lunar New Year",
         participants: 5,
-        dueDate: '02.03.22',
-        icon: BigSale
+        dueDate: '04.01.24',
+
     },
     {
-        name: 'Premium support',
-        description: "Pink is obviously a better color. Everyone's born confident, and everything's taken away from you.",
+        key: '2',
+        name: 'SHOPNOW20',
+        description: "Discount 20% for all products",
         participants: 3,
-        dueDate: '22.11.21',
-        icon: BigSale
+        dueDate: '22.11.25',
+
     },
     {
-        name: 'Design tools',
-        description: "Constantly growing. We're constantly making mistakes from which we learn and improve.",
+        key: '3',
+        name: 'NEWUSER50',
+        description: "Discount 50% for new user",
         participants: 4,
-        dueDate: '06.03.20',
-        icon: BigSale
+        dueDate: '06.03.25',
+
     },
     {
-        name: 'Looking great',
-        description: "You have the opportunity to play this game of life you need to appreciate every moment.",
+        key: '4',
+        name: 'DISCOUNT15',
+        description: "Discount 15% for all products",
         participants: 6,
-        dueDate: '14.03.24',
-        icon: BigSale
+        dueDate: '14.09.25',
+
     },
     {
-        name: 'Developer First',
-        description: "For standing out. But the time is now to be okay to be the greatest you.",
+        key: '5',
+        name: 'SUMMERFUN',
+        description: "Discount 20% for all products in Summer Vacation",
         participants: 4,
-        dueDate: '16.01.22',
-        icon: BigSale
+        dueDate: '16.06.25',
+
     },
     {
-        name: 'Product Development',
-        description: "We strive to embrace and drive change in our industry. We are happy to work at such a project.",
+        key: '6',
+        name: 'FIRSTPURCHASE',
+        description: "Enjoy an exclusive 10% discount on products released ahead of schedule during the pre-order phase.",
         participants: 4,
-        dueDate: '16.01.22',
-        icon: BigSale
+        dueDate: '16.08.25',
+
     },
     {
-        name: 'Marketing Campaign',
-        description: "We strive to embrace and drive change in our industry. We are happy to work at such a project.",
+        key: '7',
+        name: 'DAILYSPECIAL',
+        description: "Enjoy a 10% discount on all products in the first week.",
         participants: 8,
-        dueDate: '16.05.22',
-        icon: BigSale
+        dueDate: '12.05.25',
+
     }
 ];
 
-const ProjectCard = ({ project }) => (
-    <div className="bg-white shadow-md rounded-lg p-4 m-4">
-        <div className="flex items-center">
-            <img src={project.icon} alt={project.name} className="w-12 h-12 mr-4" />
-            <div>
-                <h3 className="text-xl font-bold">{project.name}</h3>
-                <p className="text-gray-600">{project.description}</p>
+const ProjectCard = ({ project }) => {
+    const navigate = useNavigate();
+
+    const handleCardClick = () => {
+        navigate(`/admin/voucher-details/${project.key}`);
+    };
+    return (
+        <div
+            className="bg-white shadow-md rounded-lg p-4 m-4 cursor-pointer"
+            onClick={handleCardClick}
+        >
+            <div className="flex items-center">
+
+                <div>
+                    <h3 className="text-xl font-bold">{project.name}</h3>
+                    <p className="text-gray-600">{project.description}</p>
+                </div>
+            </div>
+            <div className="mt-4">
+                <p className="text-gray-600">Participants: {project.participants}</p>
+                <p className="text-gray-600">Due date: {project.dueDate}</p>
             </div>
         </div>
-        <div className="mt-4">
-            <p className="text-gray-600">Participants: {project.participants}</p>
-            <p className="text-gray-600">Due date: {project.dueDate}</p>
-        </div>
-    </div>
-);
+    );
+};
 
 const Voucher = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 6;
+    const navigate = useNavigate();
 
+
+
+    const handleAddVoucher = () => {
+        navigate('/admin/voucher/add');
+    };
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -82,14 +107,14 @@ const Voucher = () => {
 
     return (
         <div className="bg-gray-100 min-h-screen p-8">
-            <h1 className="text-3xl font-bold mb-8">Some of Our Awesome Projects</h1>
+            <h1 className="text-3xl font-bold mb-8">Some of Our Awesome Voucher</h1>
             <p className="text-gray-600 mb-8">This is the paragraph where you can write more details about your projects. Keep your user engaged by providing meaningful information.</p>
-            <Button type="primary" icon={<PlusOutlined />}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAddVoucher}>
                 Add New Project
             </Button>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {paginatedProjects.map((project, index) => (
-                    <ProjectCard key={index} project={project} />
+                {paginatedProjects.map((project) => (
+                    <ProjectCard key={project.key} project={project} />
                 ))}
             </div>
 
@@ -100,7 +125,6 @@ const Voucher = () => {
                 total={projects.length}
                 onChange={handlePageChange}
             />
-
         </div>
     );
 };

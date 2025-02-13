@@ -27,7 +27,7 @@ const Pre_orderCampaignCreate = ({ onSuccess, selectedProduct }) => {
                             name="blind-boxID"
                             rules={[{ required: true, message: 'Please enter Blind-box ID!' }]}
                         >
-                            <Input />
+                            <Input readOnly />
                         </Form.Item>
                     </Col>
                     <Col span={8}>
@@ -66,6 +66,19 @@ const Pre_orderCampaignCreate = ({ onSuccess, selectedProduct }) => {
                             <DatePicker style={{ width: '100%' }} />
                         </Form.Item>
                     </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Form.Item label="Create Date" name="CreatedDate">
+                            <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item label="Update  Date" name="UpdatedDate">
+                            <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    </Col>
+
                 </Row>
                 <div className="flex justify-center gap-2 mt-4">
                     <Button size="large" onClick={onSuccess}>
