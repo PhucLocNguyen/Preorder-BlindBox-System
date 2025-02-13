@@ -1,7 +1,17 @@
-import React from 'react'
-import { Form, Input, Button, Row, Col, Card, DatePicker, Select, message } from 'antd';
-const Pre_orderCampaignEdit = ({ onSuccess }) => {
+import React, { useEffect } from 'react';
+import { Form, Input, Button, Row, Col, Card, DatePicker, Select } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+const Pre_orderCampaignEdit = ({ onSuccess, selectedProduct }) => {
+    const [form] = useForm();
+
+    useEffect(() => {
+        console.log("Received selectedProduct in Edit Modal:", selectedProduct);
+        form.setFieldsValue({ 'blind-boxID': selectedProduct });
+    }, [selectedProduct, form]);
+
     const onFinish = (values) => {
+        console.log("Submitted values:", values);
+        console.log("Selected Product Key:", selectedProduct);
         onSuccess();
     };
     return (
@@ -10,12 +20,12 @@ const Pre_orderCampaignEdit = ({ onSuccess }) => {
             style={{ maxWidth: '600px', margin: '0 auto' }}
         >
             <h2 className="text-xl font-bold mb-4 text-center">Update Campaign</h2>
-            <Form layout="vertical" onFinish={onFinish}>
+            <Form form={form} layout="vertical" onFinish={onFinish}>
                 <Row gutter={16}>
                     <Col span={6}>
                         <Form.Item label="Blind-boxID" name="blind-boxID"
                             rules={[{ required: true, message: 'Please enter Blind-box ID!' }]}>
-                            <Input />
+                            <Input readOnly />
                         </Form.Item>
                     </Col>
                     <Col span={8}>
@@ -62,6 +72,19 @@ const Pre_orderCampaignEdit = ({ onSuccess }) => {
                     </Col>
                     <Col span={12}>
                         <Form.Item label="End Date" name="EndedDate">
+                            <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    </Col>
+
+                </Row>
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Form.Item label="Create Date" name="CreatedDate">
+                            <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item label="Update  Date" name="UpdatedDate">
                             <DatePicker style={{ width: '100%' }} />
                         </Form.Item>
                     </Col>
