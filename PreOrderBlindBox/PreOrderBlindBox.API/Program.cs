@@ -99,6 +99,7 @@ namespace PreOrderBlindBox.Api
 
             //Background service cho voucher campaign
             builder.Services.AddHostedService<VoucherCampaignBackgroundService>();
+            builder.Services.AddHostedService<PreorderCampaignBackgroundService>();
 
             var app = builder.Build();
 
