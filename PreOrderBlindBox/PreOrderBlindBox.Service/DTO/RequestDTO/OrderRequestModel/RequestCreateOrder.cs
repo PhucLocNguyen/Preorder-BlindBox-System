@@ -8,8 +8,6 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel
 {
     public class RequestCreateOrder
     {
-        public int CustomerId { get; set; }
-
         public int? VoucherId { get; set; }
 
         public decimal? Amount { get; set; }

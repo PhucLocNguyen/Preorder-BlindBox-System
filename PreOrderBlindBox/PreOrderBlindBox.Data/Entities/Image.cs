@@ -13,13 +13,9 @@ public partial class Image
 
     public string Url { get; set; }
 
-    public string Title { get; set; }
-
     public bool IsMainImage { get; set; }
 
     public DateTime CreatedAt { get; set; }
-
-    public bool IsDeleted { get; set; }
 
     public virtual BlindBox BlindBox { get; set; }
 }

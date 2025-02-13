@@ -8,7 +8,6 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel
 {
     public class RequestCreateCart
     {
-        public int? UserId { get; set; }
         public int? PreorderCampaignId { get; set; }
         public int Quantity { get; set; }
     }
