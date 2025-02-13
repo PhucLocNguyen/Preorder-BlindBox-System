@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Data.GenericRepository
 {
-	public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
-	{
-		protected readonly Preorder_BlindBoxContext _context;
-		protected readonly DbSet<TEntity> dbSet;
-		public GenericRepository(Preorder_BlindBoxContext context)
-		{
-			_context = context;
-			this.dbSet = context.Set<TEntity>();
-		}
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    {
+        protected readonly Preorder_BlindBoxContext _context;
+        protected readonly DbSet<TEntity> dbSet;
+        public GenericRepository(Preorder_BlindBoxContext context)
+        {
+            _context = context;
+            this.dbSet = context.Set<TEntity>();
+        }
 
         /* public virtual IEnumerable<TEntity> Get(
 			 Expression<Func<TEntity, bool>> filter = null,
@@ -93,16 +93,19 @@ namespace PreOrderBlindBox.Data.GenericRepository
 
             return query.ToListAsync();
         }
-
+        public virtual TEntity GetById(object id)
+        {
+            return dbSet.Find(id);
+        }
         public virtual async Task<TEntity> GetByIdAsync(object id)
-		{
-			return await dbSet.FindAsync(id);
-		}
+        {
+            return await dbSet.FindAsync(id);
+        }
 
-		public virtual async Task InsertAsync(TEntity entity)
-		{
-			if (entity == null)
-				throw new ArgumentNullException(nameof(entity));
+        public virtual async Task InsertAsync(TEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
 
             await dbSet.AddAsync(entity);
         }
@@ -114,23 +117,33 @@ namespace PreOrderBlindBox.Data.GenericRepository
             await dbSet.AddRangeAsync(entities);
         }
 
-		public virtual async Task UpdateAsync(TEntity entity)
-		{
-			if (entity == null)
-				throw new ArgumentNullException(nameof(entity));
+        public virtual async Task UpdateAsync(TEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
 
-			dbSet.Attach(entity);
-			_context.Entry(entity).State = EntityState.Modified;
-		}
+            dbSet.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+        }
 
-		public virtual async Task Delete(TEntity entityToDelete)
-		{
-			if (_context.Entry(entityToDelete).State == EntityState.Detached)
-			{
-				dbSet.Attach(entityToDelete);
-			}
-			dbSet.Remove(entityToDelete);
-		}
+        public virtual async Task Delete(TEntity entityToDelete)
+        {
+            if (_context.Entry(entityToDelete).State == EntityState.Detached)
+            {
+                dbSet.Attach(entityToDelete);
+            }
+            dbSet.Remove(entityToDelete);
+        }
+        public virtual int Count(Expression<Func<TEntity, bool>>? filter = null)
+        {
+            IQueryable<TEntity> query = dbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
 
-	}
+            }
+            return query.Count();
+        }
+
+    }
 }

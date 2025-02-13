@@ -24,5 +24,15 @@ namespace PreOrderBlindBox.Data.Repositories
 
             return await _context.PreorderCampaigns.FirstOrDefaultAsync(c => c.Slug == slug);
         }
+
+        public async Task<List<PreorderCampaign>> GetAllPreorderCampaign()
+        {
+            return await _context.PreorderCampaigns.Where(x => x.IsDeleted == false).ToListAsync();
+        }
+
+        public async Task UpdateRangeAsync(IEnumerable<PreorderCampaign> preorderCampaigns)
+        {
+            _context.PreorderCampaigns.UpdateRange(preorderCampaigns);
+        }
     }
 }

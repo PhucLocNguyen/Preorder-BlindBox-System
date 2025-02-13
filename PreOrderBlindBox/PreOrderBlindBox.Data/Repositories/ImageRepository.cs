@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Data.DBContext;
+﻿using Microsoft.EntityFrameworkCore;
+using PreOrderBlindBox.Data.DBContext;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.GenericRepository;
 using PreOrderBlindBox.Data.IRepositories;
@@ -14,6 +15,11 @@ namespace PreOrderBlindBox.Data.Repositories
     {
         public ImageRepository(Preorder_BlindBoxContext context) : base(context)
         {
+        }
+
+        public async Task<Image> GetMainImageByBlindBoxID(int blindBoxID)
+        {
+            return await _context.Images.FirstOrDefaultAsync(x => x.BlindBoxId == blindBoxID && x.IsMainImage);
         }
     }
 }

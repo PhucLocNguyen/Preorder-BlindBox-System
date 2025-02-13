@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
+﻿using CurcusProject.CM.Helpers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using PreOrderBlindBox.Data.GenericRepository;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.Repositories;
@@ -33,9 +34,10 @@ namespace PreOrderBlindBox.API
 			services.AddScoped<IVoucherCampaignRepository, VoucherCampaignRepository>();
 			services.AddScoped<IWalletRepository, WalletRepository>();
 
+            services.AddSingleton<IBlobService, BlobService>();
 
-			//Add Scope for Services
-			services.AddScoped<IBlindBoxService, BlindBoxService>();
+            //Add Scope for Services
+            services.AddScoped<IBlindBoxService, BlindBoxService>();
 			services.AddScoped<ICartService, CartService>();
 			services.AddScoped<IImageService, ImageService>();
 			services.AddScoped<INotificationService, NotificationService>();

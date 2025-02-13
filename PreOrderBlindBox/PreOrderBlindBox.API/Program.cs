@@ -24,6 +24,10 @@ namespace PreOrderBlindBox.Api
             });
             // Add services to the container.
             builder.Services.AddControllers();
+            //        builder.Services.AddControllers().AddNewtonsoftJson(options =>
+            //{
+            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            //});
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
@@ -59,7 +63,10 @@ namespace PreOrderBlindBox.Api
                 options.AddPolicy("AllowAll",
             builder => builder.WithOrigins("http://localhost:5173")
                       .AllowAnyMethod()
-                      .AllowAnyHeader().AllowCredentials());
+                      .AllowAnyHeader()
+                      .AllowCredentials()
+                      .WithExposedHeaders("X-Pagination")
+                      );
             });
             builder.Services.AddHttpContextAccessor();
 
@@ -92,6 +99,7 @@ namespace PreOrderBlindBox.Api
 
             //Background service cho voucher campaign
             builder.Services.AddHostedService<VoucherCampaignBackgroundService>();
+            builder.Services.AddHostedService<PreorderCampaignBackgroundService>();
 
             var app = builder.Build();
 

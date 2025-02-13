@@ -24,5 +24,26 @@ namespace PreOrderBlindBox.Data.Repositories
 				.ToListAsync();
 			return listUserVoucher ?? [];
 		}
+
+		public async Task<UserVoucher> GetUserVoucherByUserIdAndVoucherCampaignId(int userId, int voucherCampaignId)
+		{
+			UserVoucher userVoucher = await _context.UserVouchers.FirstOrDefaultAsync(x => x.UserId == userId && x.VoucherCampaignId == voucherCampaignId);
+			return userVoucher;
+		}
+
+		public async Task<List<UserVoucher>> GetAllUserVoucher(int userId)
+		{
+			var result = await _context.UserVouchers.Include(uv => uv.VoucherCampaign)
+				.Where(uv => uv.UserId == userId && uv.UsedQuantity < uv.Quantity && uv.VoucherCampaign != null && DateTime.Now < uv.VoucherCampaign.ExpiredDate)
+				.ToListAsync();
+			return result ?? new List<UserVoucher>();
+		}
+
+		public async Task<UserVoucher> GetUserVoucherById(int userVoucherId)
+		{
+			var result = await _context.UserVouchers.Include(uv => uv.VoucherCampaign)
+				.FirstOrDefaultAsync(uv => uv.UserVoucherId == userVoucherId);
+			return result;
+		}
 	}
 }

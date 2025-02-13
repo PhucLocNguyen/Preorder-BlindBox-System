@@ -12,10 +12,11 @@ namespace PreOrderBlindBox.Services.IServices
     public interface IPreorderCampaignService
     {
         Task<Pagination<PreorderCampaign>> GetAllPreorderCampaign(PaginationParameter page);
-        Task<PreorderCampaign> AddPreorderCampaignAsync(CreatePreorderCampaignRequest createPreorderCampaignRequest);
+        Task<int> AddPreorderCampaignAsync(CreatePreorderCampaignRequest createPreorderCampaignRequest);
         Task<PreorderCampaign?> GetPreorderCampaignAsyncById(int id);
         Task<PreorderCampaign?> GetPreorderCampaignBySlugAsync(string slug);
         Task<bool> DeletePreorderCampaign(int id);
-        Task<PreorderCampaign?> UpdatePreorderCampaign(int id, UpdatePreorderCampaignRequest request);
+        Task<int> UpdatePreorderCampaign(int id, UpdatePreorderCampaignRequest request);
+        Task BackGroundUpdatePreorderCampaign();
     }
 }

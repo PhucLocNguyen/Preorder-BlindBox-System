@@ -8,7 +8,7 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.PreorderMilestoneModel
 {
     public class CreatePreorderMilestoneRequest
     {
-        public int? PreorderCampaignId { get; set; }
+        public int PreorderCampaignId { get; set; }
         public int MilestoneNumber { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }

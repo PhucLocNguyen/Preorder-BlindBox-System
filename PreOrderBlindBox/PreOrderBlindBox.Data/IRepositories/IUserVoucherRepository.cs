@@ -11,5 +11,8 @@ namespace PreOrderBlindBox.Data.IRepositories
 	public interface IUserVoucherRepository : IGenericRepository<UserVoucher>
 	{
 		public Task<List<int>> GetAllCollectedVoucherCampaignIdByUserId(int userId);
+		public Task<UserVoucher> GetUserVoucherByUserIdAndVoucherCampaignId(int userId, int voucherCampaignId);
+		public Task<List<UserVoucher>> GetAllUserVoucher(int userId);
+		public Task<UserVoucher> GetUserVoucherById(int userVoucherId);
 	}
 }
