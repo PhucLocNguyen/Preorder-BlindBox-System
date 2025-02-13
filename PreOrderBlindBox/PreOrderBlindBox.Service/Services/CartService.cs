@@ -5,6 +5,7 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Mappers.CartMapper;
+using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.Services.Services
 {
@@ -14,22 +15,27 @@ namespace PreOrderBlindBox.Services.Services
         private readonly IPreorderMilestoneService _preorderMilestoneService;
         private readonly IOrderDetailService _orderDetailService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUserService _currentUserService;
         public CartService(ICartRepository cartRepository, IUnitOfWork unitOfWork,
             IPreorderMilestoneService preorderMilestoneService,
-            IOrderDetailService orderDetailService)
+            IOrderDetailService orderDetailService,
+            ICurrentUserService currentUserService
+            )
         {
             _cartRepository = cartRepository;
             _unitOfWork = unitOfWork;
             _preorderMilestoneService = preorderMilestoneService;
             _orderDetailService = orderDetailService;
+            _currentUserService = currentUserService;
         }
 
         public async Task<Cart> ChangeQuantityOfCartByCustomerID(RequestCreateCart requestUpdateCart)
         {
+            int userID = _currentUserService.GetUserId();
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var existingCart = await GetCartByCustomerIDAndCampaignID((int)requestUpdateCart.UserId, (int)requestUpdateCart.PreorderCampaignId);
+                var existingCart = await GetCartByCustomerIDAndCampaignID(userID, (int)requestUpdateCart.PreorderCampaignId);
                 if (existingCart != null)
                 {
                     existingCart.Quantity = requestUpdateCart.Quantity;
@@ -42,7 +48,7 @@ namespace PreOrderBlindBox.Services.Services
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                throw new Exception("Something went wrong when change quantity of cart",ex);
+                throw new Exception("Something went wrong when change quantity of cart", ex);
             }
         }
 
@@ -87,66 +93,52 @@ namespace PreOrderBlindBox.Services.Services
 
                 //Xem chiến dịch đó đã đủ số lượng mua chưa ( bao gồm cả đơn trong cart và đơn đã mua)
                 bool isEnoughQuantity = quantityForMilestone >= (orderDetailsQuantity + cart.Quantity);
-
-                foreach (var milestone in preorderMilestones)
+                //Nếu số lượng còn lại trong mốc ít hơn nhưng không đủ hàng 
+                if (!isEnoughQuantity)
                 {
-                    //Tính số lượng còn lại bao nhiêu cái đối với từng mốc 
-                    int remainQuantity = await _preorderMilestoneService.CalculateRemainingQuantity(milestone.Quantity, orderDetailsQuantity);
-                    if (remainQuantity == 0)
+                    cartItemPrices.Add(new ResponseCart()
                     {
-                        orderDetailsQuantity = orderDetailsQuantity - milestone.Quantity;
-                    }
-                    else
+                        PreorderCampaignId = cart.PreorderCampaignId,
+                        UserId = cart.UserId,
+                        Price = -1,
+                        Quantity = (orderDetailsQuantity + cart.Quantity) - quantityForMilestone
+                    }) ;
+                }else
+                {
+                    foreach (var milestone in preorderMilestones)
                     {
-                        // Nếu số lượng còn lại trong mốc nhiều hơn số lượng khác hàng mua trong cart
-                        if (remainQuantity >= cart.Quantity)
+                        //Tính số lượng còn lại bao nhiêu cái đối với từng mốc 
+                        int remainQuantity = await _preorderMilestoneService.CalculateRemainingQuantity(milestone.Quantity, orderDetailsQuantity);
+                        if (remainQuantity == 0)
                         {
-                            cartItemPrices.Add(new ResponseCart()
+                            orderDetailsQuantity = orderDetailsQuantity - milestone.Quantity;
+                        }
+                        else
+                        {
+                            // Nếu số lượng còn lại trong mốc nhiều hơn số lượng khác hàng mua trong cart
+                            if (remainQuantity >= cart.Quantity)
                             {
-                                PreorderCampaignId = cart.PreorderCampaignId,
-                                UserId = cart.UserId,
-                                Price = milestone.Price,
-                                Quantity = cart.Quantity,
+                                cartItemPrices.Add(new ResponseCart()
+                                {
+                                    PreorderCampaignId = cart.PreorderCampaignId,
+                                    UserId = cart.UserId,
+                                    Price = milestone.Price,
+                                    Quantity = cart.Quantity,
 
-                            });
-                            break;
-                        }//Nếu số lượng còn lại trong mốc ít hơn nhưng vẫn đủ hàng 
-                        else if (remainQuantity < cart.Quantity && isEnoughQuantity)
-                        {
-                            var cartTemp = cart;
-                            cartTemp.Quantity = remainQuantity;
-                            cart.Quantity = cart.Quantity - remainQuantity;
-                            cartItemPrices.Add(new ResponseCart()
+                                });
+                                break;
+                            }//Nếu số lượng còn lại trong mốc ít hơn nhưng vẫn đủ hàng 
+                            else 
                             {
-                                PreorderCampaignId = cart.PreorderCampaignId,
-                                UserId = cart.UserId,
-                                Price = milestone.Price,
-                                Quantity = remainQuantity
-                            });
-
-                        }//Nếu số lượng còn lại trong mốc ít hơn nhưng không đủ hàng 
-                        else if (remainQuantity < cart.Quantity && !isEnoughQuantity)
-                        {
-                            var cartTemp = cart;
-                            cartTemp.Quantity = remainQuantity;
-                            cart.Quantity = cart.Quantity - remainQuantity;
-                            // Thêm vào giá và số lượng sản phẩm ứng với mốc đó 
-                            cartItemPrices.Add(new ResponseCart()
-                            {
-                                PreorderCampaignId = cart.PreorderCampaignId,
-                                UserId = cart.UserId,
-                                Price = milestone.Price,
-                                Quantity = remainQuantity
-                            });
-                            // Do hết hàng nên số lượng sản phẩm còn lại không có giá
-                            cartItemPrices.Add(new ResponseCart()
-                            {
-                                PreorderCampaignId = cart.PreorderCampaignId,
-                                UserId = cart.UserId,
-                                Price = -1,
-                                Quantity = cart.Quantity
-                            });
-                            break;
+                                cart.Quantity = cart.Quantity - remainQuantity;
+                                cartItemPrices.Add(new ResponseCart()
+                                {
+                                    PreorderCampaignId = cart.PreorderCampaignId,
+                                    UserId = cart.UserId,
+                                    Price = milestone.Price,
+                                    Quantity = remainQuantity
+                                });
+                            }
                         }
                     }
                 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using PreOrderBlindBox.Services.IServices;
+using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.API.Controllers
 {
@@ -10,16 +11,19 @@ namespace PreOrderBlindBox.API.Controllers
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;
-        public CartController(ICartService cartService)
+        private readonly ICurrentUserService _currentUserService;
+        public CartController(ICartService cartService, ICurrentUserService currentUserService)
         {
             _cartService = cartService;
+            _currentUserService = currentUserService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCartByUserID(int userID) 
+        public async Task<IActionResult> GetAllCartByUserID() 
         {
             try
             {
+                int userID = _currentUserService.GetUserId();
                 var listCart = await _cartService.GetAllCartByCustomerID(userID);
                 return Ok(listCart);
             }
@@ -59,11 +63,12 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("{userID}")]
-        public async Task<IActionResult> GetPriceInCart([FromRoute]int userID)
+        [HttpGet("GetPriceInCart")]
+        public async Task<IActionResult> GetPriceInCart()
         {
             try
             {
+                int userID = _currentUserService.GetUserId();
                 var itemResult = await _cartService.IdentifyPriceForCartItem(userID);
                 if (itemResult != null) return Ok(itemResult);
                 return BadRequest(new { Message = "Something wrong when get price" });
