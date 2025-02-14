@@ -6,12 +6,12 @@ namespace PreOrderBlindBox.Services.Mappers.CartMapper
 {
     public static class CartMapper
     {
-        public static Cart toCartEntity(this RequestCreateCart requestCreateCart)
+        public static Cart toCartEntity(this RequestCreateCart requestCreateCart,int userId)
         {
             return new Cart()
             {
                 PreorderCampaignId = requestCreateCart.PreorderCampaignId,
-                UserId = requestCreateCart.UserId,
+                UserId = userId,
                 Quantity = requestCreateCart.Quantity,
                 CreateDate = DateTime.Now,
                 IsDeleted = false
