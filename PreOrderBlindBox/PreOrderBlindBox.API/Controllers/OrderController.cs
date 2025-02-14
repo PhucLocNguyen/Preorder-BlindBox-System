@@ -3,6 +3,7 @@ using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
 using PreOrderBlindBox.Services.IServices;
+using PreOrderBlindBox.Services.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,9 +14,11 @@ namespace PreOrderBlindBox.API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        public OrderController(IOrderService orderService)
+        private readonly ICurrentUserService _currentUserService;
+        public OrderController(IOrderService orderService, ICurrentUserService currentUserService)
         {
             _orderService = orderService;
+            _currentUserService = currentUserService;   
         }
         // GET: api/<OrderController>
         [HttpGet]

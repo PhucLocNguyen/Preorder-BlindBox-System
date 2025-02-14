@@ -154,14 +154,13 @@ namespace PreOrderBlindBox.Services.Services
            return await _preorderMilestoneRepo.GetAll(filter: x=>x.PreorderCampaignId == campaignID);   
         }
 
-        public async Task<int> CalculateRemainingQuantity(int milestoneID, int quantityOrderDetails)
+        public async Task<int> CalculateRemainingQuantity(int quantityMilestone, int quantityOrderDetails)
         {
-            var milestone = await GetPreorderMilestoneById(milestoneID);
-            if (quantityOrderDetails >= milestone.Quantity)
+            if (quantityOrderDetails >= quantityMilestone)
             {
                 return 0;
             }
-            return milestone.Quantity - quantityOrderDetails;
+            return quantityMilestone - quantityOrderDetails;
         }
 
         private void ValidatePreorderOneMilestone(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
