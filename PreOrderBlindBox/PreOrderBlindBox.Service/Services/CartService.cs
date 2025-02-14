@@ -54,9 +54,10 @@ namespace PreOrderBlindBox.Services.Services
 
         public async Task<Cart> CreateCart(RequestCreateCart requestCreateCart)
         {
+            int userId = _currentUserService.GetUserId();
             try
             {
-                var cartEntity = requestCreateCart.toCartEntity();
+                var cartEntity = requestCreateCart.toCartEntity(userId);
                 await _cartRepository.InsertAsync(cartEntity);
                 await _unitOfWork.SaveChanges();
                 return cartEntity;

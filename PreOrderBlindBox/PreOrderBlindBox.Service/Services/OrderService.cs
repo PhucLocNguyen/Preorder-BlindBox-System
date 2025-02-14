@@ -53,7 +53,7 @@ namespace PreOrderBlindBox.Services.Services
                 }
                 requestCreateOrder.Amount = priceForCarts.Sum(x => x.Price);
 
-                var orderEntity = requestCreateOrder.toOrderEntity();
+                var orderEntity = requestCreateOrder.toOrderEntity(customerId);
                 await _orderRepository.InsertAsync(orderEntity);
                 await _notificationService.CreatNotification(notificationForStaff);
                 await _notificationService.CreatNotification(notificationForCustomer);
@@ -73,8 +73,9 @@ namespace PreOrderBlindBox.Services.Services
 
         public async Task<Pagination<Order>> GetAllOrder(PaginationParameter page)
         {
-            var Orders = await _orderRepository.GetAll(pagination: page);
-            var result = new Pagination<Order>(Orders,Orders.Count, page.PageIndex, page.PageSize);
+            var orders = await _orderRepository.GetAll(pagination: page, includes: x=>x.OrderDetails);
+            //var itemsOrderDetail = orders.Select(x => x.toOrderRespone(x.OrderDetails.Sum(y => y.Quantity))).ToList();
+            var result = new Pagination<Order>(orders, orders.Count, page.PageIndex, page.PageSize);
             return result;
         }
 
