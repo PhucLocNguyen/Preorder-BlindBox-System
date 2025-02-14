@@ -113,5 +113,29 @@ namespace PreOrderBlindBox.API.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
+        [HttpPut("CancelPreorderCapaign/{id}")]
+        public async Task<IActionResult> CancelPreorderCampaign(int id, [FromBody] CancelPreorderCampaignRequest request)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.CancelPreorderCampaign(id, request);
+
+                if (preorderCampaign <= 0)
+                {
+                    return NotFound(new { message = "Preorder campaign not found." });
+                }
+
+                return Ok(preorderCampaign);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
     }
 }
