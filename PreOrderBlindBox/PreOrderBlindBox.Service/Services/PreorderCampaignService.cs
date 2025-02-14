@@ -250,7 +250,32 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-        
+        public async Task<int> CancelPreorderCampaign(int id, CancelPreorderCampaignRequest request)
+        {
+            var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
+
+            if (preorderCampaign == null)
+            {
+                throw new ArgumentException("Pre-Order Campaign not found");
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException("Invalid data");
+            }
+
+            if (preorderCampaign.IsDeleted || preorderCampaign.Status == PreorderCampaignStatus.Completed.ToString())
+            {
+                throw new ArgumentException("Cannot update Pre-Order Campaign had deleted or completed");
+            }
+
+            preorderCampaign.Status = request.Status.ToString();
+
+            await _preorderCampaignRepo.UpdateAsync(preorderCampaign);
+
+            // Lưu thay đổi vào database
+            return await _unitOfWork.SaveChanges();
+        }
 
     }
 }
