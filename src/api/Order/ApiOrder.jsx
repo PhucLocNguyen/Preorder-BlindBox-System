@@ -1,5 +1,5 @@
 import api from '../instance';
-import {axiosConfigHeader} from '../AxiosConfigHeader';
+import {axiosConfigHeader} from '../axiosConfigHeader';
 import { param } from 'framer-motion/client';
 
 const GetAllOrder = async () => {
