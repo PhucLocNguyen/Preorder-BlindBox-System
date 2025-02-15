@@ -21,5 +21,11 @@ namespace PreOrderBlindBox.Data.Repositories
         {
             return await _context.Images.FirstOrDefaultAsync(x => x.BlindBoxId == blindBoxID && x.IsMainImage);
         }
+
+        public async Task<List<Image>> GetAllImageByBlindBoxID(int blindBoxId)
+        {
+            var result = await GetAll(filter: x => x.BlindBoxId == blindBoxId);
+            return result;
+        }
     }
 }
