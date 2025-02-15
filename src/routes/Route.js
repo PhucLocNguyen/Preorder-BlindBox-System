@@ -8,14 +8,14 @@ const LoginPage = lazy(() => import("../pages/Account/Login"));
 const Register = lazy(() => import("../pages/Account/Register"));
 const StaffView = lazy(() => import("../pages/Staff/StaffView"));
 const ProductsView = lazy(() => import("../pages/Staff/ProductManagement/ProductsView"));
-const OrdersView = lazy(() => import("../pages/Staff/OrdersView"));
-const NotificationsView = lazy(() => import("../pages/Staff/NotificationView"));
+const OrdersView = lazy(() => import("../pages/Staff/OrderManagement/OrdersView"));
+const NotificationsView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationView"));
 const ProductCreatePage = lazy(() => import("../pages/Staff/ProductManagement/ProductCreate"));
 const ProductEditPage = lazy(() => import("../pages/Staff/ProductManagement/ProductEdit"));
 const AdminView = lazy(() => import("../pages/Admin/AdminView"));
 const Dashboard = lazy(() => import("../pages/Admin/Dashboard"));
-const UserManagerment = lazy(() => import("../pages/Admin/UserManagerment/UserManagerment"));
-const CampaignManagerment = lazy(() => import("../pages/Admin/CampaignManagerment"));
+const UserManagement = lazy(() => import("../pages/Admin/UserManagement/UserManagement"));
+const CampaignManagement = lazy(() => import("../pages/Admin/CampaignManagement"));
 const Pre_orderCampaign = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaign"));
 const VoucherManagerment = lazy(() => import("../pages/Admin/VoucherCampaign/Voucher"));
 const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
@@ -50,8 +50,8 @@ const publicRoutes = [
     component: AdminView,
     children: [
       { index: true, component: UserManagerment },
-      { path: "usermanagerment", component: UserManagerment },
-      { path: "campaignmanagerment", component: CampaignManagerment },
+      { path: "usermanagement", component: UserManagement },
+      { path: "campaignmanagement", component: CampaignManagement },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },

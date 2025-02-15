@@ -14,7 +14,7 @@ import UserManagermentEdit from "./UserManagermentEdit";
 
 const { Search } = Input;
 
-const UserManagerment = () => {
+const UserManagement = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [search, setSearch] = useState("");
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -178,4 +178,4 @@ const UserManagerment = () => {
     );
 };
 
-export default UserManagerment;
+export default UserManagement;
