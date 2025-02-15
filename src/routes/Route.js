@@ -1,6 +1,6 @@
 import { Fragment, lazy } from "react";
-import Voucher from "../components/Voucher";
-const OrderDetailView = lazy(() => import("../pages/Staff/OrderDetailView"));
+
+const OrderDetailView = lazy(() => import("../pages/Staff/OrderManagement/OrderDetailView"));
 const AdminLayout = lazy(() => import("../components/layouts/AdminLayout"));
 const DefaultLayout = lazy(() => import("../components/layouts/DefaultLayout"));
 const Home = lazy(() => import("../pages/Home/Home"));
