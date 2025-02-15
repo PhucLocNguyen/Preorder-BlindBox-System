@@ -23,7 +23,7 @@ namespace PreOrderBlindBox.Services.Services
 
         public async Task<List<Image>> GetAllImageByBlindBoxID(int blindBoxId)
         {
-            return await _imageRepo.GetAll(filter: x => x.BlindBoxId == blindBoxId);
+            return await _imageRepo.GetAllImageByBlindBoxID(blindBoxId);
         }
 
         public async Task<Image> GetMainImageIdByBlindBoxID(int blindBoxId)

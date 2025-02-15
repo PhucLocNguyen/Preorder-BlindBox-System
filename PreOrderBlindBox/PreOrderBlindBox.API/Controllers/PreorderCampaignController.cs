@@ -21,7 +21,7 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPreorderCampaign([FromQuery] PaginationParameter pagination)
         {
-            var result = await _preorderCampaignService.GetAllPreorderCampaign(pagination);
+            var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination);
             return Ok(result);
         }
 

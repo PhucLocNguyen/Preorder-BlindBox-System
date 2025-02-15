@@ -8,12 +8,17 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel
 {
-    public class ResponsePreorderCampaign
+    public class ResponsePreorderCampaignDetail
     {
+        public int PreorderCampaignId { get; set; }
+        public int? BlindBoxId { get; set; }
         public string Slug { get; set; }
         public DateTime StartDate { get; set; }
+
         public DateTime EndDate { get; set; }
+        public string Status { get; set; }
         public string Type { get; set; }
-        public ResponseBlindBoxWithMainImage BlindBox { get; set; }
+        public bool IsDeleted { get; set; }
+        public ResponseBlindBox BlindBox { get; set; }
     }
 }
