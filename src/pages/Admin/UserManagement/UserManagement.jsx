@@ -9,8 +9,8 @@ import {
     SearchOutlined,
     PlusOutlined,
 } from '@ant-design/icons';
-import UserManagermentCreate from "./UserManagermentCreate";
-import UserManagermentEdit from "./UserManagermentEdit";
+import UserManagementCreate from "./UserManagementCreate";
+import UserManagementEdit from "./UserManagementEdit";
 
 const { Search } = Input;
 
@@ -144,7 +144,7 @@ const UserManagement = () => {
                 forceRender
                 closable={false}
             >
-                <UserManagermentCreate onSuccess={() => setIsModalVisible(false)} />
+                <UserManagementCreate onSuccess={() => setIsModalVisible(false)} />
             </Modal>
             {/* Modal hiển thị form cập nhật người dùng */}
             <Modal
@@ -156,7 +156,7 @@ const UserManagement = () => {
                 forceRender
                 closable={false}
             >
-                <UserManagermentEdit onSuccess={() => setIsModalVisible(false)} />
+                <UserManagementEdit onSuccess={() => setIsModalVisible(false)} />
             </Modal>
             {/* Modal hiển thị xác nhận xóa người dùng */}
             <Modal
