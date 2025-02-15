@@ -9,9 +9,7 @@ const OrderManagement = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Nếu URL có trailing slash và không phải là root ("/")
         if (location.pathname !== "/" && location.pathname.endsWith("/")) {
-            // Xóa dấu gạch chéo cuối cùng
             const newPath = location.pathname.slice(0, -1);
             navigate(newPath, { replace: true });
         }

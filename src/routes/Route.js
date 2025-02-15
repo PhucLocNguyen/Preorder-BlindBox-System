@@ -1,5 +1,5 @@
 import { Fragment, lazy } from "react";
-const OrderDetailView = lazy(() => import("../pages/Staff/OrderDetailView"));
+const OrderDetailView = lazy(() => import("../pages/Staff/OrderManagement/OrderDetailView"));
 const AdminLayout = lazy(() => import("../components/layouts/AdminLayout"));
 const DefaultLayout = lazy(() => import("../components/layouts/DefaultLayout"));
 const Home = lazy(() => import("../pages/Home/Home"));
@@ -7,8 +7,8 @@ const LoginPage = lazy(() => import("../pages/Account/Login"));
 const Register = lazy(() => import("../pages/Account/Register"));
 const StaffView = lazy(() => import("../pages/Staff/StaffView"));
 const ProductsView = lazy(() => import("../pages/Staff/ProductsView"));
-const OrdersView = lazy(() => import("../pages/Staff/OrdersView"));
-const NotificationsView = lazy(() => import("../pages/Staff/NotificationView"));
+const OrdersView = lazy(() => import("../pages/Staff/OrderManagement/OrdersView"));
+const NotificationsView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationView"));
 
 const publicRoutes = [
   {
