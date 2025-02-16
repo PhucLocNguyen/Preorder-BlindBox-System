@@ -1,16 +1,17 @@
 import React from "react";
-import LogoutButton from "../../assets/Logout/logoutbutton.jpg";
+import LogoutButton from "../../assets/Logout/LogoutButton.jpg";
 import { Link, useLocation } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
 import { Row, Col } from "antd";
 import VoucherIcon from "../../assets/Admin/VoucherIcon.png";
 import DashboardIcon from "../../assets/Admin/DashboardIcon.jpg";
 import PreOrderIcon from "../../assets/Admin/Pre-orderIcon.png";
-import CampaignIcon from "../../assets/Admin/CampaignIcon.png";
-
+import Pre_orderMilestone from "../../assets/Admin/Preorder_Milestone.png";
+import { useNavigate } from "react-router-dom";
 const SideBarAdmin = () => {
     const location = useLocation();
-
+    const navigate = useNavigate();
+    const Logout = () => { navigate("/login") }
     return (
         <div className="bg-white w-64 h-full shadow-lg p-4 flex flex-col">
             {/* Logo */}
@@ -29,7 +30,7 @@ const SideBarAdmin = () => {
                     ? "bg-blue-500 text-white"
                     : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
                     }`}>
-                    <Link to="/admin/usermanagerment" className="flex items-center w-full">
+                    <Link to="/admin/usermanagement" className="flex items-center w-full">
                         <Row gutter={12} align="middle">
 
                             <Col span={10} className="flex justify-center">
@@ -48,18 +49,18 @@ const SideBarAdmin = () => {
 
                 {/* Campaign Management */}
 
-                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname.startsWith("/admin/campaignmanagerment")
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname.startsWith("/admin/preordermilestone")
                     ? "bg-blue-500 text-white"
                     : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
                     }`}>
-                    <Link to="/admin/campaignmanagerment" className="flex items-center w-full">
+                    <Link to="/admin/preordermilestone" className="flex items-center w-full">
                         <Row gutter={12} align="middle">
                             <Col span={6} className="flex justify-center">
-                                <img src={CampaignIcon} alt="Campaign Icon" className="w-8 h-8" />
+                                <img src={Pre_orderMilestone} alt="Pre_orderMilestone Icon" className="w-8 h-8 no-border" />
                             </Col>
                             <Col span={16}>
                                 <i className="fas fa-tachometer-alt"></i>
-                                <span className="font-medium text-lg">Campaign</span>
+                                <span className="font-medium text-lg">PreorderMilestone</span>
                             </Col>
                         </Row>
                     </Link>
@@ -143,7 +144,7 @@ const SideBarAdmin = () => {
 
                 {/* Logout Button */}
                 <button
-                    onClick={() => alert("Logout")}
+                    onClick={() => Logout(alert("Logout"))}
                     className="ml-4 p-2 text-gray-500 hover:text-red-500 transition"
                     title="Logout"
                 >
