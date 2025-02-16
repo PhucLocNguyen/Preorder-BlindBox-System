@@ -49,7 +49,7 @@ const publicRoutes = [
     path: "/admin",
     component: AdminView,
     children: [
-      { index: true, component: UserManagerment },
+      { index: true, component: UserManagement },
       { path: "usermanagement", component: UserManagement },
       { path: "campaignmanagement", component: CampaignManagement },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
