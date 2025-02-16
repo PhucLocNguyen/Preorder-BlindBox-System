@@ -19,8 +19,8 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.UserModel
 		public string ConfirmPassword { get; set; }
 		[Required(ErrorMessage = "Address is required")]
 		public string Address { get; set; }
-		[Required(ErrorMessage = "Role Id is required")]
-		public int RoleId { get; set; }
+/*		[Required(ErrorMessage = "Role Id is required")]
+		public int RoleId { get; set; }*/
 
 	}
 }
