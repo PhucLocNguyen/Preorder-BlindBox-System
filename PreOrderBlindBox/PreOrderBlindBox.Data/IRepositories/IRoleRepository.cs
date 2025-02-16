@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Data.IRepositories
 {
-    public interface IRoleRepository : IGenericRepository<Role>
-    {
-    }
+	public interface IRoleRepository : IGenericRepository<Role>
+	{
+		public Task<Role> GetRoleByRoleName(string roleName);
+	}
 }
