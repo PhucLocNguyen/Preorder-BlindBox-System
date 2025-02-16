@@ -10,16 +10,18 @@ const StaffView = lazy(() => import("../pages/Staff/StaffView"));
 const ProductsView = lazy(() => import("../pages/Staff/ProductManagement/ProductsView"));
 const OrdersView = lazy(() => import("../pages/Staff/OrderManagement/OrdersView"));
 const NotificationsView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationView"));
-const ProductCreatePage = lazy(()  => import("../pages/Staff/ProductManagement/ProductCreate"));
-const ProductEditPage = lazy(()  => import("../pages/Staff/ProductManagement/ProductEdit"));
+const ProductCreatePage = lazy(() => import("../pages/Staff/ProductManagement/ProductCreate"));
+const ProductEditPage = lazy(() => import("../pages/Staff/ProductManagement/ProductEdit"));
 const AdminView = lazy(() => import("../pages/Admin/AdminView"));
 const Dashboard = lazy(() => import("../pages/Admin/Dashboard"));
 const UserManagement = lazy(() => import("../pages/Admin/UserManagement/UserManagement"));
-const CampaignManagement = lazy(() => import("../pages/Admin/CampaignManagement"));
+const UserManagementDetails = lazy(() => import("../pages/Admin/UserManagement/UserManagementDetails"));
+const PreorderMilestone = lazy(() => import("../pages/Admin/PreorderMilestone"));
 const Pre_orderCampaign = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaign"));
-const VoucherManagerment = lazy(() => import("../pages/Admin/VoucherCampaign/Voucher"));
+const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Voucher"));
 const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
+const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const publicRoutes = [
   {
@@ -51,13 +53,15 @@ const publicRoutes = [
     children: [
       { index: true, component: UserManagement },
       { path: "usermanagement", component: UserManagement },
-      { path: "campaignmanagement", component: CampaignManagement },
+      { path: "usermanagerment-details/:id", component: UserManagementDetails },
+      { path: "preordermilestone", component: PreorderMilestone },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
-      { path: "voucher", component: VoucherManagerment },
+      { path: "voucher", component: VoucherManagement },
       { path: "voucher/add", component: VoucherCreate },
       { path: "voucher-details/:id", component: VoucherDetails },
+      { path: "voucher/update/:id", component: VoucherUpdate },
     ],
   },
   {
