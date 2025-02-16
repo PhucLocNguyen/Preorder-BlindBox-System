@@ -1,8 +1,13 @@
+import Header from "../Header/Header";
+
 function DefaultLayout({ children }) {
   return (
-    <div className="relative">
-      <div>{children}</div>
-    </div>
+    <>
+      <Header />
+      <div className="relative">
+        <div>{children}</div>
+      </div>
+    </>
   );
 }
 
