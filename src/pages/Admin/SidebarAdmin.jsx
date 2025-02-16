@@ -1,11 +1,11 @@
 import React from "react";
-import LogoutButton from "../../assets/Logout/LogoutButton.jpg";
+import LogoutButton from "../../assets/Logout/logoutbutton.jpg";
 import { Link, useLocation } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
 import { Row, Col } from "antd";
 import VoucherIcon from "../../assets/Admin/VoucherIcon.png";
 import DashboardIcon from "../../assets/Admin/DashboardIcon.jpg";
-import PreOrderIcon from "../../assets/Admin/Pre-OrderIcon.png";
+import PreOrderIcon from "../../assets/Admin/Pre-orderIcon.png";
 import CampaignIcon from "../../assets/Admin/CampaignIcon.png";
 
 const SideBarAdmin = () => {
@@ -15,7 +15,7 @@ const SideBarAdmin = () => {
         <div className="bg-white w-64 h-full shadow-lg p-4 flex flex-col">
             {/* Logo */}
             <div className="flex items-center mb-8">
-                <Link to="/admin/usermanagerment" className="flex items-center w-full">
+                <Link to="/admin" className="flex items-center w-full">
                     <i className="fas fa-home text-2xl text-black"></i>
                     <span className="ml-2 text-xl font-bold">BRESS</span>
                 </Link>
@@ -23,90 +23,108 @@ const SideBarAdmin = () => {
 
             {/* Sidebar Menu */}
             <ul className="space-y-4">
-                {/* User Management */}
-                <Link to="/admin/usermanagerment" className="w-full">
-                    <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/usermanagerment" || location.pathname === "/admin"
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
-                        }`}>
+                {/* Admin Management */}
+
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/usermanagerment" || location.pathname === "/admin"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
+                    }`}>
+                    <Link to="/admin/usermanagerment" className="flex items-center w-full">
                         <Row gutter={12} align="middle">
+
                             <Col span={10} className="flex justify-center">
                                 <UserOutlined style={{ fontSize: '30px' }} />
                             </Col>
                             <Col span={14}>
+                                <i className="fas fa-tachometer-alt"></i>
                                 <span className="font-medium text-lg">User</span>
                             </Col>
+
                         </Row>
-                    </li>
-                </Link>
+                    </Link>
+
+                </li>
+
 
                 {/* Campaign Management */}
-                <Link to="/admin/campaignmanagerment" className="w-full">
-                    <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/campaignmanagerment"
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
-                        }`}>
+
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname.startsWith("/admin/campaignmanagerment")
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
+                    }`}>
+                    <Link to="/admin/campaignmanagerment" className="flex items-center w-full">
                         <Row gutter={12} align="middle">
                             <Col span={6} className="flex justify-center">
                                 <img src={CampaignIcon} alt="Campaign Icon" className="w-8 h-8" />
                             </Col>
                             <Col span={16}>
+                                <i className="fas fa-tachometer-alt"></i>
                                 <span className="font-medium text-lg">Campaign</span>
                             </Col>
                         </Row>
-                    </li>
-                </Link>
+                    </Link>
+                </li>
+
 
                 {/* Pre-Order Campaign */}
-                <Link to="/admin/pre-ordercampaign" className="w-full">
-                    <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/pre-ordercampaign"
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
-                        }`}>
+
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/pre-ordercampaign"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
+                    }`}>
+                    <Link to="/admin/pre-ordercampaign" className="flex items-center w-full">
                         <Row gutter={12} align="middle">
                             <Col span={5} className="flex justify-center">
                                 <img src={PreOrderIcon} alt="Pre-Order Icon" className="w-8 h-8" />
                             </Col>
                             <Col span={18}>
-                                <span className="font-medium text-lg">Pre-orderCampaign</span>
+                                <i className="fas fa-tachometer-alt"></i>
+                                <span className="font-medium text-lg">PreorderCampaign</span>
                             </Col>
                         </Row>
-                    </li>
-                </Link>
+                    </Link>
+                </li>
+
 
                 {/* Voucher Management */}
-                <Link to="/admin/voucher" className="w-full">
-                    <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/voucher"
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
-                        }`}>
+
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/voucher"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
+                    }`}>
+                    <Link to="/admin/voucher" className="flex items-center w-full">
                         <Row gutter={12} align="middle">
                             <Col span={8} className="flex justify-center">
                                 <img src={VoucherIcon} alt="Voucher Icon" className="w-10 h-8" />
                             </Col>
                             <Col span={16}>
+                                <i className="fas fa-tachometer-alt"></i>
                                 <span className="font-medium text-lg">Voucher</span>
                             </Col>
                         </Row>
-                    </li>
-                </Link>
+                    </Link>
+                </li>
+
 
                 {/* Dashboard */}
-                <Link to="/admin/dashboard" className="w-full">
-                    <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/dashboard"
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
-                        }`}>
+
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/dashboard"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
+                    }`}>
+                    <Link to="/admin/dashboard" className="w-full">
                         <Row gutter={12} align="middle">
                             <Col span={6} className="flex justify-center">
                                 <img src={DashboardIcon} alt="Dashboard Icon" className="w-10 h-8" />
                             </Col>
                             <Col span={16}>
+                                <i className="fas fa-tachometer-alt"></i>
                                 <span className="font-medium text-lg">Dashboard</span>
                             </Col>
                         </Row>
-                    </li>
-                </Link>
+                    </Link>
+                </li>
+
             </ul>
 
             {/* Profile & Logout */}
