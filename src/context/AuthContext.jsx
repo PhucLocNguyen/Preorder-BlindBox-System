@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import { ApiGetCurrentAccountRole } from "../api/User/ApiAuthentication";
 
 export const AuthContext = createContext()
 
@@ -9,10 +10,15 @@ const AuthProvider = ({ children }) => {
    useEffect(() => {
       const fetchUser = async () => {
          try {
-
+            const response = await ApiGetCurrentAccountRole();
+            setAuth({
+               roleName: response.roleName,
+            })
          } catch (error) {
             console.log('Not authenticated');
-
+            setAuth({
+               roleName: 'Guest'
+            })
          } finally {
             setLoading(false)
          }

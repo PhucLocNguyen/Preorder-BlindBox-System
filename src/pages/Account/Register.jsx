@@ -1,11 +1,33 @@
 import { Form, Input, Button } from "antd";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import GoogleIcon from '../../assets/Login/GoogleIcon.png';
 import FacebookIcon from '../../assets/Login/FacebookIcon.png'
+import { ApiRegisterByEmailAndPassword } from "../../api/User/ApiAuthentication";
 
 function RegisterPage() {
     const [form] = Form.useForm();
+    const navigate = useNavigate()
+
+    const validateConfirmPassword = (_, value) => {
+        if (!value || form.getFieldValue('password') === value) {
+            return Promise.resolve();
+        }
+        return Promise.reject('Confirm password not match!');
+    }
+
+    const CallApiRegisterByEmailAndPassword = async (payload) => {
+        const response = await ApiRegisterByEmailAndPassword({ payload })
+        if (response.status === 200) {
+            // Thông bào confirm email
+
+            navigate('/login')
+        }
+    }
+
+    const onFinish = async (values) => {
+        await CallApiRegisterByEmailAndPassword(values)
+    }
 
     return (
         <div className="bg-[#f2f7fb]">
@@ -23,11 +45,11 @@ function RegisterPage() {
                         </div>
                         {/* Phần form */}
                         <div>
-                            <Form layout='vertical' form={form}>
+                            <Form layout='vertical' form={form} onFinish={onFinish}>
                                 <Form.Item
                                     className='font-bold text-[14px] leading-[20px] text-[#111] mb-[10px]'
                                     label="Your fullname"
-                                    name="Your fullname"
+                                    name="fullName"
                                     rules={[
                                         {
                                             required: true,
@@ -41,7 +63,7 @@ function RegisterPage() {
                                 <Form.Item
                                     className='font-bold text-[14px] leading-[20px] text-[#111] mb-[10px]'
                                     label="Address"
-                                    name="Address"
+                                    name="address"
                                     rules={[
                                         {
                                             required: true,
@@ -55,12 +77,16 @@ function RegisterPage() {
                                 <Form.Item
                                     className='font-bold text-[14px] leading-[20px] text-[#111] mb-[10px]'
                                     label="Email address"
-                                    name="Email address"
+                                    name="email"
                                     rules={[
                                         {
                                             required: true,
                                             message: 'Please input your email address!',
                                         },
+                                        {
+                                            type: 'email',
+                                            message: 'Invalid email'
+                                        }
                                     ]}
                                 >
                                     <Input className='px-[22px] py-[14px] font-normal' />
@@ -75,6 +101,10 @@ function RegisterPage() {
                                             required: true,
                                             message: 'Please input your password!',
                                         },
+                                        {
+                                            min: 6,
+                                            message: 'Password must be at least 6 characters!'
+                                        }
                                     ]}
                                 >
                                     <Input.Password className='px-[22px] py-[14px] font-normal' />
@@ -83,12 +113,16 @@ function RegisterPage() {
                                 <Form.Item
                                     className='font-bold text-[14px] leading-[20px] text-[#111] mb-[10px]'
                                     label="Confirm password"
-                                    name="Confirm password"
+                                    name="confirmPassword"
+                                    dependencies={['password']}
                                     rules={[
                                         {
                                             required: true,
                                             message: 'Please input confirm password!',
                                         },
+                                        {
+                                            validator: validateConfirmPassword
+                                        }
                                     ]}
                                 >
                                     <Input.Password className='px-[22px] py-[14px] font-normal' />

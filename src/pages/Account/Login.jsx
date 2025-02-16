@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import GoogleIcon from '../../assets/Login/GoogleIcon.png';
 import FacebookIcon from '../../assets/Login/FacebookIcon.png';
 import { AuthContext } from '../../context/AuthContext';
-import { ApiLoginByEmailAndPassword, ApiGetCurrentAccountRole } from '../../api/User/ApiAuthentication';
+import { ApiLoginByEmailAndPassword, ApiGetCurrentAccountRole, GetAccessToken } from '../../api/User/ApiAuthentication';
 
 function LoginPage() {
     const [form] = Form.useForm();
@@ -16,13 +16,15 @@ function LoginPage() {
         const responseLogin = await ApiLoginByEmailAndPassword({ payload });
         if (responseLogin.status === 200) {
             await CallApiGetCurrentAccountRole();
-            // navigate('/')
+            navigate('/')
         }
     }
 
     const CallApiGetCurrentAccountRole = async () => {
         const response = await ApiGetCurrentAccountRole();
-        console.log('>>> Response Role: ', response);
+        setAuth({
+            roleName: response.roleName,
+        })
     }
 
     const onFinish = async (values) => {

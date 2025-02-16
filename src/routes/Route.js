@@ -9,8 +9,9 @@ const StaffView = lazy(() => import("../pages/Staff/StaffView"));
 const ProductsView = lazy(() => import("../pages/Staff/ProductManagement/ProductsView"));
 const OrdersView = lazy(() => import("../pages/Staff/OrdersView"));
 const NotificationsView = lazy(() => import("../pages/Staff/NotificationView"));
-const ProductCreatePage = lazy(()=> import("../pages/Staff/ProductManagement/ProductCreate"));
-const ProductEditPage = lazy(()=> import("../pages/Staff/ProductManagement/ProductEdit"));
+const ProductCreatePage = lazy(() => import("../pages/Staff/ProductManagement/ProductCreate"));
+const ProductEditPage = lazy(() => import("../pages/Staff/ProductManagement/ProductEdit"));
+const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const publicRoutes = [
   {
     index: true,
@@ -35,8 +36,6 @@ const publicRoutes = [
 
     ],
   },
-  
-
   {
     path: "/account",
     layout: DefaultLayout,
@@ -48,6 +47,10 @@ const publicRoutes = [
   {
     path: "/register",
     component: RegisterPage
+  },
+  {
+    path: '/confirmemail',
+    component: ConfirmEmailAccount
   }
 ];
 
