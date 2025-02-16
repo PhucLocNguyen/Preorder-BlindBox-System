@@ -4,6 +4,7 @@ using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderMilestoneModel;
 using PreOrderBlindBox.Services.IServices;
+using PreOrderBlindBox.Data.Enum;
 
 namespace PreOrderBlindBox.Services.Services
 {
@@ -12,13 +13,16 @@ namespace PreOrderBlindBox.Services.Services
         private readonly IPreorderMilestoneRepository _preorderMilestoneRepo;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPreorderCampaignRepository _preorderCampaignRepo;
 
         public PreorderMilestoneService(IPreorderMilestoneRepository preorderMilestoneRepo
-            , IMapper mapper, IUnitOfWork unitOfWork)
+            , IMapper mapper, IUnitOfWork unitOfWork
+            , IPreorderCampaignRepository preorderCampaignRepo)
         {
             _preorderMilestoneRepo = preorderMilestoneRepo;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _preorderCampaignRepo = preorderCampaignRepo;
         }
 
         public async Task<List<PreorderMilestone>> GetAllPreorderMilestoneByPreorderCampaignID(int preorderCampaignId)
@@ -36,13 +40,55 @@ namespace PreOrderBlindBox.Services.Services
             return result;
         }
 
-        public async Task<PreorderMilestone> AddPreorderMilestoneAsync(CreatePreorderMilestoneRequest createPreorderMilestoneRequest)
+        public async Task<int> AddPreorderMilestoneAsync(CreatePreorderMilestoneRequest createPreorderMilestoneRequest)
         {
-            var preorderMilestoneMapper = _mapper.Map<PreorderMilestone>(createPreorderMilestoneRequest);
+            if (createPreorderMilestoneRequest == null)
+            {
+                throw new ArgumentNullException("Invalid request data");
+            }
 
-            await _preorderMilestoneRepo.InsertAsync(preorderMilestoneMapper);
-            await _unitOfWork.SaveChanges();
-            return preorderMilestoneMapper;
+            var campaign = await _preorderCampaignRepo.GetByIdAsync(createPreorderMilestoneRequest.PreorderCampaignId);
+            if (campaign == null || campaign.IsDeleted)
+            {
+                throw new ArgumentException("Preorder campaign not found or has been deleted.");
+            }
+
+            // Kiểm tra MilestoneNumber chỉ có thể là 1, 2 hoặc 3
+            if (createPreorderMilestoneRequest.MilestoneNumber < 1 || createPreorderMilestoneRequest.MilestoneNumber > 3)
+            {
+                throw new ArgumentException("MilestoneNumber must be 1, 2, or 3.");
+            }
+
+            if (createPreorderMilestoneRequest.Quantity <= 0 || createPreorderMilestoneRequest.Price <= 0)
+            {
+                throw new ArgumentException("Quantity and Price must be larger than 0.");
+            }
+
+            // Lấy danh sách các Milestone đã có
+            var existingMilestones = await GetAllPreorderMilestoneByCampaignID(createPreorderMilestoneRequest.PreorderCampaignId);
+
+            foreach (var existMilestone in existingMilestones)
+            {
+                if (!existMilestone.IsDeleted 
+                    && existMilestone.MilestoneNumber == createPreorderMilestoneRequest.MilestoneNumber)
+                {
+                    throw new ArgumentException("Milestone had been existed!");
+                }
+            }
+
+            if (campaign.Type == PreorderCampaignType.TimedPricing.ToString())
+            {
+                ValidatePreorderOneMilestone(createPreorderMilestoneRequest, existingMilestones);
+            }
+            else if (campaign.Type == PreorderCampaignType.BulkOrder.ToString())
+            {
+                ValidatePreorderTwoMilestone(createPreorderMilestoneRequest, existingMilestones);
+            }
+
+            var milestone = _mapper.Map<PreorderMilestone>(createPreorderMilestoneRequest);
+            await _preorderMilestoneRepo.InsertAsync(milestone);
+            return await _unitOfWork.SaveChanges();
+
         }
 
         public async Task<bool> DeletePreorderMilestone(int id)
@@ -59,18 +105,48 @@ namespace PreOrderBlindBox.Services.Services
             return false;
         }
 
-        public async Task<PreorderMilestone?> UpdatePreorderMilestone(int id, UpdatePreorderMilestoneRequest request)
+        public async Task<int> UpdatePreorderMilestone(int id, UpdatePreorderMilestoneRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException("Invalid update data");
+            }
+
             var preorderMilestone = await _preorderMilestoneRepo.GetByIdAsync(id);
+            if (preorderMilestone == null || preorderMilestone.IsDeleted)
+            {
+                throw new ArgumentNullException("Pre-Order Milestone does not exist or had deleted");
+            }
+            if (request.Quantity <= 0 || request.Price <= 0)
+            {
+                throw new ArgumentException("Quantity and Price must be larger than 0.");
+            }
 
-            if (preorderMilestone == null) return null;
+            // Lấy danh sách Milestone khác trong cùng PreorderCampaign
+            var existingMilestones = await GetAllPreorderMilestoneByCampaignID(preorderMilestone.PreorderCampaignId.Value);
 
+            // Kiểm tra loại PreorderCampaign
+            var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(preorderMilestone.PreorderCampaignId.Value);
+            if (preorderCampaign == null || preorderCampaign.IsDeleted)
+            {
+                throw new ArgumentException("Preorder campaign does not exist or had deleted");
+            }
+
+            if (preorderCampaign.Type == PreorderCampaignType.TimedPricing.ToString())
+            {
+                ValidateUpdatePreorderOneMilestone(preorderMilestone, request, existingMilestones);
+            }
+            else if (preorderCampaign.Type == PreorderCampaignType.BulkOrder.ToString())
+            {
+                ValidateUpdatePreorderTwoMilestone(preorderMilestone, request, existingMilestones);
+            }
+
+            // Map giá trị mới vào milestone
             _mapper.Map(request, preorderMilestone);
 
             await _preorderMilestoneRepo.UpdateAsync(preorderMilestone);
-            await _unitOfWork.SaveChanges();
+            return await _unitOfWork.SaveChanges();
 
-            return preorderMilestone;
         }
 
         public async Task<List<PreorderMilestone>> GetAllPreorderMilestoneByCampaignID(int campaignID)
@@ -78,14 +154,186 @@ namespace PreOrderBlindBox.Services.Services
            return await _preorderMilestoneRepo.GetAll(filter: x=>x.PreorderCampaignId == campaignID);   
         }
 
-        public async Task<int> CalculateRemainingQuantity(int milestoneID, int quantityOrderDetails)
+        public async Task<int> CalculateRemainingQuantity(int quantityMilestone, int quantityOrderDetails)
         {
-            var milestone = await GetPreorderMilestoneById(milestoneID);
-            if (quantityOrderDetails >= milestone.Quantity)
+            if (quantityOrderDetails >= quantityMilestone)
             {
                 return 0;
             }
-            return milestone.Quantity - quantityOrderDetails;
+            return quantityMilestone - quantityOrderDetails;
         }
+
+        private void ValidatePreorderOneMilestone(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
+        {
+            // Nếu đã có Milestone 3 mà muốn tạo Milestone 1, không hợp lệ
+            if (existingMilestones.Any(m => m.MilestoneNumber == 3)
+                && !existingMilestones.Any(m => m.MilestoneNumber == 2)
+                && request.MilestoneNumber == 1)
+            {
+                throw new ArgumentException("Cannot create Milestone 1 after Milestone 3 has been created.");
+            }
+
+            // Nếu đã có Milestone 1 mà muốn tạo Milestone 3, không hợp lệ
+            if (existingMilestones.Any(m => m.MilestoneNumber == 1) 
+                && !existingMilestones.Any(m => m.MilestoneNumber == 2)
+                && request.MilestoneNumber == 3)
+            {
+                throw new ArgumentException("Cannot create Milestone 3 before Milestone 2.");
+            }
+            foreach (var milestone in existingMilestones)
+            {
+                if (milestone.MilestoneNumber == 1 && request.MilestoneNumber == 2)
+                {
+                    if (request.Quantity <= milestone.Quantity || request.Price <= milestone.Price)
+                    {
+                        throw new ArgumentException("Milestone 2 must have a higher quantity and price than Milestone 1.");
+                    }
+                }
+                else if (milestone.MilestoneNumber == 2 && request.MilestoneNumber == 1)
+                {
+                    if (request.Quantity >= milestone.Quantity || request.Price >= milestone.Price)
+                    {
+                        throw new ArgumentException("Milestone 1 must have a lower quantity and price than Milestone 2.");
+                    }
+                }
+                else if (milestone.MilestoneNumber == 2 && request.MilestoneNumber == 3)
+                {
+                    if (request.Quantity <= milestone.Quantity || request.Price <= milestone.Price)
+                    {
+                        throw new ArgumentException("Milestone 3 must have a higher quantity and price than Milestone 2.");
+                    }
+                }
+                else if (milestone.MilestoneNumber == 3 && request.MilestoneNumber == 2)
+                {
+                    if (request.Quantity >= milestone.Quantity || request.Price >= milestone.Price)
+                    {
+                        throw new ArgumentException("Milestone 2 must have a lower quantity and price than Milestone 3.");
+                    }
+                }
+            }
+        }
+
+        private void ValidatePreorderTwoMilestone(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
+        {
+            // Nếu đã có Milestone 3 mà muốn tạo Milestone 1, không hợp lệ
+            if (existingMilestones.Any(m => m.MilestoneNumber == 3) 
+                && !existingMilestones.Any(m => m.MilestoneNumber == 2)
+                && request.MilestoneNumber == 1)
+            {
+                throw new ArgumentException("Cannot create Milestone 1 after Milestone 3 has been created.");
+            }
+
+            // Nếu đã có Milestone 1 mà muốn tạo Milestone 3, không hợp lệ
+            if (existingMilestones.Any(m => m.MilestoneNumber == 1) 
+                && !existingMilestones.Any(m => m.MilestoneNumber == 2)
+                && request.MilestoneNumber == 3)
+            {
+                throw new ArgumentException("Cannot create Milestone 3 before Milestone 2.");
+            }
+            foreach (var milestone in existingMilestones)
+            {
+                if (milestone.MilestoneNumber == 1 && request.MilestoneNumber == 2)
+                {
+                    if (request.Quantity <= milestone.Quantity || request.Price >= milestone.Price)
+                    {
+                        throw new ArgumentException("Milestone 2 must have a higher quantity and lower price than Milestone 1.");
+                    }
+                }
+                else if (milestone.MilestoneNumber == 2 && request.MilestoneNumber == 1)
+                {
+                    if (request.Quantity >= milestone.Quantity || request.Price <= milestone.Price)
+                    {
+                        throw new ArgumentException("Milestone 1 must have a lower quantity and higher price than Milestone 2.");
+                    }
+                }
+                else if (milestone.MilestoneNumber == 2 && request.MilestoneNumber == 3)
+                {
+                    if (request.Quantity <= milestone.Quantity || request.Price >= milestone.Price)
+                    {
+                        throw new ArgumentException("Milestone 3 must have a higher quantity and lower price than Milestone 2.");
+                    }
+                }
+                else if (milestone.MilestoneNumber == 3 && request.MilestoneNumber == 2)
+                {
+                    if (request.Quantity >= milestone.Quantity || request.Price <= milestone.Price)
+                    {
+                        throw new ArgumentException("Milestone 2 must have a lower quantity and higher price than Milestone 3.");
+                    }
+                }
+            }
+        }
+
+        private void ValidateUpdatePreorderOneMilestone(
+            PreorderMilestone milestone,
+            UpdatePreorderMilestoneRequest request,
+            List<PreorderMilestone> existingMilestones)
+        {
+            var milestone1 = existingMilestones.FirstOrDefault(m => m.MilestoneNumber == 1);
+            var milestone2 = existingMilestones.FirstOrDefault(m => m.MilestoneNumber == 2);
+            var milestone3 = existingMilestones.FirstOrDefault(m => m.MilestoneNumber == 3);
+
+            if (milestone.MilestoneNumber == 1 && milestone2 != null)
+            {
+                if (request.Quantity.HasValue && request.Quantity >= milestone2.Quantity)
+                    throw new ArgumentException("Milestone 1 quantity must be lower than Milestone 2.");
+                if (request.Price.HasValue && request.Price >= milestone2.Price)
+                    throw new ArgumentException("Milestone 1 price must be lower than Milestone 2.");
+            }
+            else if (milestone.MilestoneNumber == 2)
+            {
+                if (milestone1 != null && request.Quantity.HasValue && request.Quantity <= milestone1.Quantity)
+                    throw new ArgumentException("Milestone 2 quantity must be higher than Milestone 1.");
+                if (milestone1 != null && request.Price.HasValue && request.Price <= milestone1.Price)
+                    throw new ArgumentException("Milestone 2 price must be higher than Milestone 1.");
+                if (milestone3 != null && request.Quantity.HasValue && request.Quantity >= milestone3.Quantity)
+                    throw new ArgumentException("Milestone 2 quantity must be lower than Milestone 3.");
+                if (milestone3 != null && request.Price.HasValue && request.Price >= milestone3.Price)
+                    throw new ArgumentException("Milestone 2 price must be lower than Milestone 3.");
+            }
+            else if (milestone.MilestoneNumber == 3 && milestone2 != null)
+            {
+                if (request.Quantity.HasValue && request.Quantity <= milestone2.Quantity)
+                    throw new ArgumentException("Milestone 3 quantity must be higher than Milestone 2.");
+                if (request.Price.HasValue && request.Price <= milestone2.Price)
+                    throw new ArgumentException("Milestone 3 price must be higher than Milestone 2.");
+            }
+        }
+
+        private void ValidateUpdatePreorderTwoMilestone(
+            PreorderMilestone milestone,
+            UpdatePreorderMilestoneRequest request,
+            List<PreorderMilestone> existingMilestones)
+        {
+            var milestone1 = existingMilestones.FirstOrDefault(m => m.MilestoneNumber == 1);
+            var milestone2 = existingMilestones.FirstOrDefault(m => m.MilestoneNumber == 2);
+            var milestone3 = existingMilestones.FirstOrDefault(m => m.MilestoneNumber == 3);
+
+            if (milestone.MilestoneNumber == 1 && milestone2 != null)
+            {
+                if (request.Quantity.HasValue && request.Quantity >= milestone2.Quantity)
+                    throw new ArgumentException("Milestone 1 quantity must be lower than Milestone 2.");
+                if (request.Price.HasValue && request.Price <= milestone2.Price)
+                    throw new ArgumentException("Milestone 1 price must be higher than Milestone 2.");
+            }
+            else if (milestone.MilestoneNumber == 2)
+            {
+                if (milestone1 != null && request.Quantity.HasValue && request.Quantity <= milestone1.Quantity)
+                    throw new ArgumentException("Milestone 2 quantity must be higher than Milestone 1.");
+                if (milestone1 != null && request.Price.HasValue && request.Price >= milestone1.Price)
+                    throw new ArgumentException("Milestone 2 price must be lower than Milestone 1.");
+                if (milestone3 != null && request.Quantity.HasValue && request.Quantity >= milestone3.Quantity)
+                    throw new ArgumentException("Milestone 2 quantity must be lower than Milestone 3.");
+                if (milestone3 != null && request.Price.HasValue && request.Price <= milestone3.Price)
+                    throw new ArgumentException("Milestone 2 price must be higher than Milestone 3.");
+            }
+            else if (milestone.MilestoneNumber == 3 && milestone2 != null)
+            {
+                if (request.Quantity.HasValue && request.Quantity <= milestone2.Quantity)
+                    throw new ArgumentException("Milestone 3 quantity must be higher than Milestone 2.");
+                if (request.Price.HasValue && request.Price >= milestone2.Price)
+                    throw new ArgumentException("Milestone 3 price must be lower than Milestone 2.");
+            }
+        }
+
     }
 }

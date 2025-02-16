@@ -7,6 +7,7 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Mappers.OrderMapper;
+using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.Services.Services
 {
@@ -18,10 +19,12 @@ namespace PreOrderBlindBox.Services.Services
         private readonly ICartService _cartService;
         private readonly INotificationService _notificationService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUserService _currentUserService;
         public OrderService(
             IOrderRepository orderRepository, ICartService cartService,
             IUnitOfWork unitOfWork, IUserRepository userRepository,
-            INotificationService notificationService, IOrderDetailService orderDetailService)
+            INotificationService notificationService, IOrderDetailService orderDetailService,
+            ICurrentUserService currentUserService)
         {
             _orderRepository = orderRepository;
             _cartService = cartService;
@@ -29,46 +32,50 @@ namespace PreOrderBlindBox.Services.Services
             _userRepository = userRepository;
             _notificationService = notificationService;
             _orderDetailService = orderDetailService;
+            _currentUserService = currentUserService;
+
         }
 
         public async Task<Order> CreateOrder(RequestCreateOrder requestCreateOrder)
         {
+            int customerId = _currentUserService.GetUserId();
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var customer = await _userRepository.GetByIdAsync(requestCreateOrder.CustomerId);
+                var customer = await _userRepository.GetByIdAsync(customerId);
                 var staff = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).FirstOrDefault();
-                var notificationForCustomer = (new RequestCreateNotification()).NotificationForCustomer(requestCreateOrder.CustomerId);
+                var notificationForCustomer = (new RequestCreateNotification()).NotificationForCustomer(customerId);
                 var notificationForStaff = (new RequestCreateNotification()).NotificationForStaff(customer.FullName, staff.UserId);
-                List<ResponseCart> priceForCarts = await _cartService.IdentifyPriceForCartItem(requestCreateOrder.CustomerId);
+                List<ResponseCart> priceForCarts = await _cartService.IdentifyPriceForCartItem(customerId);
                 if(priceForCarts.ToList().Any(x=>x.Price < 0)) 
                 {
-                    throw new Exception("The cart contains an item with an incorrect price");
+                    throw new Exception($"The cart contains {priceForCarts[0].Quantity} item with an incorrect price");
                 }
                 requestCreateOrder.Amount = priceForCarts.Sum(x => x.Price);
 
-                var orderEntity = requestCreateOrder.toOrderEntity();
+                var orderEntity = requestCreateOrder.toOrderEntity(customerId);
                 await _orderRepository.InsertAsync(orderEntity);
                 await _notificationService.CreatNotification(notificationForStaff);
                 await _notificationService.CreatNotification(notificationForCustomer);
                 await _unitOfWork.SaveChanges();
                 await _orderDetailService.CreateOrderDetail(priceForCarts,orderEntity.OrderId);
-                await _cartService.UpdateStatusOfCartByCustomerID(requestCreateOrder.CustomerId);
+                await _cartService.UpdateStatusOfCartByCustomerID(customerId);
                 await _unitOfWork.CommitTransactionAsync();
                 return orderEntity;
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                throw new Exception("Something went wrong when order create", ex);
+                throw;
 
             }
         }
 
         public async Task<Pagination<Order>> GetAllOrder(PaginationParameter page)
         {
-            var Orders = await _orderRepository.GetAll(pagination: page);
-            var result = new Pagination<Order>(Orders,Orders.Count, page.PageIndex, page.PageSize);
+            var orders = await _orderRepository.GetAll(pagination: page, includes: x=>x.OrderDetails);
+            //var itemsOrderDetail = orders.Select(x => x.toOrderRespone(x.OrderDetails.Sum(y => y.Quantity))).ToList();
+            var result = new Pagination<Order>(orders, orders.Count, page.PageIndex, page.PageSize);
             return result;
         }
 
@@ -80,9 +87,9 @@ namespace PreOrderBlindBox.Services.Services
 
 }*/
 
-        public Task<Order> GetOrderById(int id)
+        public async Task<Order> GetOrderById(int id)
         {
-            throw new NotImplementedException();
+            return await _orderRepository.GetByIdAsync(id);
         }
     }
 }

@@ -12,10 +12,10 @@ namespace PreOrderBlindBox.Services.IServices
     {
         Task<List<PreorderMilestone>> GetAllPreorderMilestoneByPreorderCampaignID(int preorderCampaignId);
         Task<PreorderMilestone?> GetPreorderMilestoneById(int id);
-        Task<PreorderMilestone> AddPreorderMilestoneAsync(CreatePreorderMilestoneRequest createPreorderMilestoneRequest);
+        Task<int> AddPreorderMilestoneAsync(CreatePreorderMilestoneRequest createPreorderMilestoneRequest);
         Task<bool> DeletePreorderMilestone(int id);
-        Task<PreorderMilestone?> UpdatePreorderMilestone(int id, UpdatePreorderMilestoneRequest request);
+        Task<int> UpdatePreorderMilestone(int id, UpdatePreorderMilestoneRequest request);
         Task<List<PreorderMilestone>> GetAllPreorderMilestoneByCampaignID(int campaignID);
-        Task<int> CalculateRemainingQuantity(int milestoneID, int quantityOrderDetails);
+        Task<int> CalculateRemainingQuantity(int quantityMilestone, int quantityOrderDetails);
     }
 }

@@ -5,6 +5,9 @@ using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderCampaignModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.ImageModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel;
 using PreOrderBlindBox.Services.IServices;
 
 namespace PreOrderBlindBox.Services.Services
@@ -16,26 +19,62 @@ namespace PreOrderBlindBox.Services.Services
         private readonly IPreorderMilestoneService _preorderMilestoneService;
         private readonly IBlindBoxRepository _blindBoxRepo;
         private readonly IMapper _mapper;
+        private readonly IImageRepository _imageRepo;
 
         public PreorderCampaignService(IPreorderCampaignRepository preorderCampaignRepo
             , IUnitOfWork unitOfWork
             , IPreorderMilestoneService preorderMilestoneService
             , IBlindBoxRepository blindBoxRepo
-            , IMapper mapper)
+            , IMapper mapper
+            , IImageRepository imageRepo)
         {
             _preorderCampaignRepo = preorderCampaignRepo;
             _unitOfWork = unitOfWork;
             _preorderMilestoneService = preorderMilestoneService;
             _blindBoxRepo = blindBoxRepo;
             _mapper = mapper;
+            _imageRepo = imageRepo;
         }
 
-        public async Task<Pagination<PreorderCampaign>> GetAllPreorderCampaign(PaginationParameter page)
+        public async Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page)
         {
-            var preorderCampaigns = await _preorderCampaignRepo.GetAll(pagination: page);
-            var result = new Pagination<PreorderCampaign>(preorderCampaigns, preorderCampaigns.Count, page.PageIndex, page.PageSize);
-            return result;
+            var campaigns = await _preorderCampaignRepo.GetAllActivePreorderCampaign(page);
+            var result = new List<ResponsePreorderCampaign>();
+
+            foreach (var campaign in campaigns)
+            {
+                var responseCampaign = new ResponsePreorderCampaign
+                {
+                    Slug = campaign.Slug,
+                    StartDate = campaign.StartDate,
+                    EndDate = campaign.EndDate,
+                    Type = campaign.Type
+                };
+
+                if (campaign.BlindBox != null)
+                {
+                    // Thực hiện truy vấn một cách tuần tự
+                    var mainImage = await _imageRepo.GetMainImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
+
+                    responseCampaign.BlindBox = new ResponseBlindBoxWithMainImage
+                    {
+                        BlindBoxId = campaign.BlindBox.BlindBoxId,
+                        Name = campaign.BlindBox.Name,
+                        Description = campaign.BlindBox.Description,
+                        Size = campaign.BlindBox.Size,
+                        MainImages = mainImage != null ? new ResponseImageModel
+                        {
+                            ImageId = mainImage.ImageId,
+                            Url = mainImage.Url
+                        } : null
+                    };
+                }
+                result.Add(responseCampaign);
+            }
+
+            return new Pagination<ResponsePreorderCampaign>(result, result.Count, page.PageIndex, page.PageSize);
         }
+
 
         public static string GenerateShortUniqueString()
         {
@@ -51,7 +90,7 @@ namespace PreOrderBlindBox.Services.Services
             {
                 throw new ArgumentNullException("Invalid create data");
             }
-                
+
             if (createPreorderCampaignRequest.EndDate < createPreorderCampaignRequest.StartDate)
             {
                 throw new ArgumentException("End date cannot be earlier than start date.");
@@ -88,18 +127,71 @@ namespace PreOrderBlindBox.Services.Services
             await _preorderCampaignRepo.InsertAsync(preorderCampaign);
             return await _unitOfWork.SaveChanges();
 
-           
+
         }
 
-        public async Task<PreorderCampaign?> GetPreorderCampaignAsyncById(int id)
+        public async Task<ResponsePreorderCampaignDetail?> GetPreorderCampaignAsyncById(int id)
         {
-            var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
+            // Lấy thông tin PreorderCampaign từ DB
+            var preorderCampaign = await _preorderCampaignRepo.GetDetailPreorderCampaignById(id);
 
             if (preorderCampaign == null)
             {
                 return null;
             }
-            return preorderCampaign;
+
+            // Nếu có BlindBox, lấy danh sách hình ảnh của nó
+            ResponseImageSplit images = null;
+            if (preorderCampaign.BlindBox != null)
+            {
+                var mainImage = await _imageRepo.GetMainImageByBlindBoxID(preorderCampaign.BlindBox.BlindBoxId);
+                var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(preorderCampaign.BlindBox.BlindBoxId);
+
+                images = new ResponseImageSplit
+                {
+                    MainImage = mainImage != null ? new ResponseImageModel
+                    {
+                        ImageId = mainImage.ImageId,
+                        Url = mainImage.Url,
+                        IsMainImage = mainImage.IsMainImage,
+                        CreatedAt = mainImage.CreatedAt
+                    } : null,
+                    GalleryImages = galleryImages
+                        .Where(img => !img.IsMainImage)
+                        .Select(img => new ResponseImageModel
+                        {
+                            ImageId = img.ImageId,
+                            Url = img.Url,
+                            IsMainImage = img.IsMainImage,
+                            CreatedAt = img.CreatedAt
+                        })
+                        .ToList()
+                };
+            }
+
+            // Ánh xạ sang ResponsePreorderCampaignDetail
+            var response = new ResponsePreorderCampaignDetail
+            {
+                PreorderCampaignId = preorderCampaign.PreorderCampaignId,
+                BlindBoxId = preorderCampaign.BlindBoxId,
+                Slug = preorderCampaign.Slug,
+                StartDate = preorderCampaign.StartDate,
+                EndDate = preorderCampaign.EndDate,
+                Status = preorderCampaign.Status,
+                Type = preorderCampaign.Type,
+                IsDeleted = preorderCampaign.IsDeleted,
+                BlindBox = preorderCampaign.BlindBox != null ? new ResponseBlindBox
+                {
+                    BlindBoxId = preorderCampaign.BlindBox.BlindBoxId,
+                    Name = preorderCampaign.BlindBox.Name,
+                    Description = preorderCampaign.BlindBox.Description,
+                    Size = preorderCampaign.BlindBox.Size,
+                    CreatedAt = preorderCampaign.BlindBox.CreatedAt,
+                    Images = images
+                } : null
+            };
+
+            return response;
         }
 
         public async Task<PreorderCampaign?> GetPreorderCampaignBySlugAsync(string slug)
@@ -165,12 +257,12 @@ namespace PreOrderBlindBox.Services.Services
                 throw new ArgumentException("Pre-Order Campaign not found");
             }
 
-            if(request == null)
+            if (request == null)
             {
                 throw new ArgumentNullException("Invalid update Pre-Order Campaign data");
             }
 
-            if (preorderCampaign.IsDeleted || preorderCampaign.Status == PreorderCampaignStatus.Active.ToString() 
+            if (preorderCampaign.IsDeleted || preorderCampaign.Status == PreorderCampaignStatus.Active.ToString()
                 || preorderCampaign.Status == PreorderCampaignStatus.Completed.ToString())
             {
                 throw new ArgumentException("Cannot update Pre-Order Campaign had deleted or active or completed");
@@ -250,7 +342,32 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-        
+        public async Task<int> CancelPreorderCampaign(int id, CancelPreorderCampaignRequest request)
+        {
+            var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
+
+            if (preorderCampaign == null)
+            {
+                throw new ArgumentException("Pre-Order Campaign not found");
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException("Invalid data");
+            }
+
+            if (preorderCampaign.IsDeleted || preorderCampaign.Status == PreorderCampaignStatus.Completed.ToString())
+            {
+                throw new ArgumentException("Cannot update Pre-Order Campaign had deleted or completed");
+            }
+
+            preorderCampaign.Status = request.Status.ToString();
+
+            await _preorderCampaignRepo.UpdateAsync(preorderCampaign);
+
+            // Lưu thay đổi vào database
+            return await _unitOfWork.SaveChanges();
+        }
 
     }
 }

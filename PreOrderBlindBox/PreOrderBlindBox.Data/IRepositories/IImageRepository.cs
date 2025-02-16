@@ -11,5 +11,6 @@ namespace PreOrderBlindBox.Data.IRepositories
     public interface IImageRepository : IGenericRepository<Image>
     {
         public Task<Image> GetMainImageByBlindBoxID(int blindBoxID);
+        Task<List<Image>> GetAllImageByBlindBoxID(int blindBoxId);
     }
 }

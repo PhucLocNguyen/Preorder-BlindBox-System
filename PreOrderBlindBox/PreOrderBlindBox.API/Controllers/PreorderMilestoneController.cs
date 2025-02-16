@@ -39,14 +39,29 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpPost("CreatePreorderMilestone")]
         public async Task<IActionResult> CreatePreorderMilestone(CreatePreorderMilestoneRequest createPreorderMilestoneRequest)
         {
-            var preorderMilestone = await _preorderMilestoneService.AddPreorderMilestoneAsync(createPreorderMilestoneRequest);
-
-            if (preorderMilestone == null)
+            try
             {
-                return BadRequest();
-            }
+                var preorderMilestone = await _preorderMilestoneService.AddPreorderMilestoneAsync(createPreorderMilestoneRequest);
 
-            return Ok(preorderMilestone);
+                if (preorderMilestone <= 0)
+                {
+                    return BadRequest();
+                }
+
+                return Ok(preorderMilestone);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
@@ -67,14 +82,29 @@ namespace PreOrderBlindBox.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var updatedMilestone = await _preorderMilestoneService.UpdatePreorderMilestone(id, request);
-
-            if (updatedMilestone == null)
+            try
             {
-                return NotFound($"Milestone with ID {id} not found.");
-            }
+                var updatedMilestone = await _preorderMilestoneService.UpdatePreorderMilestone(id, request);
 
-            return Ok(updatedMilestone);
+                if (updatedMilestone <= 0)
+                {
+                    return BadRequest();
+                }
+
+                return Ok(updatedMilestone);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
         }
     }
 }

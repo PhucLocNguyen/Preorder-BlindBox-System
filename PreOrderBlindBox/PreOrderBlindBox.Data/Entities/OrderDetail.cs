@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace PreOrderBlindBox.Data.Entities;
 
@@ -18,7 +19,7 @@ public partial class OrderDetail
     public int Quantity { get; set; }
 
     public decimal? UnitEndCampaignPrice { get; set; }
-
+    [JsonIgnore]
     public virtual Order Order { get; set; }
 
     public virtual PreorderCampaign PreorderCampaign { get; set; }

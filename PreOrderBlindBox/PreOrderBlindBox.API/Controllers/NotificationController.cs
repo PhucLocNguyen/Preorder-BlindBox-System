@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Services.IServices;
+using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.API.Controllers
 {
@@ -10,16 +11,19 @@ namespace PreOrderBlindBox.API.Controllers
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
-        public NotificationController(INotificationService notificationService)
+        private readonly ICurrentUserService _currentUserService;
+        public NotificationController(INotificationService notificationService, ICurrentUserService currentUserService)
         {
             _notificationService = notificationService;
+            _currentUserService = currentUserService;
         }
 
-        [HttpGet("{userID}")]
-        public async Task<IActionResult> GetAllNotification([FromRoute]int userID,[FromQuery]PaginationParameter paginationParameter) 
+        [HttpGet]
+        public async Task<IActionResult> GetAllNotification([FromQuery]PaginationParameter paginationParameter) 
         {
             try
             {
+                int userID = _currentUserService.GetUserId();   
                 return Ok(await _notificationService.GetAllNotificationByUserId(userID, paginationParameter));
             }
             catch (Exception ex)
@@ -28,7 +32,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("notification/{notificationId}")]
         public async Task<IActionResult> GetNotificationById([FromRoute]int notificationId)
         {
             try
@@ -36,7 +40,7 @@ namespace PreOrderBlindBox.API.Controllers
                 var existingNoti = await _notificationService.GetNotificationById(notificationId);
                 if (existingNoti != null)
                 {
-                    await _notificationService.MarkNotificationAsRead(notificationId);
+                    existingNoti = await _notificationService.MarkNotificationAsRead(notificationId);
                     return Ok(existingNoti);
                 }
                 return NotFound();

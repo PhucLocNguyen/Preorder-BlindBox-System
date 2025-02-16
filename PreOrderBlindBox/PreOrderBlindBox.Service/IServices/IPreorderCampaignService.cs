@@ -1,6 +1,7 @@
 ﻿using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderCampaignModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,13 @@ namespace PreOrderBlindBox.Services.IServices
 {
     public interface IPreorderCampaignService
     {
-        Task<Pagination<PreorderCampaign>> GetAllPreorderCampaign(PaginationParameter page);
+        Task<Pagination</*PreorderCampaign*/ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page);
         Task<int> AddPreorderCampaignAsync(CreatePreorderCampaignRequest createPreorderCampaignRequest);
-        Task<PreorderCampaign?> GetPreorderCampaignAsyncById(int id);
+        Task<ResponsePreorderCampaignDetail?> GetPreorderCampaignAsyncById(int id);
         Task<PreorderCampaign?> GetPreorderCampaignBySlugAsync(string slug);
         Task<bool> DeletePreorderCampaign(int id);
         Task<int> UpdatePreorderCampaign(int id, UpdatePreorderCampaignRequest request);
         Task BackGroundUpdatePreorderCampaign();
+        Task<int> CancelPreorderCampaign(int id, CancelPreorderCampaignRequest request);
     }
 }

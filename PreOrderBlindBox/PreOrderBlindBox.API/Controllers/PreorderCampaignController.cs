@@ -21,7 +21,7 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPreorderCampaign([FromQuery] PaginationParameter pagination)
         {
-            var result = await _preorderCampaignService.GetAllPreorderCampaign(pagination);
+            var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination);
             return Ok(result);
         }
 
@@ -96,6 +96,30 @@ namespace PreOrderBlindBox.API.Controllers
             try
             {
                 var preorderCampaign = await _preorderCampaignService.UpdatePreorderCampaign(id, request);
+
+                if (preorderCampaign <= 0)
+                {
+                    return NotFound(new { message = "Preorder campaign not found." });
+                }
+
+                return Ok(preorderCampaign);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        [HttpPut("CancelPreorderCapaign/{id}")]
+        public async Task<IActionResult> CancelPreorderCampaign(int id, [FromBody] CancelPreorderCampaignRequest request)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.CancelPreorderCampaign(id, request);
 
                 if (preorderCampaign <= 0)
                 {
