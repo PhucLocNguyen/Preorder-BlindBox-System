@@ -9,12 +9,13 @@ import {
     SearchOutlined,
     PlusOutlined,
 } from '@ant-design/icons';
-import UserManagementCreate from "./UserManagementCreate";
-import UserManagementEdit from "./UserManagementEdit";
-
+import UserManagermentCreate from "./UserManagementCreate";
+import UserManagermentEdit from "./UserManagementEdit";
+import { useNavigate } from 'react-router-dom';
 const { Search } = Input;
 
 const UserManagement = () => {
+    const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
     const [search, setSearch] = useState("");
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -43,6 +44,9 @@ const UserManagement = () => {
     const handleEditUser = (record) => {
         setSelectedUser(record);
         setIsModalVisible(true);
+    };
+    const handleViewUser = (record) => {
+        navigate(`/admin/usermanagerment-details/${record.key}`);
     };
 
     const handleDeleteUser = (record) => {
@@ -97,7 +101,9 @@ const UserManagement = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <EyeOutlined style={{ color: "blue", fontSize: '20px' }} />
+                    <EyeOutlined style={{ color: "blue", fontSize: '20px' }}
+                        onClick={() => handleViewUser(record)}
+                    />
                     <EditOutlined
                         style={{ color: "orange", fontSize: '20px' }}
                         onClick={() => handleEditUser(record)}
@@ -144,7 +150,7 @@ const UserManagement = () => {
                 forceRender
                 closable={false}
             >
-                <UserManagementCreate onSuccess={() => setIsModalVisible(false)} />
+                <UserManagermentCreate onSuccess={() => setIsModalVisible(false)} />
             </Modal>
             {/* Modal hiển thị form cập nhật người dùng */}
             <Modal
@@ -156,7 +162,7 @@ const UserManagement = () => {
                 forceRender
                 closable={false}
             >
-                <UserManagementEdit onSuccess={() => setIsModalVisible(false)} />
+                <UserManagermentEdit onSuccess={() => setIsModalVisible(false)} />
             </Modal>
             {/* Modal hiển thị xác nhận xóa người dùng */}
             <Modal

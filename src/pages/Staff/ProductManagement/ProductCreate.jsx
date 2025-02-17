@@ -1,7 +1,7 @@
 import { Button, Form, Input, Select, Upload } from "antd";
 const { Option } = Select;
 import { useState } from "react";
-import {UploadOutlined} from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 import { CreateBlindBox } from "../../../api/BlindBox/ApiBlindBox";
 function ProductCreate() {
   const [loading, setLoading] = useState(false);
@@ -24,8 +24,7 @@ function ProductCreate() {
     galleryImages.forEach((file, index) => {
       formData.append(`galleryImages`, file);
     });
-   var result = await CreateBlindBox({formData});
-   console.log(result);
+    var result = await CreateBlindBox({ formData });
   };
   return (
     <div>
@@ -57,9 +56,9 @@ function ProductCreate() {
             rules={[{ required: true, message: "Vui lòng chọn kích thước!" }]}
           >
             <Select placeholder="Chọn kích thước">
-              <Option value="Small">Nhỏ</Option>
-              <Option value="Medium">Trung bình</Option>
-              <Option value="Large">Lớn</Option>
+              <Select.Option value="Small">Nhỏ</Select.Option>
+              <Select.Option value="Medium">Trung bình</Select.Option>
+              <Select.Option value="Large">Lớn</Select.Option>
             </Select>
           </Form.Item>
 
