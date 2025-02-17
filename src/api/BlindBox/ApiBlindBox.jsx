@@ -28,4 +28,21 @@ const GetTheActiveBlindBox = async (pageSize, pageIndex) => {
       console.log('>>> Api create blind box Error: ', error)
    }
  }
-export { GetTheActiveBlindBox, CreateBlindBox };
+ const EditBlindBox = async({ formData: payload, id})=>{
+  try {
+     const respone = await api.put(`/BlindBox/${id}`, payload, axiosConfigSendFileHeader);
+     return respone.data;
+  } catch (error) {
+     console.log('>>> Api Edit blind box Error: ', error)
+  }
+}
+const GetActiveBlindBoxById = async(id)=>{
+  try{
+    const respone = await api.get(`/BlindBox/${id}`, axiosConfigHeader);
+    return respone.data;
+  }catch(error){
+    console.log('>>> Api get active blind box by id Error: ', error)
+
+  }
+}
+export { GetTheActiveBlindBox, CreateBlindBox, EditBlindBox, GetActiveBlindBoxById };
