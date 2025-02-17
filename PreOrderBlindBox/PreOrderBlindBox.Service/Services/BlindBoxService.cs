@@ -147,6 +147,7 @@ namespace PreOrderBlindBox.Services.Services
                 }
                 // Update hinh anh tu image service ....
                 await _blindBoxRepository.UpdateAsync(blindbox);
+                await _unitOfWork.SaveChanges();
                 await _unitOfWork.CommitTransactionAsync();
 
                 return true;
