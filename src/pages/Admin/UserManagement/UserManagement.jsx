@@ -9,12 +9,13 @@ import {
     SearchOutlined,
     PlusOutlined,
 } from '@ant-design/icons';
-import UserManagermentCreate from "./UserManagermentCreate";
-import UserManagermentEdit from "./UserManagermentEdit";
-
+import UserManagermentCreate from "./UserManagementCreate";
+import UserManagermentEdit from "./UserManagementEdit";
+import { useNavigate } from 'react-router-dom';
 const { Search } = Input;
 
-const UserManagerment = () => {
+const UserManagement = () => {
+    const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
     const [search, setSearch] = useState("");
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -44,9 +45,12 @@ const UserManagerment = () => {
         setSelectedUser(record);
         setIsModalVisible(true);
     };
+    const handleViewUser = (record) => {
+        navigate(`/admin/usermanagerment-details/${record.key}`);
+    };
 
-    const handleDeleteUser = (key) => {
-        setUserToDelete(key);
+    const handleDeleteUser = (record) => {
+        setUserToDelete(record);
         setIsDeleteModalVisible(true);
     };
 
@@ -97,7 +101,9 @@ const UserManagerment = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <EyeOutlined style={{ color: "blue", fontSize: '20px' }} />
+                    <EyeOutlined style={{ color: "blue", fontSize: '20px' }}
+                        onClick={() => handleViewUser(record)}
+                    />
                     <EditOutlined
                         style={{ color: "orange", fontSize: '20px' }}
                         onClick={() => handleEditUser(record)}
@@ -120,7 +126,7 @@ const UserManagerment = () => {
                     style={{ width: 300 }}
                     onChange={(e) => setSearch(e.target.value)}
                 />
-                <Button type="primary" icon={<PlusOutlined />} onClick={handleAddUser}>
+                <Button className="bg-blue-500 text-white px-4 py-2 rounded mt-8" icon={<PlusOutlined />} onClick={handleAddUser}>
                     Add New User
                 </Button>
             </div>
@@ -178,4 +184,4 @@ const UserManagerment = () => {
     );
 };
 
-export default UserManagerment;
+export default UserManagement;

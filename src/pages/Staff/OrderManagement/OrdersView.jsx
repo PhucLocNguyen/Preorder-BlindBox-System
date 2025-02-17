@@ -1,22 +1,30 @@
 import React, { useState } from "react";
-import { DownOutlined, UserOutlined } from '@ant-design/icons';
-import { Menu, Dropdown } from 'antd';
+import { Dropdown, Pagination } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Link } from "react-router";
-
+import { GetAllOrder } from "../../../api/Order/ApiOrder";
+import useFetchData from "../../../hooks/useFetchData";
 const NavBarStaff = () => {
-    const orders = [
-        { id: 1, orderId: 675902, date: '17 Jan, 2024', items: 10, price: '$376.00', paid: 'Yes', address: 'Beaverton, OR 97005', status: 'Complete' },
-        { id: 2, orderId: 675909, date: '1 Feb, 2024', items: 22, price: '$210.00', paid: 'No', address: 'Savannah, GA 31404', status: 'Pending' },
-        { id: 3, orderId: 675912, date: '2 Feb, 2024', items: 12, price: '$320.00', paid: 'No', address: 'Tucson, AZ 85756', status: 'Cancelled' },
-        { id: 4, orderId: 675588, date: '17 Mar, 2024', items: 10, price: '$510.00', paid: 'Yes', address: '1201 Geneva', status: 'Complete' },
-        { id: 5, orderId: 675978, date: '23 Mar, 2024', items: 22, price: '$120.00', paid: 'Yes', address: 'Morrisville, NC 27560', status: 'Complete' },
-        { id: 6, orderId: 675979, date: '12 Apr, 2024', items: 13, price: '$420.00', paid: 'Yes', address: 'Beachside, NC 444', status: 'Pending' },
-        { id: 7, orderId: 675925, date: '22 Apr, 2024', items: 12, price: '$120.00', paid: 'No', address: 'Orchard Park, CO 333', status: 'Pending' },
-        { id: 8, orderId: 675125, date: '21 May, 2024', items: 15, price: '$140.00', paid: 'Yes', address: 'Maplewood, NJ 678', status: 'Complete' },
-        { id: 9, orderId: 675879, date: '22 Jun, 2024', items: 16, price: '$152.00', paid: 'Yes', address: 'Mountainview, WA 598', status: 'Complete' },
-        { id: 10, orderId: 675369, date: '24 Jul, 2024', items: 17, price: '$421.00', paid: 'Yes', address: 'Anytown, USA 201', status: 'Cancelled' },
-    ];
+    const [pageSize, setPageSize] = useState(10);
+    const [pageIndex, setPageIndex] = useState(1);
+
+    const { data: orders, loading, refetch } = useFetchData(GetAllOrder);
+    const handleNextPage = () => {
+        setPageIndex(prev => prev + 1);
+    };
+    const handleChangePageSize = (size) => {
+        setPageSize(size);
+        setPageIndex(1); // Reset về trang đầu khi đổi kích thước trang
+    };
+    const itemRender = (_, type, originalElement) => {
+        if (type === 'prev') {
+            return <a>Previous</a>;
+        }
+        if (type === 'next') {
+            return <a>Next</a>;
+        }
+        return originalElement;
+    };
 
     const [search, setSearch] = useState("");
 
@@ -55,38 +63,34 @@ const NavBarStaff = () => {
                         <thead>
                             <tr className="text-gray-500">
                                 <th className="px-2 py-1">#</th>
-                                <th className="px-2 py-1">Order ID</th>
                                 <th className="px-2 py-1">Date</th>
                                 <th className="px-2 py-1">Items</th>
                                 <th className="px-2 py-1">Price</th>
-                                <th className="px-2 py-1">Paid</th>
+                                <th className="px-2 py-1">Receiver</th>
                                 <th className="px-2 py-1">Address</th>
                                 <th className="px-2 py-1">Status</th>
                                 <th className="px-2 py-1">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {orders
-                                .filter(order => order.orderId.toString().includes(search))
-                                .map((order) => (
-                                    <tr key={order.id} className="border-t">
-                                        <td className="px-2 py-2">{order.id}</td>
-                                        <td className="px-2 py-2">{order.orderId}</td>
-                                        <td className="px-2 py-2">{order.date}</td>
-                                        <td className="px-2 py-2">{order.items}</td>
-                                        <td className="px-2 py-2">{order.price}</td>
+                            {loading ? (<tr>
+                                <th>loading</th>
+                                <th></th>
+                            </tr>) : orders
+                                // .filter(order => order.orderId.toString().includes(search))
+                                .map((orders, index) => (
+                                    <tr key={index} className="border-t">
+                                        <td className="px-2 py-2">{index + 1}</td>
+                                        <td className="px-2 py-2">{orders.createdDate}</td>
+                                        <td className="px-2 py-2">{orders.totalItems}</td>
+                                        <td className="px-2 py-2">{orders.amount} VND</td>
+                                        <td className="px-2 py-2">{orders.receiver}</td>
+                                        <td className="px-2 py-2">{orders.receiverAddress}</td>
                                         <td
-                                            className={`px-2 py-2 ${order.paid === 'Yes' ? 'text-green-500' : 'text-red-500'
+                                            className={`px-2 py-2 ${orders.status === 'Completed' ? 'text-green-500' : 'text-red-500'
                                                 }`}
                                         >
-                                            {order.paid}
-                                        </td>
-                                        <td className="px-2 py-2">{order.address}</td>
-                                        <td
-                                            className={`px-2 py-2 ${order.status === 'Complete' ? 'text-green-500' : 'text-red-500'
-                                                }`}
-                                        >
-                                            {order.status}
+                                            {orders.status}
                                         </td>
                                         <td className="px-2 py-2 text-center align-middle">
                                             <Dropdown
@@ -96,7 +100,7 @@ const NavBarStaff = () => {
                                                             key: "0",
                                                             label: (
                                                                 <Link
-                                                                    to={`${order.id}`}
+                                                                    to={`${orders.orderId}`}
                                                                     className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                                 >
                                                                     <EditOutlined /> <span>Edit order</span>
@@ -135,13 +139,14 @@ const NavBarStaff = () => {
                                         </td>
                                     </tr>
                                 ))}
+
                         </tbody>
                     </table>
                 </div>
 
 
                 <div className="flex justify-between items-center mt-4 p-4 bg-white shadow rounded">
-                    <div className="text-gray-500">Showing 1 to 10 of 256 entries</div>
+                    {/* <div className="text-gray-500">Showing 1 to 10 of 256 entries</div>
                     <div className="flex items-center space-x-2">
                         <button className="px-3 py-1 border rounded text-gray-500">Back</button>
                         <button className="px-3 py-1 border rounded bg-blue-500 text-white">1</button>
@@ -149,7 +154,8 @@ const NavBarStaff = () => {
                         <button className="px-3 py-1 border rounded text-gray-500">3</button>
                         <button className="px-3 py-1 border rounded text-gray-500">4</button>
                         <button className="px-3 py-1 border rounded text-gray-500">Next</button>
-                    </div>
+                    </div> */}
+                    <Pagination total={60} itemRender={itemRender} />;
                 </div>
             </div>
         </div>

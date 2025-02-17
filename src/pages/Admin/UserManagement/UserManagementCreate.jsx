@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button, Row, Col, Card, DatePicker, message } from 'antd';
-import GradientButton from "../../components/Buttons/GradientButton";
-const UserManagermentCreate = ({ onSuccess }) => {
+
+const UserManagementCreate = ({ onSuccess }) => {
     const onFinish = (values) => {
         onSuccess();
     };
@@ -106,17 +106,17 @@ const UserManagermentCreate = ({ onSuccess }) => {
                     >
                         Cancel
                     </Button>
-                    <GradientButton
+                    <Button
                         type="primary"
                         htmlType="submit"
                         size="large"
                     >
                         Create
-                    </GradientButton>
+                    </Button>
                 </div>
             </Form>
         </Card>
     );
 };
 
-export default UserManagermentCreate;
+export default UserManagementCreate;

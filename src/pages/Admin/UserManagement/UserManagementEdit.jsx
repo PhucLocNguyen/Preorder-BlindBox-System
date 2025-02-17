@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button, Row, Col, Card, DatePicker, message } from 'antd';
-import GradientButton from "../../components/Buttons/GradientButton";
-const UserManagermentEdit = ({ onSuccess }) => {
+
+const UserManagementEdit = ({ onSuccess }) => {
     const onFinish = (values) => {
         onSuccess();
     };
@@ -119,4 +119,4 @@ const UserManagermentEdit = ({ onSuccess }) => {
     );
 };
 
-export default UserManagermentEdit;
+export default UserManagementEdit;
