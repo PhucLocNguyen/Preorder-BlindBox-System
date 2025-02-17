@@ -13,7 +13,7 @@ const ProductsView = () => {
     () => GetTheActiveBlindBox(pageSize, pageIndex),
     [pageSize, pageIndex]
   );
-  const { data, loading, refetch, pagination, updatePagination } = useFetchData(
+  const { data, loading, refetch, pagination } = useFetchData(
     fetchBlindBoxes,
     [pageSize, pageIndex]
   );
