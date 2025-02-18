@@ -1,9 +1,9 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   EditBlindBox,
   GetActiveBlindBoxById,
 } from "../../../api/BlindBox/ApiBlindBox";
-import { Button, Form, Input, Select, Upload } from "antd";
+import { Button, Form, Image, Input, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 
@@ -15,7 +15,7 @@ function ProductEdit() {
   const [galleryImages, setGalleryImages] = useState([]);
   const [detailBlindBox, setDetailBlindBox] = useState({});
   const [deleteImagesIDGallery, setDeleteImagesGallery] = useState([]);
-
+  const navigate = useNavigate();
   const getDetailBlindBox = async () => {
     var data = await GetActiveBlindBoxById(id);
     console.log("BlindBox data:", data); // Kiểm tra
@@ -28,7 +28,9 @@ function ProductEdit() {
   const handleMainImageChange = ({ file }) => {
     setMainImage(file);
   };
-
+  const handleGalleryImagesChange = ({ fileList }) => {
+    setGalleryImages(fileList.map((file) => file.originFileObj));
+  };
   const handleSubmit = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -38,9 +40,13 @@ function ProductEdit() {
     galleryImages.forEach((file, index) => {
       formData.append(`galleryImages`, file);
     });
-    formData.append("deletedGalleryImagesID", deleteImagesIDGallery);
+    console.log(galleryImages);
+    if (deleteImagesIDGallery.length > 0) {
+      formData.append("deletedGalleryImagesID", deleteImagesIDGallery);
+    }
     console.log(formData);
     var result = await EditBlindBox({ formData, id });
+    navigate("/staff/products");
     console.log(result);
   };
   const deleteOldImageAction = (id) => {
@@ -80,6 +86,7 @@ function ProductEdit() {
                 {/* Description */}
                 <Form.Item
                   label="Mô tả"
+                  
                   name="description"
                   rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
                 >
@@ -102,53 +109,63 @@ function ProductEdit() {
                 </Form.Item>
 
                 {/* Gallery Images */}
-                <Form.Item label="Ảnh phụ">
+                <Form.Item label="Ảnh phụ" name="">
                   <Upload
                     multiple
                     listType="picture-card"
                     accept="image/*"
                     beforeUpload={() => false}
-                    onChange={({ fileList: newFileList }) => {
-                      setGalleryImages(newFileList);
-                    }}
+                    onChange={handleGalleryImagesChange}
                   >
                     <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                   </Upload>
                   <div className="flex flex-row  h-fit ">
-                    {!(
-                      detailBlindBox != null &&
-                      detailBlindBox.images?.galleryImages != null
-                    ) ? (
-                      <div>There are no images please upload for view</div>
-                    ) : (
-                      detailBlindBox.images.galleryImages.map((item, index) => {
-                        return (
-                          <span
-                            className={
-                              "relative  w-[100px] h-[100px] " +
-                              (deleteImagesIDGallery.includes(item.imageId)
-                                ? "hidden"
-                                : "")
-                            }
-                          >
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                deleteOldImageAction(item.imageId);
-                              }}
-                              className="absolute top-1 right-1 text-white bg-red-500 hover:bg-red-600 
+                    <Image.PreviewGroup
+                      preview={{
+                        onChange: (current, prev) =>
+                          console.log(
+                            `current index: ${current}, prev index: ${prev}`
+                          ),
+                      }}
+                    >
+                      {!(
+                        detailBlindBox != null &&
+                        detailBlindBox.images?.galleryImages != null
+                      ) ? (
+                        <div>There are no images please upload for view</div>
+                      ) : (
+                        detailBlindBox.images.galleryImages.map(
+                          (item, index) => {
+                            return (
+                              <span
+                                className={
+                                  "relative  w-[100px] h-[100px] " +
+                                  (deleteImagesIDGallery.includes(item.imageId)
+                                    ? "hidden"
+                                    : "")
+                                }
+                              >
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    deleteOldImageAction(item.imageId);
+                                  }}
+                                  className="absolute z-10 top-1 right-1 text-white bg-red-500 hover:bg-red-600 
                                          rounded-full w-5 h-5 flex items-center justify-center 
                                          leading-none text-xs"
-                            >
-                              X
-                            </button>
-                            <img key={item.imageId} src={item.url} />
-                          </span>
-                        );
-                      })
-                    )}
+                                >
+                                  X
+                                </button>
+
+                                <Image key={item.imageId} src={item.url} />
+                              </span>
+                            );
+                          }
+                        )
+                      )}
+                    </Image.PreviewGroup>
                   </div>
                 </Form.Item>
               </div>
@@ -186,7 +203,6 @@ function ProductEdit() {
                   )}
                 </Form.Item>
                 {/* Submit Button */}
-                <Form.Item>
                   <Button
                     type="primary"
                     htmlType="submit"
@@ -195,7 +211,6 @@ function ProductEdit() {
                   >
                     Lưu
                   </Button>
-                </Form.Item>
               </div>
             </div>
           </div>

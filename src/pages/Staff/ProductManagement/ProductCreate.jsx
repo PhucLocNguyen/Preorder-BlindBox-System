@@ -3,11 +3,13 @@ const { Option } = Select;
 import { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { CreateBlindBox } from "../../../api/BlindBox/ApiBlindBox";
+import { useNavigate } from "react-router";
 function ProductCreate() {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [mainImage, setMainImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
+  const navigate = useNavigate();
   const handleMainImageChange = ({ file }) => {
     setMainImage(file);
   };
@@ -25,87 +27,101 @@ function ProductCreate() {
       formData.append(`galleryImages`, file);
     });
     var result = await CreateBlindBox({ formData });
+    navigate("/staff/products");
   };
   return (
     <div>
       <div className="w-full min-h-screen mx-auto mt-5 p-5 bg-white shadow-lg rounded-lg">
-        <h2 className="text-xl font-bold mb-4">Tạo Blind Box Mới</h2>
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          {/* Name */}
-          <Form.Item
-            label="Tên sản phẩm"
-            name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm!" }]}
-          >
-            <Input placeholder="Nhập tên sản phẩm" />
-          </Form.Item>
+          <div className="grid grid-cols-12 gap-4 min-h-screen mx-auto mt-5 p-5 bg-[#e5e7eb] shadow-lg rounded-lg">
+            <div className="col-span-9 ">
+              <div className="bg-white  p-4 rounded-lg">
+                <h2 className="text-xl font-bold mb-4">Tạo Blind Box Mới</h2>
 
-          {/* Description */}
-          <Form.Item
-            label="Mô tả"
-            name="description"
-            rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
-          >
-            <Input.TextArea placeholder="Nhập mô tả sản phẩm" rows={4} />
-          </Form.Item>
+                {/* Name */}
+                <Form.Item
+                  label="Tên sản phẩm"
+                  name="name"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập tên sản phẩm!" },
+                  ]}
+                >
+                  <Input placeholder="Nhập tên sản phẩm" />
+                </Form.Item>
 
-          {/* Size */}
-          <Form.Item
-            label="Kích thước"
-            name="size"
-            rules={[{ required: true, message: "Vui lòng chọn kích thước!" }]}
-          >
-            <Select placeholder="Chọn kích thước">
-              <Select.Option value="Small">Nhỏ</Select.Option>
-              <Select.Option value="Medium">Trung bình</Select.Option>
-              <Select.Option value="Large">Lớn</Select.Option>
-            </Select>
-          </Form.Item>
+                {/* Description */}
+                <Form.Item
+                  label="Mô tả"
+                  name="description"
+                  rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
+                >
+                  <Input.TextArea placeholder="Nhập mô tả sản phẩm" rows={4} />
+                </Form.Item>
 
-          {/* Main Image */}
-          <Form.Item label="Ảnh chính">
-            <Upload
-              beforeUpload={() => false} // Ngăn upload tự động
-              onChange={handleMainImageChange}
-              showUploadList={false} // Không hiển thị danh sách ảnh
-            >
-              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-            </Upload>
-            {mainImage && (
-              <div className="mt-2">
-                <img
-                  src={URL.createObjectURL(mainImage)}
-                  alt="Main"
-                  className="w-32 h-32 object-cover mt-2 rounded-md"
-                />
+                {/* Size */}
+                <Form.Item
+                  label="Kích thước"
+                  name="size"
+                  rules={[
+                    { required: true, message: "Vui lòng chọn kích thước!" },
+                  ]}
+                >
+                  <Select placeholder="Chọn kích thước">
+                    <Select.Option value="Small">Nhỏ</Select.Option>
+                    <Select.Option value="Medium">Trung bình</Select.Option>
+                    <Select.Option value="Large">Lớn</Select.Option>
+                  </Select>
+                </Form.Item>
+
+                {/* Gallery Images */}
+                <Form.Item label="Ảnh phụ">
+                  <Upload
+                    multiple
+                    listType="picture-card"
+                    accept="jpg,png,jpeg"
+                    beforeUpload={() => false}
+                    onChange={handleGalleryImagesChange}
+                  >
+                    <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                  </Upload>
+                </Form.Item>
               </div>
-            )}
-          </Form.Item>
-
-          {/* Gallery Images */}
-          <Form.Item label="Ảnh phụ">
-            <Upload
-              multiple
-              listType="picture-card"
-              accept="jpg,png,jpeg"
-              beforeUpload={() => false}
-              onChange={handleGalleryImagesChange}
-            >
-              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-            </Upload>
-          </Form.Item>
-
-          {/* Submit Button */}
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              className="w-full"
-            >
-              Tạo sản phẩm
-            </Button>
-          </Form.Item>
+            </div>
+            <div className="col-span-3">
+              {/* Main Image */}
+              <div className="py-10 bg-white px-4 rounded-lg">
+                <Form.Item label="Ảnh chính">
+                  <Upload
+                    beforeUpload={() => false} // Ngăn upload tự động
+                    onChange={handleMainImageChange}
+                    showUploadList={false} // Không hiển thị danh sách ảnh
+                  >
+                    <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                  </Upload>
+                  {mainImage && (
+                    <div className="mt-2">
+                      <img
+                        src={URL.createObjectURL(mainImage)}
+                        alt="Main"
+                        className="w-full h-[300px] object-contain mt-2 rounded-md"
+                      />
+                    </div>
+                  )}
+                </Form.Item>
+                {/* Submit Button */}
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    className="w-full"
+                  >
+                    Tạo sản phẩm
+                  </Button>
+                </Form.Item>
+              </div>
+            </div>
+          </div>
         </Form>
       </div>
     </div>
