@@ -176,6 +176,7 @@ namespace PreOrderBlindBox.Services.Services
                 }
                 blindbox.IsDeleted = true;
                 await _blindBoxRepository.UpdateAsync(blindbox);
+                await _unitOfWork.SaveChanges();
                 return true;
             }
             catch (Exception e)

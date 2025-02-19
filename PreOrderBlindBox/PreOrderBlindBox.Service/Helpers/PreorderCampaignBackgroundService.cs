@@ -36,7 +36,7 @@ namespace PreOrderBlindBox.Services.Helpers
                     }
 
                     await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-                }
+                    }
                 catch (Exception ex)
                 {
                     _logger.LogError($"Error occurred while updating preorder campaigns: {ex.Message}");

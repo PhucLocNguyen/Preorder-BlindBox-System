@@ -16,6 +16,7 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.BlindBoxModel
         public string Size { get; set; }
         public IFormFile? MainImage { get; set; }
         public List<IFormFile>? GalleryImages { get; set; }
-        public List<int>? DeletedGalleryImagesID { get; set; }
+
+        public List<int>? DeletedGalleryImagesID { get; set; } = new List<int>();
     }
 }
