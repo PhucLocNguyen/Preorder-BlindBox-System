@@ -6,10 +6,10 @@ import {
   DeleteBlindBoxById,
   GetTheActiveBlindBox,
 } from "../../../api/BlindBox/ApiBlindBox";
-import useFetchData from "../../../hooks/useFetchData";
 import noThumbnailImage from "../../../assets/noThumbnailImage.jpg";
 import { Modal } from "antd";
 import { Link } from "react-router";
+import useFetchDataPagination from "../../../hooks/useFetchDataPagination";
 const ProductsView = () => {
   const [pageSize, setPageSize] = useState(4);
   const [pageIndex, setPageIndex] = useState(1);
@@ -22,7 +22,7 @@ const ProductsView = () => {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data, loading, refetch, pagination } = useFetchData(fetchBlindBoxes, [
+  const { data, loading, refetch, pagination } = useFetchDataPagination(fetchBlindBoxes, [
     pageSize,
     pageIndex,
   ]);
