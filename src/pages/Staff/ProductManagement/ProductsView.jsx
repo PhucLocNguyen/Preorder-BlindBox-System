@@ -5,7 +5,7 @@ import { GetTheActiveBlindBox } from "../../../api/BlindBox/ApiBlindBox";
 import useFetchData from "../../../hooks/useFetchData";
 import noThumbnailImage from "../../../assets/noThumbnailImage.jpg"
 const ProductsView = () => {
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [pageIndex, setPageIndex] = useState(1);
 
   // useCallback để truyền fetchCallback có tham số
@@ -65,7 +65,7 @@ const ProductsView = () => {
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Quản lý Blind box</h2>
         <div>
-          <Button href="product/create/">Thêm sản phẩm</Button>
+          <Button className="text-xl p-4" href="product/create/">Thêm sản phẩm</Button>
         </div>
       </div>
 

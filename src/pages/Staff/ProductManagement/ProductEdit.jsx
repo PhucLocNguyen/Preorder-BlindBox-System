@@ -1,9 +1,9 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   EditBlindBox,
   GetActiveBlindBoxById,
 } from "../../../api/BlindBox/ApiBlindBox";
-import { Button, Form, Input, Select, Upload } from "antd";
+import { Button, Form, Image, Input, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 
@@ -15,7 +15,7 @@ function ProductEdit() {
   const [galleryImages, setGalleryImages] = useState([]);
   const [detailBlindBox, setDetailBlindBox] = useState({});
   const [deleteImagesIDGallery, setDeleteImagesGallery] = useState([]);
-
+  const navigate = useNavigate();
   const getDetailBlindBox = async () => {
     var data = await GetActiveBlindBoxById(id);
     console.log("BlindBox data:", data); // Kiểm tra
@@ -28,7 +28,9 @@ function ProductEdit() {
   const handleMainImageChange = ({ file }) => {
     setMainImage(file);
   };
-
+  const handleGalleryImagesChange = ({ fileList }) => {
+    setGalleryImages(fileList.map((file) => file.originFileObj));
+  };
   const handleSubmit = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -38,151 +40,182 @@ function ProductEdit() {
     galleryImages.forEach((file, index) => {
       formData.append(`galleryImages`, file);
     });
-    formData.append("deletedGalleryImagesID", deleteImagesIDGallery);
+    console.log(galleryImages);
+    if (deleteImagesIDGallery.length > 0) {
+      formData.append("deletedGalleryImagesID", deleteImagesIDGallery);
+    }
     console.log(formData);
     var result = await EditBlindBox({ formData, id });
+    navigate("/staff/products");
     console.log(result);
   };
-  const deleteOldImageAction = (id)=>{
-    var arrDeleteImagesId = [...deleteImagesIDGallery,id];
+  const deleteOldImageAction = (id) => {
+    var arrDeleteImagesId = [...deleteImagesIDGallery, id];
     setDeleteImagesGallery(arrDeleteImagesId);
-  }
+  };
   return loading ? (
     <div>Loading....</div>
   ) : (
     <div>
-      <h2>
-        <div>
-          <div className="w-full min-h-screen mx-auto mt-5 p-5 bg-white shadow-lg rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Chỉnh sửa blind box</h2>
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleSubmit}
-              initialValues={{
-                name: detailBlindBox.name,
-                description: detailBlindBox.description,
-                size: detailBlindBox.size,
-              }}
-            >
-              {/* Name */}
-              <Form.Item
-                label="Tên sản phẩm"
-                name="name"
-                rules={[
-                  { required: true, message: "Vui lòng nhập tên sản phẩm!" },
-                ]}
-              >
-                <Input placeholder="Nhập tên sản phẩm" />
-              </Form.Item>
-
-              {/* Description */}
-              <Form.Item
-                label="Mô tả"
-                name="description"
-                rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
-              >
-                <Input.TextArea placeholder="Nhập mô tả sản phẩm" rows={4} />
-              </Form.Item>
-
-              {/* Size */}
-              <Form.Item
-                label="Kích thước"
-                name="size"
-                rules={[
-                  { required: true, message: "Vui lòng chọn kích thước!" },
-                ]}
-              >
-                <Select placeholder="Chọn kích thước">
-                  <Select.Option value="Small">Nhỏ</Select.Option>
-                  <Select.Option value="Medium">Trung bình</Select.Option>
-                  <Select.Option value="Large">Lớn</Select.Option>
-                </Select>
-              </Form.Item>
-
-              {/* Main Image */}
-              <Form.Item label="Ảnh chính" name="mainImage">
-                <Upload
-                  beforeUpload={() => false} // Ngăn upload tự động
-                  onChange={handleMainImageChange}
-                  showUploadList={false} // Không hiển thị danh sách ảnh
+      <div>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          initialValues={{
+            name: detailBlindBox.name,
+            description: detailBlindBox.description,
+            size: detailBlindBox.size,
+          }}
+        >
+          <div className="grid grid-cols-12 gap-4 min-h-screen mx-auto mt-5 p-5 bg-[#e5e7eb] shadow-lg rounded-lg">
+            <div className="col-span-9 ">
+              <div className="bg-white  p-4 rounded-lg">
+                <h2 className="text-4xl font-bold mb-4">Chỉnh sửa blind box</h2>
+                {/* Name */}
+                <Form.Item
+                  label="Tên sản phẩm"
+                  name="name"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập tên sản phẩm!" },
+                  ]}
                 >
-                  <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-                </Upload>
-                {mainImage && (
-                  <div className="mt-2">
-                    <img
-                      src={URL.createObjectURL(mainImage)}
-                      alt="Main"
-                      className="w-32 h-32 object-cover mt-2 rounded-md"
-                    />
-                  </div>
-                )}
-              </Form.Item>
+                  <Input placeholder="Nhập tên sản phẩm" />
+                </Form.Item>
 
-              {/* Gallery Images */}
-              <Form.Item label="Ảnh phụ">
-                <Upload
-                  multiple
-                  listType="picture-card"
-                  accept="image/*"
-                  beforeUpload={() => false}
-                  onChange={({ fileList: newFileList }) => {
-                    setGalleryImages(newFileList);
-                  }}
+                {/* Description */}
+                <Form.Item
+                  label="Mô tả"
+                  
+                  name="description"
+                  rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
                 >
-                  <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-                </Upload>
-                <div className="flex flex-row  h-fit ">
-                  {!(
-                    detailBlindBox != null &&
-                    detailBlindBox.images?.galleryImages != null
-                  ) ? (
-                    <div>There are no images please upload for view</div>
-                  ) : (
-                    detailBlindBox.images.galleryImages.map((item, index) => {
-                      return (
-                        <span className={
-                            "relative  w-[100px] h-[100px] " + 
-                            (deleteImagesIDGallery.includes(item.imageId) ? "hidden" : "")
-                          }>
-                            <button 
-                              type="button" 
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                deleteOldImageAction(item.imageId);
-                              }} 
-                              className="absolute top-1 right-1 text-white bg-red-500 hover:bg-red-600 
+                  <Input.TextArea placeholder="Nhập mô tả sản phẩm" rows={4} />
+                </Form.Item>
+
+                {/* Size */}
+                <Form.Item
+                  label="Kích thước"
+                  name="size"
+                  rules={[
+                    { required: true, message: "Vui lòng chọn kích thước!" },
+                  ]}
+                >
+                  <Select placeholder="Chọn kích thước">
+                    <Select.Option value="Small">Nhỏ</Select.Option>
+                    <Select.Option value="Medium">Trung bình</Select.Option>
+                    <Select.Option value="Large">Lớn</Select.Option>
+                  </Select>
+                </Form.Item>
+
+                {/* Gallery Images */}
+                <Form.Item label="Ảnh phụ" name="">
+                  <Upload
+                    multiple
+                    listType="picture-card"
+                    accept="image/*"
+                    beforeUpload={() => false}
+                    onChange={handleGalleryImagesChange}
+                  >
+                    <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                  </Upload>
+                  <div className="flex flex-row  h-fit ">
+                    <Image.PreviewGroup
+                      preview={{
+                        onChange: (current, prev) =>
+                          console.log(
+                            `current index: ${current}, prev index: ${prev}`
+                          ),
+                      }}
+                    >
+                      {!(
+                        detailBlindBox != null &&
+                        detailBlindBox.images?.galleryImages != null
+                      ) ? (
+                        <div>There are no images please upload for view</div>
+                      ) : (
+                        detailBlindBox.images.galleryImages.map(
+                          (item, index) => {
+                            return (
+                              <span
+                                className={
+                                  "relative  w-[100px] h-[100px] " +
+                                  (deleteImagesIDGallery.includes(item.imageId)
+                                    ? "hidden"
+                                    : "")
+                                }
+                              >
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    deleteOldImageAction(item.imageId);
+                                  }}
+                                  className="absolute z-10 top-1 right-1 text-white bg-red-500 hover:bg-red-600 
                                          rounded-full w-5 h-5 flex items-center justify-center 
                                          leading-none text-xs"
-                            >
-                              X
-                            </button>
-                            <img key={item.imageId} src={item.url} />
-                          </span>
-                          
-                      );
-                    })
-                  )}
-                </div>
-              </Form.Item>
+                                >
+                                  X
+                                </button>
 
-              {/* Submit Button */}
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={loading}
-                  className="w-full"
-                >
-                  Chỉnh sửa
-                </Button>
-              </Form.Item>
-            </Form>
+                                <Image key={item.imageId} src={item.url} />
+                              </span>
+                            );
+                          }
+                        )
+                      )}
+                    </Image.PreviewGroup>
+                  </div>
+                </Form.Item>
+              </div>
+            </div>
+            <div className="col-span-3">
+              {/* Main Image */}
+              <div className="py-10 bg-white px-4 rounded-lg">
+                <Form.Item name="mainImage">
+                  <label className="block text-2xl text-black">Ảnh chính</label>
+                  <Upload
+                    beforeUpload={() => false} // Ngăn upload tự động
+                    onChange={handleMainImageChange}
+                    showUploadList={false} // Không hiển thị danh sách ảnh
+                  >
+                    <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                  </Upload>
+                  {}
+                  {detailBlindBox.images.mainImage != null &&
+                  mainImage == null ? (
+                    <div className="mt-2">
+                      <img
+                        src={detailBlindBox.images.mainImage.url}
+                        alt="Main"
+                        className="w-full h-[300px] object-contain mt-2 rounded-md"
+                      />
+                    </div>
+                  ) : (
+                    <div className="mt-2">
+                      <img
+                        src={URL.createObjectURL(mainImage)}
+                        alt="Main"
+                        className="w-full h-[300px] object-contain mt-2 rounded-md"
+                      />
+                    </div>
+                  )}
+                </Form.Item>
+                {/* Submit Button */}
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    className="w-full text-lg py-4"
+                  >
+                    Lưu
+                  </Button>
+              </div>
+            </div>
           </div>
-        </div>
-      </h2>
+        </Form>
+      </div>
     </div>
   );
 }
