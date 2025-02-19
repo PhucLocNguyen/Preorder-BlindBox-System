@@ -31,22 +31,21 @@ const submenuItems = {
 
 export default function Navbar() {
 	const [activeSubmenu, setActiveSubmenu] = useState('');
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	return (
 		<div className='flex flex-col'>
 			{/* Top Navigation */}
-			<nav className='bg-black text-white'>
-				<div className='mx-auto container-lg flex max-w-7xl items-center justify-between px-4 py-3 lg:justify-start lg:space-x-8'>
+			<nav className='text-white bg-black'>
+				<div className='flex items-center justify-between px-4 py-3 mx-auto container-lg max-w-7xl lg:justify-start lg:space-x-8'>
 					{/* Mobile Menu Button */}
 					<Sheet>
 						<SheetTrigger asChild>
 							<Button variant='ghost' size='icon' className='lg:hidden'>
-								<Menu className='h-6 w-6 text-white' />
+								<Menu className='w-6 h-6 text-white' />
 							</Button>
 						</SheetTrigger>
 						<SheetContent side='left' className='w-[300px] p-0'>
-							<div className='border-b p-4'>
+							<div className='p-4 border-b'>
 								<h2 className='text-lg font-semibold'>Menu</h2>
 							</div>
 							{/* Mobile Navigation Links */}
@@ -60,9 +59,9 @@ export default function Navbar() {
 								<div className='mt-4 space-y-2'>
 									{categories.map((category) => (
 										<Collapsible key={category.name}>
-											<CollapsibleTrigger className='flex w-full items-center justify-between py-2 text-sm hover:text-gray-500'>
+											<CollapsibleTrigger className='flex items-center justify-between w-full py-2 text-sm hover:text-gray-500'>
 												{category.name}
-												{category.hasSubmenu && <ChevronRight className='h-4 w-4' />}
+												{category.hasSubmenu && <ChevronRight className='w-4 h-4' />}
 											</CollapsibleTrigger>
 											{category.hasSubmenu && (
 												<CollapsibleContent>
@@ -87,7 +86,7 @@ export default function Navbar() {
 					</Sheet>
 
 					{/* Desktop Navigation */}
-					<div className='hidden lg:flex lg:space-x-8 py-4'>
+					<div className='hidden py-4 lg:flex lg:space-x-8'>
 						{mainNavItems.map((item) => (
 							<Link key={item} to='#' className='text-sm hover:text-gray-300'>
 								{item}
@@ -98,46 +97,9 @@ export default function Navbar() {
 			</nav>
 
 			<div className='flex flex-col lg:flex-row container-lg !px-0 md:px-4 !py-4'>
-				{/* Left Sidebar - Hidden on mobile */}
-				<div className='hidden lg:block lg:w-1/3'>
-					<div className='space-y-1 divide-y shadow-lg'>
-						{categories.map((category) => (
-							<div
-								key={category.name}
-								className='relative'
-								onMouseEnter={() => category.hasSubmenu && setActiveSubmenu(category.name)}
-								onMouseLeave={() => setActiveSubmenu(null)}
-							>
-								<Link
-									to='#'
-									className='flex items-center justify-between px-4 py-2 text-sm hover:bg-gray-100'
-								>
-									{category.name}
-									{category.hasSubmenu && <ChevronRight className='h-4 w-4' />}
-								</Link>
-
-								{/* Desktop Submenu */}
-								{activeSubmenu === category.name && (
-									<div className='absolute left-full top-0 z-50 w-full border bg-white p-1 shadow-lg'>
-										{submenuItems[category.name].map((item) => (
-											<Link
-												key={item}
-												to='#'
-												className='block px-4 py-2 text-sm hover:bg-gray-100'
-											>
-												{item}
-											</Link>
-										))}
-									</div>
-								)}
-							</div>
-						))}
-					</div>
-				</div>
-
 				{/* Main Content */}
-				<main className='w-full lg:w-3/5'>
-					<div className='relative text-center w-full'>
+				<main className='w-full'>
+					<div className='relative w-full text-center'>
 						<Swiper
 							spaceBetween={0}
 							effect={'fade'}
@@ -145,56 +107,36 @@ export default function Navbar() {
 								delay: 2500,
 							}}
 							modules={[Autoplay, EffectFade]}
-							className='mySwiper object-contain h-72 lg:h-[365px]'
+							className='mySwiper object-contain h-72 lg:h-[500px]'
 							loop
 						>
 							<SwiperSlide>
 								<img
 									src='https://bizweb.dktcdn.net/100/357/932/themes/725376/assets/slider_3.jpg?1739335696080'
-									className='h-full w-full'
+									className='w-full h-full'
 								/>
 							</SwiperSlide>
 							<SwiperSlide>
 								<img
 									src='https://bizweb.dktcdn.net/100/357/932/themes/725376/assets/slider_5.jpg?1739335696080'
-									className='h-full w-full'
+									className='w-full h-full'
 								/>
 							</SwiperSlide>
 							<SwiperSlide>
 								<img
 									src='https://bizweb.dktcdn.net/100/357/932/themes/725376/assets/slider_1.jpg?1739335696080'
-									className='h-full w-full'
+									className='w-full h-full'
 								/>
 							</SwiperSlide>
 							<SwiperSlide>
 								<img
 									src='https://bizweb.dktcdn.net/100/357/932/themes/725376/assets/slider_2.jpg?1739335696080'
-									className='h-full w-full'
+									className='w-full h-full'
 								/>
 							</SwiperSlide>
 						</Swiper>
 					</div>
 				</main>
-
-				{/* Right Sidebar */}
-				<div className='lg:w-1/3'>
-					<div className='h-full flex flex-col justify-between pt-4 px-4'>
-						<h2 className='mb-4 text-center font-semibold text-sm'>CHẤT LƯỢNG TỐT NHẤT</h2>
-						<div className='grid grid-cols-2 gap-4'>
-							<ServiceCard icon={<CreditCard className='h-8 w-8' />} title='Thanh toán khi nhận hàng' />
-							<ServiceCard icon={<Clock className='h-8 w-8' />} title='Giao hàng trong 24H' />
-							<ServiceCard icon={<RefreshCw className='h-8 w-8' />} title='Sản phẩm đổi trả miễn phí' />
-							<ServiceCard icon={<ThumbsUp className='h-8 w-8' />} title='Sản phẩm chính hãng' />
-						</div>
-						<div className='mt-6 flex items-center justify-center gap-2 rounded-lg border p-2'>
-							<Phone className='h-5 w-5' />
-							<div>
-								<div className='text-sm'>Dịch vụ CSKH</div>
-								<div className='font-semibold'>Hotline: 0123.456.789</div>
-							</div>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 	);
@@ -203,7 +145,7 @@ export default function Navbar() {
 function ServiceCard({ icon, title }) {
 	return (
 		<div className='flex flex-col items-center text-center'>
-			<div className='mb-2 rounded-full bg-gray-100 p-3'>{icon}</div>
+			<div className='p-3 mb-2 bg-gray-100 rounded-full'>{icon}</div>
 			<p className='text-xs'>{title}</p>
 		</div>
 	);
