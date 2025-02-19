@@ -39,12 +39,11 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpPost("CreatePaymentUrlMomo")]
         public async Task<IActionResult> CreateDepositUrl([FromBody] RequestDepositWallet request)
         {
-            //int userId = _currentUserService.GetUserId();
-            //if (userId == null)
-            //{
-            //    return Unauthorized();
-            //}
-            int userId = 3;
+            int userId = _currentUserService.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
 
             var paymentInformation = await _paymentSerivce.CreatePaymentInMomoAsync(userId, request.Amount);
             if (paymentInformation != null)
@@ -72,7 +71,6 @@ namespace PreOrderBlindBox.API.Controllers
             {
                 return Unauthorized();
             }
-            //int userId = 3;
 
             var paymentInformation = await _paymentSerivce.CreatePaymentInVnPayAsync(userId, request.Amount);
             if (paymentInformation != null)
