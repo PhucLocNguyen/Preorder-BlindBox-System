@@ -49,7 +49,7 @@ function VoucherCampaignSection() {
             {loading ? (
               <Spin />
             ) : (
-              voucherCampaigns.map((item) => {
+              voucherCampaigns?.map((item) => {
                 return (
                   <div key={item.voucherCampaignId} className="col-span-4 mb-4">
                     <Voucher
