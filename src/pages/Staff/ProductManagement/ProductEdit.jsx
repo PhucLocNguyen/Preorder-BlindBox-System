@@ -1,11 +1,12 @@
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import {
   EditBlindBox,
   GetActiveBlindBoxById,
 } from "../../../api/BlindBox/ApiBlindBox";
 import { Button, Form, Image, Input, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
-import { UploadOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, UploadOutlined } from "@ant-design/icons";
+import noThumbnailImage from "../../../assets/noThumbnailImage.jpg";
 
 function ProductEdit() {
   const { id } = useParams();
@@ -71,7 +72,12 @@ function ProductEdit() {
           <div className="grid grid-cols-12 gap-4 min-h-screen mx-auto mt-5 p-5 bg-[#e5e7eb] shadow-lg rounded-lg">
             <div className="col-span-9 ">
               <div className="bg-white  p-4 rounded-lg">
-                <h2 className="text-4xl font-bold mb-4">Chỉnh sửa blind box</h2>
+                <div className="flex items-center mb-4">
+                <Link to="/staff/products" className="h-full flex">
+                   <ArrowLeftOutlined style={{width:"fit-content", height:"100%", padding:"10px"}}  title="Về lại trang sản phẩm"/>
+                </Link>
+                <h2 className="text-3xl font-bold">Chỉnh sửa blind box</h2>
+                </div>
                 {/* Name */}
                 <Form.Item
                   label="Tên sản phẩm"
@@ -182,8 +188,15 @@ function ProductEdit() {
                   >
                     <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                   </Upload>
-                  {}
-                  {detailBlindBox.images.mainImage != null &&
+                  {detailBlindBox.images.mainImage==null?
+                  <div className="mt-2">
+                  <img
+                    src={noThumbnailImage}
+                    alt="Main"
+                    className="w-full h-[300px] object-contain mt-2 rounded-md"
+                  />
+                </div>
+                  : detailBlindBox.images.mainImage != null &&
                   mainImage == null ? (
                     <div className="mt-2">
                       <img

@@ -53,4 +53,14 @@ const GetActiveBlindBoxById = async(id)=>{
     toast.error("Get active blind box by id failed!");
   }
 }
-export { GetTheActiveBlindBox, CreateBlindBox, EditBlindBox, GetActiveBlindBoxById };
+const DeleteBlindBoxById = async(id)=>{
+  try{
+    const respone = await api.delete(`/BlindBox/${id}`, axiosConfigHeader);
+    toast.success("Delete success !");
+    return respone.data;
+  }catch(error){
+    console.log('>>> Api delete blind box by id Error: ', error)
+    toast.error("Delete active blind box by id failed!");
+  }
+}
+export { GetTheActiveBlindBox, CreateBlindBox, EditBlindBox, GetActiveBlindBoxById, DeleteBlindBoxById};

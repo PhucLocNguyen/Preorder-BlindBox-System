@@ -1,43 +1,53 @@
 import React from 'react';
-import { AntDesignOutlined } from '@ant-design/icons';
-import { Button, ConfigProvider, Space } from 'antd';
+import { Button, ConfigProvider } from 'antd';
 import { createStyles } from 'antd-style';
 
-const useStyle = createStyles(({ token, css, prefixCls }) => ({
-  linearGradientButton: css`
-    .${prefixCls}-btn-primary {
+const useStyle = createStyles(({ css }) => ({
+  buttonWrapper: css`
+    .gradient-btn {
       position: relative;
-      background: linear-gradient(135deg, #6253e1, #04befe);
-      border: none;
+      display: inline-block;
+      padding: 4px 20px;
+      font-size: 16px;
+      font-weight: bold;
       color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ff512f, #dd2476);
+      background-size: 300% 300%;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0px 4px 15px rgba(255, 81, 47, 0.5);
+      animation: gradientMove 3s infinite linear;
+    }
 
-      &:hover {
-        background: #04befe;
-      }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-      &:focus {
-        background: #6253e1;
-      }
+    .gradient-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0px 6px 20px rgba(255, 81, 47, 0.8);
+    }
 
-      &::before {
-        content: '';
-        position: absolute;
-        inset: -2px;
-        background: linear-gradient(135deg, #6253e1, #04befe);
-        border-radius: inherit;
-        z-index: -1;
-        opacity: 0.7;
-        transition: opacity 0.3s ease;
-      }
+    .gradient-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0px 3px 10px rgba(255, 81, 47, 0.6);
+    }
 
-      &:hover::before {
-        opacity: 1;
-      }
+    .disabled-btn {
+      background: #b3b3b3 !important;
+      color: #fff !important;
+      cursor: not-allowed;
+      box-shadow: none;
     }
   `,
 }));
 
-const GradientButton = ({text, onClick, style, disabled = false}) => {
+const GradientButton = ({ text, onClick, disabled = false }) => {
   const { styles } = useStyle();
 
   return (
@@ -45,19 +55,21 @@ const GradientButton = ({text, onClick, style, disabled = false}) => {
       theme={{
         components: {
           Button: {
-            borderRadius: 8, // Rounded corners for buttons
-            colorPrimary: '#6253e1',
+            borderRadius: 2,
+            colorPrimary: '#ff512f',
           },
         },
       }}
     >
-      <div className={styles.linearGradientButton}>
-        <Space>
-          {/* Gradient Button */}
-          <Button type="primary" onClick={onClick} size="large" style={style} disabled={disabled}>
-            {text}
-          </Button>
-        </Space>
+      <div className={styles.buttonWrapper}>
+        <Button 
+          className={`gradient-btn ${disabled ? 'disabled-btn' : ''}`}
+          onClick={onClick}
+          size="large"
+          disabled={disabled}
+        >
+          {text}
+        </Button>
       </div>
     </ConfigProvider>
   );

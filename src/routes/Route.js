@@ -24,6 +24,11 @@ const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherC
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
+import DepositPage from "../pages/Wallet/Deposit";
+import Wallet from "../pages/Wallet/Wallet";
+import Withdraw from "../pages/Wallet/Withdraw";
+import { path } from "framer-motion/client";
+
 const publicRoutes = [
   {
     index: true,
@@ -33,6 +38,7 @@ const publicRoutes = [
   {
     path: "/login",
     component: LoginPage,
+    layout: DefaultLayout,
   },
   {
     path: "/staff",
@@ -75,7 +81,8 @@ const publicRoutes = [
   },
   {
     path: "/register",
-    component: RegisterPage
+    component: RegisterPage,
+    layout: DefaultLayout,
   },
   {
     path: '/confirmemail',
@@ -84,6 +91,20 @@ const publicRoutes = [
   {
     path: '/cart',
     component: Cart
+  },
+  {
+    path: '/wallet',
+    component: Wallet,
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: DepositPage, layout: null},
+      { path: 'deposit', component: Withdraw, layout: null },
+    ]
+  },
+  {
+    path: '/test',
+    component: DepositPage,
+    layout: DefaultLayout,
   }
 ];
 
