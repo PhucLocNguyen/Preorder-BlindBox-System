@@ -1,9 +1,9 @@
 import { Button, Form, Input, Select, Upload } from "antd";
 const { Option } = Select;
 import { useState } from "react";
-import { UploadOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import { CreateBlindBox } from "../../../api/BlindBox/ApiBlindBox";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 function ProductCreate() {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -36,8 +36,19 @@ function ProductCreate() {
           <div className="grid grid-cols-12 gap-4 min-h-screen mx-auto mt-5 p-5 bg-[#e5e7eb] shadow-lg rounded-lg">
             <div className="col-span-9 ">
               <div className="bg-white  p-4 rounded-lg">
-                <h2 className="text-xl font-bold mb-4">Tạo Blind Box Mới</h2>
-
+                <div className="flex items-center mb-4">
+                  <Link to="/staff/products" className="h-full flex">
+                    <ArrowLeftOutlined
+                      style={{
+                        width: "fit-content",
+                        height: "100%",
+                        padding: "10px",
+                      }}
+                      title="Về lại trang sản phẩm"
+                    />
+                  </Link>
+                  <h2 className="text-* font-bold">Tạo Blind Box Mới</h2>
+                </div>  
                 {/* Name */}
                 <Form.Item
                   label="Tên sản phẩm"

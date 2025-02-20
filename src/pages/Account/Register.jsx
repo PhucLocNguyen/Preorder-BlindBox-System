@@ -1,13 +1,16 @@
 import { Form, Input, Button } from "antd";
 import { Link, useNavigate } from "react-router";
+import { useContext, useEffect } from "react";
 
 import GoogleIcon from '../../assets/Login/GoogleIcon.png';
 import FacebookIcon from '../../assets/Login/FacebookIcon.png'
 import { ApiRegisterByEmailAndPassword } from "../../api/User/ApiAuthentication";
+import { AuthContext } from "../../context/AuthContext";
 
 function RegisterPage() {
     const [form] = Form.useForm();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { auth } = useContext(AuthContext);
 
     const validateConfirmPassword = (_, value) => {
         if (!value || form.getFieldValue('password') === value) {
@@ -28,6 +31,16 @@ function RegisterPage() {
     const onFinish = async (values) => {
         await CallApiRegisterByEmailAndPassword(values)
     }
+
+    const checkRole = () => {
+        if (auth.roleName.toLowerCase() !== 'guest') {
+            navigate('/')
+        }
+    }
+
+    useEffect(() => {
+        checkRole()
+    }, [auth])
 
     return (
         <div className="bg-[#f2f7fb]">
