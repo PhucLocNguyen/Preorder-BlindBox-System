@@ -23,6 +23,7 @@ const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/Voucher
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
+const Cart = lazy(() => import("../pages/Customer/Cart"));
 const publicRoutes = [
   {
     index: true,
@@ -79,6 +80,10 @@ const publicRoutes = [
   {
     path: '/confirmemail',
     component: ConfirmEmailAccount
+  },
+  {
+    path: '/cart',
+    component: Cart
   }
 ];
 
