@@ -14,26 +14,26 @@ export default function Header() {
 					</Link>
 					<div className='relative group'>
 						<Link
-							to='/kham-pha'
+							to='/gioi-thieu'
 							className='flex items-center gap-2 text-sm font-medium hover:text-gray-600'
 						>
-							<p>Khám phá</p> <ChevronDown className='w-4 h-4' />
+							<p>Giới thiệu</p> <ChevronDown className='w-4 h-4' />
 						</Link>
 					</div>
 					<div className='relative group'>
 						<Link
-							to='/tim-hieu-them'
+							to='/san-pham'
 							className='flex items-center gap-2 text-sm font-medium hover:text-gray-600'
 						>
-							<p>Tìm hiểu thêm</p> <ChevronDown className='w-4 h-4' />
+							<p>Sản phẩm</p> <ChevronDown className='w-4 h-4' />
 						</Link>
 					</div>
 					<div className='relative group'>
 						<Link
-							to='/bai-viet'
+							to='/lien-he'
 							className='flex items-center gap-2 text-sm font-medium hover:text-gray-600'
 						>
-							<p>Bài viết</p> <ChevronDown className='w-4 h-4' />
+							<p>Liên hệ</p> <ChevronDown className='w-4 h-4' />
 						</Link>
 					</div>
 				</nav>

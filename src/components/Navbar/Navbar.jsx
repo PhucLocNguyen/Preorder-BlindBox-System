@@ -10,7 +10,7 @@ import 'swiper/css';
 
 import { Autoplay, EffectFade } from 'swiper/modules';
 
-const mainNavItems = ['DANH MỤC SẢN PHẨM', 'TRANG CHỦ', 'GIỚI THIỆU', 'SẢN PHẨM', 'TIN TỨC', 'LIÊN HỆ'];
+const mainNavItems = ['Preorder Blindbox System'];
 
 const categories = [
 	{ name: 'Thời trang nam', hasSubmenu: true },
