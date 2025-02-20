@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Tag, Space, Input, Button, Modal, Checkbox, message } from "antd";
 import { EyeOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
+import { useNavigate } from 'react-router-dom';
 import Pre_orderCampaignEdit from "./Pre-orderCampaignEdit";
 import Pre_orderCampaignCreate from "./Pre-orderCampaignCreate";
 import Mofusandimg from "../../../assets/Admin/MofusandBlindBox.png";
@@ -17,6 +18,7 @@ const Pre_orderCampaign = () => {
     const [productToDelete, setProductToDelete] = useState(null);
     const [selectedProductId, setSelectedProductId] = useState(new Set());
     const [warning, setWarning] = useState('');
+    const navigate = useNavigate();
 
     const handleAddProduct = () => {
         setWarning('');
@@ -32,6 +34,9 @@ const Pre_orderCampaign = () => {
     const handleEditProduct = (record) => {
         setSelectedProduct(record.key);
         setIsEditModalVisible(true);
+    };
+    const handleViewProduct = (record) => {
+        navigate(`/admin/pre-ordercampaign-details/${record.key}`);
     };
 
     const handleCancelCreate = () => {
@@ -118,7 +123,7 @@ const Pre_orderCampaign = () => {
             key: "action",
             render: (_, record) => (
                 <Space size="middle">
-                    <EyeOutlined style={{ color: "blue", fontSize: "18px" }} />
+                    <EyeOutlined style={{ color: "blue", fontSize: "18px" }} onClick={() => handleViewProduct(record)} />
                     <EditOutlined style={{ color: "orange", fontSize: "18px" }} onClick={() => handleEditProduct(record)} />
                     <DeleteOutlined style={{ color: "red", fontSize: "18px" }} onClick={() => handleDeleteProduct(record)} />
                 </Space>

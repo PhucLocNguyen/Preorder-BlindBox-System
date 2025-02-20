@@ -1,10 +1,35 @@
-import { Button, Form, Input, Radio } from 'antd';
+import { Button, Form, Input } from 'antd';
+import { Link, useNavigate } from 'react-router';
+import { useContext } from 'react';
 
 import GoogleIcon from '../../assets/Login/GoogleIcon.png';
 import FacebookIcon from '../../assets/Login/FacebookIcon.png';
+import { AuthContext } from '../../context/AuthContext';
+import { ApiLoginByEmailAndPassword, ApiGetCurrentAccountRole, GetAccessToken } from '../../api/User/ApiAuthentication';
 
 function LoginPage() {
     const [form] = Form.useForm();
+    const navigate = useNavigate();
+    const { setAuth } = useContext(AuthContext);
+
+    const CallApiLoginByEmailAndPassword = async (payload) => {
+        const responseLogin = await ApiLoginByEmailAndPassword({ payload });
+        if (responseLogin.status === 200) {
+            await CallApiGetCurrentAccountRole();
+            navigate('/')
+        }
+    }
+
+    const CallApiGetCurrentAccountRole = async () => {
+        const response = await ApiGetCurrentAccountRole();
+        setAuth({
+            roleName: response.roleName,
+        })
+    }
+
+    const onFinish = async (values) => {
+        await CallApiLoginByEmailAndPassword(values);
+    }
 
     return (
         <div className="bg-[#f2f7fb] ">
@@ -22,16 +47,20 @@ function LoginPage() {
                         </div>
                         {/* Phần điền form đăng nhập */}
                         <div className="flex flex-col gap-[24px] relative">
-                            <Form layout='vertical' form={form}>
+                            <Form layout='vertical' form={form} onFinish={onFinish}>
                                 <Form.Item
                                     className='font-bold text-[14px] leading-[20px] text-[#111] mb-[10px]'
                                     label="Email address"
-                                    name="Email address"
+                                    name="email"
                                     rules={[
                                         {
                                             required: true,
                                             message: 'Please input your email address!',
                                         },
+                                        {
+                                            type: 'email',
+                                            message: 'Invalid email'
+                                        }
                                     ]}
                                 >
                                     <Input className='px-[22px] py-[14px] font-normal' />
@@ -46,6 +75,10 @@ function LoginPage() {
                                             required: true,
                                             message: 'Please input your password!',
                                         },
+                                        {
+                                            min: 6,
+                                            message: 'Password must be at least 6 characters!'
+                                        }
                                     ]}
                                 >
                                     <Input.Password className='px-[22px] py-[14px] font-normal' />
@@ -59,7 +92,7 @@ function LoginPage() {
                                     </div>
                                 </Form.Item>
 
-                                <Form.Item>
+                                <Form.Item className='mb-0'>
                                     <Button className='mt-[1rem] h-[50px] py-[15px] px-[22px] flex items-center justify-center text-[14px] font-bold leading-[20px] w-full' type="primary"
                                         htmlType='submit'
                                     >
@@ -92,7 +125,7 @@ function LoginPage() {
                         {/* Phần để chuyển qua đăng kí nếu chưa có tài khoản */}
                         <div className='text-[#575864] text-[14px] font-normal leading-[20px] text-center'>
                             You don't have an account yet?
-                            <a href="" className='text-[#2275fc]'> Register Now</a>
+                            <Link to="/register" className='text-[#2275fc]'> Register Now</Link>
                         </div>
                     </div>
                 </div>
