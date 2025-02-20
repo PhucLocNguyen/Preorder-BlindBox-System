@@ -1,32 +1,63 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Dropdown, Pagination } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Link } from "react-router";
 import { GetAllOrder } from "../../../api/Order/ApiOrder";
 import useFetchData from "../../../hooks/useFetchData";
-const NavBarStaff = () => {
-    const [pageSize, setPageSize] = useState(10);
+const OrdersView = () => {
+    const [orders, setOrders] = useState([]);
+    const [search, setSearch] = useState("");
     const [pageIndex, setPageIndex] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalPage, setTotalPage] = useState(0);
+    const handlePageChange = (page) => {
+        setPageIndex(page);
+    };
 
-    const { data: orders, loading, refetch } = useFetchData(GetAllOrder);
+    const handleTotalPage = useCallback(async () => {
+        try {
+            const result = await GetAllOrder();
+            setTotalPage(result.length);
+        } catch (error) {
+
+        }
+
+    }, [])
     const handleNextPage = () => {
-        setPageIndex(prev => prev + 1);
+        setPageIndex(() => pageIndex + 1);
     };
-    const handleChangePageSize = (size) => {
-        setPageSize(size);
-        setPageIndex(1); // Reset về trang đầu khi đổi kích thước trang
+    const handlePrevPage = () => {
+        setPageIndex(() => Math.max(1, pageIndex - 1));  // Đảm bảo pageIndex không nhỏ hơn 1
     };
+    const fetchOrders = useCallback(async () => {
+        try {
+            const result = await GetAllOrder(pageIndex, pageSize, search);
+            setOrders([...result]);
+        } catch (error) {
+            console.error("Fetch Orders Error:", error);
+            setOrders([]);
+        }
+    }, [pageSize, pageIndex, search]);
+
+    useEffect(() => {
+        fetchOrders();
+        handleTotalPage();
+    }, [fetchOrders])
     const itemRender = (_, type, originalElement) => {
         if (type === 'prev') {
-            return <a>Previous</a>;
+            return <a onClick={handlePrevPage}>Previous</a>;
         }
         if (type === 'next') {
-            return <a>Next</a>;
+            return <a onClick={handleNextPage}>Next</a>;
         }
         return originalElement;
     };
 
-    const [search, setSearch] = useState("");
+
+    const handleSearchKeyWord = (e) => {
+        console.log(e.target.value);
+        setSearch(e.target.value);
+    }
 
     return (
         <div className="flex-1 h-full p-1 flex flex-col">
@@ -42,7 +73,7 @@ const NavBarStaff = () => {
                             className="bg-gray-100 border border-gray-300 rounded py-2 px-4 w-64"
                             placeholder="Search anything"
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e) => handleSearchKeyWord(e)}
                         />
                         <i className="fas fa-search absolute top-3 right-3 text-gray-500"></i>
                     </div>
@@ -73,24 +104,21 @@ const NavBarStaff = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {loading ? (<tr>
-                                <th>loading</th>
-                                <th></th>
-                            </tr>) : orders
+                            {orders
                                 // .filter(order => order.orderId.toString().includes(search))
-                                .map((orders, index) => (
+                                .map((data, index) => (
                                     <tr key={index} className="border-t">
-                                        <td className="px-2 py-2">{index + 1}</td>
-                                        <td className="px-2 py-2">{orders.createdDate}</td>
-                                        <td className="px-2 py-2">{orders.totalItems}</td>
-                                        <td className="px-2 py-2">{orders.amount} VND</td>
-                                        <td className="px-2 py-2">{orders.receiver}</td>
-                                        <td className="px-2 py-2">{orders.receiverAddress}</td>
+                                        <td className="px-2 py-2">{data.orderId}</td>
+                                        <td className="px-2 py-2">{data.createdDate}</td>
+                                        <td className="px-2 py-2">{data.totalItems}</td>
+                                        <td className="px-2 py-2">{data.amount} VND</td>
+                                        <td className="px-2 py-2">{data.receiver}</td>
+                                        <td className="px-2 py-2">{data.receiverAddress}</td>
                                         <td
-                                            className={`px-2 py-2 ${orders.status === 'Completed' ? 'text-green-500' : 'text-red-500'
+                                            className={`px-2 py-2 ${data.status === 'Completed' ? 'text-green-500' : 'text-red-500'
                                                 }`}
                                         >
-                                            {orders.status}
+                                            {data.status}
                                         </td>
                                         <td className="px-2 py-2 text-center align-middle">
                                             <Dropdown
@@ -100,7 +128,7 @@ const NavBarStaff = () => {
                                                             key: "0",
                                                             label: (
                                                                 <Link
-                                                                    to={`${orders.orderId}`}
+                                                                    to={`${data.orderId}`}
                                                                     className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                                 >
                                                                     <EditOutlined /> <span>Edit order</span>
@@ -146,20 +174,17 @@ const NavBarStaff = () => {
 
 
                 <div className="flex justify-between items-center mt-4 p-4 bg-white shadow rounded">
-                    {/* <div className="text-gray-500">Showing 1 to 10 of 256 entries</div>
-                    <div className="flex items-center space-x-2">
-                        <button className="px-3 py-1 border rounded text-gray-500">Back</button>
-                        <button className="px-3 py-1 border rounded bg-blue-500 text-white">1</button>
-                        <button className="px-3 py-1 border rounded text-gray-500">2</button>
-                        <button className="px-3 py-1 border rounded text-gray-500">3</button>
-                        <button className="px-3 py-1 border rounded text-gray-500">4</button>
-                        <button className="px-3 py-1 border rounded text-gray-500">Next</button>
-                    </div> */}
-                    <Pagination total={60} itemRender={itemRender} />;
+                    <Pagination total={totalPage}
+                        itemRender={itemRender}
+                        current={pageIndex}
+                        pageSize={pageSize}
+                        onChange={handlePageChange}
+                        showSizeChanger={false}
+                    />;
                 </div>
             </div>
         </div>
     );
 };
 
-export default NavBarStaff;
+export default OrdersView;
