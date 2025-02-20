@@ -4,33 +4,17 @@ import { CollectActiveVoucherCampaign } from "../api/VoucherCampaign/ApiVoucherC
 import { IsExpired } from "../utils/DateChecking";
 import { formatShortVND } from "../utils/FormatMoney";
 import GradientButton from "./Buttons/GradientButton";
-function Voucher({
-  VoucherDetail = {
-    voucherCampaignId: 0,
-    name: "Voucher giảm giá 10% tối đa 50k",
-    maximumMoneyDiscount: 10000,
-    maximumUserCanGet: 0,
-    takenQuantity: 0,
-    quantity: 0,
-    startDate:"2025-02-16 13:56:40.637",
-    endDate: "2025-02-18 13:56:40.637",
-    percentDiscount: 10,
-    isCollected: false,
-  },
-}) {
-  const [isCollectedState, setIsCollectedState] = useState(VoucherDetail.isCollected);
+function Voucher({ VoucherDetail }) {
+  const [isCollectedState, setIsCollectedState] = useState(
+    VoucherDetail.isCollected
+  );
   const [popupReceiveQuantity, setPopupReceiveQuantity] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
-
+  console.log(VoucherDetail);
   const collectVoucher = async (voucherDetailID) => {
-    // const response = await CollectActiveVoucherCampaign({
-    //   voucherDetailID: voucherDetailID,
-    // });
+    const response = await CollectActiveVoucherCampaign(voucherDetailID);
 
-    // Hiển thị popup số lượng nhận được
-    // setPopupReceiveQuantity(response.quantity);
-    setPopupReceiveQuantity(VoucherDetail.maximumUserCanGet);
-
+    setPopupReceiveQuantity(response.quantity);
     setIsCollectedState(true);
     setShowPopup(true);
 
@@ -44,7 +28,7 @@ function Voucher({
     <div className="relative card-con grid grid-cols-12 z-10">
       {/* Vùng chứa hiệu ứng răng cưa */}
       <div
-        className="relative z-[11] w-full col-span-3 min-h-[250px] rounded-lg bg-gradient-to-b from-[#FBA518] to-[#A89C29] backdrop-blur-lg shadow-lg"
+        className="relative z-[11] w-full col-span-3 min-h-full rounded-lg bg-gradient-to-b from-[#FBA518] to-[#A89C29] backdrop-blur-lg shadow-lg"
         style={{
           maskImage:
             "radial-gradient(circle at 10px center, transparent 10px, red 10.5px)",
@@ -56,25 +40,24 @@ function Voucher({
       {/* Nội dung voucher */}
       <div className="relative w-full col-span-9 h-full bg-white -ml-4 z-20 rounded-r-lg border-l-2 border-[#F9CB43] p-2 text-[#000]">
         <h3 className="text-[#000] text-lg">
-          <b>{VoucherDetail.Name}</b>
+          <b>{VoucherDetail.name}</b>
         </h3>
         <p>
-          Giảm giá {VoucherDetail.percentDiscount + "%"} tối đa {formatShortVND(VoucherDetail.maximumMoneyDiscount)}
+          Giảm giá {VoucherDetail.percentDiscount + "%"} tối đa{" "}
+          {formatShortVND(VoucherDetail.maximumMoneyDiscount)}
         </p>
-        <p>
-          Số lượng có hạn - đã lấy {VoucherDetail.takenQuantity} trên {VoucherDetail.quantity}
+        <p className="mb-2">
+          Số lượng có hạn - đã lấy {VoucherDetail.takenQuantity} trên{" "}
+          {VoucherDetail.quantity}
         </p>
 
         {/* Badge số lượng tối đa user có thể lấy */}
-        <div className="absolute badge z-[22] -right-2 top-4 w-fit h-fit bg-[#cf1e1e] py-2 px-4 rounded-lg border-2 border-white">
-          <p className="text-white">
-            X {VoucherDetail.maximumUserCanGet}
-          </p>
+        <div className="absolute  badge z-[22] -right-2 top-4 w-fit h-fit bg-[#cf1e1e] py-2 px-4 rounded-lg border-2 border-white">
+          <p className="text-white font-bold">X {VoucherDetail.maximumUserCanGet}</p>
         </div>
-
         {/* Kiểm tra nếu hết hạn hoặc đã nhận voucher */}
         {IsExpired(VoucherDetail.endDate) ? (
-          <GradientButton text="Đã hết hạn rồi" />
+          <GradientButton text="Đã hết hạn rồi" disabled={true} />
         ) : !isCollectedState ? (
           <GradientButton
             text="Nhận voucher"
@@ -83,25 +66,23 @@ function Voucher({
             }}
           />
         ) : (
-          <GradientButton text="Đã nhận rồi" disabled={true}/>
+          <GradientButton text="Đã nhận rồi" disabled={true} />
         )}
         {/* Hiển thị popup số lượng voucher nhận được */}
-      <AnimatePresence>
-        {showPopup && (
-          <motion.div
-            className="absolute z-50 transform -translate-x-1/2 -translate-y-1/2 bg-[#fcd34d] text-[#000] py-2 px-6 rounded-md shadow-lg text-lg font-semibold"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1, y:-10 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.5 }}
-          >
-            + {popupReceiveQuantity} voucher
-          </motion.div>
-        )}
-      </AnimatePresence>
+        <AnimatePresence>
+          {showPopup && (
+            <motion.div
+              className="absolute z-50 transform -translate-x-1/2 -translate-y-1/2 bg-[#fcd34d] text-[#000] py-2 px-6 rounded-md shadow-lg text-lg font-semibold"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1, y: -10 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+            >
+              + {popupReceiveQuantity} voucher
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-
-      
     </div>
   );
 }
