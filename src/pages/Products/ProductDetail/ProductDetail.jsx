@@ -2,7 +2,7 @@ import ProductImages from '../../../components/ProductImage/ProductImage';
 import CountdownTimer from '../../../components/CountDown/CountDown';
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
-import { GetBlindBoxById } from '../../../api/BlindBox/ApiBlindBox';
+import { GetActiveBlindBoxById } from '../../../api/BlindBox/ApiBlindBox';
 
 const ProductDetail = () => {
 	const params = useParams();
@@ -10,7 +10,7 @@ const ProductDetail = () => {
 	const [data, setData] = useState();
 
 	const productDetailBlind = async () => {
-		const res = await GetBlindBoxById(id);
+		const res = await GetActiveBlindBoxById(id);
 		setData(res);
 	};
 
