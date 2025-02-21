@@ -58,9 +58,9 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     throw new Exception($"The cart contains {priceForCarts[0].Quantity} item with an incorrect price");
                 }
-                if(requestCreateOrder.VoucherId != null)
+                if(requestCreateOrder.UserVoucherId != null)
                 {
-                    var userVoucher = await _userVoucherService.GetUserVoucherById((int)requestCreateOrder.VoucherId);
+                    var userVoucher = await _userVoucherService.GetUserVoucherById((int)requestCreateOrder.UserVoucherId);
                     var amountAfterUsingVoucher = priceForCarts.Sum(x => x.Price) * userVoucher.PercentDiscount;
                     if(amountAfterUsingVoucher > userVoucher.MaximumMoneyDiscount)
                     {
