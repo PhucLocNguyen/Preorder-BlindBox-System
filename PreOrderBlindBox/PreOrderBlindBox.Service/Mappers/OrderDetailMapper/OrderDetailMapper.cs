@@ -1,6 +1,7 @@
 ﻿using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.RequestDTO.OrderDetailRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.OrderDetailResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +23,6 @@ namespace PreOrderBlindBox.Services.Mappers.OrderDetailMapper
                 UnitPriceAtTime = requestCreateOrderDetail.UnitPriceAtTime,
             };
         }
-    }
+
+	}
 }

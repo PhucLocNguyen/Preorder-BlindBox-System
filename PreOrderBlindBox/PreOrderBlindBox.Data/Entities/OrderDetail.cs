@@ -21,6 +21,6 @@ public partial class OrderDetail
     public decimal? UnitEndCampaignPrice { get; set; }
     [JsonIgnore]
     public virtual Order Order { get; set; }
-
-    public virtual PreorderCampaign PreorderCampaign { get; set; }
+	
+	public virtual PreorderCampaign PreorderCampaign { get; set; }
 }

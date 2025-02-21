@@ -22,11 +22,11 @@ namespace PreOrderBlindBox.API.Controllers
         }
         // GET: api/<OrderController>
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders([FromQuery]PaginationParameter pagination )
+        public async Task<IActionResult> GetAllOrders([FromQuery]PaginationParameter pagination, [FromQuery] string? searchKeyWords )
         {
             try
             {
-                var listOrder = await _orderService.GetAllOrder(pagination);
+                var listOrder = await _orderService.GetAllOrder(pagination, searchKeyWords);
                 return Ok(listOrder);
             }
             catch (Exception ex)
