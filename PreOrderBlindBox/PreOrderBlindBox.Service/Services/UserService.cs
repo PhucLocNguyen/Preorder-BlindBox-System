@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
@@ -22,9 +23,11 @@ namespace PreOrderBlindBox.Service.Services
 		private readonly IConfiguration _configuration;
 		private readonly IWalletService _walletService;
 		private readonly ICurrentUserService _currentUserService;
+		private readonly IMapper _mapper;
 
 		public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMailService mailService,
-			IConfiguration configuration, IWalletService walletService, ICurrentUserService currentUserService)
+			IConfiguration configuration, IWalletService walletService, ICurrentUserService currentUserService,
+			IMapper mapper)
 		{
 			_userRepository = userRepository;
 			_unitOfWork = unitOfWork;
@@ -33,6 +36,7 @@ namespace PreOrderBlindBox.Service.Services
 			_configuration = configuration;
 			_walletService = walletService;
 			_currentUserService = currentUserService;
+			_mapper = mapper;
 
 		}
 
@@ -224,6 +228,73 @@ namespace PreOrderBlindBox.Service.Services
 			await _userRepository.UpdateAsync(user);
 			return await _unitOfWork.SaveChanges();
 
+		}
+
+		public async Task<bool> RegisterStaffAccountAsync(RequestRegisterAccount registerStaffAccount)
+		{
+			await _unitOfWork.BeginTransactionAsync();
+			try
+			{
+				var checkEmail = await _userRepository.GetUserByEmailAsync(registerStaffAccount.Email);
+				if (checkEmail != null)
+				{
+					throw new Exception("Email already in use");
+				}
+
+				if (registerStaffAccount.Password != registerStaffAccount.ConfirmPassword)
+				{
+					throw new Exception("Password and confirm password not the same");
+				}
+				var role = await _roleRepository.GetRoleByRoleName("Staff");
+
+				User newUser = new User()
+				{
+					FullName = registerStaffAccount.FullName,
+					Email = registerStaffAccount.Email,
+					Address = registerStaffAccount.Address,
+					IsEmailConfirm = true,
+					IsActive = true,
+					EmailConfirmToken = Guid.NewGuid().ToString(),
+					RoleId = role.RoleId,
+					Password = PasswordUtils.HashPassword(registerStaffAccount.Password),
+				};
+				await _userRepository.InsertAsync(newUser);
+
+				var result = await _unitOfWork.SaveChanges();
+				await _unitOfWork.CommitTransactionAsync();
+				return true;
+
+			}
+			catch (Exception ex)
+			{
+				await _unitOfWork.RollbackTransactionAsync();
+				throw;
+			}
+		}
+
+		public async Task<List<ResponseUserInfomation>> GetAllStaff()
+		{
+			var role = await _roleRepository.GetRoleByRoleName("Staff");
+			if (role == null)
+			{
+				throw new Exception("Invalid role staff");
+			}
+			var listStaff = await _userRepository.GetAllStaff(role.RoleId);
+			return _mapper.Map<List<ResponseUserInfomation>>(listStaff);
+		}
+
+		public async Task<ResponseUserInfomation> GetUserById(int userId)
+		{
+			if (userId <= 0)
+			{
+				throw new ArgumentException("User ID must be greater than zero.");
+			}
+			var user = await _userRepository.GetUserById(userId);
+			if (user == null)
+			{
+				throw new Exception("Invalid user id");
+			}
+			return _mapper.Map<ResponseUserInfomation>(user);
 		}
 	}
 }
