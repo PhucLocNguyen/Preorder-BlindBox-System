@@ -90,7 +90,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpPut("UpdatePreorderCapaign/{id}")]
+        [HttpPut("UpdatePreorderCampaign/{id}")]
         public async Task<IActionResult> UpdatePreorderCampaign(int id, [FromBody] UpdatePreorderCampaignRequest request)
         {
             try
@@ -114,7 +114,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpPut("CancelPreorderCapaign/{id}")]
+        [HttpPut("CancelPreorderCampaign/{id}")]
         public async Task<IActionResult> CancelPreorderCampaign(int id, [FromBody] CancelPreorderCampaignRequest request)
         {
             try

@@ -194,7 +194,7 @@ namespace PreOrderBlindBox.Services.Services
             return response;
         }
 
-        public async Task<PreorderCampaign?> GetPreorderCampaignBySlugAsync(string slug)
+        public async Task<ResponsePreorderCampaignDetail?> GetPreorderCampaignBySlugAsync(string slug)
         {
             var preorderCampaign = await _preorderCampaignRepo.GetPreorderCampaignBySlugAsync(slug);
 
@@ -202,7 +202,58 @@ namespace PreOrderBlindBox.Services.Services
             {
                 return null;
             }
-            return preorderCampaign;
+            // Nếu có BlindBox, lấy danh sách hình ảnh của nó
+            ResponseImageSplit images = null;
+            if (preorderCampaign.BlindBox != null)
+            {
+                var mainImage = await _imageRepo.GetMainImageByBlindBoxID(preorderCampaign.BlindBox.BlindBoxId);
+                var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(preorderCampaign.BlindBox.BlindBoxId);
+
+                images = new ResponseImageSplit
+                {
+                    MainImage = mainImage != null ? new ResponseImageModel
+                    {
+                        ImageId = mainImage.ImageId,
+                        Url = mainImage.Url,
+                        IsMainImage = mainImage.IsMainImage,
+                        CreatedAt = mainImage.CreatedAt
+                    } : null,
+                    GalleryImages = galleryImages
+                        .Where(img => !img.IsMainImage)
+                        .Select(img => new ResponseImageModel
+                        {
+                            ImageId = img.ImageId,
+                            Url = img.Url,
+                            IsMainImage = img.IsMainImage,
+                            CreatedAt = img.CreatedAt
+                        })
+                        .ToList()
+                };
+            }
+
+            // Ánh xạ sang ResponsePreorderCampaignDetail
+            var response = new ResponsePreorderCampaignDetail
+            {
+                PreorderCampaignId = preorderCampaign.PreorderCampaignId,
+                BlindBoxId = preorderCampaign.BlindBoxId,
+                Slug = preorderCampaign.Slug,
+                StartDate = preorderCampaign.StartDate,
+                EndDate = preorderCampaign.EndDate,
+                Status = preorderCampaign.Status,
+                Type = preorderCampaign.Type,
+                IsDeleted = preorderCampaign.IsDeleted,
+                BlindBox = preorderCampaign.BlindBox != null ? new ResponseBlindBox
+                {
+                    BlindBoxId = preorderCampaign.BlindBox.BlindBoxId,
+                    Name = preorderCampaign.BlindBox.Name,
+                    Description = preorderCampaign.BlindBox.Description,
+                    Size = preorderCampaign.BlindBox.Size,
+                    CreatedAt = preorderCampaign.BlindBox.CreatedAt,
+                    Images = images
+                } : null
+            };
+
+            return response;
         }
 
         public async Task<bool> DeletePreorderCampaign(int id)
