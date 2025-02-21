@@ -39,7 +39,7 @@ namespace PreOrderBlindBox.Data.Repositories
             if (string.IsNullOrEmpty(slug))
                 return null;
 
-            return await _context.PreorderCampaigns.FirstOrDefaultAsync(c => c.Slug == slug);
+            return await _context.PreorderCampaigns.Include(pc => pc.BlindBox).ThenInclude(pc => pc.Images).FirstOrDefaultAsync(c => c.Slug == slug);
         }
 
         public async Task<List<PreorderCampaign>> GetAllPreorderCampaign()
