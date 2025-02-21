@@ -1,100 +1,67 @@
-import { ChevronDown, Search, ShoppingCart, User, Wallet } from "lucide-react"
-import { Link } from "react-router-dom"
-import { useContext } from "react"
-
-import logo from "../../assets/react.svg"
-import { AuthContext } from "../../context/AuthContext"
-
+import { ChevronDown, Search, ShoppingCart, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import logo from '../../assets/react.svg';
 export default function Header() {
+	return (
+		<header className='sticky top-0 z-50 w-full bg-white border-b'>
+			<div className='container-lg mx-auto flex h-16 items-center justify-between !p-3'>
+				<Link to='/' className='flex items-center'>
+					<img src={logo} alt='Vaithuhay.com Logo' className='w-auto h-10' />
+				</Link>
+				<nav className='items-center hidden space-x-8 md:flex'>
+					<Link to='/' className='flex items-center gap-2 text-sm font-medium hover:text-gray-600'>
+						<p>Trang chủ</p> <ChevronDown className='w-4 h-4' />
+					</Link>
+					<div className='relative group'>
+						<Link
+							to='/gioi-thieu'
+							className='flex items-center gap-2 text-sm font-medium hover:text-gray-600'
+						>
+							<p>Giới thiệu</p> <ChevronDown className='w-4 h-4' />
+						</Link>
+					</div>
+					<div className='relative group'>
+						<Link
+							to='/san-pham'
+							className='flex items-center gap-2 text-sm font-medium hover:text-gray-600'
+						>
+							<p>Sản phẩm</p> <ChevronDown className='w-4 h-4' />
+						</Link>
+					</div>
+					<div className='relative group'>
+						<Link
+							to='/lien-he'
+							className='flex items-center gap-2 text-sm font-medium hover:text-gray-600'
+						>
+							<p>Liên hệ</p> <ChevronDown className='w-4 h-4' />
+						</Link>
+					</div>
+				</nav>
 
-    const { auth } = useContext(AuthContext)
+				<div className='flex items-center space-x-4'>
+					<div className='relative hidden md:block'>
+						<input
+							type='search'
+							placeholder='Tìm sản phẩm'
+							className='h-10 w-[300px] rounded-xl bg-yellow-300 px-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-200'
+						/>
+						<button className='absolute -translate-y-1/2 right-3 top-1/2'>
+							<Search className='w-4 h-4 text-gray-500' />
+						</button>
+					</div>
 
-    console.log(auth);
+					<button className='relative'>
+						<ShoppingCart className='w-6 h-6' />
+						<span className='absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full -right-2 -top-2'>
+							1
+						</span>
+					</button>
 
-
-    return (
-        <header className="sticky top-0 z-50 w-full border-b bg-white">
-            <div className="container-lg mx-auto flex h-16 items-center justify-between !p-3">
-                <Link to="/" className="flex items-center w-[16%]">
-                    <img
-                        src={logo}
-                        alt="Vaithuhay.com Logo"
-                        className="h-10 w-auto"
-                    />
-                </Link>
-                <nav className="w-[50%]">
-                    <div className="hidden md:flex space-x-8 items-center float-right">
-                        <Link to="/" className="text-[15px] font-medium hover:text-gray-600 flex items-center px-[20px] py-[10px] leading-[20px] ">
-                            <p className=" text-[#333] text-[16px]">Trang chủ</p> <ChevronDown className="w-4 h-4" />
-                        </Link>
-                        <div className="relative group">
-                            <Link to="/gioi-thieu" className="text-[15px] font-medium hover:text-gray-600 flex items-center px-[20px] py-[10px] leading-[20px]">
-                                <p className=" text-[#333] text-[16px]">Giới thiệu</p> <ChevronDown className="w-4 h-4" />
-                            </Link>
-                        </div>
-                        <div className="relative group">
-                            <Link to="/san-pham" className="text-[15px] font-medium hover:text-gray-600 flex items-center px-[20px] py-[10px] leading-[20px]">
-                                <p className=" text-[#333] text-[16px]">Sản phẩm</p> <ChevronDown className="w-4 h-4" />
-                            </Link>
-                        </div>
-                        <div className="relative group">
-                            <Link to="/bai-viet" className="text-[15px] font-medium hover:text-gray-600 flex items-center px-[20px] py-[10px] leading-[20px]">
-                                <p className=" text-[#333] text-[16px]">Bài viết</p> <ChevronDown className="w-4 h-4" />
-                            </Link>
-                        </div>
-                    </div>
-                </nav>
-
-                <div className="w-[33%]">
-                    <div className="float-right flex items-center space-x-4">
-                        <div className="relative hidden md:block">
-                            <input
-                                type="search"
-                                placeholder="Tìm sản phẩm"
-                                className="h-10 w-[300px] rounded-xl bg-yellow-300 px-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-200"
-                            />
-                            <button className="absolute right-3 top-1/2 -translate-y-1/2">
-                                <Search className="h-4 w-4 text-gray-500" />
-                            </button>
-                        </div>
-
-                        {auth.roleName.toLowerCase() === 'customer' ? (
-                            <>
-                                <button className="relative px-[5px]">
-                                    <ShoppingCart className="h-6 w-6" />
-                                    <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                                        1
-                                    </span>
-                                </button>
-
-                                <button className="h-10 px-[5px]">
-                                    <Link to='/wallet'>
-                                        <Wallet />
-                                    </Link>
-                                </button>
-
-                                <div className="px-[1rem] group h-10 flex items-center">
-                                    <User className="h-6 w-6" />
-                                    <div className="absolute top-[80%] right-0 w-[150px] h-[150px] bg-[red] hidden group-hover:block">
-
-                                    </div>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <Link to='/login' className="pl-[10px] py-[10px] ">
-                                    Đăng nhập
-                                </Link>
-                                <Link to='/register' className="px-[10px] py-[10px] border-solid border-l-[1px] border-[#e5e5e5]">
-                                    Đăng ký
-                                </Link>
-                            </>
-                        )}
-
-                    </div>
-                </div>
-            </div>
-        </header>
-    )
+					<button>
+						<User className='w-6 h-6' />
+					</button>
+				</div>
+			</div>
+		</header>
+	);
 }
-
