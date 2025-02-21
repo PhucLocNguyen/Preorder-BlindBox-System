@@ -26,15 +26,17 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                 UpdatedDate = null
             };
         }
-        public static ResponseOrder toOrderRespone(this Order order, int itemsOrderDetail)
+        public static ResponseOrder toOrderRespone(this Order order)
         {
             return new ResponseOrder()
             {
+               OrderId = order.OrderId, 
                Amount = order.Amount,
-               CreatedDate = order.CreatedDate,
+               CreatedDate =  order.CreatedDate.ToString("dd MMM, yyyy"),
+               Receiver = order.ReceiverName,
                ReceiverAddress = order.ReceiverAddress,
                Status = order.Status,  
-               TotalItems = itemsOrderDetail
+               TotalItems = order.OrderDetails.Sum(x=>x.Quantity),
             };
         }
     }

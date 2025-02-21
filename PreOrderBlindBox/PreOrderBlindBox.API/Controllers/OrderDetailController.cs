@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Data.Commons;
+using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.IServices;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace PreOrderBlindBox.API.Controllers
 {
@@ -15,13 +18,16 @@ namespace PreOrderBlindBox.API.Controllers
             _orderDetailService = orderDetailService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllOrderDetailsByOrderID(int orderID, [FromQuery] PaginationParameter paginationParameter)
+        [HttpGet("{orderID}")]
+        public async Task<IActionResult> GetAllOrderDetailsByOrderID([FromRoute]int orderID, [FromQuery] PaginationParameter paginationParameter)
         {
             try
             {
                 var itemResult = await _orderDetailService.GetAllOrderDetailsByOrderID(paginationParameter, orderID);
-                if (itemResult != null) return Ok(itemResult);
+                if (itemResult != null)
+                {
+					return Ok(itemResult);
+                }
                 return Ok(null);
             }
             catch (Exception ex)
