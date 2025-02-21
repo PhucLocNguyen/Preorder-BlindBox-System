@@ -10,7 +10,7 @@ import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 
-const ProductImages = ({ items }) => {
+const ProductImages = ({ items =[] }) => {
 	const [thumbsSwiper, setThumbsSwiper] = useState(null);
 	const swiperRef = useRef(null);
 
@@ -28,7 +28,7 @@ const ProductImages = ({ items }) => {
 						swiperRef.current = swiper;
 					}}
 				>
-					{items.map((item) => (
+					{items?.map((item) => (
 						<SwiperSlide key={item._id}>
 							<div className='relative w-full h-full'>
 								<img

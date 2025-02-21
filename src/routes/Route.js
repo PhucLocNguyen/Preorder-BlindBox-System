@@ -24,6 +24,8 @@ const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherC
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
+const ProductDetail = lazy(()=> import("../pages/Products/ProductDetail/ProductDetail"));
+
 import DepositPage from "../pages/Wallet/Deposit";
 import Wallet from "../pages/Wallet/Wallet";
 import Withdraw from "../pages/Wallet/Withdraw";
@@ -102,8 +104,8 @@ const publicRoutes = [
     ]
   },
   {
-    path: '/test',
-    component: DepositPage,
+    path: '/test/:id',
+    component: ProductDetail,
     layout: DefaultLayout,
   }
 ];
