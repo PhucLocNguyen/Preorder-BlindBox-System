@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Data.IRepositories
 {
-    public interface IImageRepository : IGenericRepository<Image>
+    public interface IBannerRepository : IGenericRepository<Banner>
     {
-        public Task<Image> GetMainImageByBlindBoxID(int blindBoxID);
-        Task<List<Image>> GetAllImageByBlindBoxID(int blindBoxId);
     }
 }

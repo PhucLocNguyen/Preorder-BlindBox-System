@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Data.IRepositories
 {
-    public interface IUserRepository : IGenericRepository<User>
-    {
-        public Task<User?> GetUserByEmailAsync(string email);
-        public Task<User?> GetUserByEmailConfirmToken(string confirmToken);
-        public Task<User?> GetUserById(int userId);
-    }
+	public interface IUserRepository : IGenericRepository<User>
+	{
+		public Task<User?> GetUserByEmailAsync(string email);
+		public Task<User?> GetUserByEmailConfirmToken(string confirmToken);
+		public Task<User?> GetUserById(int userId);
+		public Task<List<User>> GetAllStaff(int roleStaffId);
+	}
 }
