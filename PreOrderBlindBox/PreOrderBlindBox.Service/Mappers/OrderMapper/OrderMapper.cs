@@ -21,7 +21,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
                 ReceiverPhone = requestCreateOrder.ReceiverPhone,
                 Status = requestCreateOrder.Status,
-                VoucherId = requestCreateOrder.VoucherId,
+                UserVoucherId = requestCreateOrder.UserVoucherId,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = null
             };
