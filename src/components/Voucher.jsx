@@ -47,7 +47,8 @@ function Voucher({ VoucherDetail }) {
           {formatShortVND(VoucherDetail.maximumMoneyDiscount)}
         </p>
         <p className="mb-2">
-          Số lượng có hạn - đã lấy {VoucherDetail.takenQuantity + popupReceiveQuantity} trên{VoucherDetail.quantity}
+
+          Số lượng có hạn - đã lấy {VoucherDetail.takenQuantity + popupReceiveQuantity} trên {VoucherDetail.quantity}
         </p>
 
         {/* Badge số lượng tối đa user có thể lấy */}
