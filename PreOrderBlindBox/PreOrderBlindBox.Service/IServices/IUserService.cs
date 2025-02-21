@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Services.IServices
 {
-    public interface IUserService
-    {
-        public Task<ResponseLogin> LoginByEmailAndPasswordAsync(string email, string password);
-        public Task<bool> RegisterAccountAsync(RequestRegisterAccount registerAccount);
-        public Task<bool> ConfirmEmailByTokenAsync(string confirmToken);
-        public Task<ResponseCurrentAccountRole> GetCurrentAccountRole();
-        public Task<int> ChangePassword(RequestChangePassword changePassword);
-        public Task<int> ForgotPassword(RequestForgotPassword forgotPassword);
-    }
+	public interface IUserService
+	{
+		public Task<ResponseLogin> LoginByEmailAndPasswordAsync(string email, string password);
+		public Task<bool> RegisterAccountAsync(RequestRegisterAccount registerAccount);
+		public Task<bool> ConfirmEmailByTokenAsync(string confirmToken);
+		public Task<ResponseCurrentAccountRole> GetCurrentAccountRole();
+		public Task<int> ChangePassword(RequestChangePassword changePassword);
+		public Task<int> ForgotPassword(RequestForgotPassword forgotPassword);
+		public Task<bool> RegisterStaffAccountAsync(RequestRegisterAccount registerStaffAccount);
+		public Task<List<ResponseUserInfomation>> GetAllStaff();
+		public Task<ResponseUserInfomation> GetUserById(int userId);
+	}
 }
