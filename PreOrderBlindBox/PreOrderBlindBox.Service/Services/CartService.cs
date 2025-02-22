@@ -48,11 +48,17 @@ namespace PreOrderBlindBox.Services.Services
                 var existingCart = await GetCartByCustomerIDAndCampaignID(userID, (int)requestUpdateCart.PreorderCampaignId);
                 if (existingCart != null)
                 {
-                    existingCart.Quantity = requestUpdateCart.Quantity;
-                    await _cartRepository.UpdateAsync(existingCart);
-                    await _unitOfWork.SaveChanges();
-                    await _unitOfWork.CommitTransactionAsync();
-                }
+                    if(requestUpdateCart.Quantity > 0)
+                    {
+						existingCart.Quantity = requestUpdateCart.Quantity;
+					}else if(requestUpdateCart.Quantity == 0)
+                    {
+                        existingCart.IsDeleted = true;
+                    }
+					await _cartRepository.UpdateAsync(existingCart);
+					await _unitOfWork.SaveChanges();
+					await _unitOfWork.CommitTransactionAsync();
+				}
                 return existingCart;
             }
             catch (Exception ex)
