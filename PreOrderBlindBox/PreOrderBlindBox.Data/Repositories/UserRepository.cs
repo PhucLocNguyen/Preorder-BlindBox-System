@@ -37,7 +37,8 @@ namespace PreOrderBlindBox.Data.Repositories
 
 		public async Task<List<User>> GetAllStaff(int roleStaffId)
 		{
-			return await _context.Users.Include(x => x.Role).Where(x => x.Role.RoleId == roleStaffId).ToListAsync();
+			return await _context.Users.Include(x => x.Role).Where(x => x.Role.RoleId == roleStaffId && x.IsActive == true && x.IsEmailConfirm == true)
+				.ToListAsync();
 		}
 
 	}
