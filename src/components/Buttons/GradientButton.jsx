@@ -47,7 +47,7 @@ const useStyle = createStyles(({ css }) => ({
   `,
 }));
 
-const GradientButton = ({ text, onClick, disabled = false }) => {
+const GradientButton = ({ text, onClick, disabled = false, className ="" }) => {
   const { styles } = useStyle();
 
   return (
@@ -63,7 +63,7 @@ const GradientButton = ({ text, onClick, disabled = false }) => {
     >
       <div className={styles.buttonWrapper}>
         <Button 
-          className={`gradient-btn ${disabled ? 'disabled-btn' : ''}`}
+          className={`gradient-btn ${disabled ? 'disabled-btn' : ''} ${className}`}
           onClick={onClick}
           size="large"
           disabled={disabled}
