@@ -8,7 +8,7 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.PaymentModel
 {
     public class ResponsePaymentResult
     {
-        public string ResponseCode { get; set; }
+        public bool IsSuccess { get; set; }
         public string Message { get; set; }
     }
 }

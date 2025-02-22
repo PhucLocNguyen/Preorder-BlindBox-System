@@ -14,9 +14,10 @@ namespace PreOrderBlindBox.Services.IServices
     public interface IPaymentSerivce
     {
         public Task<string> CreatePaymentInMomoAsync(int userId,decimal amount);
-        public Task<bool> VerifySignatureFromMomo(User user, RequestMomoConfirm request);
+        public bool VerifySignatureFromMomo(MomoReturnModel momoResponse);
 
         public Task<string> CreatePaymentInVnPayAsync(int userId, decimal amount);
-        public Task<ResponsePaymentResult> VerifySignatureFromVnPay(IQueryCollection request);
+        public Task<ResponsePaymentResult> DepositMomoAsync(MomoReturnModel momoResponse);
+        public Task<ResponsePaymentResult> DepositConfirmFromVnPay(IQueryCollection request);
     }
 }

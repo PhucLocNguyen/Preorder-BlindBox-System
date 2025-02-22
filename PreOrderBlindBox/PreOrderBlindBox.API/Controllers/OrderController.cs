@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Utils;
@@ -58,7 +59,7 @@ namespace PreOrderBlindBox.API.Controllers
         {
             try
             {
-                var itemResult = await _orderService.CreateOrder(requestCreateOrder);
+                var itemResult = await _orderService.CreateOrder(requestCreateOrder, requestCreateOrder.RequestCreateCart);
                 if (itemResult != null) return Ok(new { Message = "Create order successfully " });
                 return BadRequest(new { Message = "Create order failed " });
             }
