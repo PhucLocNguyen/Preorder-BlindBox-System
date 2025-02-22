@@ -87,5 +87,22 @@ namespace PreOrderBlindBox.API.Controllers
                 return BadRequest(new { Message = (ex.Message) });
             }
         }
-    }
+
+		[HttpGet("ClearAllCart")]
+		public async Task<IActionResult> ClearAllCart()
+		{
+			try
+			{
+				int userID = _currentUserService.GetUserId();
+				var itemResult = await _cartService.UpdateStatusOfCartByCustomerID(userID);
+				if (itemResult) return Ok(new { Message = "Clear cart successfully" });
+				return BadRequest(new { Message = "Something wrong when get price" });
+
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = (ex.Message) });
+			}
+		}
+	}
 }
