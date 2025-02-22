@@ -88,7 +88,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-		[HttpGet("ClearAllCart")]
+		[HttpPut("ClearAllCart")]
 		public async Task<IActionResult> ClearAllCart()
 		{
 			try
