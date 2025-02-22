@@ -26,10 +26,10 @@ const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/Conf
 const Cart = lazy(() => import("../pages/Customer/Cart"));
 const ProductDetail = lazy(()=> import("../pages/Products/ProductDetail/ProductDetail"));
 
-import DepositPage from "../pages/Wallet/Deposit";
-import Wallet from "../pages/Wallet/Wallet";
-import Withdraw from "../pages/Wallet/Withdraw";
-import { path } from "framer-motion/client";
+const DepositPage = lazy(()=>import("../pages/Wallet/Deposit"));
+const Wallet = lazy(()=>import("../pages/Wallet/Wallet"));
+const Withdraw = lazy(()=>import("../pages/Wallet/Withdraw"));
+const WalletRechargeResponse = lazy(()=>import("../pages/Wallet/WalletRechargeResponse"));
 
 const publicRoutes = [
   {
@@ -102,6 +102,11 @@ const publicRoutes = [
       { index: true, component: DepositPage, layout: null},
       { path: 'deposit', component: Withdraw, layout: null },
     ]
+  },
+  {
+    path: '/wallet/paymentResponse',
+    component: WalletRechargeResponse,
+    layout: DefaultLayout,
   },
   {
     path: '/test/:id',
