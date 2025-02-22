@@ -296,5 +296,70 @@ namespace PreOrderBlindBox.Service.Services
 			}
 			return _mapper.Map<ResponseUserInfomation>(user);
 		}
+
+		public async Task<int> UpdateCustomerInformation(RequestUpdateCustomerInformation updateCustomerInformation)
+		{
+			int userId = _currentUserService.GetUserId();
+			var user = await _userRepository.GetUserById(userId);
+			if (user == null)
+			{
+				throw new Exception("User does not exist");
+			}
+			if (user.Role.RoleName.ToLower() != "customer")
+			{
+				throw new Exception("The updated account is not a customer");
+			}
+			user.FullName = updateCustomerInformation.FullName;
+			user.Phone = updateCustomerInformation.Phone;
+			user.Thumbnail = updateCustomerInformation.Thumbnail;
+			user.Address = updateCustomerInformation.Address;
+			user.BankName = updateCustomerInformation.BankName;
+			user.BankAccountNumber = updateCustomerInformation.BankAccountNumber;
+
+			await _userRepository.UpdateAsync(user);
+			return await _unitOfWork.SaveChanges();
+		}
+
+		public async Task<int> UpdateStaffInformation(RequestUpdateStaffInformation updateStaffInformation, int staffId)
+		{
+			var staff = await _userRepository.GetUserById(staffId);
+			if (staff == null)
+			{
+				throw new Exception("User does not exist");
+			}
+			if (staff.Role.RoleName.ToLower() != "staff")
+			{
+				throw new Exception("The updated account is not a staff");
+			}
+			staff.FullName = updateStaffInformation.FullName;
+			staff.Phone = updateStaffInformation.Phone;
+			staff.Thumbnail = updateStaffInformation.Thumbnail;
+			staff.Address = updateStaffInformation.Address;
+
+			await _userRepository.UpdateAsync(staff);
+			return await _unitOfWork.SaveChanges();
+
+		}
+
+		public async Task<int> DeleteStaff(int staffId)
+		{
+			var staff = await _userRepository.GetUserById(staffId);
+			if (staff == null)
+			{
+				throw new Exception("User does not exist");
+			}
+			if (staff.IsActive == false)
+			{
+				throw new Exception("Account has been deleted");
+			}
+			if (staff.Role.RoleName.ToLower() != "staff")
+			{
+				throw new Exception("The account is not a staff");
+			}
+			staff.IsActive = false;
+
+			await _userRepository.UpdateAsync(staff);
+			return await _unitOfWork.SaveChanges();
+		}
 	}
 }
