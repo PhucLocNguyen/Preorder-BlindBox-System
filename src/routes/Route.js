@@ -94,7 +94,8 @@ const publicRoutes = [
   },
   {
     path: '/cart',
-    component: Cart
+    component: Cart,
+    layout: DefaultLayout,
   },
   {
     path: '/test/:id',
