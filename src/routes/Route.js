@@ -18,16 +18,19 @@ const UserManagement = lazy(() => import("../pages/Admin/UserManagement/UserMana
 const UserManagementDetails = lazy(() => import("../pages/Admin/UserManagement/UserManagementDetails"));
 const PreorderMilestone = lazy(() => import("../pages/Admin/PreorderMilestone"));
 const Pre_orderCampaign = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaign"));
+const Pre_orderCampaignDetails = lazy(() => import("../pages/Admin/Pre-orderCampaign/Pre_orderCampaignDetails"));
 const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Voucher"));
 const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
-import DepositPage from "../pages/Wallet/Deposit";
-import Wallet from "../pages/Wallet/Wallet";
-import Withdraw from "../pages/Wallet/Withdraw";
-import { path } from "framer-motion/client";
+const ProductDetail = lazy(() => import("../pages/Products/ProductDetail/ProductDetail"));
+
+const DepositPage = lazy(() => import("../pages/Wallet/Deposit"));
+const Wallet = lazy(() => import("../pages/Wallet/Wallet"));
+const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
+const WalletRechargeResponse = lazy(() => import("../pages/Wallet/WalletRechargeResponse"));
 
 const publicRoutes = [
   {
@@ -63,6 +66,7 @@ const publicRoutes = [
       { path: "usermanagerment-details/:id", component: UserManagementDetails },
       { path: "preordermilestone", component: PreorderMilestone },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
+      { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
       { path: "voucher", component: VoucherManagement },
@@ -94,17 +98,8 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
-    path: '/wallet',
-    component: Wallet,
-    layout: DefaultLayout,
-    children: [
-      { index: true, component: DepositPage, layout: null},
-      { path: 'deposit', component: Withdraw, layout: null },
-    ]
-  },
-  {
-    path: '/test',
-    component: DepositPage,
+    path: '/test/:id',
+    component: ProductDetail,
     layout: DefaultLayout,
   }
 ];
@@ -119,5 +114,21 @@ const privateRoutes = [
     path: "/projects",
     component: Fragment,
   },
+  {
+    path: '/wallet',
+    component: Wallet,
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: DepositPage, layout: null },
+      { path: 'deposit', component: Withdraw, layout: null },
+    ],
+    role: ['Customer']
+  },
+  {
+    path: '/wallet/paymentResponse',
+    component: WalletRechargeResponse,
+    layout: DefaultLayout,
+    role: ['Customer']
+  }
 ];
 export { publicRoutes, privateRoutes };

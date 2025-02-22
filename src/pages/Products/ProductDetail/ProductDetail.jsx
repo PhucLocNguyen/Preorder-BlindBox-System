@@ -1,87 +1,89 @@
-import React from 'react';
-import { fakeProduct } from '../../../../fakeData';
 import ProductImages from '../../../components/ProductImage/ProductImage';
 import CountdownTimer from '../../../components/CountDown/CountDown';
+import { useParams } from 'react-router';
+import { useEffect, useState } from 'react';
+import { GetActiveBlindBoxById } from '../../../api/BlindBox/ApiBlindBox';
 
 const ProductDetail = () => {
-	const product = fakeProduct;
+	const params = useParams();
+	const { id } = params;
+	const [data, setData] = useState();
 
-	const addAnchorStyles = (htmlContent) => {
-		return htmlContent.replace(/<a([^>]+)>/g, (match) => {
-			return match.replace('<a', '<a class="text-blue-500"');
-		});
+	const productDetailBlind = async () => {
+		const res = await GetActiveBlindBoxById(id);
+		setData(res);
 	};
+
+	useEffect(() => {
+		productDetailBlind();
+	}, []);
+
+	console.log('data', data);
+
 	return (
 		<div className='sec-com'>
 			<div className='container-lg'>
-				<div className='relative flex flex-col lg:flex-row justify-between gap-6'>
+				<div className='relative flex flex-col justify-between gap-6 lg:flex-row'>
 					{/* IMG */}
-					<div className='w-full lg:w-1/2 lg:sticky top-0 h-max'>
-						<ProductImages items={product.media?.items} />
+					<div className='top-0 w-full lg:w-1/2 lg:sticky h-max'>
+						<ProductImages items={data?.images?.galleryImages} />
 					</div>
 					{/* TEXTS */}
-					<div className='w-full lg:w-1/2 flex flex-col gap-3'>
-						<div className='max-w-2xl mx-auto bg-white rounded-lg shadow-sm p-6'>
-							<div className='inline-block px-4 py-1 rounded-full bg-emerald-400 text-white mb-6'>
+					<div className='flex flex-col w-full gap-3 lg:w-1/2'>
+						<div className='w-full p-6 mx-auto bg-white rounded-lg shadow-sm '>
+							<div className='inline-block px-4 py-1 mb-6 text-white rounded-full bg-emerald-400'>
 								Coming Soon
 							</div>
 
-							<h1 className='text-3xl font-bold mb-6'>
-								Tai Nghe Bluetooth LIUP LP1 & LP2 Luminous Quicksand - Phát Sáng Trong Bóng Tối
-							</h1>
+							<h1 className='mb-6 text-3xl font-bold'>{data?.name}</h1>
 
 							<div className='flex items-center gap-2 mb-4'>
-								<span className='inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-100'>
-									<img src='/calendar.svg' alt='' className='w-4 h-4' />
+								<span className='inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 rounded-full'>
+									{/* <img src='/calendar.svg' alt='' className='w-4 h-4' /> */}
 									<span>Dự kiến ra mắt: 31/01/2025</span>
 								</span>
 							</div>
-
 							<CountdownTimer />
 
 							<div className='flex items-center gap-2 my-4'>
-								<span className='inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-100'>
-									<img src='/target.svg' alt='' className='w-4 h-4' />
+								<span className='inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 rounded-full'>
+									{/* <img src='/target.svg' alt='' className='w-4 h-4' /> */}
 									<span>Mục tiêu dự kiến: 120 sản phẩm</span>
 								</span>
 							</div>
 
-							<div className='space-y-6 mb-8'>
-								<h2 className='text-lg font-bold text-gray-800'>TÌM HIỂU THƯƠNG HIỆU LIUP</h2>
+							<div className='mb-8 space-y-6'>
+								{/* <h2 className='text-lg font-bold text-gray-800'>TÌM HIỂU THƯƠNG HIỆU LIUP</h2> */}
 
-								<p className='text-gray-600 leading-relaxed'>
-									LIUP là thương hiệu chuyên về các sản phẩm âm thanh, đặc biệt là tai nghe không dây,
-									kết hợp giữa chất lượng âm thanh cao cấp và thiết kế thẩm mỹ đặc biệt. Nổi bật với
-									các tính năng phát sáng và ánh sáng lấp lánh.
-								</p>
+								<p className='leading-relaxed text-gray-600'>{data?.description}</p>
 
 								<div className='space-y-4'>
 									<div>
-										<h3 className='text-gray-700 mb-2'>Phiên bản:</h3>
+										<h3 className='mb-2 text-gray-700'>Size:</h3>
 										<div className='flex gap-2'>
-											<span className='px-4 py-2 rounded-full bg-yellow-100'>LP1 (In-Ear)</span>
-											<span className='px-4 py-2 rounded-full text-gray-600'>LP2 (Open-Ear)</span>
+											<span className='px-4 py-2 bg-yellow-100 rounded-full'>{data?.size}</span>
+											{/* <span className='px-4 py-2 text-gray-600 rounded-full'>LP2 (Open-Ear)</span> */}
 										</div>
 									</div>
 
-									<div>
-										<h3 className='text-gray-700 mb-2'>Màu sắc:</h3>
+									{/* <div>
+										<h3 className='mb-2 text-gray-700'>Màu sắc:</h3>
 										<div className='flex gap-2'>
-											<span className='px-4 py-2 rounded-full bg-yellow-100'>Cam</span>
-											<span className='px-4 py-2 rounded-full text-gray-600'>Xanh dương</span>
+											<span className='px-4 py-2 bg-yellow-100 rounded-full'>Cam</span>
+											<span className='px-4 py-2 text-gray-600 rounded-full'>Xanh dương</span>
 										</div>
-									</div>
+									</div> */}
 								</div>
 							</div>
 
-							<button className='w-full py-4 bg-yellow-400 rounded-full font-medium hover:bg-yellow-500 transition-colors'>
+							<button className='w-full py-4 font-medium transition-colors bg-yellow-400 rounded-full hover:bg-yellow-500'>
 								ĐĂNG KÝ ĐẶT TRƯỚC
 							</button>
 						</div>
 						{/* <h1 className='text-xl font-medium'>{product.name}</h1>
 						<div className='h-[2px] bg-gray-100' />
 						{product.price?.price === product.price?.discountedPrice ? (
-							<h2 className='font-medium text-2xl'>${product.price?.price?.toLocaleString()}</h2>
+							<h2 className='text-2xl font-medium'>${product.price?.price?.toLocaleString()}</h2>
 						) : (
 							<div className='flex items-center gap-2'>
 								<div className='flex items-center line-through'>
@@ -89,20 +91,20 @@ const ProductDetail = () => {
 									<h3 className='text-lg text-gray-500'>{product.price?.currency}</h3>
 								</div>
 								<div className='flex items-center gap-1 text-red-500'>
-									<h2 className='font-medium text-xl'>
+									<h2 className='text-xl font-medium'>
 										{product.price?.discountedPrice?.toLocaleString()}
 									</h2>
-									<h2 className='font-medium text-xl'>{product.price?.currency}</h2>
+									<h2 className='text-xl font-medium'>{product.price?.currency}</h2>
 								</div>
-								<div className='p-1 bg-primary rounded-md text-white font-semibold text-xs'>
+								<div className='p-1 text-xs font-semibold text-white rounded-md bg-primary'>
 									-{product.discount?.value}%
 								</div>
 							</div>
 						)}
 						<div className='h-[2px] bg-gray-100' />
 						{product.additionalInfoSections?.map((section) => (
-							<div className='text-sm rounded-md shadow-lg bg-white' key={section.title}>
-								<div className='font-medium flex items-center gap-1 p-2 bg-primary text-white rounded-tl-md rounded-tr-md'>
+							<div className='text-sm bg-white rounded-md shadow-lg' key={section.title}>
+								<div className='flex items-center gap-1 p-2 font-medium text-white bg-primary rounded-tl-md rounded-tr-md'>
 									{section.title === 'Điều kiện bảo hành' && <ShieldCheckIcon />}
 									{section.title === 'Khuyến mãi' && <GiftIcon />}
 									<span>{section.title}</span>

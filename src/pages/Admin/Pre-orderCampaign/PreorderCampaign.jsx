@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Pre_orderCampaignEdit from "./Pre-orderCampaignEdit";
 import Pre_orderCampaignCreate from "./Pre-orderCampaignCreate";
 import axios from 'axios';
-import { GetTheActivePreorderCampaign } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
+
+import { GetTheActivePreorderCampaign, GetActivePreorderCampaignBySlug } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
 import useFetchDataPagination from "../../../hooks/useFetchDataPagination";
 import noThumbnailImage from "../../../assets/noThumbnailImage.jpg"
 const { Search } = Input;
@@ -17,11 +18,12 @@ const Pre_orderCampaign = () => {
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [Pre_orderCampaignToDelete, setPre_orderCampaignToDelete] = useState(null);
-    const [selectedPre_orderCampaign_Id, setSelectedPre_orderCampaign_Id] = useState(new Set());
     const [warning, setWarning] = useState('');
     const [pageSize, setPageSize] = useState(5);
     const [pageIndex, setPageIndex] = useState(1);
     const navigate = useNavigate();
+    const [detailPre_orderCampaign, setDetailPre_orderCampaign] = useState({});
+
 
     const fetchPreorderCampaign = useCallback(
         () => GetTheActivePreorderCampaign(pageSize, pageIndex),
@@ -32,18 +34,26 @@ const Pre_orderCampaign = () => {
         pageIndex,
     ]);
 
+    useEffect(() => {
+        const getDetailPre_orderCampaign_bySlug = async () => {
+            var data = await GetActivePreorderCampaignBySlug(record.slug);
+            setDetailPre_orderCampaign(data);
+        };
+        getDetailPre_orderCampaign_bySlug();
+        console.log(pagination);
+    }, [data]);
+
     const handleAddPre_orderCampaign = () => {
 
         setIsCreateModalVisible(true);
 
     };
 
-    const handleEditPre_orderCampaign = (preorderCampaignId) => {
-        setSelectedPre_orderCampaign(preorderCampaignId);
+    const handleEditPre_orderCampaign = () => {
         setIsEditModalVisible(true);
     };
-    const handleViewPre_orderCampaign = (preorderCampaignId) => {
-        navigate(`/admin/pre-ordercampaign-details/${preorderCampaignId}`);
+    const handleViewPre_orderCampaign = (record) => {
+        navigate(`/admin/pre-ordercampaign-details/${record.slug}`);
     };
 
     const handleCancelCreate = () => {
@@ -89,56 +99,76 @@ const Pre_orderCampaign = () => {
     };
     const columns = [
         {
-            title: "No.",
+            title: <span style={{ fontSize: "18px" }}>{"No."}</span>,
             key: "index",
-            render: (_, __, index) => (pagination.current - 1) * pagination.pageSize + index + 1,
+            align: "center",
+            render: (_, __, index) =>
+                <div className="text-center text-red-500 font-bold">{(pagination.current - 1) * pagination.pageSize + index + 1}</div>,
         },
+
         {
-            title: "Image",
+            title: <span style={{ fontSize: "18px" }}>{"Image"}</span>,
             key: "mainImage",
+            align: "center",
             render: (_, record) => (
-                <img
-                    src={record.blindBox?.mainImages?.url || noThumbnailImage}
-                    alt="Main"
-                    className="w-32 h-32 object-contain rounded-md shadow-md"
-                />
+                <div className="justify-center ml-10">
+                    <img
+                        src={record.blindBox?.mainImages?.url || noThumbnailImage}
+                        alt="Main"
+                        className="w-32 h-32 object-contain rounded-md shadow-md"
+                    />
+                </div>
             ),
         },
+
         {
-            title: "Name",
+            title: <span style={{ fontSize: "18px" }}>{"Name"}</span>,
             key: "name",
-            render: (_, record) => record.blindBox?.name || "N/A",
+            align: "center",
+            render: (_, record) => <div className="text-center">{record.blindBox?.name || "N/A"}</div>,
         },
+
         {
-            title: "Type",
-            render: (_, record) => record.type || "Unknown",
+            title: <span style={{ fontSize: "18px" }}>{"Type"}</span>,
             key: "type",
+            align: "center",
+            render: (_, record) => <div className="text-center">{record.type || "Unknown"}</div>,
+
         },
+
         {
-            title: "Size",
+            title: <span style={{ fontSize: "18px" }}>{"Size"}</span>,
             key: "size",
-            render: (_, record) => record.blindBox?.size || "Unknown",
+            align: "center",
+            render: (_, record) => <div className="text-center">{record.blindBox?.size || "Unknown"}</div>,
         },
+
         {
-            title: "Start Date",
+            title: <span style={{ fontSize: "18px" }}>{"Start Date"}</span>,
             key: "startDate",
+            align: "center",
             render: (_, record) =>
-                record.startDate
-                    ? new Date(record.startDate).toLocaleDateString("vi-VN", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                    })
-                    : "N/A",
+                <div className="text-center">{
+                    record.startDate
+                        ? new Date(record.startDate).toLocaleDateString("vi-VN", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                        })
+                        : "N/A"}</div>,
         },
+
         {
-            title: "Action",
+            title: <span style={{ fontSize: "18px" }}>{"Action"}</span>,
             key: "action",
+            align: "center",
             render: (_, record) => (
-                <Space size="middle">
-                    <EyeOutlined style={{ color: "blue", fontSize: "18px" }} onClick={() => handleViewPre_orderCampaign(record)} />
-                    <EditOutlined style={{ color: "orange", fontSize: "18px" }} onClick={() => handleEditPre_orderCampaign(record)} />
-                    <DeleteOutlined style={{ color: "red", fontSize: "18px" }} onClick={() => handleDeletePre_orderCampaign(record)} />
+                <Space size="middle" className="justify-between ml-1">
+
+                    <EyeOutlined style={{ color: "blue", fontSize: "25px" }} onClick={() => handleViewPre_orderCampaign(record)} />
+                    <EditOutlined style={{ color: "orange", fontSize: "25px" }} onClick={() => handleEditPre_orderCampaign(record)} />
+                    <DeleteOutlined style={{ color: "red", fontSize: "25px" }} onClick={() => handleDeletePre_orderCampaign(record)} />
+
                 </Space>
             ),
         },
@@ -148,9 +178,7 @@ const Pre_orderCampaign = () => {
         item.blindBox?.name?.toLowerCase().includes(search.toLowerCase())
     );
 
-    useEffect(() => {
-        console.log(pagination);
-    }, [filteredData]);
+
 
 
     return (
