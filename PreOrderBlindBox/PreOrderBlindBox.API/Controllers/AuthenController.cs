@@ -154,5 +154,26 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 		}
 
+		[HttpPost("RegisterStaff")]
+		public async Task<IActionResult> CreateStaffByEmailAndPassword(RequestRegisterAccount registerModel)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					var result = await _userService.RegisterStaffAccountAsync(registerModel);
+					if (result == true)
+					{
+						return Ok(new { Message = "Account created successfully" });
+					}
+				}
+				return BadRequest(new { Message = "Failed to create user" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
 	}
 }

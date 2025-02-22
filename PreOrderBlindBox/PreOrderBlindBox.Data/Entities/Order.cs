@@ -11,7 +11,7 @@ public partial class Order
 
     public int? CustomerId { get; set; }
 
-    public int? VoucherId { get; set; }
+    public int? UserVoucherId { get; set; }
 
     public decimal Amount { get; set; }
 
@@ -30,4 +30,6 @@ public partial class Order
     public virtual User Customer { get; set; }
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
+    public virtual UserVoucher UserVoucher { get; set; }
 }

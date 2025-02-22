@@ -21,20 +21,22 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
                 ReceiverPhone = requestCreateOrder.ReceiverPhone,
                 Status = requestCreateOrder.Status,
-                VoucherId = requestCreateOrder.VoucherId,
+                UserVoucherId = requestCreateOrder.UserVoucherId,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = null
             };
         }
-        public static ResponseOrder toOrderRespone(this Order order, int itemsOrderDetail)
+        public static ResponseOrder toOrderRespone(this Order order)
         {
             return new ResponseOrder()
             {
+               OrderId = order.OrderId, 
                Amount = order.Amount,
-               CreatedDate = order.CreatedDate,
+               CreatedDate =  order.CreatedDate.ToString("dd MMM, yyyy"),
+               Receiver = order.ReceiverName,
                ReceiverAddress = order.ReceiverAddress,
                Status = order.Status,  
-               TotalItems = itemsOrderDetail
+               TotalItems = order.OrderDetails.Sum(x=>x.Quantity),
             };
         }
     }
