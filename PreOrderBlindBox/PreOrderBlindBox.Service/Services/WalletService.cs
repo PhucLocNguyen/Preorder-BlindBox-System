@@ -49,68 +49,6 @@ namespace PreOrderBlindBox.Service.Services
             return true;
         }
 
-        public async Task<bool> DepositAsync(RequestMomoConfirm request)
-        {
-            try
-            {
-                string orderInfo = request.OrderInfo;
-                int userId = int.Parse(orderInfo.Split("_")[1]);
-                User userDetail = await _userRepository.GetByIdAsync(userId);
-                if (userDetail == null)
-                {
-                    return false;
-                }
-                if (userDetail.WalletId == null)
-                {
-                    return false;
-                }
-
-                // validate payment cua momo truoc roi moi add payment
-                bool resultValidate = await _paymentSerivce.VerifySignatureFromMomo(userDetail, request);
-                if (!resultValidate)
-                {
-                    return false;
-                }
-                // Them tien vao wallet
-                if (request.ResultCode != 0)
-                {
-                    throw new Exception("Momo payment failed");
-                }
-                try
-                {
-                    Wallet wallet = await _walletRepository.GetByIdAsync(userDetail.WalletId);
-                    decimal walletBalance = wallet.Balance;
-                    wallet.Balance += request.Amount;
-                    await _unitOfWork.BeginTransactionAsync();
-                    await _walletRepository.UpdateAsync(wallet);
-                    Transaction transaction = new Transaction()
-                    {
-                        Money = request.Amount,
-                        CreatedDate = DateTime.Now,
-                        Type = "Deposit",
-                        Status = "Success",
-                        WalletId = wallet.WalletId,
-                        BalanceAtTime = walletBalance
-                    };
-                    await _transactionRepository.InsertAsync(transaction);
-                    await _unitOfWork.SaveChanges();
-                    return true;
-
-
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    await _unitOfWork.RollbackTransactionAsync();
-                }
-            }
-            catch (Exception e) {
-                Console.WriteLine(e.Message);
-            };
-
-            return false;
-
-        }
 
         public async Task<ResponseShowWallet> GetWalletByUserIdAsync(int userId)
         {

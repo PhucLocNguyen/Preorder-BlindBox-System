@@ -33,7 +33,7 @@ namespace PreOrderBlindBox.Services.Helpers
 						await _voucherCampaignService.BackGroundUpdateVoucherCampaign();
 					}
 					await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-				}
+					}
 				catch (Exception ex)
 				{
 					_logger.LogError("Error occurred while updating voucher campaign.");
