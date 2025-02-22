@@ -31,6 +31,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
             return new ResponseOrder()
             {
                OrderId = order.OrderId, 
+               UserVoucherId = order.UserVoucherId,
                Amount = order.Amount,
                CreatedDate =  order.CreatedDate.ToString("dd MMM, yyyy"),
                Receiver = order.ReceiverName,

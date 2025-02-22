@@ -2,6 +2,7 @@
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
+using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.NotificationRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
@@ -43,7 +44,7 @@ namespace PreOrderBlindBox.Services.Services
 
         }
 
-        public async Task<Order> CreateOrder(RequestCreateOrder requestCreateOrder)
+        public async Task<Order> CreateOrder(RequestCreateOrder requestCreateOrder, RequestCreateCart? requestCreateCart)
         {
             int customerId = _currentUserService.GetUserId();
             await _unitOfWork.BeginTransactionAsync();
@@ -53,7 +54,7 @@ namespace PreOrderBlindBox.Services.Services
                 var staff = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).FirstOrDefault();
                 var notificationForCustomer = (new RequestCreateNotification()).NotificationForCustomer(customerId);
                 var notificationForStaff = (new RequestCreateNotification()).NotificationForStaff(customer.FullName, staff.UserId);
-                List<ResponseCart> priceForCarts = await _cartService.IdentifyPriceForCartItem(customerId);
+                List<ResponseCart> priceForCarts = await _cartService.IdentifyPriceForCartItem(customerId, requestCreateCart);
                 if(priceForCarts.ToList().Any(x=>x.Price < 0)) 
                 {
                     throw new Exception($"The cart contains {priceForCarts[0].Quantity} item with an incorrect price");
@@ -61,7 +62,7 @@ namespace PreOrderBlindBox.Services.Services
                 if(requestCreateOrder.UserVoucherId != null)
                 {
                     var userVoucher = await _userVoucherService.GetUserVoucherById((int)requestCreateOrder.UserVoucherId);
-                    var amountAfterUsingVoucher = priceForCarts.Sum(x => x.Price) * userVoucher.PercentDiscount;
+                    var amountAfterUsingVoucher = priceForCarts.Sum(x => x.Amount) * (userVoucher.PercentDiscount/100);
                     if(amountAfterUsingVoucher > userVoucher.MaximumMoneyDiscount)
                     {
 						requestCreateOrder.Amount = userVoucher.MaximumMoneyDiscount;
@@ -72,7 +73,7 @@ namespace PreOrderBlindBox.Services.Services
 					}
 				}else
                 {
-					requestCreateOrder.Amount = priceForCarts.Sum(x => x.Price);
+					requestCreateOrder.Amount = priceForCarts.Sum(x => x.Amount);
 				}
 
 				var orderEntity = requestCreateOrder.toOrderEntity(customerId);
