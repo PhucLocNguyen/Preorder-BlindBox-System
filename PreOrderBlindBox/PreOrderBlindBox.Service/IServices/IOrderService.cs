@@ -1,5 +1,6 @@
 ﻿using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.OrderResponseModel;
 using System;
@@ -14,6 +15,6 @@ namespace PreOrderBlindBox.Services.IServices
     {
         Task<Pagination<ResponseOrder>> GetAllOrder(PaginationParameter page, string? searchKeyWords);
         Task<ResponseOrder> GetOrderById(int id);
-        Task<Order> CreateOrder(RequestCreateOrder requestCreateOrder);
+        Task<Order> CreateOrder(RequestCreateOrder requestCreateOrder,RequestCreateCart? requestCreateCart);
     }
 }

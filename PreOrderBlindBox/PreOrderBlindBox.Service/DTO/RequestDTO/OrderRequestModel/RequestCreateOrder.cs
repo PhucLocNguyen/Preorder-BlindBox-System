@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,8 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel
 
         public string ReceiverAddress { get; set; }
 
-        public string Status { get; set; }
+        public string? Status { get; set; }
+
+        public RequestCreateCart? RequestCreateCart { get; set; }
     }
 }

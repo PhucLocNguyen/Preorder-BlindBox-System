@@ -1,7 +1,9 @@
-﻿using PreOrderBlindBox.Data.Entities;
+﻿using AutoMapper;
+using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Mappers.CartMapper;
@@ -16,18 +18,26 @@ namespace PreOrderBlindBox.Services.Services
         private readonly IOrderDetailService _orderDetailService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUserService _currentUserService;
-        public CartService(ICartRepository cartRepository, IUnitOfWork unitOfWork,
+		private readonly IMapper _mapper;
+		private readonly IBlindBoxService _blindBoxService;
+		private readonly IPreorderCampaignService _preorderCampaignService;
+		public CartService(ICartRepository cartRepository, IUnitOfWork unitOfWork,
             IPreorderMilestoneService preorderMilestoneService,
             IOrderDetailService orderDetailService,
-            ICurrentUserService currentUserService
-            )
+            ICurrentUserService currentUserService,
+			IMapper mapper, IBlindBoxService blindBoxService,
+			IPreorderCampaignService preorderCampaignService
+			)
         {
             _cartRepository = cartRepository;
             _unitOfWork = unitOfWork;
             _preorderMilestoneService = preorderMilestoneService;
             _orderDetailService = orderDetailService;
             _currentUserService = currentUserService;
-        }
+			_mapper = mapper;
+            _blindBoxService = blindBoxService;
+            _preorderCampaignService = preorderCampaignService;
+		}
 
         public async Task<Cart> ChangeQuantityOfCartByCustomerID(RequestCreateCart requestUpdateCart)
         {
@@ -57,14 +67,19 @@ namespace PreOrderBlindBox.Services.Services
             int userId = _currentUserService.GetUserId();
             try
             {
-                var cartEntity = requestCreateCart.toCartEntity(userId);
-                await _cartRepository.InsertAsync(cartEntity);
-                await _unitOfWork.SaveChanges();
-                return cartEntity;
+                if (requestCreateCart.Quantity > 0)
+                {
+                    var cartEntity = requestCreateCart.toCartEntity(userId);
+                    await _cartRepository.InsertAsync(cartEntity);
+                    await _unitOfWork.SaveChanges();
+                    return cartEntity;
+                }
+                else throw new Exception("Cart item quantity must be larger than 0");
+                
             }
             catch (Exception ex)
             {
-                throw new Exception("Something went wrong when add blind box to cart", ex);
+                throw;//new Exception("Something went wrong when add blind box to cart", ex);
             }
         }
 
@@ -81,10 +96,18 @@ namespace PreOrderBlindBox.Services.Services
                 (x.UserId == customerID))).FirstOrDefault();
         }
 
-        public async Task<List<ResponseCart>> IdentifyPriceForCartItem(int customerID)
+        public async Task<List<ResponseCart>> IdentifyPriceForCartItem(int customerID, RequestCreateCart? requestCreateCart)
         {
             List<ResponseCart> cartItemPrices = new List<ResponseCart>();
-            List<Cart> listCart = await GetAllCartByCustomerID(customerID);
+            List<Cart> listCart = new List<Cart>(); 
+            if(requestCreateCart.PreorderCampaignId == null)
+            {
+				listCart = await GetAllCartByCustomerID(customerID);
+
+			}else
+            {
+                listCart.Add(requestCreateCart.toCartEntity(customerID));
+            }
             foreach (var cart in listCart)
             {
                 var orderDetailsQuantity = await _orderDetailService.GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc((int)cart.PreorderCampaignId);
@@ -108,8 +131,10 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     foreach (var milestone in preorderMilestones)
                     {
-                        //Tính số lượng còn lại bao nhiêu cái đối với từng mốc 
-                        int remainQuantity = await _preorderMilestoneService.CalculateRemainingQuantity(milestone.Quantity, orderDetailsQuantity);
+						var preorderCampaign = await _preorderCampaignService.GetPreorderCampaignAsyncById((int)cart.PreorderCampaignId);
+						var blindBoxResponse = _mapper.Map<ResponseBlindBox>(await _blindBoxService.GetBlindBoxByIdAsync((int)preorderCampaign.BlindBoxId));
+						//Tính số lượng còn lại bao nhiêu cái đối với từng mốc 
+						int remainQuantity = await _preorderMilestoneService.CalculateRemainingQuantity(milestone.Quantity, orderDetailsQuantity);
                         if (remainQuantity == 0)
                         {
                             orderDetailsQuantity = orderDetailsQuantity - milestone.Quantity;
@@ -121,12 +146,13 @@ namespace PreOrderBlindBox.Services.Services
                             {
                                 cartItemPrices.Add(new ResponseCart()
                                 {
-                                    PreorderCampaignId = cart.PreorderCampaignId,
+                                    BlindBox = blindBoxResponse,
+									PreorderCampaignId = cart.PreorderCampaignId,
                                     UserId = cart.UserId,
                                     Price = milestone.Price,
                                     Quantity = cart.Quantity,
-
-                                });
+                                    Amount = milestone.Price * cart.Quantity
+								});
                                 break;
                             }//Nếu số lượng còn lại trong mốc ít hơn nhưng vẫn đủ hàng 
                             else 
@@ -134,13 +160,17 @@ namespace PreOrderBlindBox.Services.Services
                                 cart.Quantity = cart.Quantity - remainQuantity;
                                 cartItemPrices.Add(new ResponseCart()
                                 {
-                                    PreorderCampaignId = cart.PreorderCampaignId,
+									BlindBox = blindBoxResponse,
+									PreorderCampaignId = cart.PreorderCampaignId,
                                     UserId = cart.UserId,
                                     Price = milestone.Price,
-                                    Quantity = remainQuantity
-                                });
+                                    Quantity = remainQuantity,
+									Amount = milestone.Price * remainQuantity
+								});
+                                orderDetailsQuantity = 0;
                             }
                         }
+
                     }
                 }
             }

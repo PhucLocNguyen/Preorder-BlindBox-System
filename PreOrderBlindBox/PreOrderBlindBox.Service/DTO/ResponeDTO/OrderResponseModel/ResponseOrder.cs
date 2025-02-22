@@ -10,7 +10,8 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.OrderResponseModel
     public class ResponseOrder
     {
         public int OrderId { get; set; }
-        public string CreatedDate { get; set; }
+		public int? UserVoucherId { get; set; }
+		public string CreatedDate { get; set; }
         public int TotalItems { get; set; }
         public decimal Amount { get; set; }
         public string Receiver { get; set; }
