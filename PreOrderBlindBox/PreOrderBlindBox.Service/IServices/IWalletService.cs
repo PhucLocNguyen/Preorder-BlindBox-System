@@ -15,8 +15,6 @@ namespace PreOrderBlindBox.Services.IServices
         public Task<bool> CreateWalletAsync(int userId);
         // Lay thong tin wallet cua nguoi dung
         public Task<ResponseShowWallet> GetWalletByUserIdAsync(int userId);
-        // Nap tien vao wallet
-        public Task<bool> DepositAsync(RequestMomoConfirm request);
         // Rut tien tu wallet
         public Task<bool> WithdrawAsync(int userId, decimal amount);
 
