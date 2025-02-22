@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
 using PreOrderBlindBox.CM.Helpers;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
@@ -53,6 +54,17 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     throw new Exception("Người dùng chưa có ví.");
                 }
+
+                Transaction transaction = new Transaction()
+                {
+                    Money = amount,
+                    CreatedDate = DateTime.Now,
+                    Description = "Recharge with Momo",
+                    Type = "recharge",
+                    Status = "Pending",
+                    WalletId = user.WalletId,
+                };
+                _transaction.AddTransaction(transaction);
                 // Đọc cấu hình từ _configuration
                 string endpoint = _configuration["MomoPayment:BaseUrl"];
                 string partnerCode = _configuration["MomoPayment:PartnerCode"];
@@ -64,7 +76,9 @@ namespace PreOrderBlindBox.Services.Services
 
                 // Lấy thông tin user (nếu cần thiết)
                 string extraData = $"email={user.Email}";
-                string orderInfo = $"Pay with MoMo_{user.UserId}_{user.WalletId}";
+                string transactionId = transaction.TransactionId.ToString();
+
+                string orderInfo = $"Pay with MoMo_{user.UserId}_{transactionId}";
                 string orderId = Guid.NewGuid().ToString();
                 string requestId = Guid.NewGuid().ToString();
 
@@ -81,6 +95,8 @@ namespace PreOrderBlindBox.Services.Services
                                       $"&requestType={requestType}";
 
                 // Tạo chữ ký (signature)
+                Console.WriteLine("Create URL Signature raw:\n" + rawSignature);
+
                 string signature = ComputeHmacSha256(rawSignature, secretKey);
 
                 if (!string.IsNullOrEmpty(signature))
@@ -136,48 +152,42 @@ namespace PreOrderBlindBox.Services.Services
         }
 
 
-        public Task<bool> VerifySignatureFromMomo(User user, RequestMomoConfirm request)
+        public bool VerifySignatureFromMomo(MomoReturnModel momoResponse)
         {
-            string endpoint = _configuration["MomoPayment:BaseUrl"];
-            string partnerCode = _configuration["MomoPayment:PartnerCode"];
-            string accessKey = _configuration["MomoPayment:AccessKey"];
             string secretKey = _configuration["MomoPayment:SecretKey"];
-            string redirectUrl = _configuration["MomoPayment:ReturnUrl"];
-            string ipnUrl = _configuration["MomoPayment:NotifyUrl"];
-            string requestType = _configuration["MomoPayment:RequestType"];
+
+            string accessKey = _configuration["MomoPayment:AccessKey"];
 
             // Lấy thông tin user (nếu cần thiết)
-            string extraData = $"email={user.Email}";
-            string orderInfo = $"Pay with MoMo_{user.UserId}_{user.WalletId}";
-            string orderId = request.OrderId;
-            string requestId = request.RequestId;
-
-            // Xây dựng chuỗi rawSignature
             string rawSignature = $"accessKey={accessKey}" +
-                                  $"&amount={request.Amount}" +
-                                  $"&extraData={extraData}" +
-                                  $"&ipnUrl={ipnUrl}" +
-                                  $"&orderId={orderId}" +
-                                  $"&orderInfo={orderInfo}" +
-                                  $"&partnerCode={partnerCode}" +
-                                  $"&redirectUrl={redirectUrl}" +
-                                  $"&requestId={requestId}" +
-                                  $"&requestType={requestType}";
+                      $"&amount={momoResponse.amount}" +
+                      $"&extraData={momoResponse.extraData}" +
+                      $"&message={momoResponse.message}" +
+                      $"&orderId={momoResponse.orderId}" +
+                      $"&orderInfo={momoResponse.orderInfo}" +
+                      $"&orderType={momoResponse.orderType}" +
+                      $"&partnerCode={momoResponse.partnerCode}" +
+                      $"&payType={momoResponse.payType}" +
+                      $"&requestId={momoResponse.requestId}" +
+                      $"&responseTime={momoResponse.responseTime}" +
+                      $"&resultCode={momoResponse.resultCode}" +
+                      $"&transId={momoResponse.transId}";
+
             try
             {
-                if (request.Signature.Equals(ComputeHmacSha256(rawSignature, secretKey), StringComparison.Ordinal))
+                Console.WriteLine("Verify Signature raw:\n" + rawSignature);
+                string hashSignature = ComputeHmacSha256(rawSignature, secretKey);
+                if (momoResponse.signature.Equals(hashSignature, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    return Task.FromResult(true);
+                    return true;
                 }
 
-                return Task.FromResult(true);
-
+                return false;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Lỗi khi xác thực chữ ký MoMo: {ex.Message}");
             }
-            return Task.FromResult(false);
 
         }
         public async Task<string> CreatePaymentInVnPayAsync(int userId, decimal amount)
@@ -217,7 +227,7 @@ namespace PreOrderBlindBox.Services.Services
                 var transaction = _transaction.AddTransaction(new Transaction
                 {
                     Money = amount,
-                    Description = "Deposit",
+                    Description = "Recharge with Vnpay",
                     Status = "Pending",
                     WalletId = user.WalletId,
                 });
@@ -258,7 +268,7 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-        public async Task<ResponsePaymentResult> VerifySignatureFromVnPay(IQueryCollection request)
+        public async Task<ResponsePaymentResult> DepositConfirmFromVnPay(IQueryCollection request)
         {
             var vnpay = new VnPayLibrary();
             foreach (var (key, value) in request)
@@ -269,7 +279,6 @@ namespace PreOrderBlindBox.Services.Services
                 }
             }
 
-
             var vnp_SecureHash = request.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
             bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _configuration["Vnpay:HashSecret"]);
             var transactionDetail = await _transaction.GetByIdAsync(int.Parse(vnpay.GetResponseData("vnp_TxnRef")));
@@ -279,9 +288,16 @@ namespace PreOrderBlindBox.Services.Services
             {
                 if (transactionDetail != null)
                 {
+                    if (transactionDetail.Status.Equals("Success"))
+                        return new ResponsePaymentResult()
+                        {
+                            IsSuccess = true,
+                            Message = "Giao dịch đã được xử lý trước đó",
+                        };
+
                     if (vnpay.GetResponseData("vnp_ResponseCode") == "00")
                     {
-                        transactionDetail.Status = "Completed";
+                        transactionDetail.Status = "Success";
                         transactionDetail.BalanceAtTime = walletDetail.Balance;
                         walletDetail.Balance += transactionDetail.Money;
                         await _transaction.UpdateAsync(transactionDetail);
@@ -289,8 +305,8 @@ namespace PreOrderBlindBox.Services.Services
                         await _unitOfWork.SaveChanges();
                         return new ResponsePaymentResult()
                         {
-                            ResponseCode = vnpay.GetResponseData("vnp_ResponseCode"),
-                            Message = "Confirm Success",
+                            IsSuccess = true,
+                            Message = "Giao dịch thành công",
                         };
                     }
                     transactionDetail.Status = "Failed";
@@ -300,7 +316,7 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     return new ResponsePaymentResult()
                     {
-                        ResponseCode = vnpay.GetResponseData("vnp_ResponseCode"),
+                        IsSuccess = false,
                         Message = "Có lỗi xảy ra trong quá trình xử lý",
                     };
                 }
@@ -309,16 +325,107 @@ namespace PreOrderBlindBox.Services.Services
 
             return new ResponsePaymentResult()
             {
-                ResponseCode = vnpay.GetResponseData("vnp_ResponseCode"),
+                IsSuccess = false,
                 Message = "Có lỗi xảy ra trong quá trình xử lý",
             };
         }
+        public async Task<ResponsePaymentResult> DepositMomoAsync(MomoReturnModel momoResponse)
+        {
+            try
+            {
+                string orderInfo = momoResponse.orderInfo;
+                int userId = int.Parse(orderInfo.Split("_")[1]);
+                User userDetail = await _userRepository.GetByIdAsync(userId);
+                int transactionId = int.Parse(orderInfo.Split("_")[2]);
+                if (userDetail == null)
+                {
+                    return new ResponsePaymentResult()
+                    {
+                        IsSuccess = false,
+                        Message = "Không tồn tại người dùng này",
+                    };
+                }
+                if (userDetail.WalletId == null)
+                {
+                    return new ResponsePaymentResult()
+                    {
+                        IsSuccess = false,
+                        Message = "Ví không hợp lệ để nạp tiền",
+                    };
+                }
 
+                // validate payment cua momo truoc roi moi add payment
+                bool resultValidate = VerifySignatureFromMomo(momoResponse);
+                if (!resultValidate)
+                {
+                    return new ResponsePaymentResult()
+                    {
+                        IsSuccess = false,
+                        Message = "Xác thực không thành công",
+                    };
+                }
+                // Them tien vao wallet
+                if (momoResponse.resultCode != 0)
+                {
+                    throw new Exception("Momo payment failed");
+                }
+                var transactionDetail = await _transaction.GetByIdAsync(transactionId);
+                if (transactionDetail == null)
+                {
+                    throw new Exception("Transaction does not exist !");
+                }
+                if (transactionDetail.Status.Equals("Success"))
+                {
+                    return new ResponsePaymentResult()
+                    {
+                        IsSuccess = true,
+                        Message = "Giao dịch đã được xử lý trước đó",
+                    };
+                }
+                try
+                {
+
+                    Wallet wallet = await _walletRepository.GetByIdAsync(userDetail.WalletId);
+                    decimal walletBalance = wallet.Balance;
+                    wallet.Balance += momoResponse.amount;
+                    await _unitOfWork.BeginTransactionAsync();
+                    await _walletRepository.UpdateAsync(wallet);
+                    Transaction transaction = _transaction.GetById(transactionId);
+                    transaction.Status = "Success";
+                    transaction.BalanceAtTime = walletBalance;
+                    await _unitOfWork.SaveChanges();
+                    await _unitOfWork.CommitTransactionAsync();
+                    return new ResponsePaymentResult()
+                    {
+                        IsSuccess = true,
+                        Message = "Xác thực Giao dịch thành công",
+                    }; ;
+
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    await _unitOfWork.RollbackTransactionAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            };
+
+            return new ResponsePaymentResult()
+            {
+                IsSuccess = false,
+                Message = "Có lỗi xảy ra trong việc xác thực",
+            };
+
+        }
         private string ComputeHmacSha256(string message, string secretKey)
         {
             var keyBytes = Encoding.UTF8.GetBytes(secretKey);
             var messageBytes = Encoding.UTF8.GetBytes(message);
-
+                
             byte[] hashBytes;
 
             using (var hmac = new HMACSHA256(keyBytes))
@@ -331,118 +438,5 @@ namespace PreOrderBlindBox.Services.Services
             return hashString;
         }
 
-        //public string RequestVNPay(int transactionId, decimal price, HttpContext context)
-        //{
-        //    IConfiguration _configuration = new ConfigurationBuilder()
-        //            .SetBasePath(Directory.GetCurrentDirectory())
-        //            .AddJsonFile("appsettings.json")
-        //            .Build();
-
-        //    DateTime dateTime = DateTime.UtcNow.AddHours(7);
-        //var pay = new VnPayLibrary();
-        //    var ipAddress = pay.GetIpAddress(context);
-
-
-        //pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
-        //    pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
-        //    pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-        //    pay.AddRequestData("vnp_Amount", (price* 100).ToString());
-        //    pay.AddRequestData("vnp_CreateDate", dateTime.ToString("yyyyMMddHHmmss"));
-        //    pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
-        //    pay.AddRequestData("vnp_IpAddr", ipAddress);
-        //    pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-        //    pay.AddRequestData("vnp_OrderInfo", "Thanh toan cho vi: " + transactionId);
-        //    pay.AddRequestData("vnp_OrderType", "250000");
-        //    pay.AddRequestData("vnp_TxnRef", transactionId.ToString());
-        //    pay.AddRequestData("vnp_ReturnUrl", _configuration["Vnpay:UrlReturn"]);
-
-        //    var paymentUrl =
-        //        pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
-
-        //    return paymentUrl;
-        //}
-
-
-        //public async Task<bool> ReturnFromVNPay(RequestVnPayCreate vnPayResponse)
-        //{
-        //    IConfiguration _configuration = new ConfigurationBuilder()
-        //                .SetBasePath(Directory.GetCurrentDirectory())
-        //                .AddJsonFile("appsettings.json")
-        //                .Build();
-
-        //    if (vnPayResponse != null)
-        //    {
-        //        var vnpay = new VnPayLibrary();
-
-        //        foreach (PropertyInfo prop in vnPayResponse.GetType().GetProperties())
-        //        {
-        //            string name = prop.Name;
-        //            object value = prop.GetValue(vnPayResponse, null);
-        //            string valueStr = value?.ToString() ?? string.Empty;
-        //            vnpay.AddResponseData(name, valueStr);
-        //        }
-
-        //        var vnpayHashSecret = _configuration["Vnpay:HashSecret"];
-        //        bool validateSignature = vnpay.ValidateSignature(vnPayResponse.vnp_SecureHash, vnpayHashSecret);
-
-        //        if (validateSignature)
-        //        {
-        //            int id = 0;
-        //            _ = int.TryParse(vnPayResponse.vnp_TxnRef, out id);
-
-        //            var transaction = await _transactionRepository.GetByIdAsync(id);
-
-        //            if (transaction != null)
-        //            {
-        //                var wallet = await _walletRepository.GetByIdAsync(transaction.WalletId.Value);
-
-        //                if (wallet != null)
-        //                {
-        //                    // update transaction thành công
-        //                    transaction.Status = true;
-
-        //                    await _transactionRepository.UpdateAsync(transaction);
-
-        //                    // update tiền vào ví của người dùng
-        //                    wallet.Currency += transaction.Money;
-        //                    await _walletRepository.UpdateAsync(wallet);
-
-        //                    var result = await _unitOfWork.SaveChanges();
-        //                    if (result > 0)
-        //                    {
-        //                        return new TransactionModel
-        //                        {
-        //                            Money = transaction.Money,
-        //                            Description = transaction.Description,
-        //                            Status = transaction.Status,
-        //                            Walletid = transaction.WalletId,
-        //                        };
-        //                    }
-        //                    else
-        //                    {
-        //                        throw new Exception("Có lỗi trong quá trình cập nhật dữ liệu");
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    throw new Exception("Ví của user không tồn tại");
-        //                }
-        //            }
-        //            else
-        //            {
-        //                throw new Exception("Yêu cầu không tồn tại");
-        //            }
-        //        }
-        //        else
-        //        {
-        //            throw new Exception("Không đúng signature");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("Có lỗi trong quá trình return");
-        //    }
-
-        //}
     }
 }

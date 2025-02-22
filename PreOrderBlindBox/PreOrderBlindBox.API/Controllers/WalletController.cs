@@ -53,15 +53,25 @@ namespace PreOrderBlindBox.API.Controllers
             return BadRequest();
         }
 
-        [HttpPost("DepositConfirmFromMomo")]
-        public async Task<IActionResult> DepositConfirmFromMomo([FromBody] RequestMomoConfirm request)
+        [HttpGet("DepositConfirmFromMomo")]
+        public async Task<IActionResult> DepositConfirmFromMomo([FromQuery] MomoReturnModel request)
         {
-          
-            if (await _walletService.DepositAsync(request))
+
+            var result = await _paymentSerivce.DepositMomoAsync(request);
+
+            if (result.IsSuccess)
             {
-                return Ok();
+                return Ok((new
+                {
+                    success = true,
+                    message = result.Message
+                }));
             }
-            return BadRequest();
+            return BadRequest(new
+            {
+                success = false,
+                message = result.Message
+            });
         }
         [HttpPost("CreatePaymentUrlVnpay")]
         public async Task<IActionResult> CreateDepositUrlVnpay([FromBody] RequestDepositWallet request)
@@ -79,20 +89,27 @@ namespace PreOrderBlindBox.API.Controllers
             }
             return BadRequest();
         }
-        [HttpGet("paymentVnPayCallBack")]
-        public async Task<IActionResult> PaymentVnPayCallBack()
+        [HttpGet("DepositConfirmFromVnPay")]
+        public async Task<IActionResult> DepositConfirmFromVnPay()
         {
-          
-            IQueryCollection requestQueryString = Request.Query;
-            
-            var result = await _paymentSerivce.VerifySignatureFromVnPay(requestQueryString);
-            if (result.ResponseCode=="00")
-            {
-                return Redirect(_configuration["Vnpay:RedirectUrl"]);
-            }
-          
 
-            return BadRequest();
+            IQueryCollection requestQueryString = Request.Query;
+
+            var result = await _paymentSerivce.DepositConfirmFromVnPay(requestQueryString);
+            if (result.IsSuccess)
+            {
+                return Ok(new
+                {
+                    success = true,
+                    message = result.Message
+                });
+            }
+
+            return BadRequest(new
+            {
+                success = false,
+                message = result.Message
+            });
         }
 
     }
