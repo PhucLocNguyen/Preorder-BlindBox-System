@@ -31,6 +31,7 @@ const DepositPage = lazy(() => import("../pages/Wallet/Deposit"));
 const Wallet = lazy(() => import("../pages/Wallet/Wallet"));
 const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
 const WalletRechargeResponse = lazy(() => import("../pages/Wallet/WalletRechargeResponse"));
+const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResultPage"));
 
 const publicRoutes = [
   {
@@ -97,8 +98,13 @@ const publicRoutes = [
     component: Cart
   },
   {
-    path: '/test/:id',
-    component: ProductDetail,
+    path: '/campaign/search',
+    component: SearchResultPage,
+    layout: DefaultLayout
+  },
+  {
+    path: '/test',
+    component: SearchResultPage,
     layout: DefaultLayout,
   }
 ];
