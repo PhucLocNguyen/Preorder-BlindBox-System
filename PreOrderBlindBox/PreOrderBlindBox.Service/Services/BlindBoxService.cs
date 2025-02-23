@@ -86,9 +86,9 @@ namespace PreOrderBlindBox.Services.Services
 
         }
 
-        public async Task<Pagination<ResponseBlindBox>> GetAllActiveBlindBoxAsync(PaginationParameter paginationParameter)
+        public async Task<Pagination<ResponseBlindBox>> GetAllActiveBlindBoxAsync(PaginationParameter paginationParameter, string? keyword)
         {
-            List<BlindBox> listBlindBox = await _blindBoxRepository.GetAllActiveBlindBox(paginationParameter);
+            List<BlindBox> listBlindBox = await _blindBoxRepository.GetAllActiveBlindBox(paginationParameter, keyword);
             List<ResponseBlindBox> responseMap = _mapper.Map<List<ResponseBlindBox>>(listBlindBox);
             var countItem = _blindBoxRepository.Count(x => x.IsDeleted == false);
 

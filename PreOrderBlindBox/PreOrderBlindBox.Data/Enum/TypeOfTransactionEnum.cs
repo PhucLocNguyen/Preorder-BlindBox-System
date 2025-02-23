@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Data.Enum
 {
-    public enum TransactionEnum
+    public enum TypeOfTransactionEnum
     {
-        Pending,
-        Success,
-        Failed
+        Recharge,
+        Withdraw,
+        Purchase,
+        Refund
     }
 }

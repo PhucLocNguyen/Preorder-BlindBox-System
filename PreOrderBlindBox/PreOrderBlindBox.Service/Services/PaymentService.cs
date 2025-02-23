@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Ocsp;
 using PreOrderBlindBox.CM.Helpers;
 using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.Repositories;
 using PreOrderBlindBox.Data.UnitOfWork;
@@ -60,8 +61,8 @@ namespace PreOrderBlindBox.Services.Services
                     Money = amount,
                     CreatedDate = DateTime.Now,
                     Description = "Recharge with Momo",
-                    Type = "recharge",
-                    Status = "Pending",
+                    Type = TypeOfTransactionEnum.Recharge.ToString(),
+                    Status = TransactionStatusEnum.Pending.ToString(),
                     WalletId = user.WalletId,
                 };
                 _transaction.AddTransaction(transaction);
@@ -228,7 +229,8 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     Money = amount,
                     Description = "Recharge with Vnpay",
-                    Status = "Pending",
+                    Type = TypeOfTransactionEnum.Recharge.ToString(),
+                    Status = TransactionStatusEnum.Pending.ToString(),
                     WalletId = user.WalletId,
                 });
 

@@ -18,9 +18,9 @@ namespace PreOrderBlindBox.API.Controllers
             _blindboxService = blindBoxService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllActiveBlindBox([FromQuery] PaginationParameter parameter)
+        public async Task<IActionResult> GetAllActiveBlindBox([FromQuery] PaginationParameter parameter, [FromQuery] string? keyword)
         {
-            var model = await _blindboxService.GetAllActiveBlindBoxAsync(parameter);
+            var model = await _blindboxService.GetAllActiveBlindBoxAsync(parameter, keyword);
             if (model == null)
             {
                 return NotFound();

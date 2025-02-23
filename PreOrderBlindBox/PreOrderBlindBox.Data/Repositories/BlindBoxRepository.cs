@@ -18,9 +18,9 @@ namespace PreOrderBlindBox.Data.Repositories
         {
         }
 
-        public async Task<List<BlindBox>> GetAllActiveBlindBox(PaginationParameter paginationParameter)
+        public async Task<List<BlindBox>> GetAllActiveBlindBox(PaginationParameter paginationParameter, string? keyword)
         {
-            var items = await GetAll(paginationParameter, x => !x.IsDeleted, null, includes: x => x.Images);
+            var items = await GetAll(paginationParameter, x => !x.IsDeleted && (x.Name.Contains(keyword)|| string.IsNullOrEmpty(keyword)), null, includes: x => x.Images);
             return items;
         }
 

@@ -12,7 +12,7 @@ namespace PreOrderBlindBox.Services.IServices
 {
     public interface IBlindBoxService
     {
-        Task<Pagination<ResponseBlindBox>> GetAllActiveBlindBoxAsync(PaginationParameter paginationParameter);
+        Task<Pagination<ResponseBlindBox>> GetAllActiveBlindBoxAsync(PaginationParameter paginationParameter, string? keyword);
         Task<ResponseBlindBox> GetBlindBoxByIdAsync(int id);
         Task<bool> CreateBlindBox(RequestCreateBlindBox request);
         Task<bool> UpdateBlindBox(int id, RequestUpdateBlindBox request);

@@ -11,7 +11,7 @@ namespace PreOrderBlindBox.Data.IRepositories
 {
     public interface IBlindBoxRepository : IGenericRepository<BlindBox>
     {
-        Task<List<BlindBox>> GetAllActiveBlindBox(PaginationParameter paginationParameter);
+        Task<List<BlindBox>> GetAllActiveBlindBox(PaginationParameter paginationParameter, string? keyword);
         Task<BlindBox> GetDetailBlindBoxById(int id);
         bool InsertBlindBox(BlindBox blindBox);
     }
