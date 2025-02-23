@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
+using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderCampaignModel;
 using PreOrderBlindBox.Services.IServices;
@@ -23,6 +25,17 @@ namespace PreOrderBlindBox.API.Controllers
         public async Task<IActionResult> GetAllPreorderCampaign([FromQuery] PaginationParameter pagination)
         {
             var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination);
+            var metadata = new
+            {
+                result.TotalCount,
+                result.PageSize,
+                result.CurrentPage,
+                result.TotalPages,
+                result.HasNext,
+                result.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(result);
         }
 
@@ -36,6 +49,17 @@ namespace PreOrderBlindBox.API.Controllers
                 {
                     return NotFound(new { message = "Preorder campaign not found." });
                 }
+                var metadata = new
+                {
+                    preorderCampaign.TotalCount,
+                    preorderCampaign.PageSize,
+                    preorderCampaign.CurrentPage,
+                    preorderCampaign.TotalPages,
+                    preorderCampaign.HasNext,
+                    preorderCampaign.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
                 return Ok(preorderCampaign);
             }
             catch (ArgumentException ex)
