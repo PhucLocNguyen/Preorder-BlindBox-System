@@ -74,8 +74,8 @@ namespace PreOrderBlindBox.Services.Services
                 }
                 result.Add(responseCampaign);
             }
-
-            return new Pagination<ResponsePreorderCampaign>(result, result.Count, page.PageIndex, page.PageSize);
+            var countItem = _preorderCampaignRepo.Count(x => x.IsDeleted ==  false);
+            return new Pagination<ResponsePreorderCampaign>(result, countItem, page.PageIndex, page.PageSize);
         }
 
 
@@ -497,7 +497,8 @@ namespace PreOrderBlindBox.Services.Services
                     PriceTo = priceTo
                 });
             }
-            return new Pagination<ResponseSearchPreorderCampaign>(result, result.Count, pagination.PageIndex, pagination.PageSize);
+            var countItem = _preorderCampaignRepo.Count(x => x.Status == "Active");
+            return new Pagination<ResponseSearchPreorderCampaign>(result, countItem, pagination.PageIndex, pagination.PageSize);
         }
 
     }
