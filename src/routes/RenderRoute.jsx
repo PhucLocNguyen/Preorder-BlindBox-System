@@ -7,7 +7,7 @@ const RenderRoute = (route, index, isPrivate = false) => {
   const Page = route.component;
 
   return (
-    <Route key={index} element={isPrivate ? <PrivateRouting /> : undefined}>
+    <Route key={index} element={isPrivate ? <PrivateRouting allowedRole={route?.role} /> : undefined}>
       <Route
         index={route.index}
         path={index != null ? route.path : undefined} // Use path if it's defined

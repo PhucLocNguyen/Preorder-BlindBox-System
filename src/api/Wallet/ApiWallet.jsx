@@ -33,4 +33,20 @@ const ApiDepositByVnpay = async ({ payload }) => {
    }
 }
 
-export { ApiGetWalletInfomation, ApiDepositByMono, ApiDepositByVnpay }
+const ApiVerifyPaymentByMomo = async (queryString) => {
+   try {
+      const response = await api.get(`/Wallet/DepositConfirmFromMomo?${queryString}`);
+         return response.data;
+   } catch (error) {
+      console.log('Api verify payment By Momo Error: ', error);
+   }
+}
+const ApiVerifyPaymentByVnpay = async (queryString) => {
+   try {
+      const response = await api.get(`/Wallet/DepositConfirmFromVnPay?${queryString}`);
+         return response.data;
+   } catch (error) {
+      console.log('Api verify payment By Vnpay Error: ', error);
+   }
+}
+export { ApiGetWalletInfomation, ApiDepositByMono, ApiDepositByVnpay, ApiVerifyPaymentByMomo, ApiVerifyPaymentByVnpay }

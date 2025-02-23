@@ -1,5 +1,6 @@
 import { Fragment, lazy } from "react";
 
+const PreorderCampaignCreate = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignCreate"));
 const OrderDetailView = lazy(() => import("../pages/Staff/OrderManagement/OrderDetailView"));
 const AdminLayout = lazy(() => import("../components/layouts/AdminLayout"));
 const DefaultLayout = lazy(() => import("../components/layouts/DefaultLayout"));
@@ -28,10 +29,11 @@ const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/Conf
 const Cart = lazy(() => import("../pages/Customer/Cart"));
 const ProductDetail = lazy(() => import("../pages/Products/ProductDetail/ProductDetail"));
 
-import DepositPage from "../pages/Wallet/Deposit";
-import Wallet from "../pages/Wallet/Wallet";
-import Withdraw from "../pages/Wallet/Withdraw";
-import { path } from "framer-motion/client";
+const DepositPage = lazy(() => import("../pages/Wallet/Deposit"));
+const Wallet = lazy(() => import("../pages/Wallet/Wallet"));
+const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
+const WalletRechargeResponse = lazy(() => import("../pages/Wallet/WalletRechargeResponse"));
+const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResultPage"));
 
 const publicRoutes = [
   {
@@ -44,6 +46,7 @@ const publicRoutes = [
     component: LoginPage,
     layout: DefaultLayout,
   },
+
   {
     path: "/staff",
     component: StaffView,
@@ -77,6 +80,9 @@ const publicRoutes = [
       { path: "voucher/update/:id", component: VoucherUpdate },
     ],
   },
+
+
+
   {
     path: "/account",
     layout: DefaultLayout,
@@ -96,22 +102,55 @@ const publicRoutes = [
   },
   {
     path: '/cart',
-    component: Cart
+    component: Cart,
+    layout: DefaultLayout,
   },
   {
-    path: '/wallet',
-    component: Wallet,
+    path: '/campaign/search',
+    component: SearchResultPage,
+    layout: DefaultLayout
+  },
+  {
+    path: '/test',
+    component: SearchResultPage,
     layout: DefaultLayout,
+  },
+  {
+    path: "/staff",
+    component: StaffView,
     children: [
-      { index: true, component: DepositPage, layout: null },
-      { path: 'deposit', component: Withdraw, layout: null },
-    ]
+      { index: true, component: ProductsView },
+      { path: "products", component: ProductsView },
+      { path: "orders", component: OrdersView, },
+      { path: "orders/:id", component: OrderDetailView },
+      { path: "notifications", component: NotificationsView },
+      { path: "product/create", component: ProductCreatePage },
+      { path: "product/edit/:id", component: ProductEditPage },
+
+    ],
+    role: ['staff']
   },
   {
-    path: '/test/:id',
-    component: ProductDetail,
-    layout: DefaultLayout,
-  }
+    path: "/admin",
+    component: AdminView,
+    children: [
+      { index: true, component: UserManagement },
+      { path: "usermanagement", component: UserManagement },
+      { path: "usermanagerment-details/:id", component: UserManagementDetails },
+      { path: "preordermilestone", component: PreorderMilestone },
+      { path: "pre-ordercampaign", component: Pre_orderCampaign },
+      { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
+      { path: "preordercampaign/create", component: PreorderCampaignCreate },
+
+      { path: "notifications", component: NotificationsView },
+      { path: "dashboard", component: Dashboard },
+      { path: "voucher", component: VoucherManagement },
+      { path: "voucher/add", component: VoucherCreate },
+      { path: "voucher-details/:id", component: VoucherDetails },
+      { path: "voucher/update/:id", component: VoucherUpdate },
+    ],
+    role: ['admin']
+  },
 ];
 
 const privateRoutes = [
@@ -124,5 +163,22 @@ const privateRoutes = [
     path: "/projects",
     component: Fragment,
   },
+  {
+    path: '/wallet',
+    component: Wallet,
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: DepositPage, layout: null },
+      { path: 'deposit', component: Withdraw, layout: null },
+    ],
+    role: ['Customer']
+  },
+  {
+    path: '/wallet/paymentResponse',
+    component: WalletRechargeResponse,
+    layout: DefaultLayout,
+    role: ['Customer']
+  },
+
 ];
 export { publicRoutes, privateRoutes };

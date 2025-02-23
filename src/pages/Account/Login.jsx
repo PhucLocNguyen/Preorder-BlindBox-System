@@ -1,5 +1,5 @@
 import { Button, Form, Input } from 'antd';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 
 import GoogleIcon from '../../assets/Login/GoogleIcon.png';
@@ -11,12 +11,15 @@ function LoginPage() {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const { setAuth, auth } = useContext(AuthContext);
+    const location = useLocation();
+
+    const fromPage = location.state?.from?.pathname || "/";
 
     const CallApiLoginByEmailAndPassword = async (payload) => {
         const responseLogin = await ApiLoginByEmailAndPassword({ payload });
         if (responseLogin.status === 200) {
             await CallApiGetCurrentAccountRole();
-            navigate('/')
+            navigate(fromPage, { replace: true });
         }
     }
 
@@ -31,8 +34,9 @@ function LoginPage() {
         await CallApiLoginByEmailAndPassword(values);
     }
 
+    // Chặn người dùng đã đăng nhập vào trang login
     const checkRole = () => {
-        if (auth.roleName.toLowerCase() !== 'guest') {
+        if (auth.roleName.toLowerCase() !== 'guest' && fromPage === '/') {
             navigate('/')
         }
     }

@@ -4,13 +4,14 @@ import { useContext } from "react"
 
 import logo from "../../assets/react.svg"
 import { AuthContext } from "../../context/AuthContext"
+import SearchImage from '../../assets/SearchInHeader/SanPham.jpg'
+import SearchInputInHeader from "../SearchCampaign/SearchInputInHeader"
 
 export default function Header() {
 
     const { auth } = useContext(AuthContext)
 
     console.log(auth);
-
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-white">
@@ -47,24 +48,18 @@ export default function Header() {
 
                 <div className="w-[33%]">
                     <div className="float-right flex items-center space-x-4">
-                        <div className="relative hidden md:block">
-                            <input
-                                type="search"
-                                placeholder="Tìm sản phẩm"
-                                className="h-10 w-[300px] rounded-xl bg-yellow-300 px-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-200"
-                            />
-                            <button className="absolute right-3 top-1/2 -translate-y-1/2">
-                                <Search className="h-4 w-4 text-gray-500" />
-                            </button>
-                        </div>
+
+                        <SearchInputInHeader />
 
                         {auth.roleName.toLowerCase() === 'customer' ? (
                             <>
                                 <button className="relative px-[5px]">
-                                    <ShoppingCart className="h-6 w-6" />
-                                    <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                                        1
-                                    </span>
+                                    <Link to='/cart'>
+                                        <ShoppingCart className="h-6 w-6" />
+                                        <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                                            1
+                                        </span>
+                                    </Link>
                                 </button>
 
                                 <button className="h-10 px-[5px]">
