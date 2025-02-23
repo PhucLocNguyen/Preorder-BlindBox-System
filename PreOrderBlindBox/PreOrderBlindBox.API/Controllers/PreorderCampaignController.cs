@@ -26,6 +26,25 @@ namespace PreOrderBlindBox.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearcgPreorderCampaign([FromQuery] PreorderCampaignSearchRequest searchRequest, [FromQuery] PaginationParameter pagination)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.SearchPreorderCampaignAsync(searchRequest, pagination);
+                if (preorderCampaign == null)
+                {
+                    return NotFound(new { message = "Preorder campaign not found." });
+                }
+                return Ok(preorderCampaign);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPreorderCampaignById(int id)
         {
@@ -139,22 +158,5 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("Search")]
-        public async Task<IActionResult> SearcgPreorderCampaign([FromQuery] PreorderCampaignSearchRequest? searchRequest)
-        {
-            try
-            {
-                var preorderCampaign = await _preorderCampaignService.SearchPreorderCampaignAsync(searchRequest);
-                if (preorderCampaign == null)
-                {
-                    return NotFound(new { message = "Preorder campaign not found." });
-                }
-                return Ok(preorderCampaign);
-            } catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            
-        }
     }
 }

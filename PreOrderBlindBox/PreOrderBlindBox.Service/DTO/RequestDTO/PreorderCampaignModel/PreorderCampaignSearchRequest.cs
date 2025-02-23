@@ -8,7 +8,7 @@ namespace PreOrderBlindBox.Data.Enum
 {
     public class PreorderCampaignSearchRequest
     {
-        public string BlindBoxName { get; set; }
+        public string? BlindBoxName { get; set; }
         public PreorderCampaignSortOrderEnum SortOrder { get; set; }
     }
 }
