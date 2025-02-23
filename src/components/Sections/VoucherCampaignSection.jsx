@@ -3,6 +3,7 @@ import { useState } from "react";
 import { GetTheActiveVoucherCampaign } from "../../api/VoucherCampaign/ApiVoucherCampaign";
 import Voucher from "../Voucher";
 import { Spin } from "antd";
+import VoucherCampaignBackground from "../../assets/Background/voucherCampaignBackgroundImage.png";
 function VoucherCampaignSection() {
   const [voucherCampaigns,setVoucherCampaigns] = useState([]);
   const [loading,setLoading] = useState(true);
@@ -22,7 +23,7 @@ function VoucherCampaignSection() {
           padding: "48px",
           borderRadius: "8px",
           backgroundImage:
-            'url("https://img.pikbest.com/backgrounds/20190426/voucher-with-golden-bow_1890652.jpg!bw700',
+            `url(${VoucherCampaignBackground})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundAttachment: "fixed", // Enable parallax effect

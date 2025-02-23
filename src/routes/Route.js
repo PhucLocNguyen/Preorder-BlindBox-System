@@ -1,5 +1,6 @@
 import { Fragment, lazy } from "react";
 
+const PreorderCampaignCreate = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignCreate"));
 const OrderDetailView = lazy(() => import("../pages/Staff/OrderManagement/OrderDetailView"));
 const AdminLayout = lazy(() => import("../components/layouts/AdminLayout"));
 const DefaultLayout = lazy(() => import("../components/layouts/DefaultLayout"));
@@ -44,38 +45,7 @@ const publicRoutes = [
     component: LoginPage,
     layout: DefaultLayout,
   },
-  {
-    path: "/staff",
-    component: StaffView,
-    children: [
-      { index: true, component: ProductsView },
-      { path: "products", component: ProductsView },
-      { path: "orders", component: OrdersView, },
-      { path: "orders/:id", component: OrderDetailView },
-      { path: "notifications", component: NotificationsView },
-      { path: "product/create", component: ProductCreatePage },
-      { path: "product/edit/:id", component: ProductEditPage },
-
-    ],
-  },
-  {
-    path: "/admin",
-    component: AdminView,
-    children: [
-      { index: true, component: UserManagement },
-      { path: "usermanagement", component: UserManagement },
-      { path: "usermanagerment-details/:id", component: UserManagementDetails },
-      { path: "preordermilestone", component: PreorderMilestone },
-      { path: "pre-ordercampaign", component: Pre_orderCampaign },
-      { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
-      { path: "notifications", component: NotificationsView },
-      { path: "dashboard", component: Dashboard },
-      { path: "voucher", component: VoucherManagement },
-      { path: "voucher/add", component: VoucherCreate },
-      { path: "voucher-details/:id", component: VoucherDetails },
-      { path: "voucher/update/:id", component: VoucherUpdate },
-    ],
-  },
+  
   {
     path: "/account",
     layout: DefaultLayout,
@@ -107,7 +77,43 @@ const publicRoutes = [
     path: '/test',
     component: SearchResultPage,
     layout: DefaultLayout,
-  }
+  },
+  {
+    path: "/staff",
+    component: StaffView,
+    children: [
+      { index: true, component: ProductsView },
+      { path: "products", component: ProductsView },
+      { path: "orders", component: OrdersView, },
+      { path: "orders/:id", component: OrderDetailView },
+      { path: "notifications", component: NotificationsView },
+      { path: "product/create", component: ProductCreatePage },
+      { path: "product/edit/:id", component: ProductEditPage },
+
+    ],
+    role: ['staff']
+  },
+  {
+    path: "/admin",
+    component: AdminView,
+    children: [
+      { index: true, component: UserManagement },
+      { path: "usermanagement", component: UserManagement },
+      { path: "usermanagerment-details/:id", component: UserManagementDetails },
+      { path: "preordermilestone", component: PreorderMilestone },
+      { path: "pre-ordercampaign", component: Pre_orderCampaign },
+      { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
+      { path: "preordercampaign/create", component: PreorderCampaignCreate },
+
+      { path: "notifications", component: NotificationsView },
+      { path: "dashboard", component: Dashboard },
+      { path: "voucher", component: VoucherManagement },
+      { path: "voucher/add", component: VoucherCreate },
+      { path: "voucher-details/:id", component: VoucherDetails },
+      { path: "voucher/update/:id", component: VoucherUpdate },
+    ],
+    role: ['admin']
+  },
 ];
 
 const privateRoutes = [
@@ -135,6 +141,7 @@ const privateRoutes = [
     component: WalletRechargeResponse,
     layout: DefaultLayout,
     role: ['Customer']
-  }
+  },
+ 
 ];
 export { publicRoutes, privateRoutes };

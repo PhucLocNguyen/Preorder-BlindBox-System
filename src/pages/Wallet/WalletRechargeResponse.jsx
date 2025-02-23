@@ -81,7 +81,7 @@ function WalletRechargeResponse() {
             <h3 className="text-[32px] text-center mb-12">
               Your payment has been sent successfully
             </h3>
-            <div className="w-full">
+            <div className="flex justify-center w-full">
               <GradientButton
                 variant="contained"
                 className="min-w-[400px] min-h-[50px]"
