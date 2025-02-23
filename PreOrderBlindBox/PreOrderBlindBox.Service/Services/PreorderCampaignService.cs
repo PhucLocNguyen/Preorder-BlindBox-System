@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.Enum;
@@ -434,19 +435,8 @@ namespace PreOrderBlindBox.Services.Services
             return await _unitOfWork.SaveChanges();
         }
 
-        public async Task<List<ResponseSearchPreorderCampaign>> SearchPreorderCampaignAsync(PreorderCampaignSearchRequest searchRequest)
+        public async Task<Pagination<ResponseSearchPreorderCampaign>> SearchPreorderCampaignAsync(PreorderCampaignSearchRequest searchRequest, PaginationParameter pagination)
         {
-            if (!Enum.IsDefined(typeof(PreorderCampaignSortOrderEnum), searchRequest.SortOrder))
-            {
-                throw new ArgumentException("Invalid campaign type. Must be 0 to 5");
-            }
-            if (searchRequest.BlindBoxName == null)
-            {
-                throw new ArgumentException("Miss blind box name");
-            }
-            // Sử dụng phân trang: lấy tối đa 5 bản ghi (PageIndex=1, PageSize=5)
-            var pagination = new PaginationParameter { PageIndex = 1, PageSize = 5 };
-
             // Gọi repository để lấy danh sách PreorderCampaign theo yêu cầu
             var campaigns = await _preorderCampaignRepo.SearchPreorderCampaign(searchRequest.BlindBoxName, searchRequest.SortOrder.ToString(), pagination);
 
@@ -507,8 +497,7 @@ namespace PreOrderBlindBox.Services.Services
                     PriceTo = priceTo
                 });
             }
-
-            return result;
+            return new Pagination<ResponseSearchPreorderCampaign>(result, result.Count, pagination.PageIndex, pagination.PageSize);
         }
 
     }

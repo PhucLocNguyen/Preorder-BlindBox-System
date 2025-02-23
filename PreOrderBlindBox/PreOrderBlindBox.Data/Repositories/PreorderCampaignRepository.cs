@@ -55,21 +55,18 @@ namespace PreOrderBlindBox.Data.Repositories
         }
 
         public async Task<List<PreorderCampaign>> SearchPreorderCampaign(
-        string blindBoxName,
-        string sortOrder,
-        PaginationParameter paginationParameter)
+            string blindBoxName,
+            string sortOrder,
+            PaginationParameter paginationParameter)
         {
-            // Lấy giá trị từ searchRequest
-            /*var blindBoxName = blindBoxNameRequest;
-            var sortOrder = sortOrderRequest;*/
-
-            // Bộ lọc: campaign không bị xóa, có BlindBox và BlindBox.Name chứa từ khóa
+            // Điều kiện chung: campaign không bị xóa, có BlindBox và trạng thái Active
             Expression<Func<PreorderCampaign, bool>> filter = pc =>
-                !pc.IsDeleted && pc.Status=="Active" &&
+                !pc.IsDeleted &&
+                pc.Status == "Active" &&
                 pc.BlindBox != null &&
-                pc.BlindBox.Name.Contains(blindBoxName);
+                (string.IsNullOrEmpty(blindBoxName) || pc.BlindBox.Name.Contains(blindBoxName));
 
-            // Include các quan hệ cần thiết (không include hình ảnh để xử lý riêng qua ImageRepository)
+            // Include các quan hệ cần thiết (không include hình ảnh)
             Expression<Func<PreorderCampaign, object>>[] includes = new Expression<Func<PreorderCampaign, object>>[]
             {
                 pc => pc.BlindBox,
@@ -77,7 +74,7 @@ namespace PreOrderBlindBox.Data.Repositories
                 pc => pc.OrderDetails
             };
 
-            // Xây dựng hàm sắp xếp dựa trên sortOrder (enum)
+            // Xây dựng hàm sắp xếp dựa trên sortOrder (ví dụ như cũ)
             Func<IQueryable<PreorderCampaign>, IOrderedQueryable<PreorderCampaign>> orderBy;
             switch (sortOrder)
             {
@@ -107,6 +104,7 @@ namespace PreOrderBlindBox.Data.Repositories
             // Gọi hàm GetAll từ GenericRepository với filter, include, orderBy và phân trang
             return await GetAll(paginationParameter, filter, orderBy, includes);
         }
+
 
     }
 }
