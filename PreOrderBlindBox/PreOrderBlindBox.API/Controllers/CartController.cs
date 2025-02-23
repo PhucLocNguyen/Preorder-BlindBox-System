@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using PreOrderBlindBox.Services.IServices;
@@ -12,10 +13,12 @@ namespace PreOrderBlindBox.API.Controllers
     {
         private readonly ICartService _cartService;
         private readonly ICurrentUserService _currentUserService;
-        public CartController(ICartService cartService, ICurrentUserService currentUserService)
+		public CartController(ICartService cartService, ICurrentUserService currentUserService
+            )
         {
             _cartService = cartService;
             _currentUserService = currentUserService;
+            
         }
 
         [HttpGet]
@@ -39,9 +42,14 @@ namespace PreOrderBlindBox.API.Controllers
         {
             try
             {
-                return Ok(await _cartService.ChangeQuantityOfCartByCustomerID(requestCreateCart));
+                var result = await _cartService.ChangeQuantityOfCartByCustomerID(requestCreateCart);
+                if (result != null)
+                    return Ok();
+                else return BadRequest("Something went wrong when input information");
 
-            }
+
+
+			}
             catch (Exception ex)
             {
                 return BadRequest(new { Message = (ex.Message) });
@@ -64,12 +72,12 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpGet("GetPriceInCart")]
-        public async Task<IActionResult> GetPriceInCart()
+        public async Task<IActionResult> GetPriceInCart([FromQuery]RequestCreateCart? requestCreateCart)
         {
             try
             {
                 int userID = _currentUserService.GetUserId();
-                var itemResult = await _cartService.IdentifyPriceForCartItem(userID);
+                var itemResult = await _cartService.IdentifyPriceForCartItem(userID, requestCreateCart);
                 if (itemResult != null) return Ok(itemResult);
                 return BadRequest(new { Message = "Something wrong when get price" });
 
@@ -79,5 +87,22 @@ namespace PreOrderBlindBox.API.Controllers
                 return BadRequest(new { Message = (ex.Message) });
             }
         }
-    }
+
+		[HttpPut("ClearAllCart")]
+		public async Task<IActionResult> ClearAllCart()
+		{
+			try
+			{
+				int userID = _currentUserService.GetUserId();
+				var itemResult = await _cartService.UpdateStatusOfCartByCustomerID(userID);
+				if (itemResult) return Ok(new { Message = "Clear cart successfully" });
+				return BadRequest(new { Message = "Something wrong when get price" });
+
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = (ex.Message) });
+			}
+		}
+	}
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Data.Commons;
+using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderCampaignModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Services;
@@ -23,6 +24,25 @@ namespace PreOrderBlindBox.API.Controllers
         {
             var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination);
             return Ok(result);
+        }
+
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearcgPreorderCampaign([FromQuery] PreorderCampaignSearchRequest searchRequest, [FromQuery] PaginationParameter pagination)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.SearchPreorderCampaignAsync(searchRequest, pagination);
+                if (preorderCampaign == null)
+                {
+                    return NotFound(new { message = "Preorder campaign not found." });
+                }
+                return Ok(preorderCampaign);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
         }
 
         [HttpGet("{id}")]
@@ -137,5 +157,6 @@ namespace PreOrderBlindBox.API.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
     }
 }

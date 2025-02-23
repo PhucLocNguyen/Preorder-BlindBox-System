@@ -43,7 +43,7 @@ namespace PreOrderBlindBox.Services.Services
                         PreorderCampaignId = item.PreorderCampaignId,
                         Quantity = item.Quantity,
                         UnitPriceAtTime = item.Price,
-                        UnitEndCampaignPrice = preorderCampaign.Type.Equals("Type 1") ? item.Price : null
+                        UnitEndCampaignPrice = preorderCampaign.Type.Equals("TimedPricing") ? item.Price : null
                     };
 
                     var orderDetailEntity = requestCreateOrderDetail.toOrderDetailEntity();

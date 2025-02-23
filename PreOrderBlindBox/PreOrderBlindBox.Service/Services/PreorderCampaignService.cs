@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.Enum;
@@ -9,6 +10,8 @@ using PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.ImageModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel;
 using PreOrderBlindBox.Services.IServices;
+using System.Linq.Expressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PreOrderBlindBox.Services.Services
 {
@@ -109,6 +112,12 @@ namespace PreOrderBlindBox.Services.Services
             if (blindBox == null || blindBox.IsDeleted)
             {
                 throw new ArgumentException("Blind box does not exist or had deleted");
+            }
+
+            // Kiểm tra giá trị enum
+            if (!Enum.IsDefined(typeof(PreorderCampaignType), createPreorderCampaignRequest.Type))
+            {
+                throw new ArgumentException("Invalid campaign type. Must be TimedPricing (0) or BulkOrder (1).");
             }
 
             var preorderCampaign = new PreorderCampaign
@@ -334,6 +343,12 @@ namespace PreOrderBlindBox.Services.Services
                 throw new ArgumentException("End date must be at least 3 day after start date");
             }
 
+            // Kiểm tra giá trị enum
+            if (!Enum.IsDefined(typeof(PreorderCampaignType), request.Type))
+            {
+                throw new ArgumentException("Invalid campaign type. Must be TimedPricing (0) or BulkOrder (1).");
+            }
+
             _mapper.Map(request, preorderCampaign);
             // Gọi repository để cập nhật thực thể
             await _preorderCampaignRepo.UpdateAsync(preorderCampaign);
@@ -418,6 +433,71 @@ namespace PreOrderBlindBox.Services.Services
 
             // Lưu thay đổi vào database
             return await _unitOfWork.SaveChanges();
+        }
+
+        public async Task<Pagination<ResponseSearchPreorderCampaign>> SearchPreorderCampaignAsync(PreorderCampaignSearchRequest searchRequest, PaginationParameter pagination)
+        {
+            // Gọi repository để lấy danh sách PreorderCampaign theo yêu cầu
+            var campaigns = await _preorderCampaignRepo.SearchPreorderCampaign(searchRequest.BlindBoxName, searchRequest.SortOrder.ToString(), pagination);
+
+            var result = new List<ResponseSearchPreorderCampaign>();
+
+            // Với mỗi campaign, thực hiện mapping và gọi riêng ImageRepository để lấy hình ảnh của BlindBox
+            foreach (var campaign in campaigns)
+            {
+                // Tính khoảng giá dựa trên milestone của campaign
+                var priceFrom = campaign.PreorderMilestones.Any()
+                                    ? campaign.PreorderMilestones.Min(m => m.Price)
+                                    : 0;
+                var priceTo = campaign.PreorderMilestones.Any()
+                                    ? campaign.PreorderMilestones.Max(m => m.Price)
+                                    : 0;
+
+                // Mapping BlindBox (không chứa hình ảnh)
+                var blindBox = campaign.BlindBox;
+                var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
+
+                // Lấy hình ảnh qua ImageRepository
+                var mainImage = await _imageRepo.GetMainImageByBlindBoxID(blindBox.BlindBoxId);
+                var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(blindBox.BlindBoxId);
+
+                responseBlindBox.Images = new ResponseImageSplit
+                {
+                    MainImage = mainImage != null ? new ResponseImageModel
+                    {
+                        ImageId = mainImage.ImageId,
+                        Url = mainImage.Url,
+                        IsMainImage = mainImage.IsMainImage,
+                        CreatedAt = mainImage.CreatedAt
+                    } : null,
+                    GalleryImages = galleryImages
+                        .Where(img => !img.IsMainImage)
+                        .Select(img => new ResponseImageModel
+                        {
+                            ImageId = img.ImageId,
+                            Url = img.Url,
+                            IsMainImage = img.IsMainImage,
+                            CreatedAt = img.CreatedAt
+                        })
+                        .ToList()
+                };
+
+                result.Add(new ResponseSearchPreorderCampaign
+                {
+                    PreorderCampaignId = campaign.PreorderCampaignId,
+                    BlindBoxId = campaign.BlindBoxId,
+                    Slug = campaign.Slug,
+                    StartDate = campaign.StartDate,
+                    EndDate = campaign.EndDate,
+                    Status = campaign.Status,
+                    Type = campaign.Type,
+                    IsDeleted = campaign.IsDeleted,
+                    BlindBox = responseBlindBox,
+                    PriceFrom = priceFrom,
+                    PriceTo = priceTo
+                });
+            }
+            return new Pagination<ResponseSearchPreorderCampaign>(result, result.Count, pagination.PageIndex, pagination.PageSize);
         }
 
     }

@@ -19,5 +19,8 @@ namespace PreOrderBlindBox.Services.IServices
 		public Task<bool> RegisterStaffAccountAsync(RequestRegisterAccount registerStaffAccount);
 		public Task<List<ResponseUserInfomation>> GetAllStaff();
 		public Task<ResponseUserInfomation> GetUserById(int userId);
+		public Task<int> UpdateCustomerInformation(RequestUpdateCustomerInformation updateCustomerInformation);
+		public Task<int> UpdateStaffInformation(RequestUpdateStaffInformation updateStaffInformation, int staffId);
+		public Task<int> DeleteStaff(int staffId);
 	}
 }
