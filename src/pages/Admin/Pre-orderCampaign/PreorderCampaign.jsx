@@ -3,27 +3,26 @@ import { Table, Tag, Space, Input, Button, Modal, Checkbox, Spin, Pagination, no
 import { EyeOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom';
 import Pre_orderCampaignEdit from "./Pre-orderCampaignEdit";
-import Pre_orderCampaignCreate from "./Pre-orderCampaignCreate";
 import axios from 'axios';
 
-import { GetTheActivePreorderCampaign, GetActivePreorderCampaignBySlug } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
+import {
+    GetTheActivePreorderCampaign, GetActivePreorderCampaignBySlug,
+} from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
 import useFetchDataPagination from "../../../hooks/useFetchDataPagination";
 import noThumbnailImage from "../../../assets/noThumbnailImage.jpg"
 const { Search } = Input;
 
 const Pre_orderCampaign = () => {
-    const [selectedPre_orderCampaign, setSelectedPre_orderCampaign] = useState([]);
+
     const [search, setSearch] = useState("");
-    const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-    const [Pre_orderCampaignToDelete, setPre_orderCampaignToDelete] = useState(null);
     const [warning, setWarning] = useState('');
     const [pageSize, setPageSize] = useState(5);
     const [pageIndex, setPageIndex] = useState(1);
     const navigate = useNavigate();
-    const [detailPre_orderCampaign, setDetailPre_orderCampaign] = useState({});
-
+    const [detailPre_orderCampaign_bySlug, setDetailPre_orderCampaign_bySlug] = useState([]);
+    const [selectedPreorderCampaignId, setSelectedPreorderCampaignId] = useState(null);
 
     const fetchPreorderCampaign = useCallback(
         () => GetTheActivePreorderCampaign(pageSize, pageIndex),
@@ -33,70 +32,107 @@ const Pre_orderCampaign = () => {
         pageSize,
         pageIndex,
     ]);
-
-    useEffect(() => {
-        const getDetailPre_orderCampaign_bySlug = async () => {
-            var data = await GetActivePreorderCampaignBySlug(record.slug);
-            setDetailPre_orderCampaign(data);
-        };
-        getDetailPre_orderCampaign_bySlug();
-        console.log(pagination);
-    }, [data]);
-
     const handleAddPre_orderCampaign = () => {
-
-        setIsCreateModalVisible(true);
-
+        navigate("/admin/pre-ordercampaign/blindtoadd");
     };
 
-    const handleEditPre_orderCampaign = () => {
-        setIsEditModalVisible(true);
+    const handleEditPre_orderCampaign = async (record) => {
+        try {
+            console.log("Fetching details for campaign:", record.slug);
+
+            const campaignDetails = await GetActivePreorderCampaignBySlug(record.slug);
+            if (campaignDetails) {
+                console.log("Received campaign details:", campaignDetails);
+
+                // Lấy preorderCampaignId từ campaignDetails
+                setSelectedPreorderCampaignId(campaignDetails.preorderCampaignId);
+
+                // Hiển thị modal chỉnh sửa
+                setIsEditModalVisible(true);
+            } else {
+                notification.error({
+                    message: "Error",
+                    description: "Failed to fetch campaign details.",
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching campaign details:", error);
+            notification.error({
+                message: "Error",
+                description: "Could not fetch campaign details.",
+            });
+        }
     };
+
     const handleViewPre_orderCampaign = (record) => {
         navigate(`/admin/pre-ordercampaign-details/${record.slug}`);
-    };
-
-    const handleCancelCreate = () => {
-        setIsCreateModalVisible(false);
-        setSelectedPre_orderCampaign(null);
     };
 
     const handleCancelEdit = () => {
         setIsEditModalVisible(false);
     };
 
-    const handleDeletePre_orderCampaign = (record) => {
-        setPre_orderCampaignToDelete(record);
-        setIsDeleteModalVisible(true);
-    };
-
-
-    const confirmDeletePre_orderCampaign = async (preorderCampaignId) => {
+    const handleDeletePre_orderCampaign = async (record) => {
         try {
-            const response = await axios.delete(`https://preorderblindboxsystem-c9ftb6dtcvdkh3ge.centralus-01.azurewebsites.net/api/PreorderCampaign/${preorderCampaignId}`);
-            if (response.data && response.data.result) {
-                const { isDeleted } = response.data.result;
+            console.log("Fetching details for campaign:", record.slug);
 
-                if (isDeleted === false) {
-                    const element = document.getElementById(preorderCampaignId);
-                    if (element) {
-                        element.setAttribute("isDeleted", "true");
-                    }
-                }
+            const campaignDetails = await GetActivePreorderCampaignBySlug(record.slug);
+            if (campaignDetails) {
+                console.log("Received campaign details:", campaignDetails);
+                setDetailPre_orderCampaign_bySlug(campaignDetails);
+                setIsDeleteModalVisible(true);
+            } else {
+                notification.error({
+                    message: "Error",
+                    description: "Failed to fetch campaign details.",
+                });
             }
-
         } catch (error) {
-            console.error('Error deleting Pre_orderCampaign:', error);
-            return <div>Error: {error}</div>;
+            console.error("Error fetching campaign details:", error);
+            notification.error({
+                message: "Error",
+                description: "Could not fetch campaign details.",
+            });
         }
-        refetch();
-        notification.success({
-            message: 'Success',
-            description: 'The campaign has been successfully deleted.',
-        });
-
-
     };
+
+
+
+    const confirmDeletePre_orderCampaign = async () => {
+        if (!detailPre_orderCampaign_bySlug?.preorderCampaignId) {
+            notification.error({
+                message: "Error",
+                description: "Pre-order campaign ID is missing!",
+            });
+            return;
+        }
+
+        try {
+
+            const response = await axios.delete(`https://preorderblindboxsystem-c9ftb6dtcvdkh3ge.centralus-01.azurewebsites.net/api/PreorderCampaign/${detailPre_orderCampaign_bySlug.preorderCampaignId}`);
+
+            if (response.status === 200) {
+                notification.success({
+                    message: "Success",
+                    description: "The campaign has been successfully deleted.",
+                });
+
+                setIsDeleteModalVisible(false);
+                refetch(); // Refresh data after deletion
+            } else {
+                throw new Error("Failed to delete campaign.");
+            }
+        } catch (error) {
+            console.error("Error deleting Pre_orderCampaign:", error);
+            notification.error({
+                message: "Error",
+                description: "Failed to delete the campaign.",
+            });
+        }
+    };
+
+
+
     const columns = [
         {
             title: <span style={{ fontSize: "18px" }}>{"No."}</span>,
@@ -227,12 +263,17 @@ const Pre_orderCampaign = () => {
                         </div>
                     </>
                 )}
-
-                <Modal open={isCreateModalVisible} onCancel={handleCancelCreate} footer={null} width={720} closable={false}>
-                    <Pre_orderCampaignCreate onSuccess={handleCancelCreate} selectedPre_orderCampaign={selectedPre_orderCampaign} />
-                </Modal>
-                <Modal open={isEditModalVisible} onCancel={handleCancelEdit} footer={null} width={720} closable={false}>
-                    <Pre_orderCampaignEdit onSuccess={handleCancelEdit} selectedPre_orderCampaign={selectedPre_orderCampaign} />
+                <Modal
+                    open={isEditModalVisible}
+                    onCancel={handleCancelEdit}
+                    footer={null}
+                    width={720}
+                    closable={false}
+                >
+                    <Pre_orderCampaignEdit
+                        preorderCampaignId={selectedPreorderCampaignId}
+                        onSuccess={handleCancelEdit}
+                    />
                 </Modal>
 
                 <Modal
@@ -243,12 +284,12 @@ const Pre_orderCampaign = () => {
                         <Button key="cancel" onClick={() => setIsDeleteModalVisible(false)}>
                             Cancel
                         </Button>,
-                        <Button key="delete" type="primary" danger onClick={() => confirmDeletePre_orderCampaign(Pre_orderCampaignToDelete?.preorderCampaignId)}>
+                        <Button key="delete" type="primary" danger onClick={confirmDeletePre_orderCampaign}>
                             Delete
                         </Button>,
                     ]}
                 >
-                    <p>Do you want to delete the product "{Pre_orderCampaignToDelete?.preorderCampaignId}"?</p>
+                    <p>Do you want to delete the pre-oder campaign "{detailPre_orderCampaign_bySlug.blindBox?.name}"?</p>
                 </Modal>
             </div>
         </div>

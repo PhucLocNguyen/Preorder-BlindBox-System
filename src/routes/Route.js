@@ -23,9 +23,10 @@ const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Vouc
 const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
+const BlindboxToAdd = lazy(() => import("../pages/Admin/Pre-orderCampaign/BlindboxtoAdd"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
-const ProductDetail = lazy(()=> import("../pages/Products/ProductDetail/ProductDetail"));
+const ProductDetail = lazy(() => import("../pages/Products/ProductDetail/ProductDetail"));
 
 import DepositPage from "../pages/Wallet/Deposit";
 import Wallet from "../pages/Wallet/Wallet";
@@ -67,6 +68,7 @@ const publicRoutes = [
       { path: "preordermilestone", component: PreorderMilestone },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
+      { path: "pre-ordercampaign/blindtoadd", component: BlindboxToAdd },
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
       { path: "voucher", component: VoucherManagement },

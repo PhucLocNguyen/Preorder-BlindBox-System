@@ -3,14 +3,18 @@ import { Form, Input, Button, Row, Col, Card, DatePicker, Select, notification }
 import { CreatePreorderCampaign } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
 import { toast } from 'react-toastify';
 const { Option } = Select;
-
-const Pre_orderCampaignCreate = ({ onSuccess }) => {
+import { useNavigate } from 'react-router';
+const Pre_orderCampaignCreate = ({ onSuccess, selectedProduct }) => {
     const [form] = Form.useForm();
-
+    const navigate = useNavigate();
+    useEffect(() => {
+        console.log("Received selectedProduct in Create Modal:", selectedProduct);
+        form.setFieldsValue({ 'blindBoxId': selectedProduct });
+    }, [form]);
     const handleSubmit = async (values) => {
 
         const payload = {
-            blindBoxId: Number(values.blindBoxId),
+            blindBoxId: selectedProduct,
             startDate: values.startDate.toISOString(),
             endDate: values.endDate.toISOString(),
             type: values.type
@@ -26,17 +30,8 @@ const Pre_orderCampaignCreate = ({ onSuccess }) => {
             const result = await CreatePreorderCampaign(payload, config);
             console.log("Submitted values:", payload);
             console.log("result", result);
-
-            if (result?.status === 200) {
-                notification.success({
-                    message: 'Success',
-                    description: 'The campaign has been successfully created.',
-                });
-                onSuccess();
-            }
-
             onSuccess();
-
+            navigate('/admin/pre-ordercampaign');
         } catch (error) {
             toast.error('Error creating Preorder Campaign:', error);
             notification.error({
@@ -52,7 +47,7 @@ const Pre_orderCampaignCreate = ({ onSuccess }) => {
             <h2 className="text-xl font-bold mb-4 text-center">Add New Campaign</h2>
             <Form form={form} layout="vertical" onFinish={handleSubmit}>
                 <Row gutter={16}>
-                    <Col span={12}>
+                    {/* <Col span={12}>
                         <Form.Item
                             label="Blind-box ID"
                             name="blindBoxId"
@@ -61,8 +56,8 @@ const Pre_orderCampaignCreate = ({ onSuccess }) => {
                         >
                             <Input type="number" min={1} />
                         </Form.Item>
-                    </Col>
-                    <Col span={12}>
+                    </Col> */}
+                    <Col span={8}>
                         <Form.Item label="Type" name="type" rules={[{ required: true, message: 'Please select a type!' }]}>
                             <Select
                                 placeholder="Select a type"
@@ -74,19 +69,20 @@ const Pre_orderCampaignCreate = ({ onSuccess }) => {
 
                         </Form.Item>
                     </Col>
-                </Row>
-                <Row gutter={16}>
-                    <Col span={12}>
+
+                    <Col span={8}>
                         <Form.Item label="Start Date" name="startDate" rules={[{ required: true, message: 'Please select a start date!' }]}>
                             <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+
+                    <Col span={8}>
                         <Form.Item label="End Date" name="endDate" rules={[{ required: true, message: 'Please select an end date!' }]}>
                             <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
                         </Form.Item>
                     </Col>
                 </Row>
+
                 <div className="flex justify-center gap-2 mt-4">
                     <Button size="large" onClick={onSuccess}>
                         Cancel
