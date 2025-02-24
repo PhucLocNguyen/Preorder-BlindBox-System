@@ -116,6 +116,7 @@ namespace PreOrderBlindBox.API.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePreorderCampaign(int id)
         {
@@ -171,6 +172,32 @@ namespace PreOrderBlindBox.API.Controllers
                 }
 
                 return Ok(preorderCampaign);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        [HttpPost("CreatePreorderCampaignWithMilestone")]
+        public async Task<IActionResult> CreatePreoderCampaignWithMilestone([FromBody] CreatePreorderCampaignRequest requestCampaign)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.AddCampaignWithMilestonesAsync(requestCampaign);
+                if (preorderCampaign)
+                {
+                    return Ok(preorderCampaign);
+                }
+                return BadRequest();
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (ArgumentException ex)
             {
