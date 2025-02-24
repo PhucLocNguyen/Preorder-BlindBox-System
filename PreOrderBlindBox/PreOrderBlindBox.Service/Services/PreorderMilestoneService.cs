@@ -184,30 +184,30 @@ namespace PreOrderBlindBox.Services.Services
             {
                 if (milestone.MilestoneNumber == 1 && request.MilestoneNumber == 2)
                 {
-                    if (request.Quantity <= milestone.Quantity || request.Price <= milestone.Price)
+                    if (request.Price <= milestone.Price)
                     {
-                        throw new ArgumentException("Milestone 2 must have a higher quantity and price than Milestone 1.");
+                        throw new ArgumentException("Milestone 2 must have a higher price than Milestone 1.");
                     }
                 }
                 else if (milestone.MilestoneNumber == 2 && request.MilestoneNumber == 1)
                 {
-                    if (request.Quantity >= milestone.Quantity || request.Price >= milestone.Price)
+                    if (request.Price >= milestone.Price)
                     {
-                        throw new ArgumentException("Milestone 1 must have a lower quantity and price than Milestone 2.");
+                        throw new ArgumentException("Milestone 1 must have a lower price than Milestone 2.");
                     }
                 }
                 else if (milestone.MilestoneNumber == 2 && request.MilestoneNumber == 3)
                 {
-                    if (request.Quantity <= milestone.Quantity || request.Price <= milestone.Price)
+                    if (request.Price <= milestone.Price)
                     {
-                        throw new ArgumentException("Milestone 3 must have a higher quantity and price than Milestone 2.");
+                        throw new ArgumentException("Milestone 3 must have a higher price than Milestone 2.");
                     }
                 }
                 else if (milestone.MilestoneNumber == 3 && request.MilestoneNumber == 2)
                 {
-                    if (request.Quantity >= milestone.Quantity || request.Price >= milestone.Price)
+                    if (request.Price >= milestone.Price)
                     {
-                        throw new ArgumentException("Milestone 2 must have a lower quantity and price than Milestone 3.");
+                        throw new ArgumentException("Milestone 2 must have a lower price than Milestone 3.");
                     }
                 }
             }
@@ -234,30 +234,30 @@ namespace PreOrderBlindBox.Services.Services
             {
                 if (milestone.MilestoneNumber == 1 && request.MilestoneNumber == 2)
                 {
-                    if (request.Quantity <= milestone.Quantity || request.Price >= milestone.Price)
+                    if (request.Price >= milestone.Price)
                     {
-                        throw new ArgumentException("Milestone 2 must have a higher quantity and lower price than Milestone 1.");
+                        throw new ArgumentException("Milestone 2 must have lower price than Milestone 1.");
                     }
                 }
                 else if (milestone.MilestoneNumber == 2 && request.MilestoneNumber == 1)
                 {
-                    if (request.Quantity >= milestone.Quantity || request.Price <= milestone.Price)
+                    if (request.Price <= milestone.Price)
                     {
-                        throw new ArgumentException("Milestone 1 must have a lower quantity and higher price than Milestone 2.");
+                        throw new ArgumentException("Milestone 1 must have higher price than Milestone 2.");
                     }
                 }
                 else if (milestone.MilestoneNumber == 2 && request.MilestoneNumber == 3)
                 {
-                    if (request.Quantity <= milestone.Quantity || request.Price >= milestone.Price)
+                    if (request.Price >= milestone.Price)
                     {
-                        throw new ArgumentException("Milestone 3 must have a higher quantity and lower price than Milestone 2.");
+                        throw new ArgumentException("Milestone 3 must have lower price than Milestone 2.");
                     }
                 }
                 else if (milestone.MilestoneNumber == 3 && request.MilestoneNumber == 2)
                 {
-                    if (request.Quantity >= milestone.Quantity || request.Price <= milestone.Price)
+                    if (request.Price <= milestone.Price)
                     {
-                        throw new ArgumentException("Milestone 2 must have a lower quantity and higher price than Milestone 3.");
+                        throw new ArgumentException("Milestone 2 must have higher price than Milestone 3.");
                     }
                 }
             }
@@ -274,26 +274,26 @@ namespace PreOrderBlindBox.Services.Services
 
             if (milestone.MilestoneNumber == 1 && milestone2 != null)
             {
-                if (request.Quantity.HasValue && request.Quantity >= milestone2.Quantity)
-                    throw new ArgumentException("Milestone 1 quantity must be lower than Milestone 2.");
+                /*if (request.Quantity.HasValue && request.Quantity >= milestone2.Quantity)
+                    throw new ArgumentException("Milestone 1 quantity must be lower than Milestone 2.");*/
                 if (request.Price.HasValue && request.Price >= milestone2.Price)
                     throw new ArgumentException("Milestone 1 price must be lower than Milestone 2.");
             }
             else if (milestone.MilestoneNumber == 2)
             {
-                if (milestone1 != null && request.Quantity.HasValue && request.Quantity <= milestone1.Quantity)
-                    throw new ArgumentException("Milestone 2 quantity must be higher than Milestone 1.");
+                /*if (milestone1 != null && request.Quantity.HasValue && request.Quantity <= milestone1.Quantity)
+                    throw new ArgumentException("Milestone 2 quantity must be higher than Milestone 1.");*/
                 if (milestone1 != null && request.Price.HasValue && request.Price <= milestone1.Price)
                     throw new ArgumentException("Milestone 2 price must be higher than Milestone 1.");
-                if (milestone3 != null && request.Quantity.HasValue && request.Quantity >= milestone3.Quantity)
-                    throw new ArgumentException("Milestone 2 quantity must be lower than Milestone 3.");
+                /*if (milestone3 != null && request.Quantity.HasValue && request.Quantity >= milestone3.Quantity)
+                    throw new ArgumentException("Milestone 2 quantity must be lower than Milestone 3.");*/
                 if (milestone3 != null && request.Price.HasValue && request.Price >= milestone3.Price)
                     throw new ArgumentException("Milestone 2 price must be lower than Milestone 3.");
             }
             else if (milestone.MilestoneNumber == 3 && milestone2 != null)
             {
-                if (request.Quantity.HasValue && request.Quantity <= milestone2.Quantity)
-                    throw new ArgumentException("Milestone 3 quantity must be higher than Milestone 2.");
+                /*if (request.Quantity.HasValue && request.Quantity <= milestone2.Quantity)
+                    throw new ArgumentException("Milestone 3 quantity must be higher than Milestone 2.");*/
                 if (request.Price.HasValue && request.Price <= milestone2.Price)
                     throw new ArgumentException("Milestone 3 price must be higher than Milestone 2.");
             }
@@ -310,26 +310,26 @@ namespace PreOrderBlindBox.Services.Services
 
             if (milestone.MilestoneNumber == 1 && milestone2 != null)
             {
-                if (request.Quantity.HasValue && request.Quantity >= milestone2.Quantity)
-                    throw new ArgumentException("Milestone 1 quantity must be lower than Milestone 2.");
+                /*if (request.Quantity.HasValue && request.Quantity >= milestone2.Quantity)
+                    throw new ArgumentException("Milestone 1 quantity must be lower than Milestone 2.");*/
                 if (request.Price.HasValue && request.Price <= milestone2.Price)
                     throw new ArgumentException("Milestone 1 price must be higher than Milestone 2.");
             }
             else if (milestone.MilestoneNumber == 2)
             {
-                if (milestone1 != null && request.Quantity.HasValue && request.Quantity <= milestone1.Quantity)
-                    throw new ArgumentException("Milestone 2 quantity must be higher than Milestone 1.");
+                /*if (milestone1 != null && request.Quantity.HasValue && request.Quantity <= milestone1.Quantity)
+                    throw new ArgumentException("Milestone 2 quantity must be higher than Milestone 1.");*/
                 if (milestone1 != null && request.Price.HasValue && request.Price >= milestone1.Price)
                     throw new ArgumentException("Milestone 2 price must be lower than Milestone 1.");
-                if (milestone3 != null && request.Quantity.HasValue && request.Quantity >= milestone3.Quantity)
-                    throw new ArgumentException("Milestone 2 quantity must be lower than Milestone 3.");
+                /*if (milestone3 != null && request.Quantity.HasValue && request.Quantity >= milestone3.Quantity)
+                    throw new ArgumentException("Milestone 2 quantity must be lower than Milestone 3.");*/
                 if (milestone3 != null && request.Price.HasValue && request.Price <= milestone3.Price)
                     throw new ArgumentException("Milestone 2 price must be higher than Milestone 3.");
             }
             else if (milestone.MilestoneNumber == 3 && milestone2 != null)
             {
-                if (request.Quantity.HasValue && request.Quantity <= milestone2.Quantity)
-                    throw new ArgumentException("Milestone 3 quantity must be higher than Milestone 2.");
+                /*if (request.Quantity.HasValue && request.Quantity <= milestone2.Quantity)
+                    throw new ArgumentException("Milestone 3 quantity must be higher than Milestone 2.");*/
                 if (request.Price.HasValue && request.Price >= milestone2.Price)
                     throw new ArgumentException("Milestone 3 price must be lower than Milestone 2.");
             }
