@@ -9,8 +9,8 @@ import {
     SearchOutlined,
     PlusOutlined,
 } from '@ant-design/icons';
-import UserManagermentCreate from "./UserManagementCreate";
-import UserManagermentEdit from "./UserManagementEdit";
+import UserManagementCreate from "./UserManagementCreate";
+import UserManagementEdit from "./UserManagementEdit";
 import { useNavigate } from 'react-router-dom';
 const { Search } = Input;
 
@@ -46,7 +46,7 @@ const UserManagement = () => {
         setIsModalVisible(true);
     };
     const handleViewUser = (record) => {
-        navigate(`/admin/usermanagerment-details/${record.key}`);
+        navigate(`/admin/usermanagement/details/${record.key}`);
     };
 
     const handleDeleteUser = (record) => {
@@ -150,7 +150,7 @@ const UserManagement = () => {
                 forceRender
                 closable={false}
             >
-                <UserManagermentCreate onSuccess={() => setIsModalVisible(false)} />
+                <UserManagementCreate onSuccess={() => setIsModalVisible(false)} />
             </Modal>
             {/* Modal hiển thị form cập nhật người dùng */}
             <Modal
@@ -162,7 +162,7 @@ const UserManagement = () => {
                 forceRender
                 closable={false}
             >
-                <UserManagermentEdit onSuccess={() => setIsModalVisible(false)} />
+                <UserManagementEdit onSuccess={() => setIsModalVisible(false)} />
             </Modal>
             {/* Modal hiển thị xác nhận xóa người dùng */}
             <Modal

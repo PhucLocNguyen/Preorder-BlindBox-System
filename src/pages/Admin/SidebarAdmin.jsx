@@ -26,7 +26,7 @@ const SideBarAdmin = () => {
             <ul className="space-y-4">
                 {/* Admin Management */}
 
-                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/usermanagerment" || location.pathname === "/admin"
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/usermanagement" || location.pathname === "/admin"
                     ? "bg-blue-500 text-white"
                     : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
                     }`}>
@@ -44,26 +44,6 @@ const SideBarAdmin = () => {
                         </Row>
                     </Link>
 
-                </li>
-
-
-                {/* Campaign Management */}
-
-                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname.startsWith("/admin/preordermilestone")
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
-                    }`}>
-                    <Link to="/admin/preordermilestone" className="flex items-center w-full">
-                        <Row gutter={12} align="middle">
-                            <Col span={6} className="flex justify-center">
-                                <img src={Pre_orderMilestone} alt="Pre_orderMilestone Icon" className="w-8 h-8 no-border" />
-                            </Col>
-                            <Col span={16}>
-                                <i className="fas fa-tachometer-alt"></i>
-                                <span className="font-medium text-lg">PreorderMilestone</span>
-                            </Col>
-                        </Row>
-                    </Link>
                 </li>
 
 

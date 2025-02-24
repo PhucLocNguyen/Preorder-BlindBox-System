@@ -1,6 +1,14 @@
-import { Button, Form, Input, Select, DatePicker, Space } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  DatePicker,
+  Space,
+} from "antd";
 const { Option } = Select;
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   ArrowLeftOutlined,
   MinusCircleOutlined,
@@ -26,45 +34,49 @@ function PreorderCampaignCreate() {
   // Cập nhật trạng thái form mỗi khi các field thay đổi
   const onFieldsChange = () => {
     const fieldsError = form.getFieldsError();
-    if(typeOfCampaign==null){
-        setIsFormValid(false);
-        return;
+    if (typeOfCampaign == null) {
+      setIsFormValid(false);
+      return;
     }
-    if(loadMainProduct==null){
-        setIsFormValid(false);
-        return;
+    if (loadMainProduct == null) {
+      setIsFormValid(false);
+      return;
     }
     const milestoneValues = form.getFieldValue("milestones") || null;
-    console.log(milestoneValues);
-    if(milestoneValues.length<=1){
-        setIsFormValid(false);
-        return;
+    if (!milestoneValues || milestoneValues.length <= 2) {
+      setIsFormValid(false);
+      return;
     }
-    // Nếu có milestone được thêm, kiểm tra xem có field nào bị trống hay không
+    // Kiểm tra xem có milestone nào bị thiếu số lượng hoặc số tiền không
     const milestoneHasEmpty = milestoneValues.some((m) => {
-      // Kiểm tra nếu m là undefined hoặc thiếu quantity hoặc price
-      return !m || m.quantity === undefined || m.quantity === "" || m.price === undefined || m.price === "";
+      return (
+        !m ||
+        m.quantity === undefined ||
+        m.quantity === "" ||
+        m.price === undefined ||
+        m.price === ""
+      );
     });
-    if(milestoneHasEmpty){
-        setIsFormValid(false);
-        return;
+    if (milestoneHasEmpty) {
+      setIsFormValid(false);
+      return;
     }
-    const dateRange= form.getFieldValue("dateRange") || null;
-    console.log(dateRange);
+    const dateRange = form.getFieldValue("dateRange") || null;
     var dateNow = new Date();
-    console.log(dateRange);
-    if(dateRange==null){
-        setIsFormValid(false);
-        return;
+    if (dateRange == null) {
+      setIsFormValid(false);
+      return;
     }
-    if(dateRange[0]<dateNow){
-        setIsFormValid(false);
-        return;
+    if (dateRange[0] < dateNow) {
+      setIsFormValid(false);
+      return;
     }
-
-    const hasErrors = fieldsError.some(field => field.errors.length > 0);
-    // Kiểm tra xem các field đã được chạm chưa
-    console.log(hasErrors);
+    // validate 3 ngay sau khi start date
+    if (dateRange[1].isBefore(dateRange[0].clone().add(3, "days"))) {
+      setIsFormValid(false);
+      return;
+    }
+    const hasErrors = fieldsError.some((field) => field.errors.length > 0);
     setIsFormValid(!hasErrors);
   };
 
@@ -75,26 +87,20 @@ function PreorderCampaignCreate() {
   };
 
   const handleSubmit = async (values) => {
-    const formData = new FormData();
-    formData.append("blindBoxId", loadMainProduct?.blindBoxId || "");
-    // Thêm field typeOfCampaign
-    formData.append("type", values.type || typeOfCampaign);
-    console.log(values);
-    // Thời gian chiến dịch (RangePicker trả về mảng Moment)
-    if (values.dateRange) {
-      formData.append("startTime", values.dateRange[0].toISOString());
-      formData.append("endTime", values.dateRange[1].toISOString());
-    }
+    const data = {
+      blindBoxId: parseInt(loadMainProduct?.blindBoxId) || 0,
+      type: parseInt(values.type || typeOfCampaign),
+      startTime: values.dateRange ? values.dateRange[0].toISOString() : null,
+      endTime: values.dateRange ? values.dateRange[1].toISOString() : null,
+      milestones: values.milestones
+        ? values.milestones.map((item) => ({
+            quantity: parseInt(item.quantity),
+            price: parseFloat(item.price),
+          }))
+        : [],
+    };
 
-    // Milestones (là mảng các object có quantity và price)
-    if (values.milestones) {
-      values.milestones.forEach((item, index) => {
-        formData.append(`milestones[${index}][quantity]`, item.quantity);
-        formData.append(`milestones[${index}][price]`, item.price);
-      });
-    }
-    
-    await CreatePreorderCampaign(formData);
+    await CreatePreorderCampaign(data);
     navigate("/admin/pre-ordercampaign");
   };
 
@@ -109,7 +115,7 @@ function PreorderCampaignCreate() {
         >
           <div className="grid grid-cols-12 gap-4 min-h-screen mx-auto mt-5 p-5 bg-[#e5e7eb] shadow-lg rounded-lg">
             <div className="col-span-9 ">
-              <div className="bg-white p-4 rounded-lg">
+              <div className="bg-white p-4 rounded-xl py-10">
                 <div className="flex items-center mb-4">
                   <Link to="/admin/pre-ordercampaign" className="h-full flex">
                     <ArrowLeftOutlined
@@ -198,15 +204,15 @@ function PreorderCampaignCreate() {
                         className="w-full"
                         onChange={handleChangeTypeCampaign}
                       >
-                        <Option value="BulkOrder">Bulk Order</Option>
-                        <Option value="TimedPricing">Timed Pricing</Option>
+                        <Option value={0}>Timed Pricing</Option>
+                        <Option value={1}>Bulk Order</Option>
                       </Select>
                     </Form.Item>
                   </div>
                   <div>
                     <h3 className="text-lg">Thêm các mốc giá và số lượng</h3>
                   </div>
-                  {typeOfCampaign && (
+                  {typeOfCampaign != null && (
                     <Form.List name="milestones">
                       {(fields, { add, remove }) => (
                         <>
@@ -216,6 +222,7 @@ function PreorderCampaignCreate() {
                               style={{ display: "flex", marginBottom: 8 }}
                               align="baseline"
                             >
+                              {/* Số lượng */}
                               <Form.Item
                                 {...restField}
                                 name={[name, "quantity"]}
@@ -225,19 +232,61 @@ function PreorderCampaignCreate() {
                                     required: true,
                                     message: "Vui lòng nhập số lượng!",
                                   },
+                                  {
+                                    validator: (_, value) => {
+                                      if (value === undefined || value === "") {
+                                        return Promise.resolve();
+                                      }
+                                      if (Number(value) < 1) {
+                                        return Promise.reject(
+                                          new Error(
+                                            "Số lượng phải lớn hơn hoặc bằng 1"
+                                          )
+                                        );
+                                      }
+                                      return Promise.resolve();
+                                    },
+                                  },
                                 ]}
                               >
-                                <Input placeholder="Số lượng" />
+                                <InputNumber
+                                  placeholder="Số lượng"
+                                  min={1}
+                                  style={{ width: "100%" }}
+                                />
                               </Form.Item>
+
+                              {/* Số tiền */}
                               <Form.Item
                                 {...restField}
                                 name={[name, "price"]}
+                                dependencies={
+                                  index > 0
+                                    ? [["milestones", index - 1, "price"]]
+                                    : []
+                                }
                                 label="Số tiền"
                                 rules={[
                                   {
                                     required: true,
                                     message: "Vui lòng nhập số tiền!",
                                   },
+                                  {
+                                    validator: (_, value) => {
+                                      if (value === undefined || value === "") {
+                                        return Promise.resolve();
+                                      }
+                                      if (Number(value) < 1000) {
+                                        return Promise.reject(
+                                          new Error(
+                                            "Số tiền phải lớn hơn hoặc bằng 1000"
+                                          )
+                                        );
+                                      }
+                                      return Promise.resolve();
+                                    },
+                                  },
+                                  // Validator so sánh với milestone trước nếu có
                                   ({ getFieldValue }) => ({
                                     validator(_, value) {
                                       const milestones =
@@ -257,7 +306,7 @@ function PreorderCampaignCreate() {
                                         previousMilestone.price
                                       );
                                       const currentPrice = parseFloat(value);
-                                      if (typeOfCampaign === "TimedPricing") {
+                                      if (typeOfCampaign == 0) {
                                         if (currentPrice <= prevPrice) {
                                           return Promise.reject(
                                             new Error(
@@ -265,7 +314,7 @@ function PreorderCampaignCreate() {
                                             )
                                           );
                                         }
-                                      } else if (typeOfCampaign === "BulkOrder") {
+                                      } else if (typeOfCampaign == 1) {
                                         if (currentPrice >= prevPrice) {
                                           return Promise.reject(
                                             new Error(
@@ -279,9 +328,15 @@ function PreorderCampaignCreate() {
                                   }),
                                 ]}
                               >
-                                <Input placeholder="Số tiền" />
+                                <InputNumber
+                                  placeholder="Số tiền"
+                                  min={1000}
+                                  style={{ width: "100%" }}
+                                />
                               </Form.Item>
-                              <MinusCircleOutlined onClick={() => remove(name)} />
+                              <MinusCircleOutlined
+                                onClick={() => remove(name)}
+                              />
                             </Space>
                           ))}
                           <Form.Item>
@@ -294,7 +349,6 @@ function PreorderCampaignCreate() {
                               Thêm cột mốc
                             </Button>
                           </Form.Item>
-                          
                         </>
                       )}
                     </Form.List>
@@ -304,7 +358,7 @@ function PreorderCampaignCreate() {
             </div>
             <div className="col-span-3">
               {/* Main Image & DatePicker */}
-              <div className="py-10 bg-white px-4 rounded-lg">
+              <div className="py-10 bg-white px-4 rounded-xl">
                 <div>
                   <h2 className="text-xl mb-2">
                     Thời gian chiến dịch hoạt động
