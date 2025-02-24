@@ -141,12 +141,36 @@ namespace PreOrderBlindBox.API.Controllers
 		{
 			try
 			{
-				var result = await _userService.ForgotPassword(forgotPassword);
-				if (result > 0)
+				if (ModelState.IsValid)
 				{
-					return Ok(new { Message = "New password created successfully" });
+					var result = await _userService.ForgotPasswordForCustomer(forgotPassword);
+					if (result)
+					{
+						return Ok(new { Message = "Check your email to continue changing your password." });
+					}
 				}
-				return BadRequest(new { Message = "Create new password failed" });
+				return BadRequest(new { Message = "Password change failed" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
+		[HttpPost("AddNewPassword")]
+		public async Task<IActionResult> AddNewPasswordForCustomer([FromBody] RequestAddNewPassword addNewPassword)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					var result = await _userService.AddNewPasswordForCustomer(addNewPassword);
+					if (result > 0)
+					{
+						return Ok(new { Message = "Password changed successfully" });
+					}
+				}
+				return BadRequest(new { Message = "Password change failed" });
 			}
 			catch (Exception ex)
 			{
