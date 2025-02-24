@@ -65,17 +65,18 @@ const GetActivePreorderCampaignBySlug = async (slug) => {
     }
 }
 
-const getDetailPreorderCampaign = async (slug) => {
+const GetActiveDetailPreorderCampaign = async (slug) => {
 	try {
 		const response = await api.get(`/PreorderCampaign/campaign/${slug}`, axiosConfigHeader);
 		return response.data;
 	} catch (error) {
 		console.log('>>> Api Get Blind Box By ID Error: ', error);
+        toast.error("Get active blind box by id failed!");
 		return null;
 	}
 };
 export {
     GetTheActivePreorderCampaign, CreatePreorderCampaign,
-    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById, getDetailPreorderCampaign
+    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById, GetActiveDetailPreorderCampaign
 };
 
