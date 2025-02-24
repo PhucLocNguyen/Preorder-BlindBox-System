@@ -5,7 +5,7 @@ import { GetTheActiveBlindBox } from '../../../api/BlindBox/ApiBlindBox';
 import NoThumb from '../../../assets/noThumbnailImage.jpg';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router';
-import { getPreorderCampaign } from '../../../api/Pre_orderCampaign/getPreorderCampaign';
+
 
 const tabs = [
 	{ id: 'DỰ ÁN THỊNH HÀNH', label: 'DỰ ÁN THỊNH HÀNH' },
@@ -19,7 +19,7 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 	const [activeTab, setActiveTab] = useState(tabs[0].id);
 	const [data, setData] = useState();
 	const productBlind = async () => {
-		const res = await getPreorderCampaign();
+		const res = await GetTheActiveBlindBox();
 		setData(res);
 	};
 
@@ -28,6 +28,7 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 	}, []);
 
 	const blindList = data?.data;
+	console.log('blindList', blindList);
 
 	return (
 		<div className='relative'>
@@ -85,7 +86,7 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 										{/* Product Image */}
 										<div className='relative w-full h-48'>
 											<img
-												src={product?.images?.mainImage?.url || NoThumb}
+												src={product?.blindBox?.mainImages?.url || NoThumb}
 												alt={product.name}
 												className='absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-105'
 												sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw'
@@ -94,10 +95,12 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 
 										{/* Product Info */}
 										<div className='flex flex-col gap-2 p-4'>
-											<h3 className='text-sm font-medium line-clamp-2'>{product.name}</h3>
-											<p className='text-xs text-gray-500'>{product.description}</p>
+											<h3 className='text-sm font-medium line-clamp-2'>
+												{product?.blindBox.name}
+											</h3>
+											<p className='text-xs text-gray-500'>{product?.blindBox.description}</p>
 											<span className='px-2 py-1 text-xs text-white bg-red-500 rounded-md w-fit'>
-												{product.size}
+												{product?.blindBox.size}
 											</span>
 
 											{/* Order Progress */}
