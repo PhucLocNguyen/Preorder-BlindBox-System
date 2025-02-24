@@ -5,6 +5,7 @@ import { GetTheActiveBlindBox } from '../../../api/BlindBox/ApiBlindBox';
 import NoThumb from '../../../assets/noThumbnailImage.jpg';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router';
+import { getPreorderCampaign } from '../../../api/Pre_orderCampaign/getPreorderCampaign';
 
 const tabs = [
 	{ id: 'DỰ ÁN THỊNH HÀNH', label: 'DỰ ÁN THỊNH HÀNH' },
@@ -18,7 +19,7 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 	const [activeTab, setActiveTab] = useState(tabs[0].id);
 	const [data, setData] = useState();
 	const productBlind = async () => {
-		const res = await GetTheActiveBlindBox();
+		const res = await getPreorderCampaign();
 		setData(res);
 	};
 
@@ -70,8 +71,8 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 							<div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
 								{blindList?.map((product) => (
 									<Link
-										to={`/product/${product.blindBoxId}`}
-										key={product.blindBoxId}
+										to={`/product/${product.slug}`}
+										key={product.slug}
 										className='relative overflow-hidden bg-white rounded-lg shadow-lg group'
 									>
 										{/* Pre-order Badge */}
