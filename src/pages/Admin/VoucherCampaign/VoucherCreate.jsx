@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Select, DatePicker, Row, Col, Slider } from "antd";
+import { Button, Form, Input, Select, DatePicker, Row, Col, Slider, InputNumber } from "antd";
+
+
+
 
 const { Option } = Select;
 
@@ -135,15 +138,21 @@ const VoucherCreate = () => {
                     label="Maximum Money Discount"
                     name="maximumMoneyDiscount"
                 >
-                    <Input type="number" step="0.01" placeholder="Enter maximum money discount" />
+                    <InputNumber
+                        style={{ width: "100%" }}
+                        min={0}
+                        placeholder="Enter maximum money discount"
+                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}
+                        parser={(value) => value.replace(/VND\s?|(,*)/g, "")}
+                    />
                 </Form.Item>
 
-                {/* Maximum Discount */}
+
                 <Form.Item
-                    label="Maximum Discount"
-                    name="maximumDiscount"
+                    label="Validity Duration"
+                    name="setNumberExpirationDate"
                 >
-                    <Input type="number" step="0.01" placeholder="Enter maximum discount" />
+                    <Input type="number" placeholder="Enter Validity Duration" />
                 </Form.Item>
 
 

@@ -33,7 +33,7 @@ const Pre_orderCampaign = () => {
         pageIndex,
     ]);
     const handleAddPre_orderCampaign = () => {
-        navigate("/admin/pre-ordercampaign/blindtoadd");
+        navigate("/admin/preordercampaign/create");
     };
 
     const handleEditPre_orderCampaign = async (record) => {

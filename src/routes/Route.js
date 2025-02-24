@@ -24,7 +24,7 @@ const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Vouc
 const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
-const BlindboxToAdd = lazy(() => import("../pages/Admin/Pre-orderCampaign/BlindboxtoAdd"));
+const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
 const ProductDetail = lazy(() => import("../pages/Products/ProductDetail/ProductDetail"));
@@ -61,26 +61,6 @@ const publicRoutes = [
 
     ],
   },
-  {
-    path: "/admin",
-    component: AdminView,
-    children: [
-      { index: true, component: UserManagement },
-      { path: "usermanagement", component: UserManagement },
-      { path: "usermanagerment-details/:id", component: UserManagementDetails },
-      { path: "preordermilestone", component: PreorderMilestone },
-      { path: "pre-ordercampaign", component: Pre_orderCampaign },
-      { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
-      { path: "pre-ordercampaign/blindtoadd", component: BlindboxToAdd },
-      { path: "notifications", component: NotificationsView },
-      { path: "dashboard", component: Dashboard },
-      { path: "voucher", component: VoucherManagement },
-      { path: "voucher/add", component: VoucherCreate },
-      { path: "voucher-details/:id", component: VoucherDetails },
-      { path: "voucher/update/:id", component: VoucherUpdate },
-    ],
-  },
-
 
 
   {
@@ -141,13 +121,13 @@ const publicRoutes = [
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
       { path: "preordercampaign/create", component: PreorderCampaignCreate },
-
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
       { path: "voucher", component: VoucherManagement },
       { path: "voucher/add", component: VoucherCreate },
       { path: "voucher-details/:id", component: VoucherDetails },
       { path: "voucher/update/:id", component: VoucherUpdate },
+      { path: "history-transactions", component: HistoryTransactions },
     ],
     role: ['admin']
   },
