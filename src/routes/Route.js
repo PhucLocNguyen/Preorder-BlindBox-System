@@ -27,8 +27,8 @@ const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherE
 const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
-const ProductDetail = lazy(() => import("../pages/Products/ProductDetail/ProductDetail"));
-
+const ProductList = lazy(() => import('../pages/Home/ProductList/ProductList'));
+const ProductDetail = lazy(() => import('../pages/Products/ProductDetail/ProductDetail'));
 const DepositPage = lazy(() => import("../pages/Wallet/Deposit"));
 const Wallet = lazy(() => import("../pages/Wallet/Wallet"));
 const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
@@ -85,6 +85,14 @@ const publicRoutes = [
     component: Cart,
     layout: DefaultLayout,
   },
+  {
+		path: '/product',
+		children: [
+			{ index: true, component: ProductList },
+			{ path: ':slug', component: ProductDetail },
+		],
+		layout: DefaultLayout,
+	},
   {
     path: '/campaign/search',
     component: SearchResultPage,
