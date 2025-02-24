@@ -38,7 +38,7 @@ const SideBarAdmin = () => {
                             </Col>
                             <Col span={14}>
                                 <i className="fas fa-tachometer-alt"></i>
-                                <span className="font-medium text-lg">User</span>
+                                <span className="font-medium text-lg">Staff</span>
                             </Col>
 
                         </Row>

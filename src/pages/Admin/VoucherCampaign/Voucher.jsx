@@ -110,7 +110,7 @@ const Voucher = () => {
             <h1 className="text-3xl font-bold mb-8">Some of Our Awesome Voucher</h1>
             <p className="text-gray-600 mb-8">This is the paragraph where you can write more details about your projects. Keep your user engaged by providing meaningful information.</p>
             <Button type="primary" icon={<PlusOutlined />} onClick={handleAddVoucher}>
-                Add New Project
+                Add New Voucher
             </Button>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {paginatedProjects.map((project) => (

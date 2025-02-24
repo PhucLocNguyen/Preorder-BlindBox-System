@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button, Row, Col, Card, DatePicker, message } from 'antd';
 
-const UserManagementCreate = ({ onSuccess }) => {
+const StaffManagementEdit = ({ onSuccess }) => {
     const onFinish = (values) => {
         onSuccess();
     };
@@ -10,7 +10,7 @@ const UserManagementCreate = ({ onSuccess }) => {
             className="p-5 bg-white rounded-lg shadow-md"
             style={{ maxWidth: '600px', margin: '0 auto' }}
         >
-            <h2 className="text-xl font-bold mb-4 text-center">Add New User</h2>
+            <h2 className="text-xl font-bold mb-4 text-center">Update User</h2>
             <Form layout="vertical" onFinish={onFinish}>
                 <Row gutter={16}>
                     <Col span={6}>
@@ -89,8 +89,8 @@ const UserManagementCreate = ({ onSuccess }) => {
                             <DatePicker style={{ width: '100%' }} />
                         </Form.Item>
                     </Col>
-
                 </Row>
+
                 <Row gutter={16}>
                     <Col span={24}>
                         <Form.Item label="Thumbnail" name="thumbnail">
@@ -119,4 +119,4 @@ const UserManagementCreate = ({ onSuccess }) => {
     );
 };
 
-export default UserManagementCreate;
+export default StaffManagementEdit;

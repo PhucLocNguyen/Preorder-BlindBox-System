@@ -15,8 +15,8 @@ const ProductCreatePage = lazy(() => import("../pages/Staff/ProductManagement/Pr
 const ProductEditPage = lazy(() => import("../pages/Staff/ProductManagement/ProductEdit"));
 const AdminView = lazy(() => import("../pages/Admin/AdminView"));
 const Dashboard = lazy(() => import("../pages/Admin/Dashboard"));
-const UserManagement = lazy(() => import("../pages/Admin/UserManagement/UserManagement"));
-const UserManagementDetails = lazy(() => import("../pages/Admin/UserManagement/UserManagementDetails"));
+const StaffManagement = lazy(() => import("../pages/Admin/StaffManagement/StaffManagement"));
+const StaffManagementDetails = lazy(() => import("../pages/Admin/StaffManagement/StaffManagementDetails"));
 const PreorderMilestone = lazy(() => import("../pages/Admin/PreorderMilestone"));
 const Pre_orderCampaign = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaign"));
 const Pre_orderCampaignDetails = lazy(() => import("../pages/Admin/Pre-orderCampaign/Pre_orderCampaignDetails"));
@@ -86,13 +86,13 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
-		path: '/product',
-		children: [
-			{ index: true, component: ProductList },
-			{ path: ':slug', component: ProductDetail },
-		],
-		layout: DefaultLayout,
-	},
+    path: '/product',
+    children: [
+      { index: true, component: ProductList },
+      { path: ':slug', component: ProductDetail },
+    ],
+    layout: DefaultLayout,
+  },
   {
     path: '/campaign/search',
     component: SearchResultPage,
@@ -122,9 +122,9 @@ const publicRoutes = [
     path: "/admin",
     component: AdminView,
     children: [
-      { index: true, component: UserManagement },
-      { path: "usermanagement", component: UserManagement },
-      { path: "usermanagerment-details/:id", component: UserManagementDetails },
+      { index: true, component: StaffManagement },
+      { path: "usermanagement", component: StaffManagement },
+      { path: "usermanagerment-details/:id", component: StaffManagementDetails },
       { path: "preordermilestone", component: PreorderMilestone },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
