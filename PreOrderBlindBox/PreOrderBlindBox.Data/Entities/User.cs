@@ -41,6 +41,10 @@ public partial class User
 
     public bool IsEmailConfirm { get; set; }
 
+    public string ForgotPasswordToken { get; set; }
+
+    public DateTime? ForgotPasswordTokenExpiry { get; set; }
+
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();

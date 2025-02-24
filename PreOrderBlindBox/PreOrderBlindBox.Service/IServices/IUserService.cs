@@ -15,7 +15,8 @@ namespace PreOrderBlindBox.Services.IServices
 		public Task<bool> ConfirmEmailByTokenAsync(string confirmToken);
 		public Task<ResponseCurrentAccountRole> GetCurrentAccountRole();
 		public Task<int> ChangePassword(RequestChangePassword changePassword);
-		public Task<int> ForgotPassword(RequestForgotPassword forgotPassword);
+		public Task<bool> ForgotPasswordForCustomer(RequestForgotPassword forgotPassword);
+		public Task<int> AddNewPasswordForCustomer(RequestAddNewPassword addNewPassword);
 		public Task<bool> RegisterStaffAccountAsync(RequestRegisterAccount registerStaffAccount);
 		public Task<List<ResponseUserInfomation>> GetAllStaff();
 		public Task<ResponseUserInfomation> GetUserById(int userId);
