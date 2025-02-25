@@ -3,10 +3,10 @@ import { Dropdown, Pagination } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Link } from "react-router";
 import { GetAllOrder } from "../../../api/Order/ApiOrder";
-import useFetchData from "../../../hooks/useFetchData";
 const OrdersView = () => {
     const [orders, setOrders] = useState([]);
     const [search, setSearch] = useState("");
+    const [orderBy, setOrderBy] = useState("increase");
     const [pageIndex, setPageIndex] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [totalPage, setTotalPage] = useState(0);
@@ -31,13 +31,13 @@ const OrdersView = () => {
     };
     const fetchOrders = useCallback(async () => {
         try {
-            const result = await GetAllOrder(pageIndex, pageSize, search);
+            const result = await GetAllOrder(pageIndex, pageSize, search, orderBy);
             setOrders([...result]);
         } catch (error) {
             console.error("Fetch Orders Error:", error);
             setOrders([]);
         }
-    }, [pageSize, pageIndex, search]);
+    }, [pageSize, pageIndex, search, orderBy]);
 
     useEffect(() => {
         fetchOrders();
@@ -78,14 +78,11 @@ const OrdersView = () => {
                         <i className="fas fa-search absolute top-3 right-3 text-gray-500"></i>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <button className="flex items-center text-gray-500">
-                            <i className="fas fa-filter mr-2"></i> Filters
-                        </button>
-                        <button className="flex items-center text-gray-500">
-                            <i className="fas fa-sort mr-2"></i> Sort
-                        </button>
-                        <button className="flex items-center text-gray-500">
-                            <i className="fas fa-ellipsis-h"></i>
+                        <button className="flex items-center text-gray-500" onClick={() => {
+                            orderBy === "increase" ? setOrderBy("decrease") : setOrderBy("increase");
+                        }}
+                        >
+                            <i className="fas fa-filter mr-2"></i> Sort
                         </button>
                     </div>
                 </div>
@@ -94,11 +91,12 @@ const OrdersView = () => {
                         <thead>
                             <tr className="text-gray-500">
                                 <th className="px-2 py-1">#</th>
-                                <th className="px-2 py-1">Date</th>
-                                <th className="px-2 py-1">Items</th>
-                                <th className="px-2 py-1">Price</th>
                                 <th className="px-2 py-1">Receiver</th>
                                 <th className="px-2 py-1">Address</th>
+                                <th className="px-2 py-1">Phone</th>
+                                <th className="px-2 py-1">Items</th>
+                                <th className="px-2 py-1">Price</th>
+                                <th className="px-2 py-1">Date</th>
                                 <th className="px-2 py-1">Status</th>
                                 <th className="px-2 py-1">Action</th>
                             </tr>
@@ -108,12 +106,16 @@ const OrdersView = () => {
                                 // .filter(order => order.orderId.toString().includes(search))
                                 .map((data, index) => (
                                     <tr key={index} className="border-t">
-                                        <td className="px-2 py-2">{data.orderId}</td>
-                                        <td className="px-2 py-2">{data.createdDate}</td>
-                                        <td className="px-2 py-2">{data.totalItems}</td>
-                                        <td className="px-2 py-2">{data.amount} VND</td>
+                                        <td className="px-2 py-2">{index + 1}</td>
                                         <td className="px-2 py-2">{data.receiver}</td>
                                         <td className="px-2 py-2">{data.receiverAddress}</td>
+                                        <td className="px-2 py-2">{data.receiverPhone}</td>
+                                        <td className="px-2 py-2">{
+                                            data.totalItems
+                                        }</td>
+                                        <td className="px-2 py-2">{data.amount} VND</td>
+                                        <td className="px-2 py-2">{data.createdDate}</td>
+
                                         <td
                                             className={`px-2 py-2 ${data.status === 'Completed' ? 'text-green-500' : 'text-red-500'
                                                 }`}
@@ -133,14 +135,6 @@ const OrdersView = () => {
                                                                 >
                                                                     <EditOutlined /> <span>Edit order</span>
                                                                 </Link>
-                                                            ),
-                                                        },
-                                                        {
-                                                            key: "1",
-                                                            label: (
-                                                                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                                    Menu Item Two
-                                                                </div>
                                                             ),
                                                         },
                                                         {
@@ -174,13 +168,14 @@ const OrdersView = () => {
 
 
                 <div className="flex justify-between items-center mt-4 p-4 bg-white shadow rounded">
-                    <Pagination total={totalPage}
-                        itemRender={itemRender}
+                    <Pagination
                         current={pageIndex}
+                        total={totalPage}
                         pageSize={pageSize}
-                        onChange={handlePageChange}
-                        showSizeChanger={false}
-                    />;
+                        onChange={handlePageChange
+                        }
+                        className="shadow-md p-2 rounded-md"
+                    />
                 </div>
             </div>
         </div>

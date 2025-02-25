@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 // import { Button } from '../../../components/ui/button';
-import { GetTheActiveBlindBox } from '../../../api/BlindBox/ApiBlindBox';
 import NoThumb from '../../../assets/noThumbnailImage.jpg';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router';
+import { GetTheActivePreorderCampaign } from '../../../api/Pre_orderCampaign/ApiPre_orderCampaign';
 
 
 const tabs = [
@@ -19,7 +19,7 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 	const [activeTab, setActiveTab] = useState(tabs[0].id);
 	const [data, setData] = useState();
 	const productBlind = async () => {
-		const res = await GetTheActiveBlindBox();
+		const res = await GetTheActivePreorderCampaign();
 		setData(res);
 	};
 
@@ -72,7 +72,7 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 							<div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
 								{blindList?.map((product) => (
 									<Link
-										to={`/product/${product.slug}`}
+										to={`/preordercampaign/${product.slug}`}
 										key={product.slug}
 										className='relative overflow-hidden bg-white rounded-lg shadow-lg group'
 									>
