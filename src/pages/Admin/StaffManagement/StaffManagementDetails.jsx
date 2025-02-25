@@ -1,10 +1,10 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-const UserManagementDetails = () => {
+const StaffManagementDetails = () => {
     const { id } = useParams();
     return (
         <div>{id}</div>
     )
 }
 
-export default UserManagementDetails
+export default StaffManagementDetails
