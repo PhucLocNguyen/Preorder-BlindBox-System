@@ -1,165 +1,119 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Select, DatePicker, Row, Col, Slider } from "antd";
-
-const { Option } = Select;
+import { Button, Form, Input, DatePicker, Row, Col, Slider, InputNumber, Card } from "antd";
+import { CreateVoucher } from "../../../api/VoucherCampaign/ApiVoucherCampaign";
+import { toast } from 'react-toastify';
+import { Link, useNavigate } from 'react-router';
+import {
+    ArrowLeftOutlined,
+} from "@ant-design/icons";
+const { RangePicker } = DatePicker;
 
 const VoucherCreate = () => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
+    const navigate = useNavigate();
 
     const handleSubmit = async (values) => {
-        const formData = {
-            Name: values.name,
-            CreateDate: values.createDate,
-            StartDate: values.startDate,
-            EndDate: values.endDate,
-            Quantity: values.quantity,
-            TakenQuantity: values.takenQuantity,
-            MaximumUserCanGet: values.maximumUserCanGet,
-            PercentDiscount: values.percentDiscount,
-            MaximumMoneyDiscount: values.maximumMoneyDiscount,
-            MaximumDiscount: values.maximumDiscount,
-            Status: values.status
+        setLoading(true); // Bật loading khi bắt đầu gửi request
+
+        const payload = {
+            name: values.name,
+            startDate: values.dateRange[0].toISOString(),
+            endDate: values.dateRange[1].toISOString(),
+            quantity: values.quantity,
+            maximumUserCanGet: values.maximumUserCanGet,
+            percentDiscount: values.percentDiscount,
+            maximumMoneyDiscount: values.maximumMoneyDiscount,
+            setNumberExpirationDate: values.setNumberExpirationDate
         };
 
-        // Example: Replace this with your API call
-        console.log(formData);
+        try {
+            const config = { headers: { 'Content-Type': 'application/json' } };
 
-        // Reset form after submission
-        form.resetFields();
+            const result = await CreateVoucher(payload, config);
+
+            if (result && result.status === 200) { // Kiểm tra response thành công
+                navigate('/admin/voucher');
+            }
+
+        } catch (error) {
+            toast.error('Error creating voucher: ' + (error.response?.data?.message || error.message));
+        } finally {
+            setLoading(false); // Tắt loading dù thành công hay thất bại
+        }
     };
 
+
     return (
-        <div className="w-full min-h-screen mx-auto mt-5 p-5 bg-white shadow-lg rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Create New Voucher</h2>
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-                {/* Name */}
-                <Row gutter={16}>
-                    <Col span={16}>
-                        <Form.Item
-                            label="Name"
-                            name="name"
-                            rules={[{ required: true, message: "Please enter the name!" }]}
-                        >
-                            <Input placeholder="Enter voucher name" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        {/* Status */}
-                        <Form.Item
-                            label="Status"
-                            name="status"
-                            rules={[{ required: true, message: "Please select the status!" }]}
-                        >
-                            <Select placeholder="Select status">
-                                <Option value="Active">Active</Option>
-                                <Option value="Inactive">Inactive</Option>
-                                <Option value="Expired">Expired</Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                {/* Create Date */}
-                <Row gutter={16}>
-                    <Col span={8}>
-                        <Form.Item
-                            label="Create Date"
-                            name="createDate"
-                            rules={[{ required: true, message: "Please select the create date!" }]}
-                        >
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
-                    {/* Start Date */}
-                    <Col span={8}>
-                        <Form.Item
-                            label="Start Date"
-                            name="startDate"
-                            rules={[{ required: true, message: "Please select the start date!" }]}
-                        >
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
-                    {/* End Date */}
-                    <Col span={8}>
-                        <Form.Item
-                            label="End Date"
-                            name="endDate"
-                            rules={[{ required: true, message: "Please select the end date!" }]}
-                        >
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                {/* Quantity */}
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Quantity"
-                            name="quantity"
-                            rules={[{ required: true, message: "Please enter the quantity!" }]}
-                        >
-                            <Input type="number" placeholder="Enter quantity" />
-                        </Form.Item>
-                    </Col>
-                    {/* Taken Quantity */}
-                    <Col span={12}>
-                        <Form.Item
-                            label="Taken Quantity"
-                            name="takenQuantity"
-                            rules={[{ required: true, message: "Please enter the taken quantity!" }]}
-                        >
-                            <Input type="number" placeholder="Enter taken quantity" />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                {/* Maximum User Can Get */}
-                <Form.Item
-                    label="Maximum User Can Get"
-                    name="maximumUserCanGet"
-                    rules={[{ required: true, message: "Please enter the maximum user can get!" }]}
-                >
-                    <Slider min={0} max={10} />
-                </Form.Item>
-
-                {/* Percent Discount */}
-                <Form.Item
-                    label="Percent Discount"
-                    name="percentDiscount"
-                >
-                    <Slider min={0} max={100} />
-                </Form.Item>
-
-                {/* Maximum Money Discount */}
-                <Form.Item
-                    label="Maximum Money Discount"
-                    name="maximumMoneyDiscount"
-                >
-                    <Input type="number" step="0.01" placeholder="Enter maximum money discount" />
-                </Form.Item>
-
-                {/* Maximum Discount */}
-                <Form.Item
-                    label="Maximum Discount"
-                    name="maximumDiscount"
-                >
-                    <Input type="number" step="0.01" placeholder="Enter maximum discount" />
-                </Form.Item>
-
-
-
-                {/* Submit Button */}
-                <Form.Item>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={loading}
-                        className="w-full"
-                    >
-                        Create Voucher
+        <div className="w-full min-h-screen flex justify-center items-center bg-gray-100 p-10">
+            <Card className="w-full max-w-7xl p-10 shadow-2xl rounded-2xl">
+                <div className="flex items-center mb-6">
+                    <Link to="/admin/voucher" className="h-full flex">
+                        <ArrowLeftOutlined className="text-2xl mr-6" />
+                    </Link>
+                    <h1 className="text-3xl font-bold">Create new voucher</h1>
+                </div>
+                <Form form={form} layout="vertical" onFinish={handleSubmit} className="space-y-6">
+                    <Button type="primary" htmlType="submit" size="large" className="rounded-xl px-8 py-3 text-xl h-14">
+                        Create
                     </Button>
-                </Form.Item>
-            </Form>
+                    <Row gutter={[32, 20]}>
+                        <Col span={12}>
+                            <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please enter the name!" }]}>
+                                <Input placeholder="Enter voucher name" className="rounded-xl h-12 text-lg" />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item label="Maximum Money Discount" name="maximumMoneyDiscount"
+                                rules={[{ required: true, message: "Please enter maximum money discount!" }]}
+                            >
+                                <InputNumber
+                                    style={{ width: "100%", height: "48px" }}
+                                    min={0}
+                                    placeholder="Enter money maximum discount"
+                                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}
+                                    parser={(value) => value.replace(/VND\s?|(|,*)/g, "")}
+                                    className="rounded-xl text-lg"
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={[32, 20]}>
+                        <Col span={12}>
+                            <Form.Item label="Quantity" name="quantity" rules={[{ required: true, message: "Please enter the quantity!" }]}>
+                                <Input type="number" placeholder="Enter quantity" className="rounded-xl h-12 text-lg" />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item label="Validity Duration" name="setNumberExpirationDate" rules={[{ required: true, message: "Please enter the quantity!" }]}>
+                                <Input type="number" placeholder="Enter Validity Duration" className="rounded-xl h-12 text-lg" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={[32, 20]}>
+                        <Col span={24}>
+                            <Form.Item label="Start & End Date" name="dateRange" rules={[{ required: true, message: "Please select date range!" }]}>
+                                <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" className="w-full rounded-xl h-12 text-lg" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={[32, 20]}>
+                        <Col span={12}>
+                            <Form.Item label="Maximum User Can Get" name="maximumUserCanGet">
+                                <Slider min={0} max={10} marks={{ 0: '0', 5: '5', 10: '10' }} tooltipVisible={{ always: true }} className="h-8" />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item label="Percent Discount" name="percentDiscount">
+                                <Slider min={0} max={100} marks={{ 0: '0%', 50: '50%', 100: '100%' }} tooltipVisible={{ always: true }} className="h-8" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+            </Card>
         </div>
     );
 };
