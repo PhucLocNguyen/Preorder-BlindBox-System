@@ -66,7 +66,7 @@ namespace PreOrderBlindBox.API.Controllers
 				{
 					var result = await _userService.LoginByEmailAndPasswordAsync(loginModel.Email, loginModel.Password);
 
-					_ = int.TryParse(_configuration["JwtSettings:TokenValidityInMinutes"], out int tokenValidityInMinutes);
+					/*_ = int.TryParse(_configuration["JwtSettings:TokenValidityInMinutes"], out int tokenValidityInMinutes);
 
 					var cookieOptions = new CookieOptions
 					{
@@ -77,7 +77,7 @@ namespace PreOrderBlindBox.API.Controllers
 						Path = "/"
 					};
 
-					Response.Cookies.Append("accessToken", result.AccessToken, cookieOptions);
+					Response.Cookies.Append("accessToken", result.AccessToken, cookieOptions);*/
 
 					return Ok(result);
 				}
