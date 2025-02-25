@@ -1,7 +1,7 @@
 import api from '../instance';
 import { axiosConfigHeader } from '../axiosConfigHeader';
-
-const GetTheActiveVoucherCampaign = async () => {
+import { toast } from "react-toastify";
+const GetTheActiveVoucherCampaignBaseUser = async () => {
    try {
       const respone = await api.get('/VoucherCampaign/GetAllVoucherCampaignBaseUser', axiosConfigHeader);
       return respone.data;
@@ -21,22 +21,50 @@ const CollectActiveVoucherCampaign = async (voucherCampaignId) => {
 const CreateVoucher = async (payload) => {
    try {
       const response = await api.post('/VoucherCampaign', payload, axiosConfigHeader);
-      toast.success("Create successful!");
       return response.data;
    } catch (error) {
       console.log('>>> Api create voucher Error: ', error);
-      toast.error("Create failed!");
    }
 };
 
-const UpdateVoucher = async (id, payload) => {
+const UpdateVoucher = async (voucherCampaignId, payload) => {
    try {
-      const response = await api.put(`/VoucherCampaign/${id}`, payload, axiosConfigHeader);
-      toast.success("Update successful!");
+      const response = await api.put(`/VoucherCampaign/${voucherCampaignId}`, payload, axiosConfigHeader);
       return response.data;
    } catch (error) {
-      console.log('>>> Api update  preorder campaign Error: ', error);
-      toast.error("Update failed!");
+      console.log('>>> Api update  voucher Error: ', error);
    }
 };
-export { GetTheActiveVoucherCampaign, CollectActiveVoucherCampaign, CreateVoucher, UpdateVoucher }
+
+const GetTheActiveVoucherCampaign = async () => {
+   try {
+      const respone = await api.get('/VoucherCampaign/GetAllVoucherCampaign', axiosConfigHeader);
+      return respone.data;
+   } catch (error) {
+      console.log('>>> Api Get Active voucher campaign Error: ', error)
+   }
+}
+
+const GetTheActiveVoucherCampaignByID = async (voucherCampaignId) => {
+   try {
+      const respone = await api.get(`/VoucherCampaign/${voucherCampaignId}`, axiosConfigHeader);
+      return respone.data;
+   } catch (error) {
+      console.log('>>> Api Get Active voucher campaign Error: ', error)
+   }
+}
+
+const DeleteVoucher = async (voucherCampaignId) => {
+   try {
+      const respone = await api.delete(`/VoucherCampaign/${voucherCampaignId}`, axiosConfigHeader);
+      return respone.data;
+   } catch (error) {
+      console.log('>>> Api Delete voucher campaign Error: ', error)
+   }
+}
+
+export {
+   GetTheActiveVoucherCampaignBaseUser, CollectActiveVoucherCampaign, CreateVoucher,
+   UpdateVoucher, GetTheActiveVoucherCampaign, GetTheActiveVoucherCampaignByID,
+   DeleteVoucher
+}

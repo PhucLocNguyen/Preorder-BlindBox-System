@@ -3,6 +3,7 @@ import { GetAccessToken } from "./User/ApiAuthentication";
 
 const api = axios.create({
    baseURL: 'https://localhost:7037/api'
+
 })
 api.interceptors.request.use(
    (config) => {
