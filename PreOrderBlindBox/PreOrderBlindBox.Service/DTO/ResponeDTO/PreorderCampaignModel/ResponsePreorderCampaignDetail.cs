@@ -19,6 +19,7 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel
         public string Status { get; set; }
         public string Type { get; set; }
         public bool IsDeleted { get; set; }
+        public int TotalQuantity { get; set; }
         public ResponseBlindBox BlindBox { get; set; }
     }
 }

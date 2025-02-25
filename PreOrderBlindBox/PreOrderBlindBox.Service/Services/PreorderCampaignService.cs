@@ -241,6 +241,14 @@ namespace PreOrderBlindBox.Services.Services
                 };
             }
 
+            var milestoneList = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID(preorderCampaign.PreorderCampaignId);
+            var quantityCount = 0;
+
+            foreach (var milestone in milestoneList)
+            {
+                quantityCount += milestone.Quantity;
+            }
+
             // Ánh xạ sang ResponsePreorderCampaignDetail
             var response = new ResponsePreorderCampaignDetail
             {
@@ -252,6 +260,7 @@ namespace PreOrderBlindBox.Services.Services
                 Status = preorderCampaign.Status,
                 Type = preorderCampaign.Type,
                 IsDeleted = preorderCampaign.IsDeleted,
+                TotalQuantity = quantityCount,
                 BlindBox = preorderCampaign.BlindBox != null ? new ResponseBlindBox
                 {
                     BlindBoxId = preorderCampaign.BlindBox.BlindBoxId,
