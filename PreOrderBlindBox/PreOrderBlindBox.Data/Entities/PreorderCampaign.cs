@@ -21,6 +21,8 @@ public partial class PreorderCampaign
 
     public string Type { get; set; }
 
+    public int? PlacedOrderCount { get; set; }
+
     public DateTime? UpdatedDate { get; set; }
 
     public DateTime CreatedDate { get; set; }

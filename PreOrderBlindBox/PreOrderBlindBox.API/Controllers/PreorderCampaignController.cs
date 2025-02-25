@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
+using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderCampaignModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Services;
@@ -22,7 +25,48 @@ namespace PreOrderBlindBox.API.Controllers
         public async Task<IActionResult> GetAllPreorderCampaign([FromQuery] PaginationParameter pagination)
         {
             var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination);
+            var metadata = new
+            {
+                result.TotalCount,
+                result.PageSize,
+                result.CurrentPage,
+                result.TotalPages,
+                result.HasNext,
+                result.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(result);
+        }
+
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearcgPreorderCampaign([FromQuery] PreorderCampaignSearchRequest searchRequest, [FromQuery] PaginationParameter pagination)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.SearchPreorderCampaignAsync(searchRequest, pagination);
+                if (preorderCampaign == null)
+                {
+                    return NotFound(new { message = "Preorder campaign not found." });
+                }
+                var metadata = new
+                {
+                    preorderCampaign.TotalCount,
+                    preorderCampaign.PageSize,
+                    preorderCampaign.CurrentPage,
+                    preorderCampaign.TotalPages,
+                    preorderCampaign.HasNext,
+                    preorderCampaign.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(preorderCampaign);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
         }
 
         [HttpGet("{id}")]
@@ -72,6 +116,7 @@ namespace PreOrderBlindBox.API.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePreorderCampaign(int id)
         {
@@ -137,5 +182,32 @@ namespace PreOrderBlindBox.API.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
+        [HttpPost("CreatePreorderCampaignWithMilestone")]
+        public async Task<IActionResult> CreatePreoderCampaignWithMilestone([FromBody] CreatePreorderCampaignRequest requestCampaign)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.AddCampaignWithMilestonesAsync(requestCampaign);
+                if (preorderCampaign)
+                {
+                    return Ok(preorderCampaign);
+                }
+                return BadRequest();
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
     }
 }

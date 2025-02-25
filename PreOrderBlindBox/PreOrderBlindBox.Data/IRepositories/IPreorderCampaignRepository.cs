@@ -16,5 +16,9 @@ namespace PreOrderBlindBox.Data.IRepositories
         Task<List<PreorderCampaign>> GetAllPreorderCampaign();
         Task UpdateRangeAsync(IEnumerable<PreorderCampaign> preorderCampaigns);
         Task<List<PreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter paginationParameter);
+        Task<List<PreorderCampaign>> SearchPreorderCampaign(
+            string blindBoxName,
+            string sortOrder,
+            PaginationParameter paginationParameter);
     }
 }
