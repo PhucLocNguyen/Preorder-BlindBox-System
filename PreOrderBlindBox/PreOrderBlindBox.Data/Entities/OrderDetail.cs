@@ -15,10 +15,6 @@ public partial class OrderDetail
 
     public decimal UnitPriceAtTime { get; set; }
 
-    public string Status { get; set; }
-
-    public string RejectReason { get; set; }
-
     public int Quantity { get; set; }
 
     public decimal? UnitEndCampaignPrice { get; set; }
