@@ -44,9 +44,8 @@ const Pre_orderCampaign = () => {
     }, [data]);
 
     const handleAddPre_orderCampaign = () => {
-
-        setIsCreateModalVisible(true);
-
+        navigate("create");
+        // setIsCreateModalVisible(true);
     };
 
     const handleEditPre_orderCampaign = () => {

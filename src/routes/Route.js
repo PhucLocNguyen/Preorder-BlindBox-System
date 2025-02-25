@@ -108,11 +108,11 @@ const publicRoutes = [
     children: [
       { index: true, component: UserManagement },
       { path: "usermanagement", component: UserManagement },
-      { path: "usermanagerment-details/:id", component: UserManagementDetails },
+      { path: "usermanagement/details/:id", component: UserManagementDetails },
       { path: "preordermilestone", component: PreorderMilestone },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
-      { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
-      { path: "preordercampaign/create", component: PreorderCampaignCreate },
+      { path: "pre-ordercampaign/details/:slug", component: Pre_orderCampaignDetails },
+      { path: "pre-ordercampaign/create", component: PreorderCampaignCreate },
 
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
