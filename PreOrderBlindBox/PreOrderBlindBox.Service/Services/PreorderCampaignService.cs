@@ -241,6 +241,14 @@ namespace PreOrderBlindBox.Services.Services
                 };
             }
 
+            var milestoneList = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID(preorderCampaign.PreorderCampaignId);
+            var quantityCount = 0;
+
+            foreach (var milestone in milestoneList)
+            {
+                quantityCount += milestone.Quantity;
+            }
+
             // Ánh xạ sang ResponsePreorderCampaignDetail
             var response = new ResponsePreorderCampaignDetail
             {
@@ -252,6 +260,7 @@ namespace PreOrderBlindBox.Services.Services
                 Status = preorderCampaign.Status,
                 Type = preorderCampaign.Type,
                 IsDeleted = preorderCampaign.IsDeleted,
+                TotalQuantity = quantityCount,
                 BlindBox = preorderCampaign.BlindBox != null ? new ResponseBlindBox
                 {
                     BlindBoxId = preorderCampaign.BlindBox.BlindBoxId,
@@ -409,18 +418,13 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-        public async Task<int> CancelPreorderCampaign(int id, CancelPreorderCampaignRequest request)
+        public async Task<int> CancelPreorderCampaign(int id)
         {
             var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
 
             if (preorderCampaign == null)
             {
                 throw new ArgumentException("Pre-Order Campaign not found");
-            }
-
-            if (request == null)
-            {
-                throw new ArgumentNullException("Invalid data");
             }
 
             if (preorderCampaign.IsDeleted || preorderCampaign.Status == PreorderCampaignStatus.Completed.ToString())
@@ -433,7 +437,7 @@ namespace PreOrderBlindBox.Services.Services
                 throw new ArgumentException("Cannot cancel TimedPricing campaign");
             }
 
-            preorderCampaign.Status = request.Status.ToString();
+            preorderCampaign.Status = PreorderCampaignStatus.Canceled.ToString();
 
             await _preorderCampaignRepo.UpdateAsync(preorderCampaign);
 

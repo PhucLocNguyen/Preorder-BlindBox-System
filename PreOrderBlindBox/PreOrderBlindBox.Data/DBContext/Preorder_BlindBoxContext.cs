@@ -19,37 +19,41 @@ public partial class Preorder_BlindBoxContext : DbContext
 	{
 	}
 
-	public virtual DbSet<Banner> Banners { get; set; }
+    public virtual DbSet<Banner> Banners { get; set; }
 
-	public virtual DbSet<BlindBox> BlindBoxes { get; set; }
+    public virtual DbSet<BlindBox> BlindBoxes { get; set; }
 
-	public virtual DbSet<Cart> Carts { get; set; }
+    public virtual DbSet<Cart> Carts { get; set; }
 
-	public virtual DbSet<Image> Images { get; set; }
+    public virtual DbSet<Image> Images { get; set; }
 
-	public virtual DbSet<Notification> Notifications { get; set; }
+    public virtual DbSet<Notification> Notifications { get; set; }
 
-	public virtual DbSet<Order> Orders { get; set; }
+    public virtual DbSet<Order> Orders { get; set; }
 
-	public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
-	public virtual DbSet<PreorderCampaign> PreorderCampaigns { get; set; }
+    public virtual DbSet<PreorderCampaign> PreorderCampaigns { get; set; }
 
-	public virtual DbSet<PreorderMilestone> PreorderMilestones { get; set; }
+    public virtual DbSet<PreorderMilestone> PreorderMilestones { get; set; }
 
-	public virtual DbSet<Role> Roles { get; set; }
+    public virtual DbSet<Role> Roles { get; set; }
 
-	public virtual DbSet<Transaction> Transactions { get; set; }
+    public virtual DbSet<TempCampaignBulkOrder> TempCampaignBulkOrders { get; set; }
 
-	public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<TempCampaignBulkOrderDetail> TempCampaignBulkOrderDetails { get; set; }
 
-	public virtual DbSet<UserVoucher> UserVouchers { get; set; }
+    public virtual DbSet<Transaction> Transactions { get; set; }
 
-	public virtual DbSet<VoucherCampaign> VoucherCampaigns { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
-	public virtual DbSet<Wallet> Wallets { get; set; }
+    public virtual DbSet<UserVoucher> UserVouchers { get; set; }
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public virtual DbSet<VoucherCampaign> VoucherCampaigns { get; set; }
+
+    public virtual DbSet<Wallet> Wallets { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
 
 		if (!optionsBuilder.IsConfigured)
@@ -63,322 +67,379 @@ public partial class Preorder_BlindBoxContext : DbContext
 
 	}
 
-	/*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=NGUYENDUCHUNG\\SQLEXPRESS;Initial Catalog=Preorder_BlindBox;Persist Security Info=True;User ID=sa;Password=12345;Encrypt=True");*/
 
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		modelBuilder.Entity<Banner>(entity =>
-		{
-			entity.HasKey(e => e.BannerId).HasName("PK__Banners__32E86A31781E62F5");
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Banner>(entity =>
+        {
+            entity.HasKey(e => e.BannerId).HasName("PK__Banners__32E86A31E845B5BC");
 
-			entity.Property(e => e.BannerId).HasColumnName("BannerID");
-			entity.Property(e => e.CallToActionUrl)
-				.HasMaxLength(500)
-				.HasColumnName("CallToActionURL");
-			entity.Property(e => e.CreatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.ImageUrl)
-				.IsRequired()
-				.HasMaxLength(500);
-			entity.Property(e => e.Priority).HasDefaultValue(0);
-			entity.Property(e => e.Title).HasMaxLength(255);
-			entity.Property(e => e.UpdatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-		});
+            entity.Property(e => e.BannerId).HasColumnName("BannerID");
+            entity.Property(e => e.CallToActionUrl)
+                .HasMaxLength(500)
+                .HasColumnName("CallToActionURL");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ImageUrl)
+                .IsRequired()
+                .HasMaxLength(500);
+            entity.Property(e => e.Priority).HasDefaultValue(0);
+            entity.Property(e => e.Title).HasMaxLength(255);
+            entity.Property(e => e.UpdatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+        });
 
-		modelBuilder.Entity<BlindBox>(entity =>
-		{
-			entity.HasKey(e => e.BlindBoxId).HasName("PK__BlindBox__4FDFECB2876689A4");
+        modelBuilder.Entity<BlindBox>(entity =>
+        {
+            entity.HasKey(e => e.BlindBoxId).HasName("PK__BlindBox__4FDFECB219CEBA48");
 
-			entity.Property(e => e.BlindBoxId).HasColumnName("BlindBoxID");
-			entity.Property(e => e.CreatedAt)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.Name)
-				.IsRequired()
-				.HasMaxLength(200);
-			entity.Property(e => e.Size).HasMaxLength(50);
-		});
+            entity.Property(e => e.BlindBoxId).HasColumnName("BlindBoxID");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ListedPrice)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("listedPrice");
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.Size).HasMaxLength(50);
+        });
 
-		modelBuilder.Entity<Cart>(entity =>
-		{
-			entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD7971FE2DA95");
+        modelBuilder.Entity<Cart>(entity =>
+        {
+            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD79707FF0F1C");
 
-			entity.Property(e => e.CartId).HasColumnName("CartID");
-			entity.Property(e => e.CreateDate).HasColumnType("datetime");
-			entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
-			entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.CartId).HasColumnName("CartID");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
 
-			entity.HasOne(d => d.PreorderCampaign).WithMany(p => p.Carts)
-				.HasForeignKey(d => d.PreorderCampaignId)
-				.HasConstraintName("FK__Carts__PreorderC__6C190EBB");
+            entity.HasOne(d => d.PreorderCampaign).WithMany(p => p.Carts)
+                .HasForeignKey(d => d.PreorderCampaignId)
+                .HasConstraintName("FK__Carts__PreorderC__59063A47");
 
-			entity.HasOne(d => d.User).WithMany(p => p.Carts)
-				.HasForeignKey(d => d.UserId)
-				.HasConstraintName("FK__Carts__UserID__6B24EA82");
-		});
+            entity.HasOne(d => d.User).WithMany(p => p.Carts)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__Carts__UserID__5812160E");
+        });
 
-		modelBuilder.Entity<Image>(entity =>
-		{
-			entity.HasKey(e => e.ImageId).HasName("PK__Images__7516F4EC2F9FF85E");
+        modelBuilder.Entity<Image>(entity =>
+        {
+            entity.HasKey(e => e.ImageId).HasName("PK__Images__7516F4EC4327C338");
 
-			entity.Property(e => e.ImageId).HasColumnName("ImageID");
-			entity.Property(e => e.BlindBoxId).HasColumnName("BlindBoxID");
-			entity.Property(e => e.CreatedAt)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.Url).IsRequired();
+            entity.Property(e => e.ImageId).HasColumnName("ImageID");
+            entity.Property(e => e.BlindBoxId).HasColumnName("BlindBoxID");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Url).IsRequired();
 
-			entity.HasOne(d => d.BlindBox).WithMany(p => p.Images)
-				.HasForeignKey(d => d.BlindBoxId)
-				.HasConstraintName("FK__Images__BlindBox__5AEE82B9");
-		});
+            entity.HasOne(d => d.BlindBox).WithMany(p => p.Images)
+                .HasForeignKey(d => d.BlindBoxId)
+                .HasConstraintName("FK__Images__BlindBox__47DBAE45");
+        });
 
-		modelBuilder.Entity<Notification>(entity =>
-		{
-			entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32EB9BED81");
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32B0ABF542");
 
-			entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
-			entity.Property(e => e.CreatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.ReceiverId).HasColumnName("ReceiverID");
-			entity.Property(e => e.Title)
-				.IsRequired()
-				.HasMaxLength(200);
+            entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ReceiverId).HasColumnName("ReceiverID");
+            entity.Property(e => e.Title)
+                .IsRequired()
+                .HasMaxLength(200);
 
-			entity.HasOne(d => d.Receiver).WithMany(p => p.Notifications)
-				.HasForeignKey(d => d.ReceiverId)
-				.HasConstraintName("FK__Notificat__Recei__440B1D61");
-		});
+            entity.HasOne(d => d.Receiver).WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.ReceiverId)
+                .HasConstraintName("FK__Notificat__Recei__30F848ED");
+        });
 
-		modelBuilder.Entity<Order>(entity =>
-		{
-			entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF91CFE7E2");
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAFE2865037");
 
-			entity.Property(e => e.OrderId).HasColumnName("OrderID");
-			entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
-			entity.Property(e => e.CreatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-			entity.Property(e => e.ReceiverAddress)
-				.IsRequired()
-				.HasMaxLength(300);
-			entity.Property(e => e.ReceiverName)
-				.IsRequired()
-				.HasMaxLength(200);
-			entity.Property(e => e.ReceiverPhone)
-				.IsRequired()
-				.HasMaxLength(20);
-			entity.Property(e => e.Status)
-				.IsRequired()
-				.HasMaxLength(50);
-			entity.Property(e => e.UpdatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.UserVoucherId).HasColumnName("UserVoucherID");
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.ReceiverAddress)
+                .IsRequired()
+                .HasMaxLength(300);
+            entity.Property(e => e.ReceiverName)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.ReceiverPhone)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.UpdatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UserVoucherId).HasColumnName("UserVoucherID");
 
-			entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
-				.HasForeignKey(d => d.CustomerId)
-				.HasConstraintName("FK__Orders__Customer__6FE99F9F");
+            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK__Orders__Customer__5CD6CB2B");
 
-			entity.HasOne(d => d.UserVoucher).WithMany(p => p.Orders)
-				.HasForeignKey(d => d.UserVoucherId)
-				.HasConstraintName("FK__Orders__UserVouc__70DDC3D8");
-		});
+            entity.HasOne(d => d.UserVoucher).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.UserVoucherId)
+                .HasConstraintName("FK__Orders__UserVouc__5DCAEF64");
+        });
 
-		modelBuilder.Entity<OrderDetail>(entity =>
-		{
-			entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C66332982");
+        modelBuilder.Entity<OrderDetail>(entity =>
+        {
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C409EE85E");
 
-			entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
-			entity.Property(e => e.OrderId).HasColumnName("OrderID");
-			entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
-			entity.Property(e => e.Status).HasMaxLength(30);
-			entity.Property(e => e.UnitEndCampaignPrice).HasColumnType("decimal(18, 2)");
-			entity.Property(e => e.UnitPriceAtTime).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
+            entity.Property(e => e.UnitEndCampaignPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.UnitPriceAtTime).HasColumnType("decimal(18, 2)");
 
-			entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
-				.HasForeignKey(d => d.OrderId)
-				.HasConstraintName("FK__OrderDeta__Order__75A278F5");
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("FK__OrderDeta__Order__628FA481");
 
-			entity.HasOne(d => d.PreorderCampaign).WithMany(p => p.OrderDetails)
-				.HasForeignKey(d => d.PreorderCampaignId)
-				.HasConstraintName("FK__OrderDeta__Preor__76969D2E");
-		});
+            entity.HasOne(d => d.PreorderCampaign).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.PreorderCampaignId)
+                .HasConstraintName("FK__OrderDeta__Preor__6383C8BA");
+        });
 
-		modelBuilder.Entity<PreorderCampaign>(entity =>
-		{
-			entity.HasKey(e => e.PreorderCampaignId).HasName("PK__Preorder__4FE60AAEA09ED96A");
+        modelBuilder.Entity<PreorderCampaign>(entity =>
+        {
+            entity.HasKey(e => e.PreorderCampaignId).HasName("PK__Preorder__4FE60AAE41A71088");
 
-			entity.HasIndex(e => e.Slug, "UQ__Preorder__BC7B5FB6B1AAC99F").IsUnique();
+            entity.HasIndex(e => e.Slug, "UQ__Preorder__BC7B5FB6467F9ED7").IsUnique();
 
-			entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
-			entity.Property(e => e.BlindBoxId).HasColumnName("BlindBoxID");
-			entity.Property(e => e.CreatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.EndDate).HasColumnType("datetime");
-			entity.Property(e => e.PlacedOrderCount).HasDefaultValue(0);
-			entity.Property(e => e.Slug)
-				.IsRequired()
-				.HasMaxLength(255);
-			entity.Property(e => e.StartDate).HasColumnType("datetime");
-			entity.Property(e => e.Status)
-				.IsRequired()
-				.HasMaxLength(50);
-			entity.Property(e => e.Type).HasMaxLength(50);
-			entity.Property(e => e.UpdatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
+            entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
+            entity.Property(e => e.BlindBoxId).HasColumnName("BlindBoxID");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EndDate).HasColumnType("datetime");
+            entity.Property(e => e.PlacedOrderCount).HasDefaultValue(0);
+            entity.Property(e => e.Slug)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.StartDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.Type).HasMaxLength(50);
+            entity.Property(e => e.UpdatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
 
-			entity.HasOne(d => d.BlindBox).WithMany(p => p.PreorderCampaigns)
-				.HasForeignKey(d => d.BlindBoxId)
-				.HasConstraintName("FK__PreorderC__Blind__60A75C0F");
-		});
+            entity.HasOne(d => d.BlindBox).WithMany(p => p.PreorderCampaigns)
+                .HasForeignKey(d => d.BlindBoxId)
+                .HasConstraintName("FK__PreorderC__Blind__4D94879B");
+        });
 
-		modelBuilder.Entity<PreorderMilestone>(entity =>
-		{
-			entity.HasKey(e => e.PreorderMilestoneId).HasName("PK__Preorder__EF1156A92DC3C5D5");
+        modelBuilder.Entity<PreorderMilestone>(entity =>
+        {
+            entity.HasKey(e => e.PreorderMilestoneId).HasName("PK__Preorder__EF1156A907676F79");
 
-			entity.Property(e => e.PreorderMilestoneId).HasColumnName("PreorderMilestoneID");
-			entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
-			entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.PreorderMilestoneId).HasColumnName("PreorderMilestoneID");
+            entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
-			entity.HasOne(d => d.PreorderCampaign).WithMany(p => p.PreorderMilestones)
-				.HasForeignKey(d => d.PreorderCampaignId)
-				.HasConstraintName("FK__PreorderM__Preor__6754599E");
-		});
+            entity.HasOne(d => d.PreorderCampaign).WithMany(p => p.PreorderMilestones)
+                .HasForeignKey(d => d.PreorderCampaignId)
+                .HasConstraintName("FK__PreorderM__Preor__5441852A");
+        });
 
-		modelBuilder.Entity<Role>(entity =>
-		{
-			entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3ABBC7EE28");
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE3AF954AF6B");
 
-			entity.Property(e => e.RoleId).HasColumnName("RoleID");
-			entity.Property(e => e.RoleName)
-				.IsRequired()
-				.HasMaxLength(20);
-		});
+            entity.Property(e => e.RoleId).HasColumnName("RoleID");
+            entity.Property(e => e.RoleName)
+                .IsRequired()
+                .HasMaxLength(20);
+        });
 
-		modelBuilder.Entity<Transaction>(entity =>
-		{
-			entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A4BE4B2387F");
+        modelBuilder.Entity<TempCampaignBulkOrder>(entity =>
+        {
+            entity.HasKey(e => e.TempCampaignBulkOrderId).HasName("PK__TempCamp__6DEB814EB7E33D11");
 
-			entity.Property(e => e.TransactionId).HasColumnName("TransactionID");
-			entity.Property(e => e.BalanceAtTime).HasColumnType("decimal(18, 2)");
-			entity.Property(e => e.CreatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.Money).HasColumnType("decimal(18, 2)");
-			entity.Property(e => e.OrderId).HasColumnName("OrderID");
-			entity.Property(e => e.Status).HasMaxLength(50);
-			entity.Property(e => e.Type).HasMaxLength(50);
-			entity.Property(e => e.WalletId).HasColumnName("WalletID");
+            entity.Property(e => e.TempCampaignBulkOrderId).HasColumnName("TempCampaignBulkOrderID");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            entity.Property(e => e.ReceiverAddress)
+                .IsRequired()
+                .HasMaxLength(300);
+            entity.Property(e => e.ReceiverName)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.ReceiverPhone)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.UpdatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UserVoucherId).HasColumnName("UserVoucherID");
 
-			entity.HasOne(d => d.Wallet).WithMany(p => p.Transactions)
-				.HasForeignKey(d => d.WalletId)
-				.HasConstraintName("FK__Transacti__Walle__4AB81AF0");
-		});
+            entity.HasOne(d => d.Customer).WithMany(p => p.TempCampaignBulkOrders)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK__TempCampa__Custo__6B24EA82");
 
-		modelBuilder.Entity<User>(entity =>
-		{
-			entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC0F83A487");
+            entity.HasOne(d => d.UserVoucher).WithMany(p => p.TempCampaignBulkOrders)
+                .HasForeignKey(d => d.UserVoucherId)
+                .HasConstraintName("FK__TempCampa__UserV__6C190EBB");
+        });
 
-			entity.Property(e => e.UserId).HasColumnName("UserID");
-			entity.Property(e => e.Address).HasMaxLength(300);
-			entity.Property(e => e.BankAccountNumber).HasMaxLength(100);
-			entity.Property(e => e.BankName).HasMaxLength(200);
-			entity.Property(e => e.CreatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.Email)
-				.IsRequired()
-				.HasMaxLength(200);
-			entity.Property(e => e.EmailConfirmToken)
-				.IsRequired()
-				.HasMaxLength(200);
-			entity.Property(e => e.ForgotPasswordToken).HasMaxLength(200);
-			entity.Property(e => e.ForgotPasswordTokenExpiry).HasColumnType("datetime");
-			entity.Property(e => e.FullName)
-				.IsRequired()
-				.HasMaxLength(200);
-			entity.Property(e => e.Password).IsRequired();
-			entity.Property(e => e.Phone).HasMaxLength(20);
-			entity.Property(e => e.RoleId).HasColumnName("RoleID");
-			entity.Property(e => e.Status).HasMaxLength(50);
-			entity.Property(e => e.UpdatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.WalletId).HasColumnName("WalletID");
+        modelBuilder.Entity<TempCampaignBulkOrderDetail>(entity =>
+        {
+            entity.HasKey(e => e.TempCampaignBulkOrderDetailId).HasName("PK__TempCamp__F507B4FAECA163D2");
 
-			entity.HasOne(d => d.Role).WithMany(p => p.Users)
-				.HasForeignKey(d => d.RoleId)
-				.HasConstraintName("FK__Users__RoleID__3C69FB99");
+            entity.Property(e => e.TempCampaignBulkOrderDetailId).HasColumnName("TempCampaignBulkOrderDetailID");
+            entity.Property(e => e.PreorderCampaignId).HasColumnName("PreorderCampaignID");
+            entity.Property(e => e.TempCampaignBulkOrderId).HasColumnName("TempCampaignBulkOrderID");
+            entity.Property(e => e.UnitEndCampaignPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.UnitPriceAtTime).HasColumnType("decimal(18, 2)");
 
-			entity.HasOne(d => d.Wallet).WithMany(p => p.Users)
-				.HasForeignKey(d => d.WalletId)
-				.HasConstraintName("FK__Users__WalletID__3D5E1FD2");
-		});
+            entity.HasOne(d => d.PreorderCampaign).WithMany(p => p.TempCampaignBulkOrderDetails)
+                .HasForeignKey(d => d.PreorderCampaignId)
+                .HasConstraintName("FK__TempCampa__Preor__71D1E811");
 
-		modelBuilder.Entity<UserVoucher>(entity =>
-		{
-			entity.HasKey(e => e.UserVoucherId).HasName("PK__UserVouc__8017D4B95E558533");
+            entity.HasOne(d => d.TempCampaignBulkOrder).WithMany(p => p.TempCampaignBulkOrderDetails)
+                .HasForeignKey(d => d.TempCampaignBulkOrderId)
+                .HasConstraintName("FK__TempCampa__TempC__70DDC3D8");
+        });
 
-			entity.Property(e => e.UserVoucherId).HasColumnName("UserVoucherID");
-			entity.Property(e => e.CreatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.UserId).HasColumnName("UserID");
-			entity.Property(e => e.VoucherCampaignId).HasColumnName("VoucherCampaignID");
+        modelBuilder.Entity<Transaction>(entity =>
+        {
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A4B2D73C768");
 
-			entity.HasOne(d => d.User).WithMany(p => p.UserVouchers)
-				.HasForeignKey(d => d.UserId)
-				.HasConstraintName("FK__UserVouch__UserI__52593CB8");
+            entity.Property(e => e.TransactionId).HasColumnName("TransactionID");
+            entity.Property(e => e.BalanceAtTime).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Money).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.Type).HasMaxLength(50);
+            entity.Property(e => e.WalletId).HasColumnName("WalletID");
 
-			entity.HasOne(d => d.VoucherCampaign).WithMany(p => p.UserVouchers)
-				.HasForeignKey(d => d.VoucherCampaignId)
-				.HasConstraintName("FK__UserVouch__Vouch__534D60F1");
-		});
+            entity.HasOne(d => d.Wallet).WithMany(p => p.Transactions)
+                .HasForeignKey(d => d.WalletId)
+                .HasConstraintName("FK__Transacti__Walle__37A5467C");
+        });
 
-		modelBuilder.Entity<VoucherCampaign>(entity =>
-		{
-			entity.HasKey(e => e.VoucherCampaignId).HasName("PK__VoucherC__0E161B2F9EEDFBD6");
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC5C8405B0");
 
-			entity.Property(e => e.VoucherCampaignId).HasColumnName("VoucherCampaignID");
-			entity.Property(e => e.CreatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-			entity.Property(e => e.EndDate).HasColumnType("datetime");
-			entity.Property(e => e.ExpiredDate).HasColumnType("datetime");
-			entity.Property(e => e.MaximumMoneyDiscount).HasColumnType("decimal(18, 2)");
-			entity.Property(e => e.Name)
-				.IsRequired()
-				.HasMaxLength(200);
-			entity.Property(e => e.PercentDiscount).HasColumnType("decimal(5, 2)");
-			entity.Property(e => e.StartDate).HasColumnType("datetime");
-			entity.Property(e => e.Status)
-				.IsRequired()
-				.HasMaxLength(50);
-		});
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.Address).HasMaxLength(300);
+            entity.Property(e => e.BankAccountNumber).HasMaxLength(100);
+            entity.Property(e => e.BankName).HasMaxLength(200);
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Email)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.EmailConfirmToken)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.ForgotPasswordToken).HasMaxLength(200);
+            entity.Property(e => e.ForgotPasswordTokenExpiry).HasColumnType("datetime");
+            entity.Property(e => e.FullName)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.Password).IsRequired();
+            entity.Property(e => e.Phone).HasMaxLength(20);
+            entity.Property(e => e.RoleId).HasColumnName("RoleID");
+            entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.UpdatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.WalletId).HasColumnName("WalletID");
 
-		modelBuilder.Entity<Wallet>(entity =>
-		{
-			entity.HasKey(e => e.WalletId).HasName("PK__Wallets__84D4F92E33DD71AF");
+            entity.HasOne(d => d.Role).WithMany(p => p.Users)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("FK__Users__RoleID__29572725");
 
-			entity.Property(e => e.WalletId).HasColumnName("WalletID");
-			entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)");
-			entity.Property(e => e.CreatedDate)
-				.HasDefaultValueSql("(getdate())")
-				.HasColumnType("datetime");
-		});
+            entity.HasOne(d => d.Wallet).WithMany(p => p.Users)
+                .HasForeignKey(d => d.WalletId)
+                .HasConstraintName("FK__Users__WalletID__2A4B4B5E");
+        });
 
-		OnModelCreatingPartial(modelBuilder);
-	}
+        modelBuilder.Entity<UserVoucher>(entity =>
+        {
+            entity.HasKey(e => e.UserVoucherId).HasName("PK__UserVouc__8017D4B94599A41A");
 
-	partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+            entity.Property(e => e.UserVoucherId).HasColumnName("UserVoucherID");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.VoucherCampaignId).HasColumnName("VoucherCampaignID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserVouchers)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__UserVouch__UserI__3F466844");
+
+            entity.HasOne(d => d.VoucherCampaign).WithMany(p => p.UserVouchers)
+                .HasForeignKey(d => d.VoucherCampaignId)
+                .HasConstraintName("FK__UserVouch__Vouch__403A8C7D");
+        });
+
+        modelBuilder.Entity<VoucherCampaign>(entity =>
+        {
+            entity.HasKey(e => e.VoucherCampaignId).HasName("PK__VoucherC__0E161B2FA7AAB941");
+
+            entity.Property(e => e.VoucherCampaignId).HasColumnName("VoucherCampaignID");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EndDate).HasColumnType("datetime");
+            entity.Property(e => e.ExpiredDate).HasColumnType("datetime");
+            entity.Property(e => e.MaximumMoneyDiscount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.PercentDiscount).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.StartDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Wallet>(entity =>
+        {
+            entity.HasKey(e => e.WalletId).HasName("PK__Wallets__84D4F92EE1B25EFC");
+
+            entity.Property(e => e.WalletId).HasColumnName("WalletID");
+            entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+        });
+
+        OnModelCreatingPartial(modelBuilder);
+    }
+
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

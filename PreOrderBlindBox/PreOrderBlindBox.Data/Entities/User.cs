@@ -53,6 +53,8 @@ public partial class User
 
     public virtual Role Role { get; set; }
 
+    public virtual ICollection<TempCampaignBulkOrder> TempCampaignBulkOrders { get; set; } = new List<TempCampaignBulkOrder>();
+
     public virtual ICollection<UserVoucher> UserVouchers { get; set; } = new List<UserVoucher>();
 
     public virtual Wallet Wallet { get; set; }

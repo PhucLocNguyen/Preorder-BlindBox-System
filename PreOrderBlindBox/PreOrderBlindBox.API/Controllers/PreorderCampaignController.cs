@@ -40,7 +40,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpGet("Search")]
-        public async Task<IActionResult> SearcgPreorderCampaign([FromQuery] PreorderCampaignSearchRequest searchRequest, [FromQuery] PaginationParameter pagination)
+        public async Task<IActionResult> SearchPreorderCampaign([FromQuery] PreorderCampaignSearchRequest searchRequest, [FromQuery] PaginationParameter pagination)
         {
             try
             {
@@ -160,11 +160,11 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPut("CancelPreorderCampaign/{id}")]
-        public async Task<IActionResult> CancelPreorderCampaign(int id, [FromBody] CancelPreorderCampaignRequest request)
+        public async Task<IActionResult> CancelPreorderCampaign(int id)
         {
             try
             {
-                var preorderCampaign = await _preorderCampaignService.CancelPreorderCampaign(id, request);
+                var preorderCampaign = await _preorderCampaignService.CancelPreorderCampaign(id);
 
                 if (preorderCampaign <= 0)
                 {

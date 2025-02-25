@@ -36,4 +36,6 @@ public partial class PreorderCampaign
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
     public virtual ICollection<PreorderMilestone> PreorderMilestones { get; set; } = new List<PreorderMilestone>();
+
+    public virtual ICollection<TempCampaignBulkOrderDetail> TempCampaignBulkOrderDetails { get; set; } = new List<TempCampaignBulkOrderDetail>();
 }
