@@ -2,11 +2,11 @@ import api from "../instance";
 import { axiosConfigHeader, axiosConfigSendFileHeader } from "../axiosConfigHeader";
 import { toast } from "react-toastify";
 
-const GetTheActiveBlindBox = async (pageSize, pageIndex) => {
+const GetTheActiveBlindBox = async (pageSize, pageIndex, keyword = "") => {
   try {
     const response = await api.get("/BlindBox",  {
       ...axiosConfigHeader, // Giữ nguyên cấu hình header
-      params: { pageSize, pageIndex }, // Truyền pageSize và pageIndex vào params
+      params: { pageSize, pageIndex,keyword}, // Truyền pageSize và pageIndex vào params
     });
     const data = response.data;
     const paginationHeader = response.headers["x-pagination"]; // Chữ thường

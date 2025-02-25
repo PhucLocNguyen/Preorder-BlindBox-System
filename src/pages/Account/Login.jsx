@@ -1,22 +1,25 @@
 import { Button, Form, Input } from 'antd';
-import { Link, useNavigate } from 'react-router';
-import { useContext } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
 
 import GoogleIcon from '../../assets/Login/GoogleIcon.png';
 import FacebookIcon from '../../assets/Login/FacebookIcon.png';
 import { AuthContext } from '../../context/AuthContext';
-import { ApiLoginByEmailAndPassword, ApiGetCurrentAccountRole, GetAccessToken } from '../../api/User/ApiAuthentication';
+import { ApiLoginByEmailAndPassword, ApiGetCurrentAccountRole } from '../../api/User/ApiAuthentication';
 
 function LoginPage() {
     const [form] = Form.useForm();
     const navigate = useNavigate();
-    const { setAuth } = useContext(AuthContext);
+    const { setAuth, auth } = useContext(AuthContext);
+    const location = useLocation();
+
+    const fromPage = location.state?.from?.pathname || "/";
 
     const CallApiLoginByEmailAndPassword = async (payload) => {
         const responseLogin = await ApiLoginByEmailAndPassword({ payload });
         if (responseLogin.status === 200) {
             await CallApiGetCurrentAccountRole();
-            navigate('/')
+            navigate(fromPage, { replace: true });
         }
     }
 
@@ -31,9 +34,20 @@ function LoginPage() {
         await CallApiLoginByEmailAndPassword(values);
     }
 
+    // Chặn người dùng đã đăng nhập vào trang login
+    const checkRole = () => {
+        if (auth.roleName.toLowerCase() !== 'guest' && fromPage === '/') {
+            navigate('/')
+        }
+    }
+
+    useEffect(() => {
+        checkRole();
+    }, [auth])
+
     return (
         <div className="bg-[#f2f7fb] ">
-            <div className="w-full max-w-[540px] mx-auto min-h-[100vh] text-center flex items-center justify-center">
+            <div className="w-full max-w-[540px] mx-auto min-h-[95vh] text-center flex items-center justify-center">
                 <div className="flex flex-col justify-center grow-1 w-full">
                     <div className="flex flex-col bg-[white] rounded-[20px] p-[30px] text-start gap-[40px]">
                         {/* Phần chữ giới thiệu */}

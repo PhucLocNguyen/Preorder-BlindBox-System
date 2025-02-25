@@ -7,7 +7,7 @@ const RenderRoute = (route, index, isPrivate = false) => {
   const Page = route.component;
 
   return (
-    <Route key={index} element={isPrivate ? <PrivateRouting /> : undefined}>
+    <Route key={index} element={isPrivate ? <PrivateRouting allowedRole={route?.role} /> : undefined}>
       <Route
         index={route.index}
         path={index != null ? route.path : undefined} // Use path if it's defined
@@ -21,7 +21,7 @@ const RenderRoute = (route, index, isPrivate = false) => {
       >
         {route.children?.map((childRoute, childIndex) => {
           const ChildPage = childRoute.component;
-          const LayoutChild = childRoute.layout || Layout;
+          const LayoutChild = childRoute.layout || React.Fragment;
           return (
             <Route
               key={childIndex}

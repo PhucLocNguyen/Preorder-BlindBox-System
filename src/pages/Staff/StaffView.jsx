@@ -15,8 +15,8 @@ const OrderManagement = () => {
         }
     }, [location, navigate]);
     return (
-        <div className="h-screen flex flex-col overflow-hidden">
-            <div className="flex flex-1 overflow-hidden gap-4 px-4">
+        <div className="h-screen flex flex-col">
+            <div className="flex flex-1 gap-4 px-4">
                 <div className="h-full">
                     <SideBarStaff />
                 </div>

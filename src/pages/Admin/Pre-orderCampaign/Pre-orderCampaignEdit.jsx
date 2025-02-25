@@ -1,108 +1,101 @@
-import React, { useEffect } from 'react';
-import { Form, Input, Button, Row, Col, Card, DatePicker, Select } from 'antd';
-import { useForm } from 'antd/es/form/Form';
-const Pre_orderCampaignEdit = ({ onSuccess, selectedProduct }) => {
-    const [form] = useForm();
+import React, { useEffect, useState } from 'react';
+import { useParams } from "react-router";
+import {
+    UpdatePreorderCampaign,
+    GetActivePreorderCampaignById,
+} from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
+import { Form, Input, Button, Row, Col, Card, DatePicker, Select, notification } from 'antd';
+
+
+
+const Pre_orderCampaignEdit = ({ onSuccess }) => {
+    const [form] = Form.useForm();
+    const { id } = useParams();
+    const [detailPre_orderCampaign, setDetailPre_orderCampaign] = useState({});
+    const getDetailPre_orderCampaign_byId = async () => {
+        var data = await GetActivePreorderCampaignById(id);
+        setDetailPre_orderCampaign(data);
+    };
 
     useEffect(() => {
-        console.log("Received selectedProduct in Edit Modal:", selectedProduct);
-        form.setFieldsValue({ 'blind-boxID': selectedProduct });
-    }, [selectedProduct, form]);
+        getDetailPre_orderCampaign_byId();
+    }, []);
 
-    const onFinish = (values) => {
-        console.log("Submitted values:", values);
-        console.log("Selected Product Key:", selectedProduct);
-        onSuccess();
+    const handleSubmit = async (values) => {
+        try {
+            const config = {
+                headers: {
+
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            const payload = {
+                startDate: values.startDate.toISOString(),
+                endDate: values.endDate.toISOString(),
+                type: values.type,
+            };
+
+            const result = await UpdatePreorderCampaign(id, payload, config);
+            console.log(result);
+            console.log("Submitted values:", values);
+            notification.success({
+                message: 'Success',
+                description: 'The campaign has been successfully updated.',
+            });
+            onSuccess();
+        } catch (error) {
+            toast.error('Error updating  Preorder Campaign:', error);
+            notification.error({
+                message: 'Error',
+                description: 'There was an error editing the campaign.',
+            });
+        }
     };
+
     return (
-        <Card
-            className="p-5 bg-white rounded-lg shadow-md"
-            style={{ maxWidth: '600px', margin: '0 auto' }}
-        >
+        <Card className="p-5 bg-white rounded-lg shadow-md" style={{ maxWidth: '600px', margin: '0 auto' }}>
             <h2 className="text-xl font-bold mb-4 text-center">Update Campaign</h2>
-            <Form form={form} layout="vertical" onFinish={onFinish}>
+            <Form form={form} layout="vertical" onFinish={handleSubmit}
+                initialValues={{
+                    startDate: detailPre_orderCampaign.startDate,
+                    endDate: detailPre_orderCampaign.endDate,
+                    type: detailPre_orderCampaign.type,
+                }}
+            >
+
                 <Row gutter={16}>
-                    <Col span={6}>
-                        <Form.Item label="Blind-boxID" name="blind-boxID"
-                            rules={[{ required: true, message: 'Please enter Blind-box ID!' }]}>
-                            <Input readOnly />
-                        </Form.Item>
-                    </Col>
                     <Col span={8}>
-                        <Form.Item label="Type" name="type" rules={[{ required: true, message: 'Please enter type' }]}>
+                        <Form.Item label="Type" name="type" rules={[{ required: true, message: 'Please select a type!' }]}>
                             <Select
-
                                 placeholder="Select a type"
-                                filterOption={(input, option) =>
-                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                }
-                                options={[
-                                    { value: '0', label: 'TimedPricing' },
-                                    { value: '1', label: 'BulkOrder' },
-
-                                ]}
-                            />
+                            >
+                                <Option value={0}>TimedPricing</Option>
+                                <Option value={1}>BulkOrder</Option>
+                            </Select>
                         </Form.Item>
                     </Col>
-                    <Col span={10}>
-                        <Form.Item label="Status" name="status" rules={[{ required: true, message: 'Please enter status!' }]}>
-                            <Select
 
-                                placeholder="Select a status"
-                                filterOption={(input, option) =>
-                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                                }
-                                options={[
-                                    { value: '0', label: 'Pending' },
-                                    { value: '1', label: 'Active' },
-                                    { value: '2', label: 'Completed' },
-                                    { value: '3', label: 'Canceled' },
-
-                                ]}
-                            />
+                    <Col span={8}>
+                        <Form.Item label="Start Date" name="startDate" rules={[{ required: true, message: 'Please select a start date!' }]}>
+                            <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
                         </Form.Item>
                     </Col>
-                </Row>
 
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item label="Start Date" name="StartedDate">
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="End Date" name="EndedDate">
-                            <DatePicker style={{ width: '100%' }} />
+                    <Col span={8}>
+                        <Form.Item label="End Date" name="endDate" rules={[{ required: true, message: 'Please select an end date!' }]}>
+                            <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
                         </Form.Item>
                     </Col>
 
                 </Row>
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item label="Create Date" name="CreatedDate">
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="Update  Date" name="UpdatedDate">
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
 
-                </Row>
                 <div className="flex justify-center gap-2 mt-4">
-                    <Button
-                        size="large"
-                        onClick={onSuccess} // Đóng Modal khi bấm Cancel
-                    >
+                    <Button size="large" onClick={onSuccess}>
                         Cancel
                     </Button>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        size="large"
-                    >
-                        Create
+                    <Button type="primary" htmlType="submit" size="large">
+                        Update
                     </Button>
                 </div>
             </Form>
@@ -110,4 +103,4 @@ const Pre_orderCampaignEdit = ({ onSuccess, selectedProduct }) => {
     );
 }
 
-export default Pre_orderCampaignEdit
+export default Pre_orderCampaignEdit;

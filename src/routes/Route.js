@@ -1,5 +1,6 @@
 import { Fragment, lazy } from "react";
 
+const PreorderCampaignCreate = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignCreate"));
 const OrderDetailView = lazy(() => import("../pages/Staff/OrderManagement/OrderDetailView"));
 const AdminLayout = lazy(() => import("../components/layouts/AdminLayout"));
 const DefaultLayout = lazy(() => import("../components/layouts/DefaultLayout"));
@@ -18,11 +19,21 @@ const UserManagement = lazy(() => import("../pages/Admin/UserManagement/UserMana
 const UserManagementDetails = lazy(() => import("../pages/Admin/UserManagement/UserManagementDetails"));
 const PreorderMilestone = lazy(() => import("../pages/Admin/PreorderMilestone"));
 const Pre_orderCampaign = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaign"));
+const Pre_orderCampaignDetails = lazy(() => import("../pages/Admin/Pre-orderCampaign/Pre_orderCampaignDetails"));
 const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Voucher"));
 const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
+const Cart = lazy(() => import("../pages/Customer/Cart"));
+const ProductList = lazy(() => import('../pages/Home/ProductList/ProductList'));
+const ProductDetail = lazy(() => import('../pages/Products/ProductDetail/ProductDetail'));
+const DepositPage = lazy(() => import("../pages/Wallet/Deposit"));
+const Wallet = lazy(() => import("../pages/Wallet/Wallet"));
+const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
+const WalletRechargeResponse = lazy(() => import("../pages/Wallet/WalletRechargeResponse"));
+const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResultPage"));
+
 const publicRoutes = [
   {
     index: true,
@@ -32,6 +43,48 @@ const publicRoutes = [
   {
     path: "/login",
     component: LoginPage,
+    layout: DefaultLayout,
+  },
+  
+  {
+    path: "/account",
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: LoginPage },
+      { path: "register", component: RegisterPage },
+    ],
+  },
+  {
+    path: "/register",
+    component: RegisterPage,
+    layout: DefaultLayout,
+  },
+  {
+    path: '/confirmemail',
+    component: ConfirmEmailAccount
+  },
+  {
+    path: '/cart',
+    component: Cart,
+    layout: DefaultLayout,
+  },
+  {
+		path: '/product',
+		children: [
+			{ index: true, component: ProductList },
+			{ path: ':slug', component: ProductDetail },
+		],
+		layout: DefaultLayout,
+	},
+  {
+    path: '/campaign/search',
+    component: SearchResultPage,
+    layout: DefaultLayout
+  },
+  {
+    path: '/test',
+    component: SearchResultPage,
+    layout: DefaultLayout,
   },
   {
     path: "/staff",
@@ -46,6 +99,7 @@ const publicRoutes = [
       { path: "product/edit/:id", component: ProductEditPage },
 
     ],
+    role: ['staff']
   },
   {
     path: "/admin",
@@ -56,6 +110,9 @@ const publicRoutes = [
       { path: "usermanagerment-details/:id", component: UserManagementDetails },
       { path: "preordermilestone", component: PreorderMilestone },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
+      { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
+      { path: "preordercampaign/create", component: PreorderCampaignCreate },
+
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
       { path: "voucher", component: VoucherManagement },
@@ -63,23 +120,8 @@ const publicRoutes = [
       { path: "voucher-details/:id", component: VoucherDetails },
       { path: "voucher/update/:id", component: VoucherUpdate },
     ],
+    role: ['admin']
   },
-  {
-    path: "/account",
-    layout: DefaultLayout,
-    children: [
-      { index: true, component: LoginPage },
-      { path: "register", component: RegisterPage },
-    ],
-  },
-  {
-    path: "/register",
-    component: RegisterPage
-  },
-  {
-    path: '/confirmemail',
-    component: ConfirmEmailAccount
-  }
 ];
 
 const privateRoutes = [
@@ -92,5 +134,22 @@ const privateRoutes = [
     path: "/projects",
     component: Fragment,
   },
+  {
+    path: '/wallet',
+    component: Wallet,
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: DepositPage, layout: null },
+      { path: 'deposit', component: Withdraw, layout: null },
+    ],
+    role: ['Customer']
+  },
+  {
+    path: '/wallet/paymentResponse',
+    component: WalletRechargeResponse,
+    layout: DefaultLayout,
+    role: ['Customer']
+  },
+ 
 ];
 export { publicRoutes, privateRoutes };
