@@ -21,6 +21,8 @@ public partial class UserVoucher
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
+    public virtual ICollection<TempCampaignBulkOrder> TempCampaignBulkOrders { get; set; } = new List<TempCampaignBulkOrder>();
+
     public virtual User User { get; set; }
 
     public virtual VoucherCampaign VoucherCampaign { get; set; }
