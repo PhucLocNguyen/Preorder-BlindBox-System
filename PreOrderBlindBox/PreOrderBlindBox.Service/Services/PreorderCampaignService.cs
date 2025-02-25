@@ -418,18 +418,13 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-        public async Task<int> CancelPreorderCampaign(int id, CancelPreorderCampaignRequest request)
+        public async Task<int> CancelPreorderCampaign(int id)
         {
             var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
 
             if (preorderCampaign == null)
             {
                 throw new ArgumentException("Pre-Order Campaign not found");
-            }
-
-            if (request == null)
-            {
-                throw new ArgumentNullException("Invalid data");
             }
 
             if (preorderCampaign.IsDeleted || preorderCampaign.Status == PreorderCampaignStatus.Completed.ToString())
@@ -442,7 +437,7 @@ namespace PreOrderBlindBox.Services.Services
                 throw new ArgumentException("Cannot cancel TimedPricing campaign");
             }
 
-            preorderCampaign.Status = request.Status.ToString();
+            preorderCampaign.Status = PreorderCampaignStatus.Canceled.ToString();
 
             await _preorderCampaignRepo.UpdateAsync(preorderCampaign);
 
