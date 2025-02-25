@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
@@ -19,15 +20,26 @@ namespace PreOrderBlindBox.API.Controllers
         public OrderController(IOrderService orderService, ICurrentUserService currentUserService)
         {
             _orderService = orderService;
-            _currentUserService = currentUserService;   
+            _currentUserService = currentUserService;
         }
         // GET: api/<OrderController>
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders([FromQuery]PaginationParameter pagination, [FromQuery] string? searchKeyWords )
+        public async Task<IActionResult> GetAllOrders([FromQuery] PaginationParameter pagination, [FromQuery] string? searchKeyWords, [FromQuery] string orderBy = "increase")
         {
             try
             {
-                var listOrder = await _orderService.GetAllOrder(pagination, searchKeyWords);
+                var listOrder = await _orderService.GetAllOrder(pagination, searchKeyWords, orderBy);
+                var metadata = new
+                {
+                    listOrder.TotalCount,
+                    listOrder.PageSize,
+                    listOrder.CurrentPage,
+                    listOrder.TotalPages,
+                    listOrder.HasNext,
+                    listOrder.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
                 return Ok(listOrder);
             }
             catch (Exception ex)
@@ -59,16 +71,43 @@ namespace PreOrderBlindBox.API.Controllers
         {
             try
             {
-                var itemResult = await _orderService.CreateOrder(requestCreateOrder, requestCreateOrder.RequestCreateCart);
-                if (itemResult != null) return Ok(new { Message = "Create order successfully " });
-                return BadRequest(new { Message = "Create order failed " });
+                await _orderService.CreateOrder(requestCreateOrder, requestCreateOrder.RequestCreateCart);
+                return Ok(new { Message = "Create order successfully " });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { Message = (ex.Message) });
             }
-            
+
         }
 
-    }
+        [HttpPut]
+        public async Task<IActionResult> UpdateStatusOfOrder(RequestUpdateOrder requestUpdateOrder, int orderId)
+        {
+            try
+            {
+                var itemResult = await _orderService.UpdateStatusOfOrder(orderId, requestUpdateOrder);
+                return Ok(itemResult);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+        }
+
+        [HttpGet("/ViewHistoryOrder")]
+		public async Task<IActionResult> ViewOrderHistory([FromQuery] PaginationParameter pagination)
+		{
+            try
+            {
+				var items = await _orderService.OrderHistory(pagination);
+                return Ok(items);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = (ex.Message) });
+			}
+
+		}
+	}
 }

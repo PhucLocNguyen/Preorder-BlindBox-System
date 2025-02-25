@@ -20,9 +20,9 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                 ReceiverName = requestCreateOrder.ReceiverName,
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
                 ReceiverPhone = requestCreateOrder.ReceiverPhone,
-                Status = requestCreateOrder.Status,
                 UserVoucherId = requestCreateOrder.UserVoucherId,
-                CreatedDate = DateTime.Now,
+				Status = requestCreateOrder.Status,
+				CreatedDate = DateTime.Now,
                 UpdatedDate = null
             };
         }
@@ -32,9 +32,11 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
             {
                OrderId = order.OrderId, 
                UserVoucherId = order.UserVoucherId,
+               CustomerId = order.CustomerId,
                Amount = order.Amount,
                CreatedDate =  order.CreatedDate.ToString("dd MMM, yyyy"),
                Receiver = order.ReceiverName,
+               ReceiverPhone = order.ReceiverPhone,
                ReceiverAddress = order.ReceiverAddress,
                Status = order.Status,  
                TotalItems = order.OrderDetails.Sum(x=>x.Quantity),

@@ -18,9 +18,8 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel
         public string ReceiverPhone { get; set; }
 
         public string ReceiverAddress { get; set; }
+        public string Status { get; set; } = "Pending";
 
-        public string? Status { get; set; }
-
-        public RequestCreateCart? RequestCreateCart { get; set; }
+		public RequestCreateCart? RequestCreateCart { get; set; }
     }
 }

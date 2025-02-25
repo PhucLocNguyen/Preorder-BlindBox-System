@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Data.Commons;
+﻿using Microsoft.AspNetCore.Mvc;
+using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
@@ -13,8 +14,11 @@ namespace PreOrderBlindBox.Services.IServices
 {
     public interface IOrderService
     {
-        Task<Pagination<ResponseOrder>> GetAllOrder(PaginationParameter page, string? searchKeyWords);
+        Task<Pagination<ResponseOrder>> GetAllOrder(PaginationParameter page, string? searchKeyWords,string orderBy);
         Task<ResponseOrder> GetOrderById(int id);
-        Task<Order> CreateOrder(RequestCreateOrder requestCreateOrder,RequestCreateCart? requestCreateCart);
-    }
+        Task CreateOrder(RequestCreateOrder requestCreateOrder,RequestCreateCart? requestCreateCart);
+        Task<ResponseOrder> UpdateStatusOfOrder(int orderId, RequestUpdateOrder requestUpdateOrder);
+        Task<Pagination<ResponseOrder>> OrderHistory(PaginationParameter pagination);
+
+	}
 }

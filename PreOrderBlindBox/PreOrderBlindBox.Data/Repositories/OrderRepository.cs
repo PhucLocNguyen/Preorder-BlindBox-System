@@ -16,24 +16,5 @@ namespace PreOrderBlindBox.Data.Repositories
         public OrderRepository(Preorder_BlindBoxContext context) : base(context)
         {
         }
-
-        public Task<int> CreateOrder(Order order)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteOrder(int id)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<Order> GetOrderByID(int id)
-        {
-            return await _context.Orders.FirstOrDefaultAsync( x => x.OrderId == id );
-        }
-
-        public Task<Order> UpdateOrder(Order order)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
