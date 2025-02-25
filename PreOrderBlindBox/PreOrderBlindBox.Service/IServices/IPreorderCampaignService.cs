@@ -21,7 +21,7 @@ namespace PreOrderBlindBox.Services.IServices
         Task<bool> DeletePreorderCampaign(int id);
         Task<int> UpdatePreorderCampaign(int id, UpdatePreorderCampaignRequest request);
         Task BackGroundUpdatePreorderCampaign();
-        Task<int> CancelPreorderCampaign(int id, CancelPreorderCampaignRequest request);
+        Task<int> CancelPreorderCampaign(int id);
         Task<Pagination<ResponseSearchPreorderCampaign>> SearchPreorderCampaignAsync(PreorderCampaignSearchRequest searchRequest, PaginationParameter pagination);
         Task<bool> AddCampaignWithMilestonesAsync(CreatePreorderCampaignRequest campaignRequest);
     }
