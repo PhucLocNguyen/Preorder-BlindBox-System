@@ -72,7 +72,7 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 							<div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
 								{blindList?.map((product) => (
 									<Link
-										to={`/product/${product.slug}`}
+										to={`/preordercampaign/${product.slug}`}
 										key={product.slug}
 										className='relative overflow-hidden bg-white rounded-lg shadow-lg group'
 									>

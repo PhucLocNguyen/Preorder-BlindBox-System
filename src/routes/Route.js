@@ -69,7 +69,8 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
-		path: '/product',
+		path: '/preordercampaign',
+    layout:DefaultLayout,
 		children: [
 			{ index: true, component: ProductList },
 			{ path: ':slug', component: ProductDetail },
