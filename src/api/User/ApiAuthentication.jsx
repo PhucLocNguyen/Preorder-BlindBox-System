@@ -58,7 +58,18 @@ const ApiConfirmEmailAccount = async ({ confirmToken }) => {
    }
 }
 
+const GetInformationOfUser = async (userId) => {
+   try {
+      const result = await api.get(`/User/${userId}`, axiosConfigHeader)
+      if (result.status === 200) {
+         return result.data
+      }
+   } catch (error) {
+      console.log('>>> Api get information of user error: ', error)
+   }
+}
+
 export {
    ApiLoginByEmailAndPassword, ApiGetCurrentAccountRole, GetAccessToken, ApiRegisterByEmailAndPassword
-   , ApiConfirmEmailAccount
+   , ApiConfirmEmailAccount, GetInformationOfUser
 }
