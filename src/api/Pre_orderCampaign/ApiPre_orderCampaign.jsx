@@ -25,7 +25,7 @@ const GetTheActivePreorderCampaign = async (pageSize, pageIndex) => {
 
 const CreatePreorderCampaign = async (payload) => {
     try {
-        const response = await api.post('/PreorderCampaign/CreatePreorderCampaign', JSON.stringify(payload), axiosConfigHeader);
+        const response = await api.post('/PreorderCampaign/CreatePreorderCampaignWithMilestone', JSON.stringify(payload), axiosConfigHeader);
         toast.success("Create successful!");
         return response.data;
     } catch (error) {
