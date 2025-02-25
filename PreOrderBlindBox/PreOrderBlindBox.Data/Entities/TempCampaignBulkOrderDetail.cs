@@ -5,25 +5,21 @@ using System.Collections.Generic;
 
 namespace PreOrderBlindBox.Data.Entities;
 
-public partial class OrderDetail
+public partial class TempCampaignBulkOrderDetail
 {
-    public int OrderDetailId { get; set; }
+    public int TempCampaignBulkOrderDetailId { get; set; }
 
-    public int? OrderId { get; set; }
+    public int? TempCampaignBulkOrderId { get; set; }
 
     public int? PreorderCampaignId { get; set; }
 
     public decimal UnitPriceAtTime { get; set; }
 
-    public string Status { get; set; }
-
-    public string RejectReason { get; set; }
-
     public int Quantity { get; set; }
 
     public decimal? UnitEndCampaignPrice { get; set; }
 
-    public virtual Order Order { get; set; }
-
     public virtual PreorderCampaign PreorderCampaign { get; set; }
+
+    public virtual TempCampaignBulkOrder TempCampaignBulkOrder { get; set; }
 }

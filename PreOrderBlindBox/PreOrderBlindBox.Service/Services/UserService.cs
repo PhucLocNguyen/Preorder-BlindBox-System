@@ -142,7 +142,7 @@ namespace PreOrderBlindBox.Service.Services
 				await _mailService.sendEmailAsync(new MailRequest()
 				{
 					ToEmail = newUser.Email,
-					Subject = "[Pre-Order Blind Box] Confirm Account Email",
+					Subject = "[Pre-Order Blind Box] Xác nhận tài khoản",
 					Body = MailContent.ConfirmAccountEmail(newUser.FullName, newUser.EmailConfirmToken)
 				});
 
@@ -210,23 +210,48 @@ namespace PreOrderBlindBox.Service.Services
 
 		}
 
-		public async Task<int> ForgotPassword(RequestForgotPassword forgotPassword)
+		public async Task<bool> ForgotPasswordForCustomer(RequestForgotPassword forgotPassword)
 		{
-			int userId = _currentUserService.GetUserId();
-			var user = await _userRepository.GetUserById(userId);
+			var user = await _userRepository.GetUserByEmailAsync(forgotPassword.Email);
 			if (user == null)
 			{
 				throw new Exception("Account does not exist");
 			}
-			if (!forgotPassword.Password.Equals(forgotPassword.ConfirmPassword))
+			if (user.IsActive == false)
 			{
-				throw new Exception("Password and confirm password must be the same");
+				throw new Exception("Invalid account");
+			}
+			if (user.Role.RoleName.ToLower() != "customer")
+			{
+				throw new Exception("This account cannot change password");
 			}
 
-			var hasPassword = PasswordUtils.HashPassword(forgotPassword.Password);
-			user.Password = hasPassword;
-			await _userRepository.UpdateAsync(user);
-			return await _unitOfWork.SaveChanges();
+			await _unitOfWork.BeginTransactionAsync();
+			try
+			{
+				string forgotPasswordToken = Guid.NewGuid().ToString();
+
+				user.ForgotPasswordToken = forgotPasswordToken;
+				user.ForgotPasswordTokenExpiry = DateTime.Now.AddHours(1);
+				await _userRepository.UpdateAsync(user);
+
+				// Gửi mail xác nhận cho người dùng
+				await _mailService.sendEmailAsync(new MailRequest
+				{
+					ToEmail = user.Email,
+					Subject = "[Pre-Order Blind Box] Yêu cầu lấy lại mật khẩu đăng nhập tài khoản",
+					Body = MailContent.ForgotPasswordEmail(user.FullName, forgotPasswordToken, user.Email)
+				});
+
+				await _unitOfWork.SaveChanges();
+				await _unitOfWork.CommitTransactionAsync();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				await _unitOfWork.RollbackTransactionAsync();
+				throw;
+			}
 
 		}
 
@@ -254,7 +279,7 @@ namespace PreOrderBlindBox.Service.Services
 					Address = registerStaffAccount.Address,
 					IsEmailConfirm = true,
 					IsActive = true,
-					EmailConfirmToken = Guid.NewGuid().ToString(),
+					EmailConfirmToken = "",
 					RoleId = role.RoleId,
 					Password = PasswordUtils.HashPassword(registerStaffAccount.Password),
 				};
@@ -360,6 +385,38 @@ namespace PreOrderBlindBox.Service.Services
 
 			await _userRepository.UpdateAsync(staff);
 			return await _unitOfWork.SaveChanges();
+		}
+
+		public async Task<int> AddNewPasswordForCustomer(RequestAddNewPassword addNewPassword)
+		{
+			var user = await _userRepository.GetUserByEmailAsync(addNewPassword.Email);
+			if (user == null)
+			{
+				throw new Exception("Account does not exist");
+			}
+			if (user.IsActive == false)
+			{
+				throw new Exception("Invalid account");
+			}
+			if (user.Role.RoleName.ToLower() != "customer")
+			{
+				throw new Exception("This account cannot change password");
+			}
+			if (string.IsNullOrEmpty(user.ForgotPasswordToken) || DateTime.Now > user.ForgotPasswordTokenExpiry || user.ForgotPasswordToken != addNewPassword.ForgotPasswordToken)
+			{
+				throw new Exception("Incorrect password change request");
+			}
+			if (addNewPassword.NewPassword != addNewPassword.ConfirmNewPassword)
+			{
+				throw new Exception("Confirm password must be same as password");
+			}
+
+			user.ForgotPasswordToken = string.Empty;
+			user.Password = PasswordUtils.HashPassword(addNewPassword.NewPassword);
+
+			await _userRepository.UpdateAsync(user);
+			return await _unitOfWork.SaveChanges();
+
 		}
 	}
 }
