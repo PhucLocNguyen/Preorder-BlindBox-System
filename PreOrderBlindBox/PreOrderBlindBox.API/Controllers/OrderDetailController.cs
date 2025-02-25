@@ -8,33 +8,29 @@ using System.Text.Json;
 
 namespace PreOrderBlindBox.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class OrderDetailController : ControllerBase
-    {
-        private readonly IOrderDetailService _orderDetailService;
-        public OrderDetailController(IOrderDetailService orderDetailService)
-        {
-            _orderDetailService = orderDetailService;
-        }
+	[Route("api/[controller]")]
+	[ApiController]
+	public class OrderDetailController : ControllerBase
+	{
+		private readonly IOrderDetailService _orderDetailService;
+		public OrderDetailController(IOrderDetailService orderDetailService)
+		{
+			_orderDetailService = orderDetailService;
+		}
 
-        [HttpGet("{orderID}")]
-        public async Task<IActionResult> GetAllOrderDetailsByOrderID([FromRoute]int orderID, [FromQuery] PaginationParameter paginationParameter)
-        {
-            try
-            {
-                var itemResult = await _orderDetailService.GetAllOrderDetailsByOrderID(paginationParameter, orderID);
-                if (itemResult != null)
-                {
-					return Ok(itemResult);
-                }
-                return Ok(null);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = (ex.Message) });
-            }
-            
-        }
-    }
+		[HttpGet("{orderID}")]
+		public async Task<IActionResult> GetAllOrderDetailsByOrderID([FromRoute] int orderID, [FromQuery] PaginationParameter paginationParameter)
+		{
+			try
+			{
+				var itemResult = await _orderDetailService.GetAllOrderDetailsByOrderID(paginationParameter, orderID);
+				return Ok(itemResult);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = (ex.Message) });
+			}
+
+		}
+	}
 }

@@ -41,7 +41,6 @@ namespace PreOrderBlindBox.Services.Services
             _orderDetailService = orderDetailService;
             _currentUserService = currentUserService;
             _userVoucherService = userVoucherService;
-
         }
 
         public async Task<Order> CreateOrder(RequestCreateOrder requestCreateOrder, RequestCreateCart? requestCreateCart)
@@ -94,29 +93,62 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-        public async Task<Pagination<ResponseOrder>> GetAllOrder(PaginationParameter page, string? searchKeyWords)
+        public async Task<Pagination<ResponseOrder>> GetAllOrder(PaginationParameter page, string? searchKeyWords, string orderBy)
         {
-            var orders = await _orderRepository.GetAll(filter: x=> (x.ReceiverName.Contains(searchKeyWords) || x.ReceiverAddress.Contains(searchKeyWords) || String.IsNullOrEmpty(searchKeyWords))
-                                                        ,pagination: page, includes: x=>x.OrderDetails);
-            var itemsOrderDetail = orders.Select(x => x.toOrderRespone()).ToList();
+            List<Order> orders = new List<Order>();
+
+            if (orderBy.Equals("increase"))
+            {
+				orders = await _orderRepository.GetAll(filter: x => (x.ReceiverName.Contains(searchKeyWords) || x.ReceiverAddress.Contains(searchKeyWords) || String.IsNullOrEmpty(searchKeyWords))
+														, pagination: page, includes: x => x.OrderDetails, orderBy: x=>x.OrderBy(x=>x.CreatedDate));
+			}else if(orderBy.Equals("decrease"))
+            {
+			    orders = await _orderRepository.GetAll(filter: x => (x.ReceiverName.Contains(searchKeyWords) || x.ReceiverAddress.Contains(searchKeyWords) || String.IsNullOrEmpty(searchKeyWords))
+														, pagination: page, includes: x => x.OrderDetails, orderBy: x=>x.OrderByDescending(x=>x.CreatedDate));
+			}
+
+			var itemsOrderDetail = orders.Select(x => x.toOrderRespone()).ToList();
             var result = new Pagination<ResponseOrder>(itemsOrderDetail, itemsOrderDetail.Count, page.PageIndex, page.PageSize);
             return result;
         }
 
-        /*public async Task<Pagination<Order>> GetAllOrder(PaginationParameter? page)
-{
-   var listOrderDb = await _orderRepository.GetAll(pagination: page, includes: x=> x.Customer);
-
-   return; 
-
-}*/
-
         public async Task<ResponseOrder> GetOrderById(int id)
         {
-            var orderById = await _orderRepository.GetAll(filter: x => x.OrderId == id, includes: x => x.OrderDetails);
-            var orderByIdResponse = orderById.FirstOrDefault().toOrderRespone();
+            var orderById = await _orderRepository.GetByIdAsync(id);
+            var orderByIdResponse = orderById.toOrderRespone();
 
 			return orderByIdResponse;
         }
-    }
+
+        public async Task<ResponseOrder> UpdateStatusOfOrder(int orderId, RequestUpdateOrder requestUpdateOrder)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+				var order = await _orderRepository.GetByIdAsync(orderId);
+				if (order == null)
+				{
+					throw new ArgumentException("Order not found");
+				}
+				order.Status = requestUpdateOrder.Status;
+				await _orderRepository.UpdateAsync(order);
+                await _unitOfWork.SaveChanges();
+                await _unitOfWork.CommitTransactionAsync();
+                return order.toOrderRespone();
+			}
+			catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
+        }
+
+		public async Task<List<ResponseOrder>> OrderHistory()
+		{
+            int customerId = _currentUserService.GetUserId();
+            var orders = await _orderRepository.GetAll(filter: x=>x.CustomerId == customerId);
+            return orders.Select(x=>x.toOrderRespone()).ToList();   
+
+		}
+	}
 }

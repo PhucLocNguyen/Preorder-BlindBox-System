@@ -19,15 +19,15 @@ namespace PreOrderBlindBox.API.Controllers
         public OrderController(IOrderService orderService, ICurrentUserService currentUserService)
         {
             _orderService = orderService;
-            _currentUserService = currentUserService;   
+            _currentUserService = currentUserService;
         }
         // GET: api/<OrderController>
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders([FromQuery]PaginationParameter pagination, [FromQuery] string? searchKeyWords )
+        public async Task<IActionResult> GetAllOrders([FromQuery] PaginationParameter pagination, [FromQuery] string? searchKeyWords, [FromQuery] string orderBy = "increase")
         {
             try
             {
-                var listOrder = await _orderService.GetAllOrder(pagination, searchKeyWords);
+                var listOrder = await _orderService.GetAllOrder(pagination, searchKeyWords, orderBy);
                 return Ok(listOrder);
             }
             catch (Exception ex)
@@ -67,8 +67,36 @@ namespace PreOrderBlindBox.API.Controllers
             {
                 return BadRequest(new { Message = (ex.Message) });
             }
-            
+
         }
 
-    }
+        [HttpPut]
+        public async Task<IActionResult> UpdateStatusOfOrder(RequestUpdateOrder requestUpdateOrder, int orderId)
+        {
+            try
+            {
+                var itemResult = await _orderService.UpdateStatusOfOrder(orderId, requestUpdateOrder);
+                return Ok(itemResult);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+        }
+
+        [HttpGet("/ViewHistoryOrder")]
+		public async Task<IActionResult> ViewOrderHistory()
+		{
+            try
+            {
+				var items = await _orderService.OrderHistory();
+                return Ok(items);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = (ex.Message) });
+			}
+
+		}
+	}
 }
