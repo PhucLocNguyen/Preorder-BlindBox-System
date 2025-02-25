@@ -34,6 +34,7 @@ const Pre_orderCampaign = () => {
     ]);
     const handleAddPre_orderCampaign = () => {
         navigate("/admin/preordercampaign/create");
+
     };
 
     const handleEditPre_orderCampaign = async (record) => {

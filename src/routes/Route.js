@@ -86,13 +86,16 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
-    path: '/product',
+
+    path: '/preordercampaign',
+    layout: DefaultLayout,
     children: [
       { index: true, component: ProductList },
       { path: ':slug', component: ProductDetail },
     ],
     layout: DefaultLayout,
   },
+
   {
     path: '/campaign/search',
     component: SearchResultPage,
@@ -122,6 +125,7 @@ const publicRoutes = [
     path: "/admin",
     component: AdminView,
     children: [
+
       { index: true, component: StaffManagement },
       { path: "usermanagement", component: StaffManagement },
       { path: "usermanagerment-details/:id", component: StaffManagementDetails },
@@ -129,6 +133,7 @@ const publicRoutes = [
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
       { path: "preordercampaign/create", component: PreorderCampaignCreate },
+
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
       { path: "voucher", component: VoucherManagement },

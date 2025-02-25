@@ -2,8 +2,7 @@ import ProductImages from '../../../components/ProductImage/ProductImage';
 import CountdownTimer from '../../../components/CountDown/CountDown';
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
-import { GetActiveBlindBoxById } from '../../../api/BlindBox/ApiBlindBox';
-import { getDetailPreorderCampaign } from '../../../api/Pre_orderCampaign/getPreorderCampaign';
+import { GetActiveDetailPreorderCampaign } from '../../../api/Pre_orderCampaign/ApiPre_orderCampaign';
 
 const ProductDetail = () => {
 	const params = useParams();
@@ -13,7 +12,7 @@ const ProductDetail = () => {
 	const [data, setData] = useState();
 
 	const productDetailBlind = async () => {
-		const res = await getDetailPreorderCampaign(slug);
+		const res = await GetActiveDetailPreorderCampaign(slug);
 		setData(res);
 	};
 

@@ -26,7 +26,7 @@ const SideBarAdmin = () => {
             <ul className="space-y-4">
                 {/* Admin Management */}
 
-                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/usermanagerment" || location.pathname === "/admin"
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/usermanagement" || location.pathname === "/admin"
                     ? "bg-blue-500 text-white"
                     : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
                     }`}>
@@ -45,8 +45,6 @@ const SideBarAdmin = () => {
                     </Link>
 
                 </li>
-
-
 
 
                 <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/history-transactions"
