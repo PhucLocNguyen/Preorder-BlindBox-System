@@ -6,7 +6,7 @@ import ProductHot from './ProductHot/ProductHot';
 function Home() {
 	return (
 		<div>
-			{/* <ProductList /> */}
+			<ProductList />
 			<ProductHot />	
 			<CountdownSection />
 			<VoucherCampaignSection />
