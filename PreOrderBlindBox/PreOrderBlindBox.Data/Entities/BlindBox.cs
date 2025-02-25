@@ -13,6 +13,8 @@ public partial class BlindBox
 
     public string Description { get; set; }
 
+    public decimal ListedPrice { get; set; }
+
     public bool IsDeleted { get; set; }
 
     public string Size { get; set; }
