@@ -163,6 +163,31 @@ namespace PreOrderBlindBox.Services.Services
             return quantityMilestone - quantityOrderDetails;
         }
 
+        /*private void ValidatePreorderMilestone(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
+        {
+            // Kiểm tra mốc liền trước (nếu có)
+            var previousMilestone = existingMilestones
+                .Where(m => m.MilestoneNumber < request.MilestoneNumber)
+                .OrderByDescending(m => m.MilestoneNumber)
+                .FirstOrDefault();
+
+            if (previousMilestone != null && request.Price <= previousMilestone.Price)
+            {
+                throw new ArgumentException($"Milestone {request.MilestoneNumber} phải có giá cao hơn milestone {previousMilestone.MilestoneNumber}.");
+            }
+
+            // Kiểm tra mốc liền sau (nếu có)
+            var nextMilestone = existingMilestones
+                .Where(m => m.MilestoneNumber > request.MilestoneNumber)
+                .OrderBy(m => m.MilestoneNumber)
+                .FirstOrDefault();
+
+            if (nextMilestone != null && request.Price >= nextMilestone.Price)
+            {
+                throw new ArgumentException($"Milestone {request.MilestoneNumber} phải có giá thấp hơn milestone {nextMilestone.MilestoneNumber}.");
+            }
+        }*/
+
         private void ValidatePreorderOneMilestone(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
         {
             // Nếu đã có Milestone 3 mà muốn tạo Milestone 1, không hợp lệ
