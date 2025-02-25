@@ -15,6 +15,6 @@ namespace PreOrderBlindBox.Services.IServices
         Task<ResponseNotification> CreatNotification(RequestCreateNotification requestCreateNotification);
         Task<Pagination<ResponseNotification>> GetAllNotificationByUserId(int userId, PaginationParameter paginationParameter);
         Task<ResponseNotification?> MarkNotificationAsRead(int notificationId);
-        Task<ResponseNotification> GetNotificationById(int notificationId);
+        Task<Notification> GetNotificationById(int notificationId);
     }
 }

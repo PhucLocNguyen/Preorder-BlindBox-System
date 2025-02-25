@@ -40,18 +40,14 @@ namespace PreOrderBlindBox.Services.Services
             return new Pagination<ResponseNotification>(listNotification.Select(x => x.toNotificationResponse()).ToList(), listNotification.Count, paginationParameter.PageIndex, paginationParameter.PageSize);
         }
 
-        public async Task<ResponseNotification> GetNotificationById(int notificationId)
+        public async Task<Notification> GetNotificationById(int notificationId)
         {
-            return (await _notificationRepository.GetByIdAsync(notificationId)).toNotificationResponse();
+            return (await _notificationRepository.GetByIdAsync(notificationId));
         }
 
         public async Task<ResponseNotification?> MarkNotificationAsRead(int notificationId)
         {
             var existingNoti = await _notificationRepository.GetByIdAsync(notificationId);
-            if (existingNoti == null)
-            {
-                return null;
-            }
             existingNoti.IsRead = true;
             await _notificationRepository.UpdateAsync(existingNoti);
             await _unitOfWork.SaveChanges();
