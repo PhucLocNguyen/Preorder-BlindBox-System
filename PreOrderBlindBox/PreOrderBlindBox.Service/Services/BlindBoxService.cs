@@ -39,7 +39,9 @@ namespace PreOrderBlindBox.Services.Services
                     Name = request.Name,
                     Description = request.Description,
                     IsDeleted = false,
-                    Size = request.Size
+                    Size = request.Size,
+                    CreatedAt = DateTime.Now,
+                    ListedPrice = Decimal.Parse(request.listedPrice) 
                 };
                 _blindBoxRepository.InsertBlindBox(blindbox);
 
@@ -109,6 +111,7 @@ namespace PreOrderBlindBox.Services.Services
                 blindbox.Name = request.Name;
                 blindbox.Description = request.Description;
                 blindbox.Size = request.Size;
+                blindbox.ListedPrice = decimal.Parse(request.listedPrice);
                 if (request.MainImage != null)
                 {
                     // Neu co hinh anh moi
