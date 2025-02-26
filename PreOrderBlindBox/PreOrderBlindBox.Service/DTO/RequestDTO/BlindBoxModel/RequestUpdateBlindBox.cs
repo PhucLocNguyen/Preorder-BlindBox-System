@@ -12,7 +12,7 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.BlindBoxModel
         public string Name { get; set; }
 
         public string Description { get; set; }
-
+        public string listedPrice { get; set; }
         public string Size { get; set; }
         public IFormFile? MainImage { get; set; }
         public List<IFormFile>? GalleryImages { get; set; }
