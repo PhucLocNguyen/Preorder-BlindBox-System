@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.IRepositories;
+using PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.TransactionModel;
 using PreOrderBlindBox.Services.IServices;
 using System.ComponentModel;
@@ -12,13 +14,73 @@ namespace PreOrderBlindBox.Service.Services
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IWalletRepository _walletRepository;
         private readonly IMapper _mapper;
-        public TransactionService(ITransactionRepository transactionRepository, IUserRepository userRepository, IMapper mapper)
+        public TransactionService(ITransactionRepository transactionRepository, IUserRepository userRepository, IMapper mapper, IWalletRepository walletRepository)
         {
             _transactionRepository = transactionRepository;
             _userRepository = userRepository;
             _mapper = mapper;
+            _walletRepository = walletRepository;
         }
+
+        public async Task<bool> CreateTransaction(RequestTransactionCreateModel model)
+        {
+            var transactionCreate = _mapper.Map<Transaction>(model);
+            Wallet wallet = null;
+            try
+            {
+                if (transactionCreate == null)
+                {
+                    throw new Exception("Transaction information can't be null");
+                }
+                if (transactionCreate.WalletId == 0)
+                {
+                    throw new Exception("Invalid wallet !");
+                }
+
+                wallet = _walletRepository.GetById(transactionCreate.WalletId);
+                if (wallet == null)
+                {
+                    throw new Exception("Invalid wallet !");
+                }
+
+                transactionCreate.BalanceAtTime = wallet.Balance;
+
+                if (model.Type == TypeOfTransactionEnum.Refund || model.Type == TypeOfTransactionEnum.Recharge)
+                {
+                    wallet.Balance += model.Money;
+                    await _walletRepository.UpdateAsync(wallet);
+                }
+                else if (model.Type == TypeOfTransactionEnum.Purchase || model.Type == TypeOfTransactionEnum.Withdraw)
+                {
+                    if (wallet.Balance < model.Money)
+                    {
+                        throw new Exception("Not enough money in your wallet !");
+                    }
+                    wallet.Balance -= model.Money;
+                    await _walletRepository.UpdateAsync(wallet);
+                }
+
+                transactionCreate.Description = model.Description;
+                transactionCreate.CreatedDate = DateTime.Now;
+                transactionCreate.OrderId = model.OrderId;
+                transactionCreate.Status = TransactionStatusEnum.Success.ToString();
+
+                _transactionRepository.AddTransaction(transactionCreate);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transactionCreate.CreatedDate = DateTime.Now;
+                transactionCreate.Description = $"Failed: {ex.Message}";
+                transactionCreate.Status = TransactionStatusEnum.Failed.ToString();
+                _transactionRepository.AddTransaction(transactionCreate);
+                return false;
+            }
+        }
+
+
         public async Task<ResponseTransactionResult> GetDetailTransactionVerifyUser(string transactionId, int userId)
         {
             try
@@ -58,4 +120,5 @@ namespace PreOrderBlindBox.Service.Services
             return responseMap;
         }
     }
+
 }
