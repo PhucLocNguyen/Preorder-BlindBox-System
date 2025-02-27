@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.TransactionModel;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace PreOrderBlindBox.Services.Mappers.Profiles
         public TransactionProfile()
         {
             CreateMap<Transaction, ResponseTransactionResult>();
+            CreateMap<RequestTransactionCreateModel, Transaction>();
+
         }
     }
 }
