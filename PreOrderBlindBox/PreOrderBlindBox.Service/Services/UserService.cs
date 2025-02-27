@@ -106,7 +106,7 @@ namespace PreOrderBlindBox.Service.Services
 
 		}
 
-		public async Task<bool> RegisterAccountAsync(RequestRegisterAccount registerAccount)
+		public async Task<int> RegisterAccountAsync(RequestRegisterAccount registerAccount)
 		{
 			await _unitOfWork.BeginTransactionAsync();
 			try
@@ -149,7 +149,7 @@ namespace PreOrderBlindBox.Service.Services
 
 				var result = await _unitOfWork.SaveChanges();
 				await _unitOfWork.CommitTransactionAsync();
-				return true;
+				return result;
 			}
 			catch (Exception ex)
 			{
@@ -210,7 +210,7 @@ namespace PreOrderBlindBox.Service.Services
 
 		}
 
-		public async Task<bool> ForgotPasswordForCustomer(RequestForgotPassword forgotPassword)
+		public async Task<int> ForgotPasswordForCustomer(RequestForgotPassword forgotPassword)
 		{
 			var user = await _userRepository.GetUserByEmailAsync(forgotPassword.Email);
 			if (user == null)
@@ -243,9 +243,9 @@ namespace PreOrderBlindBox.Service.Services
 					Body = MailContent.ForgotPasswordEmail(user.FullName, forgotPasswordToken, user.Email)
 				});
 
-				await _unitOfWork.SaveChanges();
+				int result = await _unitOfWork.SaveChanges();
 				await _unitOfWork.CommitTransactionAsync();
-				return true;
+				return result;
 			}
 			catch (Exception ex)
 			{
@@ -257,6 +257,14 @@ namespace PreOrderBlindBox.Service.Services
 
 		public async Task<bool> RegisterStaffAccountAsync(RequestRegisterAccount registerStaffAccount)
 		{
+			//Kiểm tra người tạo có phải là admin không
+			int userId = _currentUserService.GetUserId();
+			var user = await _userRepository.GetUserById(userId);
+			if (user.Role.RoleName.ToLower() != "admin")
+			{
+				throw new Exception("You do not have permission to create account staff");
+			}
+
 			await _unitOfWork.BeginTransactionAsync();
 			try
 			{
@@ -347,6 +355,14 @@ namespace PreOrderBlindBox.Service.Services
 
 		public async Task<int> UpdateStaffInformation(RequestUpdateStaffInformation updateStaffInformation, int staffId)
 		{
+			//Kiểm tra người cập nhật có phải là admin không
+			int userId = _currentUserService.GetUserId();
+			var user = await _userRepository.GetUserById(userId);
+			if (user.Role.RoleName.ToLower() != "admin")
+			{
+				throw new Exception("You do not have permission to update account staff");
+			}
+
 			var staff = await _userRepository.GetUserById(staffId);
 			if (staff == null)
 			{
@@ -368,6 +384,14 @@ namespace PreOrderBlindBox.Service.Services
 
 		public async Task<int> DeleteStaff(int staffId)
 		{
+			//Kiểm tra người xóa có phải là admin không
+			int userId = _currentUserService.GetUserId();
+			var user = await _userRepository.GetUserById(userId);
+			if (user.Role.RoleName.ToLower() != "admin")
+			{
+				throw new Exception("You do not have permission to delete account staff");
+			}
+
 			var staff = await _userRepository.GetUserById(staffId);
 			if (staff == null)
 			{

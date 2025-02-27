@@ -209,5 +209,35 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
+        [HttpGet("Filter")]
+        public async Task<IActionResult> FilterPreorderCampaign([FromQuery] FilterPreorderCampaignRequest request, [FromQuery] PaginationParameter pagination)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.FilterPreorderCampaignAsync(request, pagination);
+                if (preorderCampaign == null)
+                {
+                    return NotFound(new { message = "Preorder campaign not found." });
+                }
+                var metadata = new
+                {
+                    preorderCampaign.TotalCount,
+                    preorderCampaign.PageSize,
+                    preorderCampaign.CurrentPage,
+                    preorderCampaign.TotalPages,
+                    preorderCampaign.HasNext,
+                    preorderCampaign.HasPrevious
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                return Ok(preorderCampaign);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
+        }
+
     }
 }

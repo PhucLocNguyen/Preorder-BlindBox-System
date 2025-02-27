@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.IRepositories;
+using PreOrderBlindBox.Data.Repositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.MomoModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.WalletModel;
@@ -75,6 +77,16 @@ namespace PreOrderBlindBox.Service.Services
                     throw new Exception("The amount must be larger than 0");
                 }
                 wallet.Balance = amount;
+                await _transactionRepository.InsertAsync(new Transaction()
+                {
+                    Money = amount,
+                    CreatedDate = DateTime.Now,
+                    WalletId = wallet.WalletId,
+                    Type = TypeOfTransactionEnum.Withdraw.ToString(),
+                    Description = "Withdraw money from wallet",
+                    BalanceAtTime = wallet.Balance,
+                    Status = TransactionStatusEnum.Success.ToString()
+                });
                 await _walletRepository.UpdateAsync(wallet);
                 await _unitOfWork.SaveChanges();
                 return true;

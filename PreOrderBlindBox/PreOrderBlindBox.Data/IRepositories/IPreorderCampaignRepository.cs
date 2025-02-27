@@ -20,5 +20,7 @@ namespace PreOrderBlindBox.Data.IRepositories
             string blindBoxName,
             string sortOrder,
             PaginationParameter paginationParameter);
+        Task<List<PreorderCampaign>> FilterPreorderCampaignsAsync(
+            bool isEndingSoon, bool isNewlyLaunched, bool isTrending, PaginationParameter? pagination);
     }
 }

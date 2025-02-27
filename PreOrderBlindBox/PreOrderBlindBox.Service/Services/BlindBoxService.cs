@@ -55,6 +55,10 @@ namespace PreOrderBlindBox.Services.Services
 
                     await _imageService.UploadMainImage(mainImageUpdate);
                 }
+                else
+                {
+                    throw new Exception("Không thể tải lên ảnh chính");
+                }
                 if (!request.GalleryImages.IsNullOrEmpty() && request.GalleryImages?.Count > 0)
                 {
                     var galleryImagesUpdate = new AddImageRequest()
