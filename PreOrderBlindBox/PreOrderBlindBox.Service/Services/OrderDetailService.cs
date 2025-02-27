@@ -78,9 +78,6 @@ namespace PreOrderBlindBox.Services.Services
                 });
 			}
             
-			//var orderDetailResponse = orderDetail.Select(x=>x.toOrderDetailResponse()).ToList();
-
-
 			return orderDetailResponse;
         }
 

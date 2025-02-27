@@ -33,6 +33,8 @@ namespace PreOrderBlindBox.API
 			services.AddScoped<IUserVoucherRepository, UserVoucherRepository>();
 			services.AddScoped<IVoucherCampaignRepository, VoucherCampaignRepository>();
 			services.AddScoped<IWalletRepository, WalletRepository>();
+            services.AddScoped<ITempCampaignBulkOrderDetailRepository, TempCampaignBulkOrderDetailRepository>();
+            services.AddScoped<ITempCampaignBulkOrderRepository, TempCampaignBulkOrderRepository>();
 
             services.AddSingleton<IBlobService, BlobService>();
 
@@ -53,7 +55,9 @@ namespace PreOrderBlindBox.API
 			services.AddScoped<IWalletService, WalletService>();
 			services.AddScoped<IPaymentSerivce, PaymentService>();
 			services.AddScoped<ICurrentUserService, CurrentUserService>();
-			services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<ITempCampaignBulkOrderDetailService, TempCampaignBulkOrderDetailService>();
+            services.AddScoped<ITempCampaignBulkOrderService, TempCampaignBulkOrderService>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 			services.AddTransient<IMailService, MailService>();
 			return services;
 		}
