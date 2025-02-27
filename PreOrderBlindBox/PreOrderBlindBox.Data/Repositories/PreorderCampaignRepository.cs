@@ -46,7 +46,7 @@ namespace PreOrderBlindBox.Data.Repositories
 
         public async Task<List<PreorderCampaign>> GetAllPreorderCampaign()
         {
-            return await _context.PreorderCampaigns.Where(x => x.IsDeleted == false).ToListAsync();
+            return await _context.PreorderCampaigns./*Where(x => x.IsDeleted == false).*/ToListAsync();
         }
 
         public async Task UpdateRangeAsync(IEnumerable<PreorderCampaign> preorderCampaigns)
@@ -105,6 +105,35 @@ namespace PreOrderBlindBox.Data.Repositories
             return await GetAll(paginationParameter, filter, orderBy, includes);
         }
 
+        public async Task<List<PreorderCampaign>> FilterPreorderCampaignsAsync(
+            bool isEndingSoon, bool isNewlyLaunched, bool isTrending, PaginationParameter? pagination)
+        {
+            var now = DateTime.UtcNow;
+
+            Expression<Func<PreorderCampaign, bool>> filter = pc => !pc.IsDeleted &&
+                pc.Status == "Active" &&
+                pc.BlindBox != null &&
+                (
+                    (isEndingSoon && pc.EndDate >= now && pc.EndDate <= now.AddDays(2)) ||
+                    (isNewlyLaunched && pc.StartDate <= now && pc.StartDate >= now.AddDays(-2))
+                );
+
+            Expression<Func<PreorderCampaign, object>>[] includes = new Expression<Func<PreorderCampaign, object>>[]
+            {
+                pc => pc.BlindBox,
+                pc => pc.PreorderMilestones,
+                pc => pc.OrderDetails
+            };
+
+            Func<IQueryable<PreorderCampaign>, IOrderedQueryable<PreorderCampaign>>? orderBy = null;
+
+            if (isTrending)
+            {
+                orderBy = q => q.OrderByDescending(pc => pc.PlacedOrderCount);
+            }
+
+            return await GetAll(pagination, filter, orderBy, includes);
+        }
 
     }
 }

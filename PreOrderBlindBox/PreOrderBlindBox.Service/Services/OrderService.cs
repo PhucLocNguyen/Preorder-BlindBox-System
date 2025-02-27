@@ -9,8 +9,10 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.OrderResponseModel;
 using PreOrderBlindBox.Services.IServices;
+using PreOrderBlindBox.Services.Mappers.CartMapper;
 using PreOrderBlindBox.Services.Mappers.OrderDetailMapper;
 using PreOrderBlindBox.Services.Mappers.OrderMapper;
+using PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper;
 using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.Services.Services
@@ -25,13 +27,21 @@ namespace PreOrderBlindBox.Services.Services
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ICurrentUserService _currentUserService;
 		private readonly IUserVoucherService _userVoucherService;
+        private readonly IWalletService _walletService;
+		private readonly ITempCampaignBulkOrderRepository _tempCampaignBulkOrderRepository;
+        private readonly ITempCampaignBulkOrderDetailService _tempCampaignBulkOrderDetailService;
+        private readonly IPreorderCampaignService _preorderCampaignService;
 
-		public OrderService(
+        public OrderService(
 			IOrderRepository orderRepository, ICartService cartService,
 			IUnitOfWork unitOfWork, IUserRepository userRepository,
 			INotificationService notificationService, IOrderDetailService orderDetailService,
 			ICurrentUserService currentUserService,
-			IUserVoucherService userVoucherService
+			IUserVoucherService userVoucherService,
+			IWalletService walletService,
+            ITempCampaignBulkOrderRepository tempCampaignBulkOrderRepository,
+            ITempCampaignBulkOrderDetailService tempCampaignBulkOrderDetailService,
+        IPreorderCampaignService preorderCampaignService
 			)
 		{
 			_orderRepository = orderRepository;
@@ -42,9 +52,13 @@ namespace PreOrderBlindBox.Services.Services
 			_orderDetailService = orderDetailService;
 			_currentUserService = currentUserService;
 			_userVoucherService = userVoucherService;
+			_walletService = walletService;
+			_tempCampaignBulkOrderRepository = tempCampaignBulkOrderRepository;
+			_preorderCampaignService = preorderCampaignService;
+            _tempCampaignBulkOrderDetailService = tempCampaignBulkOrderDetailService;
 		}
 
-		public async Task CreateOrder(RequestCreateOrder requestCreateOrder, RequestCreateCart? requestCreateCart)
+		public async Task CreateOrder(RequestCreateOrder requestCreateOrder)
 		{
 			int customerId = _currentUserService.GetUserId();
 			await _unitOfWork.BeginTransactionAsync();
@@ -52,18 +66,30 @@ namespace PreOrderBlindBox.Services.Services
 			{
 				var customer = await _userRepository.GetByIdAsync(customerId);
 				var staff = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).FirstOrDefault();
+				var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin", includes: x => x.Role)).FirstOrDefault();
+				
 				var notificationForCustomer = (new RequestCreateNotification()).NotificationForCustomer(customerId);
 				var notificationForStaff = (new RequestCreateNotification()).NotificationForStaff(customer.FullName, staff.UserId);
-				List<ResponseCart> priceForCarts = await _cartService.IdentifyPriceForCartItem(customerId, requestCreateCart);
+
+				var customerWallet = await _walletService.GetWalletByUserIdAsync(customerId); 
+				var adminWallet = await _walletService.GetWalletByUserIdAsync(admin.UserId);
+
+				List<ResponseCart> priceForCarts = await _cartService.IdentifyPriceForCartItem(customerId, requestCreateOrder.RequestCreateCart);
+				decimal totalAmountInOrder = 0;
 				if (priceForCarts.Count == 0)
 					throw new Exception("The cart is empty");
-				List<ResponseCart> cartInSameCampaign = new List<ResponseCart>();
+                if (customerWallet.Balance < priceForCarts.Sum(x => x.Amount))
+                    throw new Exception("Your wallet is not enough money to make the payment");
+
+                 
+                List<ResponseCart> cartInSameCampaign = new List<ResponseCart>();
 				int preorderCampaignId = (int)priceForCarts[0].PreorderCampaignId;
 				cartInSameCampaign.Add(priceForCarts[0]);
 				for (int i = 1; i < priceForCarts.Count; i++)
 				{
-					if (priceForCarts[i].PreorderCampaignId != preorderCampaignId)
+					if (priceForCarts[i].PreorderCampaignId != preorderCampaignId || i == priceForCarts.Count - 1)
 					{
+						var preorderCampaign = await _preorderCampaignService.GetPreorderCampaignAsyncById(preorderCampaignId);
 						if (requestCreateOrder.UserVoucherId != null)
 						{
 							var userVoucher = await _userVoucherService.GetUserVoucherById((int)requestCreateOrder.UserVoucherId);
@@ -82,10 +108,21 @@ namespace PreOrderBlindBox.Services.Services
 							requestCreateOrder.Amount = cartInSameCampaign.Sum(x => x.Amount);
 						}
 
-						var orderEntity = requestCreateOrder.toOrderEntity(customerId);
-						await _orderRepository.InsertAsync(orderEntity);
-						await _unitOfWork.SaveChanges();
-						await _orderDetailService.CreateOrderDetail(cartInSameCampaign, orderEntity.OrderId);
+						if (preorderCampaign.Type.Equals("BulkOrder"))
+                        {
+							var tempCampaignBulkOrderEntity = requestCreateOrder.toTempCampaignBulkOrder(customerId);
+							await _tempCampaignBulkOrderRepository.InsertAsync(tempCampaignBulkOrderEntity);
+                            await _unitOfWork.SaveChanges();
+                            await _tempCampaignBulkOrderDetailService.CreateTempCampaignBulkOrderDetail(cartInSameCampaign, tempCampaignBulkOrderEntity.TempCampaignBulkOrderId);
+                        }
+						else
+						{
+                            var orderEntity = requestCreateOrder.toOrderEntity(customerId);
+                            await _orderRepository.InsertAsync(orderEntity);
+                            await _unitOfWork.SaveChanges();
+                            await _orderDetailService.CreateOrderDetail(cartInSameCampaign, orderEntity.OrderId);
+                        }
+						totalAmountInOrder += (decimal)requestCreateOrder.Amount;
 						cartInSameCampaign = new List<ResponseCart> { priceForCarts[i] };
 						preorderCampaignId = (int)priceForCarts[i].PreorderCampaignId;
 
@@ -94,40 +131,14 @@ namespace PreOrderBlindBox.Services.Services
 					{
 						cartInSameCampaign.Add(priceForCarts[i]);
 					}
-
-					if (i == priceForCarts.Count - 1)
-					{
-						if (requestCreateOrder.UserVoucherId != null)
-						{
-							var userVoucher = await _userVoucherService.GetUserVoucherById((int)requestCreateOrder.UserVoucherId);
-							var amountAfterUsingVoucher = cartInSameCampaign.Sum(x => x.Amount) * (userVoucher.PercentDiscount / 100);
-							if (amountAfterUsingVoucher > userVoucher.MaximumMoneyDiscount)
-							{
-								requestCreateOrder.Amount = userVoucher.MaximumMoneyDiscount;
-							}
-							else
-							{
-								requestCreateOrder.Amount = amountAfterUsingVoucher;
-							}
-						}
-						else
-						{
-							requestCreateOrder.Amount = cartInSameCampaign.Sum(x => x.Amount);
-						}
-
-						var orderEntity = requestCreateOrder.toOrderEntity(customerId);
-						await _orderRepository.InsertAsync(orderEntity);
-						await _unitOfWork.SaveChanges();
-						await _orderDetailService.CreateOrderDetail(cartInSameCampaign, orderEntity.OrderId);
-
-					}
 				}
 				if (priceForCarts.ToList().Any(x => x.Price < 0))
 				{
 					throw new Exception($"The cart contains {priceForCarts[0].Quantity} item with an incorrect price");
 				}
-
-				await _cartService.UpdateStatusOfCartByCustomerID(customerId);
+                await _walletService.WithdrawAsync(customerId, customerWallet.Balance - totalAmountInOrder);
+                await _walletService.WithdrawAsync(admin.UserId, adminWallet.Balance + totalAmountInOrder);
+                await _cartService.UpdateStatusOfCartByCustomerID(customerId);
 				await _notificationService.CreatNotification(notificationForStaff);
 				await _notificationService.CreatNotification(notificationForCustomer);
 				await _unitOfWork.CommitTransactionAsync();
@@ -156,7 +167,8 @@ namespace PreOrderBlindBox.Services.Services
 			}
 
 			var itemsOrderDetail = orders.Select(x => x.toOrderRespone()).ToList();
-			var result = new Pagination<ResponseOrder>(itemsOrderDetail, itemsOrderDetail.Count, page.PageIndex, page.PageSize);
+			var countItem = _orderRepository.Count(filter: x => (x.ReceiverName.Contains(searchKeyWords) || x.ReceiverAddress.Contains(searchKeyWords) || String.IsNullOrEmpty(searchKeyWords)));
+			var result = new Pagination<ResponseOrder>(itemsOrderDetail, countItem, page.PageIndex, page.PageSize);
 			return result;
 		}
 

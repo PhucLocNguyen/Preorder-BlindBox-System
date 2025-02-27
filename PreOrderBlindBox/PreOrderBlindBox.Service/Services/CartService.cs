@@ -163,6 +163,15 @@ namespace PreOrderBlindBox.Services.Services
             }
             foreach (var cart in listCart)
             {
+                var cartItem = new Cart()
+                {
+                    CartId = cart.CartId,
+                    CreateDate = cart.CreateDate,
+                    IsDeleted = cart.IsDeleted,
+                    PreorderCampaignId = cart.PreorderCampaignId,
+                    Quantity = cart.Quantity,
+                    UserId = cart.UserId,
+                };
                 var orderDetailsQuantity = await _orderDetailService.GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc((int)cart.PreorderCampaignId);
                 var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)cart.PreorderCampaignId);
                 //Tính tổng số lượng có hàng có trong mốc đó 
@@ -171,7 +180,6 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     var preorderCampaign = await _preorderCampaignService.GetPreorderCampaignAsyncById((int)cart.PreorderCampaignId);
                     var blindBox = await _blindBoxService.GetBlindBoxByIdAsync((int)preorderCampaign.BlindBoxId);
-                    var blindBoxResponse = _mapper.Map<ResponseBlindBox>(blindBox);
                     //Tính số lượng còn lại bao nhiêu cái đối với từng mốc 
                     int remainQuantity = await _preorderMilestoneService.CalculateRemainingQuantity(milestone.Quantity, orderDetailsQuantity);
                     if (remainQuantity == 0)
@@ -181,27 +189,27 @@ namespace PreOrderBlindBox.Services.Services
                     else
                     {
                         // Nếu số lượng còn lại trong mốc nhiều hơn số lượng khác hàng mua trong cart
-                        if (remainQuantity >= cart.Quantity)
+                        if (remainQuantity >= cartItem.Quantity)
                         {
                             cartItemPrices.Add(new ResponseCart()
                             {
-                                BlindBox = blindBoxResponse,
-                                PreorderCampaignId = cart.PreorderCampaignId,
-                                UserId = cart.UserId,
+                                BlindBox = blindBox,
+                                PreorderCampaignId = cartItem.PreorderCampaignId,
+                                UserId = cartItem.UserId,
                                 Price = milestone.Price,
-                                Quantity = cart.Quantity,
-                                Amount = milestone.Price * cart.Quantity
+                                Quantity = cartItem.Quantity,
+                                Amount = milestone.Price * cartItem.Quantity
                             });
                             break;
                         }//Nếu số lượng còn lại trong mốc ít hơn nhưng vẫn đủ hàng 
                         else
                         {
-                            cart.Quantity = cart.Quantity - remainQuantity;
+                            cartItem.Quantity = cartItem.Quantity - remainQuantity;
                             cartItemPrices.Add(new ResponseCart()
                             {
-                                BlindBox = blindBoxResponse,
-                                PreorderCampaignId = cart.PreorderCampaignId,
-                                UserId = cart.UserId,
+                                BlindBox = blindBox,
+                                PreorderCampaignId = cartItem.PreorderCampaignId,
+                                UserId = cartItem.UserId,
                                 Price = milestone.Price,
                                 Quantity = remainQuantity,
                                 Amount = milestone.Price * remainQuantity

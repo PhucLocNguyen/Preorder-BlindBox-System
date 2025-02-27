@@ -71,7 +71,7 @@ namespace PreOrderBlindBox.API.Controllers
         {
             try
             {
-                await _orderService.CreateOrder(requestCreateOrder, requestCreateOrder.RequestCreateCart);
+                await _orderService.CreateOrder(requestCreateOrder);
                 return Ok(new { Message = "Create order successfully " });
             }
             catch (Exception ex)
