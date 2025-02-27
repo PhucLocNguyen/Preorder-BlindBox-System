@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
@@ -19,8 +20,8 @@ namespace PreOrderBlindBox.API.Controllers
         {
             _transactionService = transactionService;
         }
-        [HttpGet("GetTransactionStatusVerifyUserPayment")]
-        public async Task<IActionResult> GetTransactionStatusVerifyUserPayment([FromQuery] string transactionId)
+        [HttpGet("GetTransactionDetailVerifyUserPayment")]
+        public async Task<IActionResult> GetTransactionDetailVerifyUserPayment([FromQuery] string transactionId)
         {
             var userId = _currentUserService.GetUserId();
             if (userId == null)
@@ -39,6 +40,33 @@ namespace PreOrderBlindBox.API.Controllers
         public async Task<IActionResult> GetListOfAllTransaction([FromQuery] PaginationParameter pagination)
         {
             var model = await _transactionService.GetListOfAllTransaction(pagination);
+            if (model == null)
+            {
+                return NotFound();
+            }
+            var metadata = new
+            {
+                model.TotalCount,
+                model.PageSize,
+                model.CurrentPage,
+                model.TotalPages,
+                model.HasNext,
+                model.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(model);
+        }
+
+        [HttpGet("GetListOfAllTransactionByUser")]
+        public async Task<IActionResult> GetListOfAllTransactionByUser([FromQuery] PaginationParameter pagination)
+        {
+            var userId = _currentUserService.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var model = await _transactionService.GetListOfTransactionByUser(pagination, userId);
             if (model == null)
             {
                 return NotFound();
