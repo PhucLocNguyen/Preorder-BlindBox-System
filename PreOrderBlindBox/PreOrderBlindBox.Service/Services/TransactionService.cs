@@ -119,6 +119,24 @@ namespace PreOrderBlindBox.Service.Services
             var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);
             return responseMap;
         }
+
+        public async Task<Pagination<ResponseTransactionResult>> GetListOfTransactionByUser(PaginationParameter paginationParameter, int userId)
+        {
+            User user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return null;
+            }
+            if(user.WalletId == null)
+            {
+                return null;
+            }
+            List<Transaction> transactions = await _transactionRepository.GetAll(pagination: paginationParameter, filter:x=>x.WalletId== user.WalletId);
+            var response = _mapper.Map<List<ResponseTransactionResult>>(transactions);
+            int totalItemsCount = _transactionRepository.Count();
+            var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);
+            return responseMap;
+        }
     }
 
 }

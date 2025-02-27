@@ -15,6 +15,8 @@ public partial class TempCampaignBulkOrder
 
     public decimal Amount { get; set; }
 
+    public decimal? DiscountMoney { get; set; }
+
     public string ReceiverName { get; set; }
 
     public string ReceiverPhone { get; set; }
