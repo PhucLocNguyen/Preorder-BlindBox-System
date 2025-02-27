@@ -46,7 +46,7 @@ namespace PreOrderBlindBox.Data.Repositories
 
         public async Task<List<PreorderCampaign>> GetAllPreorderCampaign()
         {
-            return await _context.PreorderCampaigns.Where(x => x.IsDeleted == false).ToListAsync();
+            return await _context.PreorderCampaigns./*Where(x => x.IsDeleted == false).*/ToListAsync();
         }
 
         public async Task UpdateRangeAsync(IEnumerable<PreorderCampaign> preorderCampaigns)
