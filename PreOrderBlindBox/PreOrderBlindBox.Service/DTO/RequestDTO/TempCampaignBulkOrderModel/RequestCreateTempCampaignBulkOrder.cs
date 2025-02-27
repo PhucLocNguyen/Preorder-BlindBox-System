@@ -1,13 +1,8 @@
 ﻿using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel
+namespace PreOrderBlindBox.Services.DTO.RequestDTO.TempCampaignBulkOrderModel
 {
-    public class RequestCreateOrder
+    public class ResquestCreateTempCampaignBulkOrder
     {
         public int? UserVoucherId { get; set; }
 
@@ -21,6 +16,6 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel
 
         public string Status { get; set; } = "Pending";
 
-		public RequestCreateCart? RequestCreateCart { get; set; }
+        public RequestCreateCart? RequestCreateCart { get; set; }
     }
 }

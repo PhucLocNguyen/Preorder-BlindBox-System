@@ -65,9 +65,23 @@ namespace PreOrderBlindBox.Service.Services
             return wallet == null ? null : _mapper.Map<ResponseShowWallet>(wallet);
         }
 
-        public Task<bool> WithdrawAsync(int userId, decimal amount)
+        public async Task<bool> WithdrawAsync(int userId, decimal amount)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var wallet = await _walletRepository.GetByIdAsync(userId);
+                if( amount < 0  )
+                {
+                    throw new Exception("The amount must be larger than 0");
+                }
+                wallet.Balance = amount;
+                await _walletRepository.UpdateAsync(wallet);
+                await _unitOfWork.SaveChanges();
+                return true;
+            }catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
