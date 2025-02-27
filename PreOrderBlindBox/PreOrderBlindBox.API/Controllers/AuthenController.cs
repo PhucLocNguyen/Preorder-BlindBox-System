@@ -26,7 +26,7 @@ namespace PreOrderBlindBox.API.Controllers
 				if (ModelState.IsValid)
 				{
 					var result = await _userService.RegisterAccountAsync(registerModel);
-					if (result == true)
+					if (result > 0)
 					{
 						return Ok(new { Message = "Please confirm your email" });
 					}
@@ -144,7 +144,7 @@ namespace PreOrderBlindBox.API.Controllers
 				if (ModelState.IsValid)
 				{
 					var result = await _userService.ForgotPasswordForCustomer(forgotPassword);
-					if (result)
+					if (result > 0)
 					{
 						return Ok(new { Message = "Check your email to continue changing your password." });
 					}

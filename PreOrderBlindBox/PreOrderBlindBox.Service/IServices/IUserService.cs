@@ -11,11 +11,11 @@ namespace PreOrderBlindBox.Services.IServices
 	public interface IUserService
 	{
 		public Task<ResponseLogin> LoginByEmailAndPasswordAsync(string email, string password);
-		public Task<bool> RegisterAccountAsync(RequestRegisterAccount registerAccount);
+		public Task<int> RegisterAccountAsync(RequestRegisterAccount registerAccount);
 		public Task<bool> ConfirmEmailByTokenAsync(string confirmToken);
 		public Task<ResponseCurrentAccountRole> GetCurrentAccountRole();
 		public Task<int> ChangePassword(RequestChangePassword changePassword);
-		public Task<bool> ForgotPasswordForCustomer(RequestForgotPassword forgotPassword);
+		public Task<int> ForgotPasswordForCustomer(RequestForgotPassword forgotPassword);
 		public Task<int> AddNewPasswordForCustomer(RequestAddNewPassword addNewPassword);
 		public Task<bool> RegisterStaffAccountAsync(RequestRegisterAccount registerStaffAccount);
 		public Task<List<ResponseUserInfomation>> GetAllStaff();
