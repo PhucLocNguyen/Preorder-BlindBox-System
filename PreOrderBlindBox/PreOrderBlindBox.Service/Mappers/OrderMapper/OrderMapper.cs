@@ -11,7 +11,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
 {
     public static class OrderMapper
     {
-        public static Order toOrderEntity(this RequestCreateOrder requestCreateOrder, int userId)
+        public static Order toOrderEntity(this RequestCreateOrder requestCreateOrder, int userId, int? userVoucherID)
         {
             return new Order()
             {
@@ -20,7 +20,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                 ReceiverName = requestCreateOrder.ReceiverName,
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
                 ReceiverPhone = requestCreateOrder.ReceiverPhone,
-                UserVoucherId = requestCreateOrder.UserVoucherId,
+                UserVoucherId = userVoucherID,
 				Status = requestCreateOrder.Status,
 				CreatedDate = DateTime.Now,
                 UpdatedDate = null

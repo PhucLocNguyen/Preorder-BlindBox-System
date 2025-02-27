@@ -20,13 +20,13 @@ namespace PreOrderBlindBox.Services.Services
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
         private readonly IBlindBoxService _blindBoxService;
-        private readonly IPreorderCampaignService _preorderCampaignService;
+        private readonly IPreorderCampaignRepository _preorderCampaignRepository;
         public CartService(ICartRepository cartRepository, IUnitOfWork unitOfWork,
             IPreorderMilestoneService preorderMilestoneService,
             IOrderDetailService orderDetailService,
             ICurrentUserService currentUserService,
             IMapper mapper, IBlindBoxService blindBoxService,
-            IPreorderCampaignService preorderCampaignService
+            IPreorderCampaignRepository preorderCampaignRepository
             )
         {
             _cartRepository = cartRepository;
@@ -36,7 +36,7 @@ namespace PreOrderBlindBox.Services.Services
             _currentUserService = currentUserService;
             _mapper = mapper;
             _blindBoxService = blindBoxService;
-            _preorderCampaignService = preorderCampaignService;
+            _preorderCampaignRepository = preorderCampaignRepository;
         }
 
         public async Task<Cart> ChangeQuantityOfCartByCustomerID(RequestCreateCart requestCreateCart)
@@ -172,16 +172,17 @@ namespace PreOrderBlindBox.Services.Services
                     Quantity = cart.Quantity,
                     UserId = cart.UserId,
                 };
-                var orderDetailsQuantity = await _orderDetailService.GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc((int)cart.PreorderCampaignId);
-                var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)cart.PreorderCampaignId);
+                var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)cartItem.PreorderCampaignId);
+                var orderDetailsQuantity = preorderCampaign.PlacedOrderCount;
+                //var orderDetailsQuantity = await _orderDetailService.GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc((int)cart.PreorderCampaignId);
+                var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)cartItem.PreorderCampaignId);
                 //Tính tổng số lượng có hàng có trong mốc đó 
 
                 foreach (var milestone in preorderMilestones)
                 {
-                    var preorderCampaign = await _preorderCampaignService.GetPreorderCampaignAsyncById((int)cart.PreorderCampaignId);
                     var blindBox = await _blindBoxService.GetBlindBoxByIdAsync((int)preorderCampaign.BlindBoxId);
                     //Tính số lượng còn lại bao nhiêu cái đối với từng mốc 
-                    int remainQuantity = await _preorderMilestoneService.CalculateRemainingQuantity(milestone.Quantity, orderDetailsQuantity);
+                    int remainQuantity = await _preorderMilestoneService.CalculateRemainingQuantity(milestone.Quantity, (int)orderDetailsQuantity);
                     if (remainQuantity == 0)
                     {
                         orderDetailsQuantity = orderDetailsQuantity - milestone.Quantity;
