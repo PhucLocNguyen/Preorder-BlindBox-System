@@ -50,7 +50,7 @@ namespace PreOrderBlindBox.Service.Services
                 if (model.Type == TypeOfTransactionEnum.Refund || model.Type == TypeOfTransactionEnum.Recharge)
                 {
                     wallet.Balance += model.Money;
-                    await _walletRepository.UpdateAsync(wallet);
+                    
                 }
                 else if (model.Type == TypeOfTransactionEnum.Purchase || model.Type == TypeOfTransactionEnum.Withdraw)
                 {
@@ -59,9 +59,8 @@ namespace PreOrderBlindBox.Service.Services
                         throw new Exception("Not enough money in your wallet !");
                     }
                     wallet.Balance -= model.Money;
-                    await _walletRepository.UpdateAsync(wallet);
                 }
-
+                await _walletRepository.UpdateAsync(wallet);
                 transactionCreate.Description = model.Description;
                 transactionCreate.CreatedDate = DateTime.Now;
                 transactionCreate.OrderId = model.OrderId;

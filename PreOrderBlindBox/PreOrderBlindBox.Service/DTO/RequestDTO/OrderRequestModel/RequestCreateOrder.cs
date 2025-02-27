@@ -1,5 +1,6 @@
 ﻿using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel
 {
     public class RequestCreateOrder
     {
-        public int? UserVoucherId { get; set; }
+        public Dictionary<int, int>? UserVoucherIdForPreorderCampaign { get; set; } = new Dictionary<int, int>();
 
         public decimal? Amount { get; set; }
 
