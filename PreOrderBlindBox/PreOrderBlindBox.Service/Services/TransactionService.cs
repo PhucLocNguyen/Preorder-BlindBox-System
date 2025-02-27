@@ -39,7 +39,7 @@ namespace PreOrderBlindBox.Service.Services
                     throw new Exception("Invalid wallet !");
                 }
 
-                wallet = _walletRepository.GetById(transactionCreate.WalletId);
+                wallet = await _walletRepository.GetByIdAsync(transactionCreate.WalletId.Value);
                 if (wallet == null)
                 {
                     throw new Exception("Invalid wallet !");
