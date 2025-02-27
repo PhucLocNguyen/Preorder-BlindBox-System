@@ -259,7 +259,7 @@ namespace PreOrderBlindBox.Service.Services
 		{
 			//Kiểm tra người tạo có phải là admin không
 			int userId = _currentUserService.GetUserId();
-			var user = await _userRepository.GetByIdAsync(userId);
+			var user = await _userRepository.GetUserById(userId);
 			if (user.Role.RoleName.ToLower() != "admin")
 			{
 				throw new Exception("You do not have permission to create account staff");
@@ -357,7 +357,7 @@ namespace PreOrderBlindBox.Service.Services
 		{
 			//Kiểm tra người cập nhật có phải là admin không
 			int userId = _currentUserService.GetUserId();
-			var user = await _userRepository.GetByIdAsync(userId);
+			var user = await _userRepository.GetUserById(userId);
 			if (user.Role.RoleName.ToLower() != "admin")
 			{
 				throw new Exception("You do not have permission to update account staff");
@@ -386,7 +386,7 @@ namespace PreOrderBlindBox.Service.Services
 		{
 			//Kiểm tra người xóa có phải là admin không
 			int userId = _currentUserService.GetUserId();
-			var user = await _userRepository.GetByIdAsync(userId);
+			var user = await _userRepository.GetUserById(userId);
 			if (user.Role.RoleName.ToLower() != "admin")
 			{
 				throw new Exception("You do not have permission to delete account staff");

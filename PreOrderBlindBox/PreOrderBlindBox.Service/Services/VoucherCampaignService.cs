@@ -34,7 +34,7 @@ namespace PreOrderBlindBox.Service.Services
 		public async Task<int> CreateVoucherCampaignAsync(RequestCreateVoucherCompaign voucherCompaign)
 		{
 			int userId = _currentUserService.GetUserId();
-			var user = await _userRepository.GetByIdAsync(userId);
+			var user = await _userRepository.GetUserById(userId);
 			if (user.Role.RoleName.ToLower() != "admin")
 			{
 				throw new Exception("You do not have permission to create vouchers");
@@ -88,7 +88,7 @@ namespace PreOrderBlindBox.Service.Services
 		public async Task<int> DeleteVoucherCampaignAsync(int voucherCampaignId)
 		{
 			int userId = _currentUserService.GetUserId();
-			var user = await _userRepository.GetByIdAsync(userId);
+			var user = await _userRepository.GetUserById(userId);
 			if (user.Role.RoleName.ToLower() != "admin")
 			{
 				throw new Exception("You do not have permission to delete vouchers");
@@ -101,7 +101,7 @@ namespace PreOrderBlindBox.Service.Services
 		public async Task<int> UpdateVoucherCampaignAsync(int voucherCampaignId, RequestUpdateVoucherCampaign updateVoucher)
 		{
 			int userId = _currentUserService.GetUserId();
-			var user = await _userRepository.GetByIdAsync(userId);
+			var user = await _userRepository.GetUserById(userId);
 			if (user.Role.RoleName.ToLower() != "admin")
 			{
 				throw new Exception("You do not have permission to update vouchers");
