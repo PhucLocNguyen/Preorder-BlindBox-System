@@ -1,6 +1,7 @@
 import { Button, Form, Input } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 import GoogleIcon from '../../assets/Login/GoogleIcon.png';
 import FacebookIcon from '../../assets/Login/FacebookIcon.png';
@@ -17,9 +18,12 @@ function LoginPage() {
 
     const CallApiLoginByEmailAndPassword = async (payload) => {
         const responseLogin = await ApiLoginByEmailAndPassword({ payload });
-        if (responseLogin.status === 200) {
+        if (responseLogin?.status === 200) {
             await CallApiGetCurrentAccountRole();
+            toast.success('Đăng nhập thành công!');
             navigate(fromPage, { replace: true });
+        } else {
+            toast.error('Đăng nhập thất bại!');
         }
     }
 
@@ -53,10 +57,10 @@ function LoginPage() {
                         {/* Phần chữ giới thiệu */}
                         <div>
                             <h3 className="text-[24px] font-bold leading-[37px]">
-                                Login to account
+                                Đăng nhập
                             </h3>
                             <div className="text-[#575864] text-[14px] font-normal leading-[20px]">
-                                Enter your email & password to login
+                                Nhập email và mật khẩu để đăng nhập
                             </div>
                         </div>
                         {/* Phần điền form đăng nhập */}
@@ -64,7 +68,7 @@ function LoginPage() {
                             <Form layout='vertical' form={form} onFinish={onFinish}>
                                 <Form.Item
                                     className='font-bold text-[14px] leading-[20px] text-[#111] mb-[10px]'
-                                    label="Email address"
+                                    label="Địa chỉ email"
                                     name="email"
                                     rules={[
                                         {
@@ -82,7 +86,7 @@ function LoginPage() {
 
                                 <Form.Item
                                     className='font-bold text-[14px] leading-[20px] text-[#111] mb-[10px]'
-                                    label="Password"
+                                    label="Mật khẩu"
                                     name="password"
                                     rules={[
                                         {
@@ -99,18 +103,18 @@ function LoginPage() {
                                 </Form.Item>
 
                                 <Form.Item className='mb-[0] '>
-                                    <div className='flex items-center justify-end '>
+                                    <Link to='/forgot-password' className='flex items-center justify-end '>
                                         <p className='text-[14px] leading-[20px] text-[#2275fc] font-normal cursor-pointer'>
-                                            Forgot password?
+                                            Quên mật khẩu?
                                         </p>
-                                    </div>
+                                    </Link>
                                 </Form.Item>
 
                                 <Form.Item className='mb-0'>
                                     <Button className='mt-[1rem] h-[50px] py-[15px] px-[22px] flex items-center justify-center text-[14px] font-bold leading-[20px] w-full' type="primary"
                                         htmlType='submit'
                                     >
-                                        Login
+                                        Đăng nhập
                                     </Button>
                                 </Form.Item>
                             </Form>
