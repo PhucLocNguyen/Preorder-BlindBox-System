@@ -106,10 +106,6 @@ const VoucherDetails = () => {
                         <strong>Discount:</strong> {voucherDetail.percentDiscount}%
                     </p>
                     <p className="flex items-center">
-                        <DollarCircleOutlined className="mr-2 text-yellow-500" />
-                        <strong>Max Money Discount:</strong> {voucherDetail.maximumMoneyDiscount} VNĐ
-                    </p>
-                    <p className="flex items-center">
                         <CheckCircleOutlined className={`mr-2 ${voucherDetail.status === "Active" ? "text-green-500" : "text-red-500"}`} />
                         <strong>Status:</strong> {voucherDetail.status}
                     </p>
