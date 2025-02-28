@@ -180,6 +180,14 @@ namespace PreOrderBlindBox.Service.Services
 			{
 				throw new Exception("User does not have voucher");
 			}
+			if (DateTime.Now >= userVoucher.VoucherCampaign.ExpiredDate)
+			{
+				throw new Exception("Voucher has expired");
+			}
+			if (userVoucher.UsedQuantity >= userVoucher.Quantity)
+			{
+				throw new Exception("No more vouchers to use");
+			}
 
 			ResponseUserVoucher responseUserVoucher = new ResponseUserVoucher()
 			{
