@@ -9,12 +9,15 @@ import {
     SearchOutlined,
     PlusOutlined,
 } from '@ant-design/icons';
-import UserManagementCreate from "./UserManagementCreate";
-import UserManagementEdit from "./UserManagementEdit";
+
+import UserManagementCreate from "./StaffManagementCreate";
+import UserManagementEdit from "./StaffManagementEdit";
+
+
 import { useNavigate } from 'react-router-dom';
 const { Search } = Input;
 
-const UserManagement = () => {
+const StaffManagement = () => {
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
     const [search, setSearch] = useState("");
@@ -184,4 +187,4 @@ const UserManagement = () => {
     );
 };
 
-export default UserManagement;
+export default StaffManagement;

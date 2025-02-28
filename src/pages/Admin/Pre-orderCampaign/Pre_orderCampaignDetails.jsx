@@ -39,7 +39,7 @@ const Pre_orderCampaignDetails = () => {
 
     return (
         <div className="container mx-auto p-6 flex justify-center">
-            <div className="w-full max-w-4xl bg-white border rounded-lg shadow-lg overflow-hidden p-8">
+            <div className="w-full max-w-2xl bg-white border rounded-lg shadow-lg overflow-hidden p-8">
                 {/* Hình ảnh lớn hơn */}
                 {mainImageUrl ? (
                     <img

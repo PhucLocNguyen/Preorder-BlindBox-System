@@ -6,7 +6,7 @@ import { Row, Col } from "antd";
 import VoucherIcon from "../../assets/Admin/VoucherIcon.png";
 import DashboardIcon from "../../assets/Admin/DashboardIcon.jpg";
 import PreOrderIcon from "../../assets/Admin/Pre-orderIcon.png";
-import Pre_orderMilestone from "../../assets/Admin/Preorder_Milestone.png";
+import HistoryTransactions from "../../assets/Admin/HistoryTransactions.png";
 import { useNavigate } from "react-router-dom";
 const SideBarAdmin = () => {
     const location = useLocation();
@@ -38,12 +38,30 @@ const SideBarAdmin = () => {
                             </Col>
                             <Col span={14}>
                                 <i className="fas fa-tachometer-alt"></i>
-                                <span className="font-medium text-lg">User</span>
+                                <span className="font-medium text-lg">Staff</span>
                             </Col>
 
                         </Row>
                     </Link>
 
+                </li>
+
+
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/history-transactions"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
+                    }`}>
+                    <Link to="/admin/history-transactions" className="flex items-center w-full">
+                        <Row gutter={12} align="middle">
+                            <Col span={5} className="flex justify-center">
+                                <img src={HistoryTransactions} alt="History Transactions Icon" className="w-8 h-8 no-border" />
+                            </Col>
+                            <Col span={16}>
+                                <i className="fas fa-tachometer-alt"></i>
+                                <span className="font-medium text-lg">HistoryTransactions</span>
+                            </Col>
+                        </Row>
+                    </Link>
                 </li>
 
 
