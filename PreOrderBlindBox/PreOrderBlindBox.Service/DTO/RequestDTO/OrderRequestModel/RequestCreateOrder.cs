@@ -10,9 +10,11 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel
 {
     public class RequestCreateOrder
     {
+        // Con số đầu là preorderCampaign, số sau là voucherCampaign
         public Dictionary<int, int>? UserVoucherIdForPreorderCampaign { get; set; } = new Dictionary<int, int>();
 
         public decimal? Amount { get; set; }
+        public decimal? DiscountMoney { get; set; }
 
         public string ReceiverName { get; set; }
 
@@ -20,7 +22,7 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel
 
         public string ReceiverAddress { get; set; }
 
-        public string Status { get; set; } = "Pending";
+        public string Status { get; set; } = "Watting";
 
 		public RequestCreateCart? RequestCreateCart { get; set; }
     }

@@ -94,7 +94,9 @@ namespace PreOrderBlindBox.API.Controllers
 			try
 			{
 				int userID = _currentUserService.GetUserId();
-				var itemResult = await _cartService.UpdateStatusOfCartByCustomerID(userID);
+                if(userID == null)
+                    return BadRequest(new { Message = "Login first" });
+                var itemResult = await _cartService.UpdateStatusOfCartByCustomerID(userID);
 				if (itemResult) return Ok(new { Message = "Clear cart successfully" });
 				return BadRequest(new { Message = "Something wrong when get price" });
 

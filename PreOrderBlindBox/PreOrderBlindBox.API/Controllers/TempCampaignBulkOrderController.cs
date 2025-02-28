@@ -41,5 +41,19 @@ namespace PreOrderBlindBox.API.Controllers
                 return BadRequest(new { Message = (ex.Message) });
             }
         }
+
+        [HttpGet("{AcceptCampaignBulk}/{preorderCampaignId}")]
+        public async Task<IActionResult> convertTempCampaignBulkOrderToOrder([FromQuery] int preorderCampaignId, decimal endPriceOfCampaign)
+        {
+            try
+            {
+                var result = await _tempCampaignBulkOrderService.convertTempCampaignBulkOrderToOrder(preorderCampaignId, endPriceOfCampaign);
+                return Ok(new { Message = "Conver successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+        }
     }
 }

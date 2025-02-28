@@ -10,6 +10,7 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.NotificationRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel;
+using PreOrderBlindBox.Services.DTO.RequestDTO.UserVoucherModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.OrderResponseModel;
 using PreOrderBlindBox.Services.IServices;
@@ -78,7 +79,6 @@ namespace PreOrderBlindBox.Services.Services
                 var requestAdminTransactionCreateModel = new RequestTransactionCreateModel()
                 {
                     Description = "Recharge",
-                    BalanceAtTime = 0,
                     Money = 0,
                     WalletId = admin.UserId,
                     Type = TypeOfTransactionEnum.Recharge,
@@ -87,7 +87,6 @@ namespace PreOrderBlindBox.Services.Services
                 var requestCustomerTransactionCreateModel = new RequestTransactionCreateModel()
                 {
                     Description = "Purchase",
-                    BalanceAtTime = 0,
                     Money = 0,
                     WalletId = customerId,
                     Type = TypeOfTransactionEnum.Purchase,
