@@ -33,6 +33,9 @@ const Wallet = lazy(() => import("../pages/Wallet/Wallet"));
 const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
 const WalletRechargeResponse = lazy(() => import("../pages/Wallet/WalletRechargeResponse"));
 const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResultPage"));
+const ForgotPassword = lazy(() => import("../pages/Account/ForgotPassword"));
+const SendEmailForgotPassword = lazy(() => import("../pages/Account/SendEmailForgotPassword"));
+const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
 
 const publicRoutes = [
   {
@@ -45,7 +48,7 @@ const publicRoutes = [
     component: LoginPage,
     layout: DefaultLayout,
   },
-  
+
   {
     path: "/account",
     layout: DefaultLayout,
@@ -60,6 +63,18 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
+    path: '/forgot-password',
+    component: ForgotPassword
+  },
+  {
+    path: '/user-forget-password/verify-email',
+    component: SendEmailForgotPassword
+  },
+  {
+    path: '/user-forget-password',
+    component: AddNewPassword
+  },
+  {
     path: '/confirmemail',
     component: ConfirmEmailAccount
   },
@@ -69,14 +84,14 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
-		path: '/preordercampaign',
-    layout:DefaultLayout,
-		children: [
-			{ index: true, component: ProductList },
-			{ path: ':slug', component: ProductDetail },
-		],
-		layout: DefaultLayout,
-	},
+    path: '/preordercampaign',
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: ProductList },
+      { path: ':slug', component: ProductDetail },
+    ],
+    layout: DefaultLayout,
+  },
   {
     path: '/campaign/search',
     component: SearchResultPage,
@@ -84,8 +99,7 @@ const publicRoutes = [
   },
   {
     path: '/test',
-    component: SearchResultPage,
-    layout: DefaultLayout,
+    component: SendEmailForgotPassword
   },
   {
     path: "/staff",
@@ -151,6 +165,6 @@ const privateRoutes = [
     layout: DefaultLayout,
     role: ['Customer']
   },
- 
+
 ];
 export { publicRoutes, privateRoutes };
