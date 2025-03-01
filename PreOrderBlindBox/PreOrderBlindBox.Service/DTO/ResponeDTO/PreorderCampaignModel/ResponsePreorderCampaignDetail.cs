@@ -1,5 +1,6 @@
 ﻿using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderMilestoneModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +23,6 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel
         public int TotalQuantity { get; set; }
         public int? PlacedOrderCount { get; set; }
         public ResponseBlindBox BlindBox { get; set; }
+        public List<ResponsePreorderMilestone> PreorderMilestones { get; set; }
     }
 }
