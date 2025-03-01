@@ -10,6 +10,7 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderMilestoneModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.ImageModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderMilestoneModel;
 using PreOrderBlindBox.Services.IServices;
 using System.Linq.Expressions;
 using static System.Net.Mime.MediaTypeNames;
@@ -21,6 +22,7 @@ namespace PreOrderBlindBox.Services.Services
         private readonly IPreorderCampaignRepository _preorderCampaignRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPreorderMilestoneService _preorderMilestoneService;
+        private readonly IPreorderMilestoneRepository _preorderMilestoneRepo;
         private readonly IBlindBoxRepository _blindBoxRepo;
         private readonly IMapper _mapper;
         private readonly IImageRepository _imageRepo;
@@ -30,7 +32,8 @@ namespace PreOrderBlindBox.Services.Services
             , IPreorderMilestoneService preorderMilestoneService
             , IBlindBoxRepository blindBoxRepo
             , IMapper mapper
-            , IImageRepository imageRepo)
+            , IImageRepository imageRepo
+            , IPreorderMilestoneRepository preorderMilestoneRepo)
         {
             _preorderCampaignRepo = preorderCampaignRepo;
             _unitOfWork = unitOfWork;
@@ -38,6 +41,7 @@ namespace PreOrderBlindBox.Services.Services
             _blindBoxRepo = blindBoxRepo;
             _mapper = mapper;
             _imageRepo = imageRepo;
+            _preorderMilestoneRepo = preorderMilestoneRepo;
         }
 
         public async Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page)
@@ -249,6 +253,8 @@ namespace PreOrderBlindBox.Services.Services
                 quantityCount += milestone.Quantity;
             }
 
+            var milestones = await _preorderMilestoneRepo.GetAll(filter: x => x.PreorderCampaignId == preorderCampaign.PreorderCampaignId);
+
             // Ánh xạ sang ResponsePreorderCampaignDetail
             var response = new ResponsePreorderCampaignDetail
             {
@@ -270,7 +276,15 @@ namespace PreOrderBlindBox.Services.Services
                     Size = preorderCampaign.BlindBox.Size,
                     CreatedAt = preorderCampaign.BlindBox.CreatedAt,
                     Images = images
-                } : null
+                } : null,
+                PreorderMilestones = milestones.Select(m => new ResponsePreorderMilestone
+                    {
+                        PreorderMilestoneId = m.PreorderMilestoneId,
+                        MilestoneNumber = m.MilestoneNumber,
+                        Quantity = m.Quantity,
+                        Price = m.Price,
+                        PreorderCampaignId = m.PreorderCampaignId,
+                    }).OrderBy(m => m.MilestoneNumber).ToList()
             };
 
             return response;

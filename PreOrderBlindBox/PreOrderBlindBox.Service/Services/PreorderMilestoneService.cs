@@ -54,10 +54,10 @@ namespace PreOrderBlindBox.Services.Services
             }
 
             // Kiểm tra MilestoneNumber chỉ có thể là 1, 2 hoặc 3
-            if (createPreorderMilestoneRequest.MilestoneNumber < 1 || createPreorderMilestoneRequest.MilestoneNumber > 3)
+            /*if (createPreorderMilestoneRequest.MilestoneNumber < 1 || createPreorderMilestoneRequest.MilestoneNumber > 3)
             {
                 throw new ArgumentException("MilestoneNumber must be 1, 2, or 3.");
-            }
+            }*/
 
             if (createPreorderMilestoneRequest.Quantity <= 0 || createPreorderMilestoneRequest.Price <= 0)
             {
