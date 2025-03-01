@@ -38,6 +38,8 @@ const ForgotPassword = lazy(() => import("../pages/Account/ForgotPassword"));
 const SendEmailForgotPassword = lazy(() => import("../pages/Account/SendEmailForgotPassword"));
 const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
 
+const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
+
 const publicRoutes = [
   {
     index: true,
@@ -147,6 +149,8 @@ const publicRoutes = [
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
       { path: "preordercampaign/create", component: PreorderCampaignCreate },
+      { path: "preordercampaign/edit/:slug", component: PreorderCampaignEdit },
+
 
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
