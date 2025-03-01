@@ -1,6 +1,7 @@
 import { Form, Input, Button } from "antd";
 import { Link, useNavigate } from "react-router";
 import { useContext, useEffect } from "react";
+import { toast } from "react-toastify";
 
 import GoogleIcon from '../../assets/Login/GoogleIcon.png';
 import FacebookIcon from '../../assets/Login/FacebookIcon.png'
@@ -23,7 +24,7 @@ function RegisterPage() {
         const response = await ApiRegisterByEmailAndPassword({ payload })
         if (response.status === 200) {
             // Thông bào confirm email
-
+            toast.info('Vui lòng kiểm tra email của bạn!');
             navigate('/login')
         }
     }

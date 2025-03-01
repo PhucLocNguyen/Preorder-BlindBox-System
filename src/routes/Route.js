@@ -34,6 +34,9 @@ const Wallet = lazy(() => import("../pages/Wallet/Wallet"));
 const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
 const WalletRechargeResponse = lazy(() => import("../pages/Wallet/WalletRechargeResponse"));
 const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResultPage"));
+const ForgotPassword = lazy(() => import("../pages/Account/ForgotPassword"));
+const SendEmailForgotPassword = lazy(() => import("../pages/Account/SendEmailForgotPassword"));
+const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
 
 const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
 
@@ -79,6 +82,18 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
+    path: '/forgot-password',
+    component: ForgotPassword
+  },
+  {
+    path: '/user-forget-password/verify-email',
+    component: SendEmailForgotPassword
+  },
+  {
+    path: '/user-forget-password',
+    component: AddNewPassword
+  },
+  {
     path: '/confirmemail',
     component: ConfirmEmailAccount
   },
@@ -105,8 +120,7 @@ const publicRoutes = [
   },
   {
     path: '/test',
-    component: SearchResultPage,
-    layout: DefaultLayout,
+    component: SendEmailForgotPassword
   },
   {
     path: "/staff",
