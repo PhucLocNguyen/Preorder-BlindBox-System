@@ -56,8 +56,8 @@ namespace PreOrderBlindBox.Services.Services
                         UnitEndCampaignPrice =  null
                     };
 
-                    var orderDetailEntity = requestCreateTempCampaignBulkOrderDetail.toTempCampaignBulkOrderDetail();
-                    await _tempCampaignBulkOrderDetailRepository.InsertAsync(orderDetailEntity);
+                    var tempCampaignBulkOrderDetail = requestCreateTempCampaignBulkOrderDetail.toTempCampaignBulkOrderDetail();
+                    await _tempCampaignBulkOrderDetailRepository.InsertAsync(tempCampaignBulkOrderDetail);
                 }
                 await _unitOfWork.SaveChanges();
                 return true;

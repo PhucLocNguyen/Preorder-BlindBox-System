@@ -39,7 +39,7 @@ namespace PreOrderBlindBox.Service.Services
                     throw new Exception("Invalid wallet !");
                 }
 
-                wallet = _walletRepository.GetById(transactionCreate.WalletId);
+                wallet = await _walletRepository.GetByIdAsync(transactionCreate.WalletId.Value);
                 if (wallet == null)
                 {
                     throw new Exception("Invalid wallet !");
@@ -50,7 +50,7 @@ namespace PreOrderBlindBox.Service.Services
                 if (model.Type == TypeOfTransactionEnum.Refund || model.Type == TypeOfTransactionEnum.Recharge)
                 {
                     wallet.Balance += model.Money;
-                    await _walletRepository.UpdateAsync(wallet);
+                    
                 }
                 else if (model.Type == TypeOfTransactionEnum.Purchase || model.Type == TypeOfTransactionEnum.Withdraw)
                 {
@@ -59,9 +59,8 @@ namespace PreOrderBlindBox.Service.Services
                         throw new Exception("Not enough money in your wallet !");
                     }
                     wallet.Balance -= model.Money;
-                    await _walletRepository.UpdateAsync(wallet);
                 }
-
+                await _walletRepository.UpdateAsync(wallet);
                 transactionCreate.Description = model.Description;
                 transactionCreate.CreatedDate = DateTime.Now;
                 transactionCreate.OrderId = model.OrderId;
@@ -114,6 +113,24 @@ namespace PreOrderBlindBox.Service.Services
         {
 
             List<Transaction> transactions = await _transactionRepository.GetAll(pagination: paginationParameter);
+            var response = _mapper.Map<List<ResponseTransactionResult>>(transactions);
+            int totalItemsCount = _transactionRepository.Count();
+            var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);
+            return responseMap;
+        }
+
+        public async Task<Pagination<ResponseTransactionResult>> GetListOfTransactionByUser(PaginationParameter paginationParameter, int userId)
+        {
+            User user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return null;
+            }
+            if(user.WalletId == null)
+            {
+                return null;
+            }
+            List<Transaction> transactions = await _transactionRepository.GetAll(pagination: paginationParameter, filter:x=>x.WalletId== user.WalletId);
             var response = _mapper.Map<List<ResponseTransactionResult>>(transactions);
             int totalItemsCount = _transactionRepository.Count();
             var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);

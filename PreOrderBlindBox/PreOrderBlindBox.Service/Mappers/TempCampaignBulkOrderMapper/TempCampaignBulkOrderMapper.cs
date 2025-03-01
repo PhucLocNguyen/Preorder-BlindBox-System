@@ -12,7 +12,7 @@ namespace PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper
 {
     public static class TempCampaignBulkOrderMapper
     {
-        public static TempCampaignBulkOrder toTempCampaignBulkOrder(this RequestCreateOrder requestCreateOrder, int userId)
+        public static TempCampaignBulkOrder toTempCampaignBulkOrder(this RequestCreateOrder requestCreateOrder, int userId, int? userVoucherID)
         {
             return new TempCampaignBulkOrder()
             {
@@ -21,7 +21,7 @@ namespace PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper
                 ReceiverName = requestCreateOrder.ReceiverName,
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
                 ReceiverPhone = requestCreateOrder.ReceiverPhone,
-                UserVoucherId = requestCreateOrder.UserVoucherId,
+                UserVoucherId = userVoucherID,
                 Status = requestCreateOrder.Status,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = null

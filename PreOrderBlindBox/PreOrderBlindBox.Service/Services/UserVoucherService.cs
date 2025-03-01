@@ -170,5 +170,38 @@ namespace PreOrderBlindBox.Service.Services
 			};
 			return responseUserVoucher;
 		}
+
+		public async Task<ResponseUserVoucher> GetUserVoucherByVoucherCampaignId(int voucherCampaignId)
+		{
+			int userId = _currentUserService.GetUserId();
+
+			var userVoucher = await _userVoucherRepository.GetUserVoucherByUserIdAndVoucherCampaignId(userId, voucherCampaignId);
+			if (userVoucher == null)
+			{
+				throw new Exception("User does not have voucher");
+			}
+			if (DateTime.Now >= userVoucher.VoucherCampaign.ExpiredDate)
+			{
+				throw new Exception("Voucher has expired");
+			}
+			if (userVoucher.UsedQuantity >= userVoucher.Quantity)
+			{
+				throw new Exception("No more vouchers to use");
+			}
+
+			ResponseUserVoucher responseUserVoucher = new ResponseUserVoucher()
+			{
+				UserVoucherId = userVoucher.UserVoucherId,
+				VoucherCampaignId = userVoucher.VoucherCampaignId,
+				Name = userVoucher.VoucherCampaign.Name,
+				PercentDiscount = userVoucher.VoucherCampaign.PercentDiscount.Value,
+				MaximumMoneyDiscount = userVoucher.VoucherCampaign.MaximumMoneyDiscount.Value,
+				Quantity = userVoucher.Quantity,
+				UsedQuantity = userVoucher.UsedQuantity,
+				CreatedDate = userVoucher.CreatedDate
+			};
+
+			return responseUserVoucher;
+		}
 	}
 }

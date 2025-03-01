@@ -283,11 +283,12 @@ namespace PreOrderBlindBox.Services.Services
 
             var vnp_SecureHash = request.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
             bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _configuration["Vnpay:HashSecret"]);
-            var transactionDetail = await _transaction.GetByIdAsync(int.Parse(vnpay.GetResponseData("vnp_TxnRef")));
-            var walletDetail = await _walletRepository.GetByIdAsync(transactionDetail.WalletId.Value);
+           
             //_cache.Remove(vnpay.GetResponseData("vnp_TxnRef"));
             if (checkSignature)
             {
+                var transactionDetail = await _transaction.GetByIdAsync(int.Parse(vnpay.GetResponseData("vnp_TxnRef")));
+                var walletDetail = await _walletRepository.GetByIdAsync(transactionDetail.WalletId.Value);
                 if (transactionDetail != null)
                 {
                     if (transactionDetail.Status.Equals("Success"))
