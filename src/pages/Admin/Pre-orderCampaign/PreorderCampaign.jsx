@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Table, Tag, Space, Input, Button, Modal, Checkbox, Spin, Pagination, notification } from "antd";
 import { EyeOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Pre_orderCampaignEdit from "./Pre-orderCampaignEdit";
 import axios from 'axios';
 
@@ -201,9 +201,9 @@ const Pre_orderCampaign = () => {
                     <EyeOutlined className="text-blue-500 text-xl cursor-pointer transition-all hover:scale-110"
                         onClick={() => handleViewPre_orderCampaign(record)}
                     />
-                    <EditOutlined className="text-orange-500 text-xl cursor-pointer transition-all hover:scale-110"
-                        onClick={() => handleEditPre_orderCampaign(record)}
-                    />
+                    <Link to={`/admin/preordercampaign/edit/${record.slug}`}>
+                    <EditOutlined className="text-orange-500 text-xl cursor-pointer transition-all hover:scale-110"/>
+                    </Link>
                     <DeleteOutlined className="text-red-500 text-xl cursor-pointer transition-all hover:scale-110"
                         onClick={() => handleDeletePre_orderCampaign(record)}
                     />

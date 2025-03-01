@@ -35,6 +35,8 @@ const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
 const WalletRechargeResponse = lazy(() => import("../pages/Wallet/WalletRechargeResponse"));
 const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResultPage"));
 
+const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
+
 const publicRoutes = [
   {
     index: true,
@@ -133,6 +135,8 @@ const publicRoutes = [
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
       { path: "preordercampaign/create", component: PreorderCampaignCreate },
+      { path: "preordercampaign/edit/:slug", component: PreorderCampaignEdit },
+
 
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
