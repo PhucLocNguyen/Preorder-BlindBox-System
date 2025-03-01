@@ -78,18 +78,16 @@ namespace PreOrderBlindBox.Services.Services
                 var requestAdminTransactionCreateModel = new RequestTransactionCreateModel()
                 {
                     Description = "Recharge",
-                    BalanceAtTime = 0,
                     Money = 0,
-                    WalletId = admin.UserId,
+                    WalletId = admin.WalletId,
                     Type = TypeOfTransactionEnum.Recharge,
                 };
 
                 var requestCustomerTransactionCreateModel = new RequestTransactionCreateModel()
                 {
                     Description = "Purchase",
-                    BalanceAtTime = 0,
                     Money = 0,
-                    WalletId = customerId,
+                    WalletId = customer.WalletId,
                     Type = TypeOfTransactionEnum.Purchase,
                 };
 
