@@ -15,6 +15,8 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel
 
         public decimal Money { get; set; }
 
+        public decimal? BalanceAtTime { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public int? WalletId { get; set; }
