@@ -2,15 +2,16 @@ import ProductImages from '../../../components/ProductImage/ProductImage';
 import CountdownTimer from '../../../components/CountDown/CountDown';
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
-import { GetActiveBlindBoxById } from '../../../api/BlindBox/ApiBlindBox';
-
+import { GetActivePreorderCampaignBySlug } from '../../../api/Pre_orderCampaign/ApiPre_orderCampaign';
 const ProductDetail = () => {
 	const params = useParams();
-	const { id } = params;
+	const { slug } = params;
+	console.log('slug', slug);
+
 	const [data, setData] = useState();
 
 	const productDetailBlind = async () => {
-		const res = await GetActiveBlindBoxById(id);
+		const res = await GetActivePreorderCampaignBySlug(slug);
 		setData(res);
 	};
 
@@ -26,7 +27,9 @@ const ProductDetail = () => {
 				<div className='relative flex flex-col justify-between gap-6 lg:flex-row'>
 					{/* IMG */}
 					<div className='top-0 w-full lg:w-1/2 lg:sticky h-max'>
-						<ProductImages items={data?.images?.galleryImages} />
+						{data?.blindBox?.images?.galleryImages.length > 0 && (
+							<ProductImages items={data?.blindBox?.images?.galleryImages} />
+						)}
 					</div>
 					{/* TEXTS */}
 					<div className='flex flex-col w-full gap-3 lg:w-1/2'>
@@ -35,7 +38,7 @@ const ProductDetail = () => {
 								Coming Soon
 							</div>
 
-							<h1 className='mb-6 text-3xl font-bold'>{data?.name}</h1>
+							<h1 className='mb-6 text-3xl font-bold'>{data?.blindBox.name}</h1>
 
 							<div className='flex items-center gap-2 mb-4'>
 								<span className='inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 rounded-full'>
@@ -55,13 +58,15 @@ const ProductDetail = () => {
 							<div className='mb-8 space-y-6'>
 								{/* <h2 className='text-lg font-bold text-gray-800'>TÌM HIỂU THƯƠNG HIỆU LIUP</h2> */}
 
-								<p className='leading-relaxed text-gray-600'>{data?.description}</p>
+								<p className='leading-relaxed text-gray-600'>{data?.blindBox.description}</p>
 
 								<div className='space-y-4'>
 									<div>
 										<h3 className='mb-2 text-gray-700'>Size:</h3>
 										<div className='flex gap-2'>
-											<span className='px-4 py-2 bg-yellow-100 rounded-full'>{data?.size}</span>
+											<span className='px-4 py-2 bg-yellow-100 rounded-full'>
+												{data?.blindBox.size}
+											</span>
 											{/* <span className='px-4 py-2 text-gray-600 rounded-full'>LP2 (Open-Ear)</span> */}
 										</div>
 									</div>

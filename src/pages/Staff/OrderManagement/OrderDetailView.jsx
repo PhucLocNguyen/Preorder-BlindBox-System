@@ -1,29 +1,110 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import {
     ArrowLeftOutlined,
     ShoppingOutlined,
-    MoneyCollectOutlined,
     TruckOutlined,
     InboxOutlined,
     ProjectOutlined,
     UserOutlined,
-    HomeOutlined
+    HomeOutlined,
+    CheckCircleOutlined
 } from '@ant-design/icons';
+import { GetOrderById } from '../../../api/Order/ApiOrder';
+import { GetAllOrderDetailsByOrderID } from '../../../api/OrderDetail/ApiOrderDetail';
+import { GetUserVoucherById } from '../../../api/UserVoucher/ApiUserVoucher';
+import { GetInformationOfUser } from '../../../api/User/ApiAuthentication';
 
 const OrderDetailView = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const initialProgress = () => {
+    const [orderById, setOrderById] = useState([]);
+    const [orderDetails, setOrderDetails] = useState([]);
+    const [userVoucherById, setUserVoucherById] = useState([]);
+    const [customer, setCustomer] = useState([]);
+
+
+    const fetchOrderById = useCallback(async () => {
+        try {
+            const result = await GetOrderById(id);
+            if (result) {
+                setOrderById(result)
+                handleProgress(result)
+                fetchUserVoucher(result)
+                fetchCustomer(result)
+            }
+        } catch (error) {
+            console.error("Fetch Orders By Id Error:", error);
+            setOrderById();
+        }
+
+    })
+
+    const fetchOrderDetails = useCallback(async () => {
+        try {
+            const result = await GetAllOrderDetailsByOrderID(id, 1, 10);
+            if (result) {
+                setOrderDetails(result)
+            }
+        } catch (error) {
+            console.error("Fetch Orders By Id Error:", error);
+            setOrderDetails();
+        }
+    })
+
+    const fetchUserVoucher = useCallback(async (data) => {
+        try {
+            const result = await GetUserVoucherById(data.userVoucherId);
+            if (result) {
+                setUserVoucherById(result)
+            }
+        } catch (error) {
+            console.error("Fetch User Voucher By Id Error:", error);
+            setUserVoucherById();
+        }
+    })
+
+    const fetchCustomer = useCallback(async (data) => {
+        try {
+            const result = await GetInformationOfUser(data.customerId);
+            if (result) {
+                console.log("Customer", result)
+                setCustomer(result)
+            }
+        } catch (error) {
+            console.error("Fetch User Voucher By Id Error:", error);
+            setCustomer();
+        }
+    })
+
+    const initialProgress = (data) => {
         const progressArray = [
             { stateProcessing: 'Confirming', state: 0 },
-            { stateProcessing: 'Payment', state: 0 },
             { stateProcessing: 'Processing', state: 0 },
             { stateProcessing: 'Shipping', state: 0 },
             { stateProcessing: 'Delivered', state: 0 },
-        ];
-
-        const step = 4;
+            { stateProcessing: 'Completed', state: 0 },
+        ]; let step
+        if (data === undefined) return progressArray;
+        else {
+            switch (data.status) {
+                case 'Confirm':
+                    step = 1
+                    break;
+                case 'Processing':
+                    step = 2
+                    break;
+                case 'Delevering':
+                    step = 3
+                    break;
+                case 'Delivered':
+                    step = 4
+                    break;
+                case 'Completed':
+                    step = 6
+                    break;
+            }
+        }
         for (let index = 0; index < step && index < progressArray.length; index++) {
             if (index === (step - 1))
                 progressArray[index] = { ...progressArray[index], state: 1 };
@@ -31,73 +112,32 @@ const OrderDetailView = () => {
         }
         return progressArray;
     };
-
-    const [progress, setProgress] = useState(initialProgress);
+    const [progress, setProgress] = useState(initialProgress([]));
     const getWidthFromState = (state) => {
         if (state === 0) return '0%';
         if (state === 1) return '50%';
         if (state === 2) return '100%';
         return '0%';
     };
-
+    const handleProgress = (data) => {
+        const result = initialProgress(data);
+        setProgress(result);
+    }
     const getBgClassFromState = (state) => {
         if (state === 0) return 'bg-white';
         if (state === 1) return 'bg-orange-400';
         if (state === 2) return 'bg-blue-500';
         return 'bg-white';
     };
+    useEffect(() => {
+        fetchOrderById();
+        fetchOrderDetails();
+    }, [])
 
-    const products = [
-        {
-            id: 1,
-            image: "https://placehold.co/50x50",
-            name: "iPhone 15 Pro",
-            category: "Electronics - Small",
-            status: "Ready",
-            statusClass: "bg-green-100 text-green-600",
-            quantity: 3,
-            price: "$20.00",
-            tax: "$3.00",
-            amount: "$57.00",
-        },
-        {
-            id: 2,
-            image: "https://placehold.co/50x50",
-            name: "ASUS ZenBook",
-            category: "Electronics - Large",
-            status: "Packaging",
-            statusClass: "bg-yellow-100 text-yellow-600",
-            quantity: 1,
-            price: "$2,499.99",
-            tax: "$187.50",
-            amount: "$2,687.49",
-        },
-        {
-            id: 3,
-            image: "https://placehold.co/50x50",
-            name: "Modern Toaster",
-            category: "Kitchen - Small",
-            status: "Packaging",
-            statusClass: "bg-yellow-100 text-yellow-600",
-            quantity: 2,
-            price: "$129.99",
-            tax: "$9.74",
-            amount: "$269.72",
-        },
-        {
-            id: 4,
-            image: "https://placehold.co/50x50",
-            name: "Kindle Paperwhite",
-            category: "Electronics - Large",
-            status: "Ready",
-            statusClass: "bg-green-100 text-green-600",
-            quantity: 2,
-            price: "$139.99",
-            tax: "$21.00",
-            amount: "$300.98",
-        },
-    ];
-
+    const [collapsed, setCollapsed] = useState(false);
+    const toggleCollapsed = () => {
+        setCollapsed(!collapsed);
+    };
 
     return (
         <>
@@ -105,11 +145,10 @@ const OrderDetailView = () => {
                 <div className="sticky top-0 z-10 bg-white shadow-md rounded-lg p-2 flex justify-between items-center m-2 w-full max-w-[1176px] mx-auto">
                     <div>
                         <h1 className="text-2xl font-bold"><button className="bg-white p-4 rounded-lg shadow mb-4 border-2 border-black w-14" onClick={() => navigate(-1)}><ArrowLeftOutlined /></button>  #S-10242002</h1>
-                        <p className="text-gray-500">Order History / Order Details / S-10242002 - April, 05 2024 at 9:48 pm</p>
+                        <p className="text-gray-500">Order History / Order Details / S-10242002 - {orderById.createdDate}</p>
                     </div>
                     <div className="flex space-x-2">
                         <button className="bg-red-100 text-red-600 px-4 py-2 rounded-lg border border-red-600">Delete Order</button>
-                        <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg border border-gray-600">Track Order</button>
                         <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg border border-gray-600">Edit Order</button>
                     </div>
                 </div>
@@ -133,25 +172,13 @@ const OrderDetailView = () => {
                                         </div>
                                     </div>
                                     <div className="flex-1 text-left rounded-lg shadow p-2 m-1">
-                                        <i className="fas fa-check-circle text-green-500 text-2xl"></i>
-                                        <span><MoneyCollectOutlined /></span>
-                                        <p className="text-sm">Payment Pending</p>
-                                        <div className="w-full max-w-xl">
-                                            <div className="relative pt-1">
-                                                <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                                                    <div style={{ width: getWidthFromState(progress[1].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[1].state)}`}></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 text-left rounded-lg shadow p-2 m-1">
                                         <i className="fas fa-check-circle text-yellow-500 text-2xl"></i>
                                         <span><ProjectOutlined /></span>
                                         <p className="text-sm">Processing</p>
                                         <div className="w-full max-w-xl">
                                             <div className="relative pt-1">
                                                 <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                                                    <div style={{ width: getWidthFromState(progress[2].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[2].state)}`}></div>
+                                                    <div style={{ width: getWidthFromState(progress[1].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[1].state)}`}></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -163,7 +190,7 @@ const OrderDetailView = () => {
                                         <div className="w-full max-w-xl">
                                             <div className="relative pt-1">
                                                 <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                                                    <div style={{ width: getWidthFromState(progress[3].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[3].state)}`}></div>
+                                                    <div style={{ width: getWidthFromState(progress[2].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[2].state)}`}></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -172,6 +199,18 @@ const OrderDetailView = () => {
                                         <i className="fas fa-box text-gray-500 text-2xl"></i>
                                         <span><TruckOutlined /></span>
                                         <p className="text-sm">Delivered</p>
+                                        <div className="w-full max-w-xl">
+                                            <div className="relative pt-1">
+                                                <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
+                                                    <div style={{ width: getWidthFromState(progress[3].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[3].state)}`}></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1 text-left rounded-lg shadow p-2 m-1">
+                                        <i className="fas fa-box text-gray-500 text-2xl"></i>
+                                        <span><CheckCircleOutlined /></span>
+                                        <p className="text-sm">Completed</p>
                                         <div className="w-full max-w-xl">
                                             <div className="relative pt-1">
                                                 <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
@@ -185,124 +224,86 @@ const OrderDetailView = () => {
                             <div className="bg-white p-4 rounded-lg shadow mb-4">
                                 <div className="flex justify-between items-center mb-4">
                                     <h2 className="text-lg font-bold">Product</h2>
-                                    <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg border border-gray-600">Download CSV</button>
                                 </div>
                                 <table className="min-w-full bg-white rounded-lg overflow-hidden border border-gray-200 shadow-md">
                                     <thead>
                                         <tr className="bg-gray-100">
                                             <th className="py-3 px-4 border border-gray-200 text-center">Item</th>
-                                            <th className="py-3 px-4 border border-gray-200 text-center">Status</th>
+                                            <th className="py-3 px-4 border border-gray-200 text-center">Size</th>
                                             <th className="py-3 px-4 border border-gray-200 text-center">Quantity</th>
                                             <th className="py-3 px-4 border border-gray-200 text-center">Price</th>
-                                            <th className="py-3 px-4 border border-gray-200 text-center">Tax</th>
                                             <th className="py-3 px-4 border border-gray-200 text-center">Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {products.map((product) => (
-                                            <tr key={product.id} className="border-t">
+                                        {orderDetails.map((orderDetail) => (
+                                            <tr key={orderDetail.orderDetailId} className="border-t">
                                                 <td className="py-3 px-4 flex items-center">
-                                                    <img src={product.image} alt={product.name} className="w-10 h-10 mr-2 rounded-md" />
+                                                    <img src={orderDetail.blindBox.images.mainImage.url} className="w-10 h-10 mr-2 rounded-md" />
                                                     <div>
-                                                        <p className="font-medium">{product.name}</p>
-                                                        <p className="text-gray-500 text-sm">{product.category}</p>
+                                                        <p className="font-medium">{orderDetail.blindBox.name}</p>
+                                                        {/* <p className="text-gray-500 text-sm">{product.category}</p> */}
                                                     </div>
                                                 </td>
                                                 <td className="py-3 px-4 text-center">
-                                                    <span className={`px-3 py-1 rounded-lg ${product.statusClass}`}>{product.status}</span>
+                                                    <span className={`px-3 py-1 rounded-lg `}>{orderDetail.blindBox.size}</span>
                                                 </td>
-                                                <td className="py-3 px-4 text-center">{product.quantity}</td>
-                                                <td className="py-3 px-4 text-center">{product.price}</td>
-                                                <td className="py-3 px-4 text-center">{product.tax}</td>
-                                                <td className="py-3 px-4 text-center">{product.amount}</td>
+                                                <td className="py-3 px-4 text-center">{orderDetail.quantity}</td>
+                                                <td className="py-3 px-4 text-center">{orderDetail.unitEndCampaignPrice}</td>
+                                                <td className="py-3 px-4 text-center">{orderDetail.amount}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
-                            </div>
-                            <div className="bg-white p-4 rounded-lg shadow mb-4">
-                                <h2 className="text-lg font-bold mb-2">Timeline</h2>
-                                <div className="space-y-2">
-                                    <div className="flex items-center">
-                                        <i className="fas fa-box text-gray-500 text-2xl mr-2"></i>
-                                        <div>
-                                            <p>The Packaging has been started</p>
-                                            <p className="text-gray-500 text-sm">Confirmed by Jane Doe</p>
-                                        </div>
-                                        <p className="ml-auto text-gray-500 text-sm">April 01, 2024, 09:40 pm</p>
-                                    </div>
-                                    <div className="flex items-center">
-                                        <i className="fas fa-envelope text-gray-500 text-2xl mr-2"></i>
-                                        <div>
-                                            <p>The Invoice has been sent to the Customer</p>
-                                            <p className="text-gray-500 text-sm">Invoice email was sent to delivery@dudud.com</p>
-                                        </div>
-                                        <p className="ml-auto text-gray-500 text-sm">April 01, 2024, 09:42 pm</p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div className='w-[25%]'>
                             <div className="grid grid-cols-1 gap-4">
                                 <div className="bg-white p-4 rounded-lg shadow">
                                     <h2 className="text-lg font-bold mb-2">Payment</h2>
-                                    <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg border border-gray-600 mb-4">Download Invoice</button>
                                     <div className="space-y-2">
                                         <div className="flex justify-between">
                                             <p>Subtotal</p>
-                                            <p>$3,159.95</p>
+                                            <p>{orderDetails.reduce((acc, item) => acc + item.amount, 0)} VND</p>
                                         </div>
                                         <div className="flex justify-between">
-                                            <p>Discount (10%)</p>
-                                            <p>-$315.99</p>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <p>Shipping Cost</p>
-                                            <p>$200.00</p>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <p>Tax (8%)</p>
-                                            <p>$212.79</p>
+                                            <p>Discount ({userVoucherById.length === 0 ? '0' : userVoucherById.percentDiscount}%)</p>
+                                            <p>- {userVoucherById.length === 0 ? '0' :
+                                                (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100) > userVoucherById.maximumMoneyDiscount
+                                                    ? userVoucherById.maximumMoneyDiscount : (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100) ?? '0'} VND</p>
                                         </div>
                                         <div className="flex justify-between font-bold">
                                             <p>Total</p>
-                                            <p>$3,076.75</p>
+                                            <p>{orderById.amount} VND</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="bg-white p-3 rounded-lg shadow-md">
-                                    <h2 className="text-lg font-bold mb-2">Customer</h2>
-                                    <p className="text-gray-500 text-sm mb-4">Information Detail</p>
+                            </div>
+                            <div className="bg-white p-3 rounded-lg shadow-md">
+                                <h2 className="text-lg font-bold mb-2">Customer</h2>
+                                <p className="text-gray-500 text-sm mb-4">Information Detail</p>
 
-                                    <div className="space-y-4">
-                                        {/* General Information */}
-                                        <div className="bg-gray-100 p-4 rounded-lg">
-                                            <h3 className="font-bold flex items-center">
-                                                <UserOutlined className="mr-2 text-gray-500" /> General Information
-                                            </h3>
-                                            <p className="text-gray-700 mt-2">• Acme Corporation</p>
-                                            <p className="text-gray-700">• acme@dudud.com</p>
-                                            <p className="text-gray-700">• (728) 054 4928</p>
-                                        </div>
+                                <div className="space-y-4">
+                                    {/* General Information */}
+                                    <div className="bg-gray-100 p-4 rounded-lg">
+                                        <h3 className="font-bold flex items-center">
+                                            <UserOutlined className="mr-2 text-gray-500" /> General Information
+                                        </h3>
+                                        <p className="text-gray-700 mt-2">• {customer.fullName}</p>
+                                        <p className="text-gray-700">• {customer.email}</p>
+                                        {customer.phone && (
+                                            <p className="text-gray-700">• {customer.phone}</p>
+                                        )}
+                                    </div>
 
-                                        {/* Shipping Address */}
-                                        <div className="bg-gray-100 p-4 rounded-lg">
-                                            <h3 className="font-bold flex items-center">
-                                                <HomeOutlined className="mr-2 text-gray-500" /> Shipping Address
-                                            </h3>
-                                            <p className="text-gray-700 mt-2">• 100 Main Street</p>
-                                            <p className="text-gray-700">• Anytown, CA 12345</p>
-                                            <p className="text-gray-700">• United States</p>
-                                            <p className="text-gray-700">• (555) 555-5555</p>
-                                        </div>
-
-                                        {/* Billing Address */}
-                                        <div className="bg-gray-100 p-4 rounded-lg">
-                                            <h3 className="font-bold flex items-center">
-                                                <HomeOutlined className="mr-2 text-gray-500" /> Billing Address
-                                            </h3>
-                                            <p className="text-gray-700 mt-2">• Same as shipping address</p>
-                                        </div>
+                                    {/* Shipping Address */}
+                                    <div className="bg-gray-100 p-4 rounded-lg">
+                                        <h3 className="font-bold flex items-center">
+                                            <HomeOutlined className="mr-2 text-gray-500" /> Shipping Information
+                                        </h3>
+                                        <p className="text-gray-700 mt-2">• {orderById.receiver}</p>
+                                        <p className="text-gray-700">• {orderById.receiverAddress}</p>
+                                        <p className="text-gray-700">• {orderById.receiverPhone}</p>
                                     </div>
                                 </div>
                             </div>
@@ -310,9 +311,7 @@ const OrderDetailView = () => {
                     </div>
                 </div>
             </div>
-
         </>
-
     )
 }
 
