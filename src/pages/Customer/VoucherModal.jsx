@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function VoucherModal({
+function VoucherModal({
   vouchers,
   inputVoucherCode,
   setInputVoucherCode,
@@ -14,7 +14,7 @@ export function VoucherModal({
         <h2 className="text-xl font-bold mb-4">Chọn hoặc nhập mã</h2>
 
         {/* Khu vực nhập mã voucher */}
-        <div className="flex items-center mb-4 space-x-2">
+        {/* <div className="flex items-center mb-4 space-x-2">
           <input
             type="text"
             placeholder="Coupon Code"
@@ -28,7 +28,7 @@ export function VoucherModal({
           >
             APPLY
           </button>
-        </div>
+        </div> */}
 
         {/* Danh sách voucher có sẵn */}
         <ul className="space-y-2">
@@ -40,10 +40,19 @@ export function VoucherModal({
               <div>
                 <p className="font-semibold">{voucher.title}</p>
                 <p className="text-sm text-gray-600">{voucher.description}</p>
+                <p className="text-sm text-blue-500">
+                  Số lượng còn lại: <span className="font-bold">{voucher.quantity}</span>
+                </p>
+                {/* Bạn có thể hiển thị thêm discountValue, minOrder,... nếu muốn */}
               </div>
               <button
-                className="bg-yellow-500 text-white px-3 py-1 rounded"
-                onClick={() => applyVoucherFromList(voucher.id)}
+                //className="bg-yellow-500 text-white px-3 py-1 rounded"
+                //onClick={() => applyVoucherFromList(voucher.id)}
+                className={`bg-yellow-500 text-white px-3 py-1 rounded ${
+                  voucher.quantity <= 0 ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                onClick={() => voucher.quantity > 0 && applyVoucherFromList(voucher.id)}
+                disabled={voucher.quantity <= 0}
               >
                 Chọn
               </button>
@@ -62,3 +71,5 @@ export function VoucherModal({
     </div>
   );
 }
+
+export default VoucherModal;

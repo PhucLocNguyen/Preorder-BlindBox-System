@@ -18,4 +18,5 @@ const GetTheActiveVoucherCampaign = async () => {
       console.log('>>> Api Collect Active voucher campaign Error: ', error)
    }
  }
+
  export {GetTheActiveVoucherCampaign, CollectActiveVoucherCampaign}
