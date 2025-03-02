@@ -20,18 +20,20 @@ namespace PreOrderBlindBox.Services.Services
 {
     public class TempCampaignBulkOrderService : ITempCampaignBulkOrderService
     {
-        public readonly ITempCampaignBulkOrderRepository _tempCampaignBulkOrderRepository;
-        public readonly ITempCampaignBulkOrderDetailRepository _tempCampaignBulkOrderDetailRepository;
-        public readonly IOrderRepository _orderRepository;
-        public readonly IUnitOfWork _unitOfWork;
+        private readonly ITempCampaignBulkOrderRepository _tempCampaignBulkOrderRepository;
+        private readonly ITempCampaignBulkOrderDetailRepository _tempCampaignBulkOrderDetailRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IOrderDetailService _orderDetailService;
+        private readonly IUserVoucherService _userVoucherService;
 
         public TempCampaignBulkOrderService(
             ITempCampaignBulkOrderRepository tempCampaignBulkOrderRepository,
             ITempCampaignBulkOrderDetailRepository tempCampaignBulkOrderDetailRepository,
             IOrderRepository orderRepository,
             IUnitOfWork unitOfWork,
-            IOrderDetailService orderDetailService
+            IOrderDetailService orderDetailService,
+            IUserVoucherService userVoucherService
             )
         {
             _tempCampaignBulkOrderRepository = tempCampaignBulkOrderRepository;
@@ -39,6 +41,7 @@ namespace PreOrderBlindBox.Services.Services
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
             _orderDetailService = orderDetailService;
+            _userVoucherService = userVoucherService;
         }
 
         public async Task<bool> convertTempCampaignBulkOrderToOrder(int preorderCampaignId, decimal endPriceOfCampaign)
@@ -51,10 +54,13 @@ namespace PreOrderBlindBox.Services.Services
                     throw new Exception("Preorder campaign is not valid");
                 foreach (var item in temCampaignBulkOrderByPreorderCampaignId)
                 {
+                    var temCampaignBulkOrderDetailList = await _tempCampaignBulkOrderDetailRepository.GetAll(filter: x => x.TempCampaignBulkOrderId == item.TempCampaignBulkOrderId);
+                    decimal totalTempPreorderDetail = temCampaignBulkOrderDetailList.Sum(x=>x.Quantity) * endPriceOfCampaign;
+                    var userVoucher = await _userVoucherService.GetUserVoucherById((int)item.UserVoucherId);
                     var orderEntity = new Order()
                     {
-                        Amount = item.Amount,
-                        DiscountMoney = (decimal)item.DiscountMoney,
+                        Amount = totalTempPreorderDetail * ((100 - userVoucher.PercentDiscount)/100 ),
+                        DiscountMoney = totalTempPreorderDetail * ( userVoucher.PercentDiscount/ 100),
                         CustomerId = item.CustomerId,
                         ReceiverName = item.ReceiverName,
                         ReceiverAddress = item.ReceiverAddress,
@@ -64,9 +70,11 @@ namespace PreOrderBlindBox.Services.Services
                         CreatedDate = DateTime.Now,
                         UpdatedDate = null
                     };
+                    item.Status = "Import goods";
+                    await _tempCampaignBulkOrderRepository.UpdateAsync(item);
                     await _orderRepository.InsertAsync(orderEntity);
                     await _unitOfWork.SaveChanges();
-                    var temCampaignBulkOrderDetailList = await _tempCampaignBulkOrderDetailRepository.GetAll(filter: x => x.TempCampaignBulkOrderId == item.TempCampaignBulkOrderId);
+                    
                     await _orderDetailService.CreateTempOrderDetailToOrderDetail(temCampaignBulkOrderDetailList, orderEntity.OrderId, endPriceOfCampaign);
                 }
                 await _unitOfWork.CommitTransactionAsync();

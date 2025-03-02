@@ -42,8 +42,8 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("{AcceptCampaignBulk}/{preorderCampaignId}")]
-        public async Task<IActionResult> convertTempCampaignBulkOrderToOrder([FromQuery] int preorderCampaignId, decimal endPriceOfCampaign)
+        [HttpGet("AcceptCampaignBulk/{preorderCampaignId}")]
+        public async Task<IActionResult> convertTempCampaignBulkOrderToOrder(int preorderCampaignId, decimal endPriceOfCampaign)
         {
             try
             {
