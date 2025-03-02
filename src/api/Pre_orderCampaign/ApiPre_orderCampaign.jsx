@@ -1,6 +1,7 @@
 import api from "../instance";
 import { axiosConfigHeader, axiosConfigSendFileHeader } from "../axiosConfigHeader";
 import { toast } from "react-toastify";
+import { notification } from "antd";
 
 const GetTheActivePreorderCampaign = async (pageSize, pageIndex) => {
     try {
@@ -65,11 +66,32 @@ const GetActivePreorderCampaignBySlug = async (slug) => {
     }
 }
 
+const DeletePendingCampaign = async(id)=>{
+    try {
 
+        const response = await api.delete(`/PreorderCampaign/${id}`, axiosConfigHeader);
+
+        if (response.status === 200) {
+            notification.success({
+                message: "Success",
+                description: "The campaign has been successfully deleted.",
+            });
+            return response.status;
+        } else {
+            throw new Error("Failed to delete campaign.");
+        }
+    } catch (error) {
+        console.error("Error deleting Pre_orderCampaign:", error);
+        notification.error({
+            message: "Error",
+            description: "Failed to delete the campaign.",
+        });
+    }
+}
 
 export {
     GetTheActivePreorderCampaign, CreatePreorderCampaign,
-    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById,
+    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById,DeletePendingCampaign
 
 };
 
