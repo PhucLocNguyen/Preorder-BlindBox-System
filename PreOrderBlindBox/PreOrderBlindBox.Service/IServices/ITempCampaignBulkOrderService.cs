@@ -16,5 +16,6 @@ namespace PreOrderBlindBox.Services.IServices
     public interface ITempCampaignBulkOrderService 
     {
         Task<Pagination<ResponseTempCampaignBulkOrder>> GetAllOrder(PaginationParameter page, string? searchKeyWords, string orderBy);
+        Task<bool> convertTempCampaignBulkOrderToOrder(int preorderCampaignId, decimal endPriceOfCampaign);
     }
 }

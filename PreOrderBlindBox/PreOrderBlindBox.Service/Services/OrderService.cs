@@ -10,6 +10,7 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.NotificationRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel;
+using PreOrderBlindBox.Services.DTO.RequestDTO.UserVoucherModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.OrderResponseModel;
 using PreOrderBlindBox.Services.IServices;
@@ -104,31 +105,26 @@ namespace PreOrderBlindBox.Services.Services
                 }
 
                 int preorderCampaignId = (int)priceForCarts[0].PreorderCampaignId;
-
                 if (priceForCarts.Count == 1)
                 {
                     var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById(preorderCampaignId);
-                    decimal amountAfterVoucher = 0;
                     int? voucherID = requestCreateOrder.UserVoucherIdForPreorderCampaign.ContainsKey(preorderCampaignId) ? requestCreateOrder.UserVoucherIdForPreorderCampaign[preorderCampaignId] : null;
                     if (requestCreateOrder.UserVoucherIdForPreorderCampaign.ContainsKey(preorderCampaignId))
                     {
 
-                        //Chỗ này cần sửa lại 
-                        var userVoucher = await _userVoucherService.GetUserVoucherById(requestCreateOrder.UserVoucherIdForPreorderCampaign[preorderCampaignId]);
-                        if (userVoucher.Quantity > userVoucher.UsedQuantity)
-                            throw new Exception("You have used up all of these vouchers.");
+                        var userVoucher = await _userVoucherService.GetUserVoucherByVoucherCampaignId(requestCreateOrder.UserVoucherIdForPreorderCampaign[preorderCampaignId]);
                         var amountUsingVoucher = priceForCarts.Sum(x => x.Amount) * (userVoucher.PercentDiscount / 100);
                         if (amountUsingVoucher > userVoucher.MaximumMoneyDiscount)
                         {
-                            amountAfterVoucher = (decimal)userVoucher.MaximumMoneyDiscount;
+                            requestCreateOrder.DiscountMoney = (decimal)userVoucher.MaximumMoneyDiscount;
                         }
                         else
                         {
-                            amountAfterVoucher = (decimal)amountUsingVoucher;
+                            requestCreateOrder.DiscountMoney = (decimal)amountUsingVoucher;
 
                         }
                     }
-                    requestCreateOrder.Amount = priceForCarts.Sum(x => x.Amount) - amountAfterVoucher;
+                    requestCreateOrder.Amount = priceForCarts.Sum(x => x.Amount) - requestCreateOrder.DiscountMoney ;
 
                     if (preorderCampaign.Type.Equals("BulkOrder"))
                     {
@@ -147,6 +143,9 @@ namespace PreOrderBlindBox.Services.Services
                     totalAmountInOrder += (decimal)requestCreateOrder.Amount;
                     if (voucherID != null)
                         _userVoucherService.UpdateUserVoucherAsync(new DTO.RequestDTO.UserVoucherModel.RequestUpdateUserVoucher() { VoucherCampaignId = (int)voucherID });
+                    preorderCampaign.PlacedOrderCount += requestCreateOrder.RequestCreateCart.Quantity;
+                    await _preorderCampaignRepository.UpdateAsync(preorderCampaign);
+                    await _unitOfWork.SaveChanges();
                 }
                 List<ResponseCart> cartInSameCampaign = new List<ResponseCart>();
                 cartInSameCampaign.Add(priceForCarts[0]);
@@ -155,27 +154,25 @@ namespace PreOrderBlindBox.Services.Services
                     if (priceForCarts[i].PreorderCampaignId != preorderCampaignId)
                     {
                         var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById(preorderCampaignId);
-                        decimal amountAfterVoucher = 0;
 
-                        //Chỗ này cần sửa lại 
                         int? voucherID = requestCreateOrder.UserVoucherIdForPreorderCampaign.ContainsKey(preorderCampaignId) ? requestCreateOrder.UserVoucherIdForPreorderCampaign[preorderCampaignId] : null;
                         if (requestCreateOrder.UserVoucherIdForPreorderCampaign.ContainsKey(preorderCampaignId))
                         {
-                            var userVoucher = await _userVoucherService.GetUserVoucherById(requestCreateOrder.UserVoucherIdForPreorderCampaign[preorderCampaignId]);
+                            var userVoucher = await _userVoucherService.GetUserVoucherByVoucherCampaignId(requestCreateOrder.UserVoucherIdForPreorderCampaign[preorderCampaignId]);
                             if (userVoucher.Quantity > userVoucher.UsedQuantity)
                                 throw new Exception("You have used up all of these vouchers.");
                             var amountUsingVoucher = cartInSameCampaign.Sum(x => x.Amount) * (userVoucher.PercentDiscount / 100);
                             if (amountUsingVoucher > userVoucher.MaximumMoneyDiscount)
                             {
-                                amountAfterVoucher = (decimal)userVoucher.MaximumMoneyDiscount;
+                                requestCreateOrder.DiscountMoney = (decimal)userVoucher.MaximumMoneyDiscount;
                             }
                             else
                             {
-                                amountAfterVoucher = (decimal)amountUsingVoucher;
+                                requestCreateOrder.DiscountMoney = (decimal)amountUsingVoucher;
 
                             }
                         }
-                        requestCreateOrder.Amount = cartInSameCampaign.Sum(x => x.Amount) - amountAfterVoucher;
+                        requestCreateOrder.Amount = cartInSameCampaign.Sum(x => x.Amount) - requestCreateOrder.DiscountMoney;
 
                         if (preorderCampaign.Type.Equals("BulkOrder"))
                         {
@@ -195,6 +192,8 @@ namespace PreOrderBlindBox.Services.Services
                         if (voucherID != null)
                             _userVoucherService.UpdateUserVoucherAsync(new DTO.RequestDTO.UserVoucherModel.RequestUpdateUserVoucher() { VoucherCampaignId = (int)voucherID });
                         preorderCampaign.PlacedOrderCount += cartInSameCampaign.Sum(x => x.Quantity);
+                        await _preorderCampaignRepository.UpdateAsync(preorderCampaign);
+                        await _unitOfWork.SaveChanges();
                         cartInSameCampaign = new List<ResponseCart> { priceForCarts[i] };
                         preorderCampaignId = (int)priceForCarts[i].PreorderCampaignId;
 
@@ -206,27 +205,23 @@ namespace PreOrderBlindBox.Services.Services
                     if (i == priceForCarts.Count - 1)
                     {
                         var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById(preorderCampaignId);
-                        decimal amountAfterVoucher = 0;
                         int? voucherID = requestCreateOrder.UserVoucherIdForPreorderCampaign.ContainsKey(preorderCampaignId) ? requestCreateOrder.UserVoucherIdForPreorderCampaign[preorderCampaignId] : null;
                         if (requestCreateOrder.UserVoucherIdForPreorderCampaign.ContainsKey(preorderCampaignId))
                         {
 
-                            //Chỗ này cần sửa lại 
-                            var userVoucher = await _userVoucherService.GetUserVoucherById(requestCreateOrder.UserVoucherIdForPreorderCampaign[preorderCampaignId]);
-                            if (userVoucher.Quantity > userVoucher.UsedQuantity)
-                                throw new Exception("You have used up all of these vouchers.");
+                            var userVoucher = await _userVoucherService.GetUserVoucherByVoucherCampaignId(requestCreateOrder.UserVoucherIdForPreorderCampaign[preorderCampaignId]);
                             var amountUsingVoucher = cartInSameCampaign.Sum(x => x.Amount) * (userVoucher.PercentDiscount / 100);
                             if (amountUsingVoucher > userVoucher.MaximumMoneyDiscount)
                             {
-                                amountAfterVoucher = (decimal)userVoucher.MaximumMoneyDiscount;
+                                requestCreateOrder.DiscountMoney = (decimal)userVoucher.MaximumMoneyDiscount;
                             }
                             else
                             {
-                                amountAfterVoucher = (decimal)amountUsingVoucher;
+                                requestCreateOrder.DiscountMoney = (decimal)amountUsingVoucher;
 
                             }
                         }
-                        requestCreateOrder.Amount = cartInSameCampaign.Sum(x => x.Amount) - amountAfterVoucher;
+                        requestCreateOrder.Amount = cartInSameCampaign.Sum(x => x.Amount) - requestCreateOrder.DiscountMoney;
                         if (preorderCampaign.Type.Equals("BulkOrder"))
                         {
                             var tempCampaignBulkOrderEntity = requestCreateOrder.toTempCampaignBulkOrder(customerId, voucherID);
@@ -245,6 +240,8 @@ namespace PreOrderBlindBox.Services.Services
                         if (voucherID != null)
                             _userVoucherService.UpdateUserVoucherAsync(new DTO.RequestDTO.UserVoucherModel.RequestUpdateUserVoucher() { VoucherCampaignId = (int)voucherID });
                         preorderCampaign.PlacedOrderCount += cartInSameCampaign.Sum(x => x.Quantity);
+                        await _preorderCampaignRepository.UpdateAsync(preorderCampaign);
+                        await _unitOfWork.SaveChanges();
                     }
                 }
 
@@ -253,7 +250,8 @@ namespace PreOrderBlindBox.Services.Services
                 if (!await _transactionService.CreateTransaction(requestCustomerTransactionCreateModel))
                     throw new Exception("Not enough money in your wallet !");
                 await _transactionService.CreateTransaction(requestAdminTransactionCreateModel);
-                await _cartService.UpdateStatusOfCartByCustomerID(customerId);
+                if(requestCreateOrder.RequestCreateCart == null)
+                    await _cartService.UpdateStatusOfCartByCustomerID(customerId);
                 await _notificationService.CreatNotification(notificationForStaff);
                 await _notificationService.CreatNotification(notificationForCustomer);
                 await _unitOfWork.CommitTransactionAsync();

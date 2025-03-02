@@ -27,7 +27,7 @@ namespace PreOrderBlindBox.Data.Repositories
 
 		public async Task<UserVoucher> GetUserVoucherByUserIdAndVoucherCampaignId(int userId, int voucherCampaignId)
 		{
-			UserVoucher userVoucher = await _context.UserVouchers.FirstOrDefaultAsync(x => x.UserId == userId && x.VoucherCampaignId == voucherCampaignId);
+			UserVoucher userVoucher = await _context.UserVouchers.Include(x=>x.VoucherCampaign).FirstOrDefaultAsync(x => x.UserId == userId && x.VoucherCampaignId == voucherCampaignId );
 			return userVoucher;
 		}
 
