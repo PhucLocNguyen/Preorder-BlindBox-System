@@ -80,7 +80,7 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     Description = "Recharge",
                     Money = 0,
-                    WalletId = admin.UserId,
+                    WalletId = admin.WalletId,
                     Type = TypeOfTransactionEnum.Recharge,
                 };
 
@@ -88,7 +88,7 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     Description = "Purchase",
                     Money = 0,
-                    WalletId = customerId,
+                    WalletId = customer.WalletId,
                     Type = TypeOfTransactionEnum.Purchase,
                 };
 

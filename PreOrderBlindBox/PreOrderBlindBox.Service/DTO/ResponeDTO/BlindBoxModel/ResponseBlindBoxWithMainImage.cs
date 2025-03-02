@@ -12,6 +12,7 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel
     {
         public int BlindBoxId { get; set; }
         public string Name { get; set; }
+        public decimal ListedPrice { get; set; }
         public string Description { get; set; }
         public string Size { get; set; }
         public ResponseImageModel MainImages { get; set; }

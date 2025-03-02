@@ -209,6 +209,32 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
+        [HttpPut("UpdatePreorderCampaignWithMilestone/{id}")]
+        public async Task<IActionResult> UpdatePreoderCampaignWithMilestone(int id, [FromBody] UpdatePreorderCampaignRequest requestCampaign)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.UpdatePreorderCampaignWithMilestone(id, requestCampaign);
+                if (preorderCampaign)
+                {
+                    return Ok(preorderCampaign);
+                }
+                return BadRequest();
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
         [HttpGet("Filter")]
         public async Task<IActionResult> FilterPreorderCampaign([FromQuery] FilterPreorderCampaignRequest request, [FromQuery] PaginationParameter pagination)
         {

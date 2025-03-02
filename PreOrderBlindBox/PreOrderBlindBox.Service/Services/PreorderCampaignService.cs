@@ -10,6 +10,7 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderMilestoneModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.ImageModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderMilestoneModel;
 using PreOrderBlindBox.Services.IServices;
 using System.Linq.Expressions;
 using static System.Net.Mime.MediaTypeNames;
@@ -21,6 +22,7 @@ namespace PreOrderBlindBox.Services.Services
         private readonly IPreorderCampaignRepository _preorderCampaignRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPreorderMilestoneService _preorderMilestoneService;
+        private readonly IPreorderMilestoneRepository _preorderMilestoneRepo;
         private readonly IBlindBoxRepository _blindBoxRepo;
         private readonly IMapper _mapper;
         private readonly IImageRepository _imageRepo;
@@ -30,7 +32,8 @@ namespace PreOrderBlindBox.Services.Services
             , IPreorderMilestoneService preorderMilestoneService
             , IBlindBoxRepository blindBoxRepo
             , IMapper mapper
-            , IImageRepository imageRepo)
+            , IImageRepository imageRepo
+            , IPreorderMilestoneRepository preorderMilestoneRepo)
         {
             _preorderCampaignRepo = preorderCampaignRepo;
             _unitOfWork = unitOfWork;
@@ -38,6 +41,7 @@ namespace PreOrderBlindBox.Services.Services
             _blindBoxRepo = blindBoxRepo;
             _mapper = mapper;
             _imageRepo = imageRepo;
+            _preorderMilestoneRepo = preorderMilestoneRepo;
         }
 
         public async Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page)
@@ -249,6 +253,8 @@ namespace PreOrderBlindBox.Services.Services
                 quantityCount += milestone.Quantity;
             }
 
+            var milestones = await _preorderMilestoneRepo.GetAll(filter: x => x.PreorderCampaignId == preorderCampaign.PreorderCampaignId);
+
             // Ánh xạ sang ResponsePreorderCampaignDetail
             var response = new ResponsePreorderCampaignDetail
             {
@@ -270,7 +276,15 @@ namespace PreOrderBlindBox.Services.Services
                     Size = preorderCampaign.BlindBox.Size,
                     CreatedAt = preorderCampaign.BlindBox.CreatedAt,
                     Images = images
-                } : null
+                } : null,
+                PreorderMilestones = milestones.Select(m => new ResponsePreorderMilestone
+                    {
+                        PreorderMilestoneId = m.PreorderMilestoneId,
+                        MilestoneNumber = m.MilestoneNumber,
+                        Quantity = m.Quantity,
+                        Price = m.Price,
+                        PreorderCampaignId = m.PreorderCampaignId,
+                    }).OrderBy(m => m.MilestoneNumber).ToList()
             };
 
             return response;
@@ -349,9 +363,9 @@ namespace PreOrderBlindBox.Services.Services
                 throw new ArgumentException("Start date and end date must be in future");
             }
 
-            if (request.StartDate.AddDays(3) > request.EndDate)
+            if (request.StartDate.AddDays(5) > request.EndDate)
             {
-                throw new ArgumentException("End date must be at least 3 day after start date");
+                throw new ArgumentException("End date must be at least 5 day after start date");
             }
 
             // Kiểm tra giá trị enum
@@ -527,9 +541,9 @@ namespace PreOrderBlindBox.Services.Services
             {
                 throw new ArgumentException("Start date and end date must be in future.");
             }
-            if (campaignRequest.StartDate.AddDays(3) > campaignRequest.EndDate)
+            if (campaignRequest.StartDate.AddDays(5) > campaignRequest.EndDate)
             {
-                throw new ArgumentException("End date must be at least 3 days after start date.");
+                throw new ArgumentException("End date must be at least 5 days after start date.");
             }
             if (!Enum.IsDefined(typeof(PreorderCampaignType), campaignRequest.Type))
             {
@@ -587,6 +601,89 @@ namespace PreOrderBlindBox.Services.Services
                 //return false;
                 throw;
             }
+        }
+
+        public async Task<bool> UpdatePreorderCampaignWithMilestone(int id, UpdatePreorderCampaignRequest request)
+        {
+            var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
+
+            if (preorderCampaign == null)
+            {
+                throw new ArgumentException("Pre-Order Campaign not found");
+            }
+
+            if (request == null)
+            {
+                throw new ArgumentNullException("Invalid update Pre-Order Campaign data");
+            }
+
+            if (preorderCampaign.IsDeleted || preorderCampaign.Status == PreorderCampaignStatus.Active.ToString()
+                || preorderCampaign.Status == PreorderCampaignStatus.Completed.ToString())
+            {
+                throw new ArgumentException("Cannot update Pre-Order Campaign had deleted or active or completed");
+            }
+
+            if (request.EndDate < request.StartDate)
+            {
+                throw new ArgumentException("End date cannot be earlier than start date.");
+            }
+
+            if (request.EndDate <= DateTime.Now || request.StartDate < DateTime.Now)
+            {
+                throw new ArgumentException("Start date and end date must be in future");
+            }
+
+            if (request.StartDate.AddDays(5) > request.EndDate)
+            {
+                throw new ArgumentException("End date must be at least 5 day after start date");
+            }
+
+            // Kiểm tra giá trị enum
+            if (!Enum.IsDefined(typeof(PreorderCampaignType), request.Type))
+            {
+                throw new ArgumentException("Invalid campaign type. Must be TimedPricing (0) or BulkOrder (1).");
+            }
+
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                _mapper.Map(request, preorderCampaign);
+                await _preorderCampaignRepo.UpdateAsync(preorderCampaign);
+                await _unitOfWork.SaveChanges();
+
+                if (request.PreorderMilestoneRequests.Count > 0) 
+                {
+                    // Lấy danh sách tất cả PreorderMilestone liên quan
+                    var milestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID(id);
+                    // Đánh dấu tất cả milestones là đã xóa
+                    foreach (var milestone in milestones)
+                    {
+                        //milestone.IsDeleted = true;
+                        await _preorderMilestoneService.DeletePreorderMilestone(milestone.PreorderMilestoneId);
+                    }
+                    // Lặp qua từng milestone, gán PreorderCampaignId và tạo milestone
+                    for (int i = 0; i < request.PreorderMilestoneRequests.Count; i++)
+                    {
+                        var milestone = new CreatePreorderMilestoneRequest
+                        {
+                            PreorderCampaignId = preorderCampaign.PreorderCampaignId,
+                            MilestoneNumber = i + 1,
+                            Quantity = (int)request.PreorderMilestoneRequests[i].Quantity,
+                            Price = (decimal)request.PreorderMilestoneRequests[i].Price
+                        };
+
+                        await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
+                    }
+
+                }
+                await _unitOfWork.CommitTransactionAsync();
+                return true;
+            } catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
+
         }
 
         public async Task<Pagination<ResponseSearchPreorderCampaign>> FilterPreorderCampaignAsync(FilterPreorderCampaignRequest request, PaginationParameter pagination)
