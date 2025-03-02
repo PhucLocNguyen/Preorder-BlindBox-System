@@ -7,6 +7,7 @@ import axios from 'axios';
 
 import {
     GetTheActivePreorderCampaign, GetActivePreorderCampaignBySlug,
+    DeletePendingCampaign,
 } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
 import useFetchDataPagination from "../../../hooks/useFetchDataPagination";
 import noThumbnailImage from "../../../assets/noThumbnailImage.jpg"
@@ -35,34 +36,6 @@ const Pre_orderCampaign = () => {
     const handleAddPre_orderCampaign = () => {
         navigate("/admin/preordercampaign/create");
 
-    };
-
-    const handleEditPre_orderCampaign = async (record) => {
-        try {
-            console.log("Fetching details for campaign:", record.slug);
-
-            const campaignDetails = await GetActivePreorderCampaignBySlug(record.slug);
-            if (campaignDetails) {
-                console.log("Received campaign details:", campaignDetails);
-
-                // Lấy preorderCampaignId từ campaignDetails
-                setSelectedPreorderCampaignId(campaignDetails.preorderCampaignId);
-
-                // Hiển thị modal chỉnh sửa
-                setIsEditModalVisible(true);
-            } else {
-                notification.error({
-                    message: "Error",
-                    description: "Failed to fetch campaign details.",
-                });
-            }
-        } catch (error) {
-            console.error("Error fetching campaign details:", error);
-            notification.error({
-                message: "Error",
-                description: "Could not fetch campaign details.",
-            });
-        }
     };
 
     const handleViewPre_orderCampaign = (record) => {
@@ -107,29 +80,20 @@ const Pre_orderCampaign = () => {
             });
             return;
         }
-
-        try {
-
-            const response = await axios.delete(`https://preorderblindboxsystem-c9ftb6dtcvdkh3ge.centralus-01.azurewebsites.net/api/PreorderCampaign/${detailPre_orderCampaign_bySlug.preorderCampaignId}`);
-
-            if (response.status === 200) {
-                notification.success({
-                    message: "Success",
-                    description: "The campaign has been successfully deleted.",
-                });
-
+        if(detailPre_orderCampaign_bySlug.status ==="Pending"){
+            var response = await DeletePendingCampaign(detailPre_orderCampaign_bySlug.preorderCampaignId);
+            if(response ==200){
                 setIsDeleteModalVisible(false);
                 refetch(); // Refresh data after deletion
-            } else {
-                throw new Error("Failed to delete campaign.");
             }
-        } catch (error) {
-            console.error("Error deleting Pre_orderCampaign:", error);
+        }else{
             notification.error({
                 message: "Error",
-                description: "Failed to delete the campaign.",
+                description: "This campaign must be in pending status to delete",
             });
+            return;
         }
+        
     };
 
 
@@ -292,7 +256,7 @@ const Pre_orderCampaign = () => {
                         <Button key="cancel" onClick={() => setIsDeleteModalVisible(false)}>
                             Cancel
                         </Button>,
-                        <Button key="delete" type="primary" danger onClick={confirmDeletePre_orderCampaign}>
+                        <Button key="delete" type="primary" danger onClick={confirmDeletePre_orderCampaign} disabled={detailPre_orderCampaign_bySlug.status!=="Pending"}>
                             Delete
                         </Button>,
                     ]}
