@@ -1,8 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusCircleOutlined, MinusCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 
-export function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
-  // Lấy thông tin ảnh và mô tả từ blindBox
+function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
+  const [quantity, setQuantity] = useState(item.quantity);
+
+  // Mỗi khi props.item.quantity thay đổi (do fetchCarts() trả về kết quả mới),
+  // ta cập nhật lại state local.
+  useEffect(() => {
+    setQuantity(item.quantity);
+  }, [item.quantity]);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    const num = parseInt(value, 10);
+    if (!isNaN(num)) {
+      setQuantity(num);
+    } else {
+      setQuantity(''); // Xóa nếu nhập không phải số
+    }
+  };
+
+  const handleInputBlur = () => {
+    // Sử dụng giá trị từ state, tức là số mới mà người dùng đã nhập.
+    const newQuantity = Math.max(quantity, 1);
+    console.log(newQuantity);
+    if (newQuantity !== item.quantity) {
+      // Gọi hàm updateQuantity ở parent với delta là hiệu giữa newQuantity và item.quantity
+      onUpdateQuantity(item.preorderCampaignId, newQuantity - item.quantity);
+    }
+    // Cập nhật lại state local, nếu backend trả về dữ liệu mới thì useEffect sẽ đồng bộ
+    setQuantity(newQuantity);
+  };
+
   const imageUrl = item.blindBox?.images?.mainImage?.url || '';
   const description = item.blindBox?.description || '';
 
@@ -12,7 +41,6 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
         <div className="flex items-center">
           <img
             className="w-16 h-16 border border-gray-200 rounded"
-            //src={item.image}
             src={imageUrl}
             alt="Product"
           />
@@ -27,7 +55,6 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center space-x-2">
           <button
-            //onClick={() => onUpdateQuantity(item.id, -1)}
             onClick={() => onUpdateQuantity(item.preorderCampaignId, -1)}
             className="px-2 py-1 border border-gray-300 rounded"
           >
@@ -36,12 +63,13 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
           <input
             type="text"
             name="qty"
-            value={item.quantity}
+            value={quantity}
             readOnly
+            // onChange={handleInputChange}
+            // onBlur={handleInputBlur}
             className="h-full py-2 w-16 text-center border-t border-b border-gray-300"
           />
           <button
-            //onClick={() => onUpdateQuantity(item.id, 1)}
             onClick={() => onUpdateQuantity(item.preorderCampaignId, 1)}
             className="px-2 py-1 border border-gray-300 rounded"
           >
@@ -51,17 +79,17 @@ export function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <span className="text-gray-900">
-          {/* {(item.price * item.quantity).toFixed(2)} */}
           {item.amount.toFixed(2)}
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <DeleteOutlined
           className="cursor-pointer"
-          //onClick={() => onRemoveItem(item.id)}
           onClick={() => onRemoveItem(item.preorderCampaignId)}
         />
       </td>
     </tr>
   );
 }
+
+export default CartItem;
