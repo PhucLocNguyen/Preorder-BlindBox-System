@@ -46,7 +46,7 @@ function PreorderCampaignEdit() {
           data.startDate ? moment(data.startDate) : null,
             data.endDate ? moment(data.endDate) : null,
         ],
-        milestones: data.milestones,
+        milestones: data.preorderMilestones,
       });
       setTypeOfCampaign(data.type);
       setLoading(false);
