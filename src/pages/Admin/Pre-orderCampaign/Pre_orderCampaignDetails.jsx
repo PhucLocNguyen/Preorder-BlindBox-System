@@ -1,7 +1,9 @@
 import { React, useState, useEffect } from "react";
 import { GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
-import { useParams } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
+import {
+    ArrowLeftOutlined,
+  } from "@ant-design/icons";
 const Pre_orderCampaignDetails = () => {
     const { slug } = useParams();
     const [detailPre_orderCampaign, setDetailPre_orderCampaign] = useState({});
@@ -39,8 +41,18 @@ const Pre_orderCampaignDetails = () => {
 
     return (
         <div className="container mx-auto p-6 flex justify-center">
+            
             <div className="w-full max-w-2xl bg-white border rounded-lg shadow-lg overflow-hidden p-8">
                 {/* Hình ảnh lớn hơn */}
+                <Link to="/admin/pre-ordercampaign">
+                    <ArrowLeftOutlined
+                      style={{
+                        width: "fit-content",
+                        height: "fit-content",
+                      }}
+                      title="Về lại trang sản phẩm"
+                    />
+                  </Link>
                 {mainImageUrl ? (
                     <img
                         src={mainImageUrl}
