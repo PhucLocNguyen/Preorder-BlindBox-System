@@ -59,6 +59,31 @@ namespace PreOrderBlindBox.Services.Services
             
         }
 
+        public async Task<bool> CreateTempOrderDetailToOrderDetail(List<TempCampaignBulkOrderDetail> tempCampaignBulkOrderDetails, int orderID, decimal endPriceOfCampaign)
+        {
+            try
+            {
+                foreach (var item in tempCampaignBulkOrderDetails)
+                {
+                    var orderDetailEntity = new OrderDetail()
+                    {
+                        OrderId = orderID,
+                        PreorderCampaignId =item.PreorderCampaignId,
+                        Quantity=item.Quantity,
+                        UnitPriceAtTime = item.UnitPriceAtTime,
+                        UnitEndCampaignPrice = endPriceOfCampaign
+                    };
+                    await _orderDetailRepository.InsertAsync(orderDetailEntity);
+                }
+                await _unitOfWork.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Something went wrong when change temp order detail to order detail ", ex);
+            }
+        }
+
         public async Task<List<ResponseOrderDetail>> GetAllOrderDetailsByOrderID(PaginationParameter? page, int orderId)
         {
             List<ResponseOrderDetail> orderDetailResponse = new List<ResponseOrderDetail>();

@@ -11,6 +11,8 @@ namespace PreOrderBlindBox.Services.IServices
 
         Task<bool> CreateOrderDetail(List<ResponseCart> carts, int orderID);
 
+        Task<bool> CreateTempOrderDetailToOrderDetail(List<TempCampaignBulkOrderDetail> tempCampaignBulkOrderDetails, int orderID, decimal endPriceOfCampaign);
+
         Task<int> GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc(int preorderCampaignID);
     }
 }
