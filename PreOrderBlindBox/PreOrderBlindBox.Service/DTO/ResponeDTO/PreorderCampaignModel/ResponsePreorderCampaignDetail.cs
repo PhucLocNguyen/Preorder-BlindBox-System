@@ -15,11 +15,11 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel
         public int? BlindBoxId { get; set; }
         public string Slug { get; set; }
         public DateTime StartDate { get; set; }
-
         public DateTime EndDate { get; set; }
         public string Status { get; set; }
         public string Type { get; set; }
         public bool IsDeleted { get; set; }
+        public decimal PriceAtTime { get; set; }
         public int TotalQuantity { get; set; }
         public int? PlacedOrderCount { get; set; }
         public ResponseBlindBox BlindBox { get; set; }

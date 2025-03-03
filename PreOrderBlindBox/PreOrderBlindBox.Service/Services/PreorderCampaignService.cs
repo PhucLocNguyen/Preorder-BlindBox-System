@@ -79,7 +79,7 @@ namespace PreOrderBlindBox.Services.Services
                 }
                 result.Add(responseCampaign);
             }
-            var countItem = _preorderCampaignRepo.Count(x => x.IsDeleted ==  false);
+            var countItem = _preorderCampaignRepo.Count(x => x.IsDeleted == false);
             return new Pagination<ResponsePreorderCampaign>(result, countItem, page.PageIndex, page.PageSize);
         }
 
@@ -246,14 +246,71 @@ namespace PreOrderBlindBox.Services.Services
             }
 
             var milestoneList = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID(preorderCampaign.PreorderCampaignId);
-            var quantityCount = 0;
+            var quantityCount = milestoneList.Sum(m => m.Quantity);
 
-            foreach (var milestone in milestoneList)
+            var priceAtTime = 0m;
+            // Sắp xếp milestones theo MilestoneNumber (hoặc tiêu chí bạn muốn)
+            var orderedMilestones = milestoneList.OrderBy(m => m.MilestoneNumber).ToList();
+            int placedOrderCount = preorderCampaign.PlacedOrderCount ?? 0; // Chỉ đề phòng Null
+            if (preorderCampaign.Type == PreorderCampaignType.TimedPricing.ToString())
             {
-                quantityCount += milestone.Quantity;
+                int cumulativeQuantity = 0;
+
+                // Chạy vòng lặp, cộng dồn quantity, nếu PlacedOrderCount nằm trong khoảng mốc, lấy price của mốc đó
+                foreach (var milestone in orderedMilestones)
+                {
+                    cumulativeQuantity += milestone.Quantity;
+
+                    if (placedOrderCount <= cumulativeQuantity)
+                    {
+                        priceAtTime = milestone.Price;
+                        break;
+                    }
+                }
+
+                // Nếu PlacedOrderCount lớn hơn tổng cuối cùng của milestones (trường hợp user đã đặt vượt mốc cuối),
+                // bạn có thể giữ nguyên priceAtTime = 0 hoặc set bằng price của mốc cuối:
+                if (placedOrderCount > cumulativeQuantity)
+                {
+                    priceAtTime = orderedMilestones.Last().Price;
+                }
             }
 
-            var milestones = await _preorderMilestoneRepo.GetAll(filter: x => x.PreorderCampaignId == preorderCampaign.PreorderCampaignId);
+            if (preorderCampaign.Type == PreorderCampaignType.BulkOrder.ToString())
+            {
+                // Tạo danh sách cumulativeQuantities
+                // cumulativeQuantities[i] = tổng quantity của milestone từ 0 đến i
+                var cumulativeQuantities = new List<int>();
+                int runningSum = 0;
+                foreach (var mile in orderedMilestones)
+                {
+                    runningSum += mile.Quantity;
+                    cumulativeQuantities.Add(runningSum);
+                }
+
+                // Vòng lặp xác định priceAtTime dựa trên PlacedOrderCount
+                // Ta sẽ duyệt đến mốc kế tiếp để so sánh
+                for (int i = 0; i < orderedMilestones.Count; i++)
+                {
+                    // Nếu chưa phải mốc cuối, so sánh với cumulativeQuantities[i+1]
+                    if (i < orderedMilestones.Count - 1)
+                    {
+                        // Nếu PlacedOrderCount <= c[i+1], lấy giá milestone[i] rồi dừng
+                        if (placedOrderCount <= cumulativeQuantities[i + 1])
+                        {
+                            priceAtTime = orderedMilestones[i].Price;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // Đến mốc cuối cùng:
+                        // Nếu vòng lặp chưa break, nghĩa là PlacedOrderCount lớn hơn tất cả ngưỡng cũ
+                        // => ta dùng giá của milestone cuối.
+                        priceAtTime = orderedMilestones[i].Price;
+                    }
+                }
+            }
 
             // Ánh xạ sang ResponsePreorderCampaignDetail
             var response = new ResponsePreorderCampaignDetail
@@ -266,6 +323,7 @@ namespace PreOrderBlindBox.Services.Services
                 Status = preorderCampaign.Status,
                 Type = preorderCampaign.Type,
                 IsDeleted = preorderCampaign.IsDeleted,
+                PriceAtTime = priceAtTime,
                 TotalQuantity = quantityCount,
                 PlacedOrderCount = preorderCampaign.PlacedOrderCount,
                 BlindBox = preorderCampaign.BlindBox != null ? new ResponseBlindBox
@@ -277,14 +335,14 @@ namespace PreOrderBlindBox.Services.Services
                     CreatedAt = preorderCampaign.BlindBox.CreatedAt,
                     Images = images
                 } : null,
-                PreorderMilestones = milestones.Select(m => new ResponsePreorderMilestone
-                    {
-                        PreorderMilestoneId = m.PreorderMilestoneId,
-                        MilestoneNumber = m.MilestoneNumber,
-                        Quantity = m.Quantity,
-                        Price = m.Price,
-                        PreorderCampaignId = m.PreorderCampaignId,
-                    }).OrderBy(m => m.MilestoneNumber).ToList()
+                PreorderMilestones = milestoneList.Select(m => new ResponsePreorderMilestone
+                {
+                    PreorderMilestoneId = m.PreorderMilestoneId,
+                    MilestoneNumber = m.MilestoneNumber,
+                    Quantity = m.Quantity,
+                    Price = m.Price,
+                    PreorderCampaignId = m.PreorderCampaignId,
+                }).OrderBy(m => m.MilestoneNumber).ToList()
             };
 
             return response;
@@ -447,7 +505,7 @@ namespace PreOrderBlindBox.Services.Services
                 throw new ArgumentException("Cannot update Pre-Order Campaign had deleted or completed");
             }
 
-            if(preorderCampaign.Type == PreorderCampaignType.TimedPricing.ToString())
+            if (preorderCampaign.Type == PreorderCampaignType.TimedPricing.ToString())
             {
                 throw new ArgumentException("Cannot cancel TimedPricing campaign");
             }
@@ -588,7 +646,7 @@ namespace PreOrderBlindBox.Services.Services
                         Quantity = campaignRequest.MilestoneRequests[i].Quantity,
                         Price = campaignRequest.MilestoneRequests[i].Price
                     };
-                    
+
                     await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
                 }
 
@@ -651,7 +709,7 @@ namespace PreOrderBlindBox.Services.Services
                 await _preorderCampaignRepo.UpdateAsync(preorderCampaign);
                 await _unitOfWork.SaveChanges();
 
-                if (request.PreorderMilestoneRequests.Count > 0) 
+                if (request.PreorderMilestoneRequests.Count > 0)
                 {
                     // Lấy danh sách tất cả PreorderMilestone liên quan
                     var milestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID(id);
@@ -678,7 +736,8 @@ namespace PreOrderBlindBox.Services.Services
                 }
                 await _unitOfWork.CommitTransactionAsync();
                 return true;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync();
                 throw;
