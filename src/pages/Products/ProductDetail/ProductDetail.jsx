@@ -2,7 +2,7 @@ import ProductImages from '../../../components/ProductImage/ProductImage';
 import CountdownTimer from '../../../components/CountDown/CountDown';
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
-import { GetAllImagesByBlindBoxId, GetActiveDetailPreorderCampaign } from '../../../api/PreorderCampaign/getPreorderCampaign';
+import { GetAllImagesByBlindBoxId, GetActiveDetailPreorderCampaign } from '../../../api/Pre_orderCampaign/ApiPre_orderCampaign';
 import PreorderMilestones from '../../../components/PreorderMilestones/PreorderMilestones';
 
 const ProductDetail = () => {
