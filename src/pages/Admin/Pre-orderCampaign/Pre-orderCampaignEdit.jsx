@@ -96,8 +96,8 @@ const Pre_orderCampaignEdit = ({ preorderCampaignId, onSuccess }) => {
                     <Col span={8}>
                         <Form.Item label="Type" name="type" rules={[{ required: true, message: "Please select a type!" }]}>
                             <Select placeholder="Select a type" disabled={!isEditable}>
-                                <Option value={0}>TimedPricing</Option>
-                                <Option value={1}>BulkOrder</Option>
+                                <Option value={0}>Timed Pricing</Option>
+                                <Option value={1}>Bulk Order</Option>
                             </Select>
                         </Form.Item>
                     </Col>
