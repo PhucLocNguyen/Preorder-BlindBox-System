@@ -61,13 +61,23 @@ namespace PreOrderBlindBox.Api
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
-            builder => builder.WithOrigins("http://localhost:5173")
+            builder => builder.WithOrigins("http://localhost:5173", "https://test-fe-cookie.vercel.app")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials()
                       .WithExposedHeaders("X-Pagination")
                       );
             });
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAllDeploy",
+            //builder => builder.WithOrigins("https://test-fe-cookie.vercel.app")
+            //          .AllowAnyMethod()
+            //          .AllowAnyHeader()
+            //          .AllowCredentials()
+            //          .WithExposedHeaders("X-Pagination")
+            //          );
+            //});
             builder.Services.AddHttpContextAccessor();
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
@@ -104,23 +114,22 @@ namespace PreOrderBlindBox.Api
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
                 app.UseSwagger();
                 app.UseSwaggerUI(/*c =>
 				{
 					c.ConfigObject.AdditionalItems["persistAuthorization"] = true;
 				}*/);
-            }
 
             app.UseHttpsRedirection();
             app.UseMiddleware<JwtCookieMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.MapControllers();
             app.UseCors("AllowAll");
+            //app.UseCors("AllowAllDeploy");
+            app.MapControllers();
+
+
             app.Run();
         }
     }
