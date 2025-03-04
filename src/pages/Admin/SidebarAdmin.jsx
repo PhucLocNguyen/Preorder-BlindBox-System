@@ -26,11 +26,11 @@ const SideBarAdmin = () => {
             <ul className="space-y-4">
                 {/* Admin Management */}
 
-                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/usermanagement" || location.pathname === "/admin"
+                <li className={`flex items-center px-4 py-3 rounded-lg transition duration-300 ${location.pathname === "/admin/staffmanagement" || location.pathname === "/admin"
                     ? "bg-blue-500 text-white"
                     : "text-gray-700 hover:bg-blue-100 hover:text-blue-600"
                     }`}>
-                    <Link to="/admin/usermanagement" className="flex items-center w-full">
+                    <Link to="/admin/staffmanagement" className="flex items-center w-full">
                         <Row gutter={12} align="middle">
 
                             <Col span={10} className="flex justify-center">
