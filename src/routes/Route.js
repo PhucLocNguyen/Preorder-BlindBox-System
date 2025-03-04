@@ -143,8 +143,8 @@ const publicRoutes = [
     children: [
 
       { index: true, component: StaffManagement },
-      { path: "usermanagement", component: StaffManagement },
-      { path: "usermanagerment-details/:id", component: StaffManagementDetails },
+      { path: "staffmanagement", component: StaffManagement },
+      { path: "staffmanagement-details/:id", component: StaffManagementDetails },
       { path: "preordermilestone", component: PreorderMilestone },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },

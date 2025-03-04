@@ -31,10 +31,8 @@ const VoucherCreate = () => {
             const config = { headers: { 'Content-Type': 'application/json' } };
 
             const result = await CreateVoucher(payload, config);
-
-            if (result && result.status === 200) { // Kiểm tra response thành công
-                navigate('/admin/voucher');
-            }
+            toast.success('Voucher created successfully!');
+            navigate('/admin/voucher');
 
         } catch (error) {
             toast.error('Error creating voucher: ' + (error.response?.data?.message || error.message));
@@ -64,30 +62,38 @@ const VoucherCreate = () => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Maximum Money Discount" name="maximumMoneyDiscount"
+                            <Form.Item
+                                label="Maximum Money Discount"
+                                name="maximumMoneyDiscount"
                                 rules={[{ required: true, message: "Please enter maximum money discount!" }]}
                             >
                                 <InputNumber
                                     style={{ width: "100%", height: "48px" }}
                                     min={0}
-                                    placeholder="Enter money maximum discount"
-                                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}
-                                    parser={(value) => value.replace(/VND\s?|(|,*)/g, "")}
+                                    disabled={status === "Active"}
+                                    placeholder="Enter maximum money discount"
+                                    formatter={(value) =>
+                                        value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND" : "0 VND"
+                                    }
+                                    parser={(value) =>
+                                        value.replace(/[^0-9]/g, "") // Loại bỏ mọi ký tự không phải số
+                                    }
                                     className="rounded-xl text-lg"
                                 />
                             </Form.Item>
+
                         </Col>
                     </Row>
 
                     <Row gutter={[32, 20]}>
                         <Col span={12}>
                             <Form.Item label="Quantity" name="quantity" rules={[{ required: true, message: "Please enter the quantity!" }]}>
-                                <Input type="number" placeholder="Enter quantity" className="rounded-xl h-12 text-lg" />
+                                <Input type="number" placeholder="Enter quantity" min={1} className="rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item label="Validity Duration" name="setNumberExpirationDate" rules={[{ required: true, message: "Please enter the quantity!" }]}>
-                                <Input type="number" placeholder="Enter Validity Duration" className="rounded-xl h-12 text-lg" />
+                                <Input type="number" placeholder="Enter Validity Duration" min={1} className="rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
                     </Row>
