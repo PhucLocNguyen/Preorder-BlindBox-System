@@ -9,20 +9,25 @@ import {
 } from "antd";
 const { Option } = Select;
 import { useEffect, useState } from "react";
-import {
-  ArrowLeftOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router";
-import ProductCardModal from "../../../components/Search/SearchBlindbox";
 import TextArea from "antd/es/input/TextArea";
-import { GetActivePreorderCampaignBySlug, UpdatePreorderCampaign } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
-import moment from "moment";
+import {
+  CreatePreorderCampaign,
+  GetActivePreorderCampaignBySlug,
+  UpdatePreorderCampaign,
+} from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
 import StatusTag from "../../../components/Tags/StatusTag";
+import dayjs from "dayjs";
+
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { CreatePreorderMilestones } from "../../../components/PreorderMilestones/CreatePreorderMilestones";
+
 const { RangePicker } = DatePicker;
 
 function PreorderCampaignEdit() {
+  dayjs.extend(isSameOrBefore);
+
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
@@ -30,24 +35,30 @@ function PreorderCampaignEdit() {
   const [isUpdated, setIsUpdated] = useState(false);
 
   const [typeOfCampaign, setTypeOfCampaign] = useState(null);
-  // State để xác định form có hợp lệ hay không (đã chạm và không có lỗi)
+  // State để xác định form có hợp lệ hay không
   const [isFormValid, setIsFormValid] = useState(false);
   const [detailPre_orderCampaign, setDetailPre_orderCampaign] = useState({});
-
+  const [isValidMilestones, setIsValidMilestones] = useState(true);
   const navigate = useNavigate();
+
   const fetchCampaign_BySlug = async () => {
     try {
       const data = await GetActivePreorderCampaignBySlug(slug);
+
       setLoadMainProduct(data.blindBox);
       setDetailPre_orderCampaign(data);
+
+      // Giả sử server trả về định dạng "YYYY-MM-DD HH:mm"
+      // Nếu server trả về ISO, bạn chỉ cần moment(data.startDate) là đủ
       form.setFieldsValue({
-        type: data.type,
+        type: data.type === "TimedPricing" ? 0 : 1,
         dateRange: [
-          data.startDate ? moment(data.startDate) : null,
-            data.endDate ? moment(data.endDate) : null,
+          data.startDate ? dayjs(data.startDate, "YYYY-MM-DD HH:mm") : null,
+          data.endDate ? dayjs(data.endDate, "YYYY-MM-DD HH:mm") : null,
         ],
-        milestones: data.milestones,
+        milestones: data.preorderMilestones,
       });
+      await onFieldsChange();
       setTypeOfCampaign(data.type);
       setLoading(false);
     } catch (error) {
@@ -57,77 +68,84 @@ function PreorderCampaignEdit() {
   useEffect(() => {
     fetchCampaign_BySlug();
   }, [slug]);
-  // Cập nhật trạng thái form mỗi khi các field thay đổi
-  const onFieldsChange = () => {
+
+  // Mỗi khi field thay đổi, kiểm tra xem form có hợp lệ không
+  const onFieldsChange = async () => {
     const fieldsError = form.getFieldsError();
-    if (typeOfCampaign == null) {
+
+    // Kiểm tra xem đã chọn loại campaign và sản phẩm chưa
+    if (typeOfCampaign == null || !loadMainProduct) {
       setIsFormValid(false);
       return;
     }
-    if (loadMainProduct == null) {
+
+    // Lấy giá trị milestones
+    const milestoneValues = form.getFieldValue("milestones") || [];
+    if (milestoneValues.length <= 2) {
       setIsFormValid(false);
       return;
     }
-    const milestoneValues = form.getFieldValue("milestones") || null;
-    if (!milestoneValues || milestoneValues.length <= 2) {
-      setIsFormValid(false);
-      return;
-    }
-    // Kiểm tra xem có milestone nào bị thiếu số lượng hoặc số tiền không
-    const milestoneHasEmpty = milestoneValues.some((m) => {
-      return (
-        !m ||
-        m.quantity === undefined ||
-        m.quantity === "" ||
-        m.price === undefined ||
-        m.price === ""
-      );
-    });
+    // Kiểm tra milestone nào bị trống
+    const milestoneHasEmpty = await milestoneValues.some(
+      (m) => !m || !m.quantity || !m.price
+    );
     if (milestoneHasEmpty) {
       setIsFormValid(false);
       return;
     }
-    const dateRange = form.getFieldValue("dateRange") || null;
-    var dateNow = new Date();
-    if (dateRange == null) {
+    // Lấy giá trị dateRange
+    const dateRange = form.getFieldValue("dateRange");
+    const [startDate, endDate] = dateRange.map((d) => dayjs(d));
+
+    // So sánh với ngày hiện tại
+    if (startDate.isSameOrBefore(dayjs())) {
       setIsFormValid(false);
       return;
     }
-    if (dateRange[0] <= dateNow) {
+
+    // Kiểm tra endDate cách startDate ít nhất 3 ngày
+    if (endDate.isBefore(startDate.add(3, "day"))) {
       setIsFormValid(false);
       return;
     }
-    // validate 3 ngay sau khi start date
-    if (dateRange[1].isBefore(dateRange[0].clone().add(3, "days"))) {
+    if(detailPre_orderCampaign.status !=="Pending"){
       setIsFormValid(false);
       return;
     }
+    // Nếu mọi thứ OK
+    setIsFormValid(true);
+    console.log("By pass isUpdate");
+    // Kiểm tra xem có lỗi ở bất kỳ field nào không
     const hasErrors = fieldsError.some((field) => field.errors.length > 0);
+
     setIsFormValid(!hasErrors);
     setIsUpdated(true);
   };
 
-  // Khi người dùng chọn loại chiến dịch, cập nhật state và reset field milestones
+  // Khi người dùng chọn loại chiến dịch, reset milestones
   const handleChangeTypeCampaign = (value) => {
     setTypeOfCampaign(value);
-    form.setFieldsValue({ typeOfCampaign: value, milestones: [] });
+    setErrorLog(null);
+    form.setFieldsValue({ type: value, milestones: [] });
   };
 
   const handleSubmit = async (values) => {
+    console.log(values);
     const data = {
-      blindBoxId: parseInt(loadMainProduct?.blindBoxId) || 0,
-      type: parseInt(values.type || typeOfCampaign),
+      type: values.type,
+      // Lấy giá trị ISO để lưu DB
       startDate: values.dateRange ? values.dateRange[0].toISOString() : null,
       endDate: values.dateRange ? values.dateRange[1].toISOString() : null,
-      milestoneRequests: values.milestones
-        ? values.milestones.map((item) => ({
-            quantity: parseInt(item.quantity),
-            price: parseFloat(item.price),
-          }))
-        : [],
+      preorderMilestoneRequests: (values.milestones || []).map((item) => ({
+        quantity: parseInt(item.quantity),
+        price: parseFloat(item.price),
+      })),
     };
 
-    await UpdatePreorderCampaign(detailPre_orderCampaign.preorderCampaignId,data);
+    await UpdatePreorderCampaign(
+      detailPre_orderCampaign.preorderCampaignId,
+      data
+    );
     navigate("/admin/pre-ordercampaign");
   };
 
@@ -141,7 +159,7 @@ function PreorderCampaignEdit() {
           onFieldsChange={onFieldsChange}
         >
           <div className="grid grid-cols-12 gap-4 min-h-screen mx-auto mt-5 p-5 bg-[#e5e7eb] shadow-lg rounded-lg">
-            <div className="col-span-9 ">
+            <div className="col-span-9">
               <div className="bg-white p-4 rounded-xl py-10">
                 <div className="flex items-center mb-4">
                   <Link to="/admin/pre-ordercampaign" className="h-full flex">
@@ -151,21 +169,18 @@ function PreorderCampaignEdit() {
                         height: "100%",
                         padding: "10px",
                       }}
-                      title="Về lại trang sản phẩm"
+                      title="Về lại trang danh sách chiến dịch"
                     />
                   </Link>
-                  <h1 className="text-2xl font-bold">Chỉnh sửa chiến dịch</h1> 
+                  <h1 className="text-2xl font-bold ml-2">
+                    Chỉnh sửa chiến dịch
+                  </h1>
                   <StatusTag status={detailPre_orderCampaign.status} />
                 </div>
 
+                {/* Thông tin sản phẩm */}
                 <div className="mb-4">
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-xl mb-2 mt-2">
-                      Thông tin chi tiết về sản phẩm
-                    </h2>
-                    <ProductCardModal setLoadMainProduct={setLoadMainProduct} />
-                  </div>
-                  {loadMainProduct != null && (
+                  {loadMainProduct && (
                     <div className="grid grid-cols-12 gap-6">
                       <div className="col-span-3">
                         <h3 className="text-[16px]">Hình ảnh sản phẩm</h3>
@@ -173,14 +188,15 @@ function PreorderCampaignEdit() {
                           <img
                             src={loadMainProduct.images?.mainImage.url}
                             alt="Main"
-                            className="w-full h-[290px] object-cover mt-2"
-                            style={{ borderRadius: "10px" }}
+                            className="w-full h-[290px] object-cover mt-2 rounded-md"
                           />
                         </div>
                       </div>
                       <div className="col-span-9">
                         <div className="mt-2">
-                          <h3 className="text-[16px] mt-2 mb-">Tên sản phẩm</h3>
+                          <h3 className="text-[16px] mt-2 mb-1">
+                            Tên sản phẩm
+                          </h3>
                           <Form.Item
                             name="name"
                             initialValue={loadMainProduct?.name}
@@ -237,182 +253,47 @@ function PreorderCampaignEdit() {
                       </Select>
                     </Form.Item>
                   </div>
-                  <div>
-                    <h3 className="text-lg">Thêm các mốc giá và số lượng</h3>
-                  </div>
-                  {typeOfCampaign != null && (
-                      <Form.List name="milestones">
-                        {(fields, { add, remove }) => (
-                          <>
-                            {fields.map(({ key, name, ...restField }, index) => (
-                              <Space
-                                key={key}
-                                style={{ display: "flex", marginBottom: 8 }}
-                                align="baseline"
-                              >
-                                {/* Số lượng */}
-                                <Form.Item
-                                  {...restField}
-                                  name={[name, "quantity"]}
-                                  label="Số lượng"
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: "Vui lòng nhập số lượng!",
-                                    },
-                                    {
-                                      validator: (_, value) => {
-                                        if (value === undefined || value === "") {
-                                          return Promise.resolve();
-                                        }
-                                        if (Number(value) < 1) {
-                                          return Promise.reject(
-                                            new Error(
-                                              "Số lượng phải lớn hơn hoặc bằng 1"
-                                            )
-                                          );
-                                        }
-                                        return Promise.resolve();
-                                      },
-                                    },
-                                  ]}
-                                >
-                                  <InputNumber
-                                    placeholder="Số lượng"
-                                    min={1}
-                                    style={{ width: "100%" }}
-                                  />
-                                </Form.Item>
 
-                                {/* Số tiền */}
-                                <Form.Item
-                                  {...restField}
-                                  name={[name, "price"]}
-                                  dependencies={
-                                    index > 0
-                                      ? [["milestones", index - 1, "price"]]
-                                      : []
-                                  }
-                                  label="Số tiền"
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: "Vui lòng nhập số tiền!",
-                                    },
-                                    {
-                                      validator: (_, value) => {
-                                        if (value === undefined || value === "") {
-                                          return Promise.resolve();
-                                        }
-                                        if (Number(value) < 1000) {
-                                          return Promise.reject(
-                                            new Error(
-                                              "Số tiền phải lớn hơn hoặc bằng 1000"
-                                            )
-                                          );
-                                        }
-                                        return Promise.resolve();
-                                      },
-                                    },
-                                    // Validator so sánh với milestone trước nếu có
-                                    ({ getFieldValue }) => ({
-                                      validator(_, value) {
-                                        const milestones =
-                                          getFieldValue("milestones") || [];
-                                        if (index === 0) {
-                                          return Promise.resolve();
-                                        }
-                                        const previousMilestone =
-                                          milestones[index - 1];
-                                        if (
-                                          previousMilestone === undefined ||
-                                          previousMilestone.price === undefined
-                                        ) {
-                                          return Promise.resolve();
-                                        }
-                                        const prevPrice = parseFloat(
-                                          previousMilestone.price
-                                        );
-                                        const currentPrice = parseFloat(value);
-                                        if (typeOfCampaign == 0) {
-                                          if (currentPrice <= prevPrice) {
-                                            return Promise.reject(
-                                              new Error(
-                                                `Giá phải tăng dần so với cột mốc trước (phải lớn hơn ${previousMilestone.price})`
-                                              )
-                                            );
-                                          }
-                                        } else if (typeOfCampaign == 1) {
-                                          if (currentPrice >= prevPrice) {
-                                            return Promise.reject(
-                                              new Error(
-                                                `Giá phải giảm dần so với cột mốc trước (phải nhỏ hơn ${previousMilestone.price})`
-                                              )
-                                            );
-                                          }
-                                        }
-                                        return Promise.resolve();
-                                      },
-                                    }),
-                                  ]}
-                                >
-                                  <InputNumber
-                                    placeholder="Số tiền"
-                                    min={1000}
-                                    style={{ width: "100%" }}
-                                  />
-                                </Form.Item>
-                                <MinusCircleOutlined
-                                  onClick={() => remove(name)}
-                                />
-                              </Space>
-                            ))}
-                            <Form.Item>
-                              <Button
-                                type="dashed"
-                                onClick={() => add()}
-                                block
-                                icon={<PlusOutlined />}
-                              >
-                                Thêm cột mốc
-                              </Button>
-                            </Form.Item>
-                          </>
-                        )}
-                      </Form.List>
+                  <h3 className="text-lg">Thêm các mốc giá và số lượng</h3>
+                  {typeOfCampaign !== null && (
+                    <CreatePreorderMilestones
+                    setIsValidMilestones={setIsValidMilestones}
+                      form={form}
+                      typeOfCampaign={typeOfCampaign}
+                    />
                   )}
+                  
                 </div>
               </div>
             </div>
+
+            {/* Cột bên phải */}
             <div className="col-span-3">
-              {/* Main Image & DatePicker */}
               <div className="py-10 bg-white px-4 rounded-xl">
-                <div>
-                  <h2 className="text-xl mb-2">
-                    Thời gian chiến dịch hoạt động
-                  </h2>
-                  <Form.Item
-                    name="dateRange"
-                    label="Chọn khoảng thời gian"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng chọn khoảng thời gian!",
-                      },
-                    ]}
-                  >
-                    <RangePicker
-                      showTime={{ format: "HH:mm" }}
-                      format="YYYY-MM-DD HH:mm"
-                    />
-                  </Form.Item>
-                </div>
+                <h2 className="text-xl mb-2">Thời gian chiến dịch</h2>
+                <Form.Item
+                  name="dateRange"
+                  label="Chọn khoảng thời gian"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn khoảng thời gian!",
+                    },
+                  ]}
+                >
+                  <RangePicker
+                    showTime={{ format: "HH:mm" }}
+                    format="YYYY-MM-DD HH:mm"
+                  />
+                </Form.Item>
+
                 <Form.Item>
                   <Button
                     type="primary"
                     htmlType="submit"
                     loading={loading}
-                    disabled={!isFormValid &&!isUpdated}
+                    // Sửa lại điều kiện disable
+                    disabled={!isFormValid || !isUpdated || !isValidMilestones}
                     className="w-full"
                   >
                     Cập nhật

@@ -57,7 +57,7 @@ const Pre_orderCampaignDetails = () => {
                     <img
                         src={mainImageUrl}
                         alt="Blind box"
-                        className="w-full h-80 object-cover rounded-lg"
+                        className="w-full h-80 object-contain rounded-lg"
                     />
                 ) : (
                     <div className="w-full h-80 flex items-center justify-center bg-gray-100 text-gray-500 text-xl font-semibold rounded-lg">

@@ -3,8 +3,6 @@ import { Table, Tag, Space, Input, Button, Modal, Checkbox, Spin, Pagination, no
 import { EyeOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from 'react-router-dom';
 import Pre_orderCampaignEdit from "./Pre-orderCampaignEdit";
-import axios from 'axios';
-
 import {
     GetTheActivePreorderCampaign, GetActivePreorderCampaignBySlug,
     DeletePendingCampaign,
@@ -69,8 +67,6 @@ const Pre_orderCampaign = () => {
             });
         }
     };
-
-
 
     const confirmDeletePre_orderCampaign = async () => {
         if (!detailPre_orderCampaign_bySlug?.preorderCampaignId) {
