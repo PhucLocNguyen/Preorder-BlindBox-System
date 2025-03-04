@@ -31,9 +31,9 @@ const ProductHot = () => {
 							/>
 							<h2 className='text-3xl font-bold text-white'>Tháng 2 khởi sắc, bứt phá vươn xa!</h2>
 						</div>
-						<div className='relative z-20'>
+						{/* <div className='relative z-20'>
 							<CountdownHot />
-						</div>
+						</div> */}
 
 						{/* Product Grid */}
 						<div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>

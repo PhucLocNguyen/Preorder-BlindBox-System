@@ -74,9 +74,18 @@ const GetActiveDetailPreorderCampaign = async (slug) => {
         toast.error("Get active blind box by id failed!");
 		return null;
 	}
+}
+    const GetAllImagesByBlindBoxId = async (blindBoxId) => {
+        try {
+            const response = await api.get(`/Image/GetAllByBlindBoxId/${blindBoxId}`, axiosConfigHeader);
+            return response.data;
+        } catch (error) {
+            console.log('>>> Api Get All Images By Blind Box ID Error: ', error);
+            return [];
+        }
 };
 export {
     GetTheActivePreorderCampaign, CreatePreorderCampaign,
-    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById, GetActiveDetailPreorderCampaign
-};
+    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById, GetActiveDetailPreorderCampaign,
+    GetAllImagesByBlindBoxId};
 

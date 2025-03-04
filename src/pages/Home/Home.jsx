@@ -8,7 +8,7 @@ function Home() {
 		<div>
 			<ProductList />
 			<ProductHot />	
-			<CountdownSection />
+			{/* <CountdownSection /> */}
 			<VoucherCampaignSection />
 		</div>
 	);
