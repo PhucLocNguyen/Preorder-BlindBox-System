@@ -108,6 +108,10 @@ function PreorderCampaignEdit() {
       setIsFormValid(false);
       return;
     }
+    if(detailPre_orderCampaign.status !=="Pending"){
+      setIsFormValid(false);
+      return;
+    }
     // Nếu mọi thứ OK
     setIsFormValid(true);
     console.log("By pass isUpdate");

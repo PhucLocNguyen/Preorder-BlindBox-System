@@ -68,8 +68,6 @@ const Pre_orderCampaign = () => {
         }
     };
 
-
-
     const confirmDeletePre_orderCampaign = async () => {
         if (!detailPre_orderCampaign_bySlug?.preorderCampaignId) {
             notification.error({
