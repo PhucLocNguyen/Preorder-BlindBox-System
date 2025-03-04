@@ -37,7 +37,7 @@ const CreatePreorderCampaign = async (payload) => {
 
 const UpdatePreorderCampaign = async (id, payload) => {
     try {
-        const response = await api.put(`/PreorderCampaign/UpdatePreorderCampaign/${id}`, payload, axiosConfigHeader);
+        const response = await api.put(`/PreorderCampaign/UpdatePreorderCampaignWithMilestone/${id}`, payload, axiosConfigHeader);
         toast.success("Update successful!");
         return response.data;
     } catch (error) {
