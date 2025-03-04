@@ -8,6 +8,8 @@ function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [userVouchers, setUserVoucher] = useState([]);
 
+  // State để lưu tổng của từng block (key: campaignId)
+  const [blockTotals, setBlockTotals] = useState({});
   // Đây là state chứa dữ liệu gửi đi
   const [checkoutData, setCheckoutData] = useState({
     cartTotal: 0,
@@ -113,6 +115,19 @@ function Cart() {
     }
   };
 
+  // Callback được truyền cho CampaignBlock để cập nhật tổng tiền sau voucher của block đó
+  const handleUpdateBlockTotal = useCallback((campaignId, total) => {
+    setBlockTotals(prev => {
+      const newBlocks = { ...prev, [campaignId]: total };
+      setCheckoutData(prevData => ({
+        ...prevData,
+        cartTotal: Object.values(newBlocks).reduce((sum, t) => sum + t, 0),
+        blocks: newBlocks,
+      }));
+      return newBlocks;
+    });
+  }, []);
+
   // Gom nhóm các item theo campaignId
   const groupedItems = cartItems.reduce((acc, item) => {
     const key = item.preorderCampaignId;
@@ -125,6 +140,9 @@ function Cart() {
 
   // Tính tổng tiền toàn bộ cart (chưa tính voucher ở mỗi block)
   const totalCart = cartItems.reduce((sum, item) => sum + item.amount, 0);
+
+  // Tính tổng tiền của giỏ hàng sau khi đã áp dụng voucher cho từng block
+  const totalCartAfterVoucher = Object.values(blockTotals).reduce((sum, value) => sum + value, 0);
 
   return (
     <section className="py-24">
@@ -140,12 +158,13 @@ function Cart() {
             onUpdateQuantity={updateQuantityApi}
             onRemoveItem={removeItem}
             onApplyVoucher={handleApplyVoucher}
+            onUpdateBlockTotal={handleUpdateBlockTotal}  // truyền callback xuống
           />
         ))}
 
         {/* Tổng tiền cả cart */}
         <div className="text-right mt-4 text-xl font-bold">
-          Tổng tiền của cả giỏ hàng: {totalCart.toFixed(2)}
+          Tổng tiền của cả giỏ hàng: {totalCartAfterVoucher.toFixed(2)}
         </div>
 
         {/* Footer chung cho cart: xoá giỏ hàng, thanh toán, v.v... */}

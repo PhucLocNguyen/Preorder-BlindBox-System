@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import CartItem from '../Customer/CartItem';
 import VoucherModal from '../Customer/VoucherModal';
 
-function CampaignBlock({ campaignId, items, vouchers, onUpdateQuantity, onRemoveItem, onApplyVoucher}) {
+function CampaignBlock({ campaignId, items, vouchers, onUpdateQuantity, onRemoveItem, onApplyVoucher, onUpdateBlockTotal }) {
   // Quản lý voucher của khung này
   const [showVoucherModal, setShowVoucherModal] = useState(false);
   // Lưu cả object thay vì chỉ lưu string
@@ -37,6 +37,11 @@ function CampaignBlock({ campaignId, items, vouchers, onUpdateQuantity, onRemove
 
   // Tính tổng sau khi trừ giảm giá (ko âm)
   const total = Math.max(subtotal - discountAmount, 0);
+
+  // Khi total thay đổi, cập nhật lên Cart
+  useEffect(() => {
+    onUpdateBlockTotal(campaignId, total);
+  }, [total, campaignId, onUpdateBlockTotal]);
 
   // Người dùng chọn voucher từ danh sách
   // const applyVoucherFromList = (voucherId) => {
