@@ -1,121 +1,153 @@
-import React from 'react';
-import { Form, Input, Button, Row, Col, Card, DatePicker, message } from 'antd';
+import React, { useState } from "react";
+import { Button, Form, Input, Card } from "antd";
+import { CreateStaffAccount } from "../../../api/StaffManagement/ApiStaffManager";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const StaffManagementCreate = ({ onSuccess }) => {
-    const onFinish = (values) => {
-        onSuccess();
+    const [loading, setLoading] = useState(false);
+    const [form] = Form.useForm();
+    const navigate = useNavigate();
+
+    const handleSubmit = async (values) => {
+        setLoading(true);
+
+        const payload = {
+            fullName: values.fullName,
+            email: values.email,
+            password: values.password,
+            confirmPassword: values.confirmPassword,
+            address: values.address,
+        };
+
+        try {
+            const config = { headers: { "Content-Type": "application/json" } };
+
+            const response = await CreateStaffAccount(payload, config);
+            console.log(response);
+            toast.success("Staff account created successfully!");
+
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000); // Chờ 1 giây để hiển thị thông báo trước khi reload
+        } catch (error) {
+            toast.error(
+                "Error creating staff account: " +
+                (error.response?.data?.message || error.message)
+            );
+        } finally {
+            setLoading(false);
+        }
+
     };
+
     return (
-        <Card
-            className="p-5 bg-white rounded-lg shadow-md"
-            style={{ maxWidth: '600px', margin: '0 auto' }}
-        >
-            <h2 className="text-xl font-bold mb-4 text-center">Add New User</h2>
-            <Form layout="vertical" onFinish={onFinish}>
-                <Row gutter={16}>
-                    <Col span={6}>
-                        <Form.Item label="Role ID" name="roleID" rules={[{ required: true, message: 'Please enter Role ID!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item label="Wallet ID" name="walletID" rules={[{ required: true, message: 'Please enter Wallet ID!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={10}>
-                        <Form.Item label="Full Name" name="fullname" rules={[{ required: true, message: 'Please enter full name!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row gutter={16}>
-                    <Col span={6}>
-                        <Form.Item label="Status" name="status">
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item label="Phone" name="phone" rules={[{ required: true, message: 'Please enter phone number!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={10}>
-                        <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter password!' }]}>
-                            <Input.Password />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row gutter={16}>
-
-
-                    <Col span={12}>
-                        <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email', message: 'Please enter a valid email!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Please enter address!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-
-
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item label="Bank Account Number" name="bankAccountNumber">
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="Bank Name" name="bankName">
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item label="Created Date" name="createdDate">
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="Updated Date" name="updatedDate">
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
-
-                </Row>
-                <Row gutter={16}>
-                    <Col span={24}>
-                        <Form.Item label="Thumbnail" name="thumbnail">
-                            <Input placeholder="Image URL" />
-                        </Form.Item>
-                    </Col>
-
-                </Row>
-                <div className="flex justify-center gap-2 mt-4">
-                    <Button
-                        size="large"
-                        onClick={onSuccess} // Đóng Modal khi bấm Cancel
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        size="large"
-                    >
-                        Create
-                    </Button>
+        <div className="w-full min-h-screen flex justify-center items-center bg-gray-100 p-6">
+            <Card className="w-full max-w-lg p-8 shadow-xl rounded-2xl bg-white">
+                <div className="flex items-center mb-6">
+                    <h1 className="text-2xl font-semibold text-gray-800">
+                        Tạo mới tài khoản nhân viên
+                    </h1>
                 </div>
-            </Form>
-        </Card>
+
+                <Form form={form} layout="vertical" onFinish={handleSubmit} className="space-y-5">
+                    <Form.Item
+                        label="Họ và tên"
+                        name="fullName"
+                        rules={[{ required: true, message: "Please enter full name!" }]}
+                    >
+                        <Input
+                            placeholder="Enter full name"
+                            className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[
+                            { required: true, message: "Please enter email!" },
+                            { type: "email", message: "Invalid email format!" },
+                        ]}
+                    >
+                        <Input
+                            placeholder="Enter email"
+                            className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Mật khẩu"
+                        name="password"
+                        rules={[
+                            { required: true, message: "Please enter password!" },
+                            { min: 6, message: "Password must be at least 6 characters!" },
+                        ]}
+                    >
+                        <Input.Password
+                            placeholder="Enter password"
+                            className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                        />
+                    </Form.Item>
+
+
+                    <Form.Item
+                        label="Xác nhận mật khẩu"
+                        name="confirmPassword"
+                        dependencies={["password"]}
+                        rules={[
+                            { required: true, message: "Please confirm password!" },
+                            { min: 6, message: "Password must be at least 6 characters!" },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value || getFieldValue("password") === value) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(new Error("Passwords do not match!"));
+                                },
+                            }),
+                        ]}
+                    >
+                        <Input.Password
+                            placeholder="Confirm password"
+                            className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Địa chỉ"
+                        name="address"
+                        rules={[{ required: true, message: "Please enter address!" }]}
+                    >
+                        <Input
+                            placeholder="Enter address"
+                            className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                        />
+                    </Form.Item>
+
+                    <div className="flex justify-between gap-4">
+                        <Button
+                            size="large"
+                            className="w-1/2 rounded-lg h-12 bg-gray-200 hover:bg-gray-300 text-gray-800"
+                            onClick={onSuccess}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            size="large"
+                            className="w-1/2 rounded-lg h-12 bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={onSuccess}
+                        >
+                            Create
+                        </Button>
+                    </div>
+                </Form>
+            </Card>
+        </div>
     );
 };
 
