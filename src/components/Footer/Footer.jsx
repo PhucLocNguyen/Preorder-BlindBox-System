@@ -12,18 +12,16 @@ export default function Footer() {
 					<div className='space-y-4'>
 						<h2 className='text-2xl font-bold'>Logo</h2>
 						<p className='text-gray-300 text-sm'>
-							Suspendisse henderit tellus laoreet luctus pharetra. Aliquam porttitor vitae orci nec
-							ultricies. Curabitur vehicula, libero eget faucibus faucibus, purus erat eleifend enim,
-							porta pellentesque ex mi ut sem.
+						Preorder Blindbox System - the place for blind box collectors! We offer the opportunity to pre-order the hottest collections at discounted prices and in limited quantities.
 						</p>
-						<p className='text-gray-400 text-sm'>© 2014 BS3 UI Kit, All rights reserved</p>
+						<p className='text-gray-400 text-sm'>Pre-order today to enjoy the discount</p>
 					</div>
 
 					{/* Menu Section */}
 					<div className='space-y-4'>
 						<h3 className='text-lg font-semibold mb-4'>MENU</h3>
 						<nav className='space-y-2'>
-							{['TRAVEL', 'NATURE', 'EXPLORES', 'SCIENCE', 'ADVICE'].map((item) => (
+							{['Trang chủ', 'Giới thiệu', 'Sản phẩm', 'Bài viết',].map((item) => (
 								<Link
 									key={item}
 									to='#'
@@ -39,7 +37,7 @@ export default function Footer() {
 					<div className='space-y-4'>
 						<h3 className='text-lg font-semibold mb-4'>FOLLOW US</h3>
 						<nav className='space-y-2'>
-							{['Facebook', 'Twitter', 'Instagram', 'RSS'].map((item) => (
+							{['Facebook', 'Twitter', 'Instagram', 'Tiktok'].map((item) => (
 								<Link
 									key={item}
 									href='#'
@@ -53,8 +51,8 @@ export default function Footer() {
 
 					{/* Newsletter Section */}
 					<div className='space-y-4'>
-						<h3 className='text-lg font-semibold'>NEWSLETTER</h3>
-						<p className='text-gray-300'>A rover wearing a fuzzy suit doesn't alarm the real penguins</p>
+						<h3 className='text-lg font-semibold'>About us</h3>
+						<p className='text-gray-300'>Our joy is that customers get to own the products they desire.</p>
 						<div className='flex gap-2'>
 							<Input
 								type='email'
