@@ -65,12 +65,11 @@ namespace PreOrderBlindBox.Services.Services
             }
 
             // Lấy danh sách các Milestone đã có
-            var existingMilestones = await GetAllPreorderMilestoneByCampaignID(createPreorderMilestoneRequest.PreorderCampaignId);
+            var existingMilestones = await GetAllPreorderMilestoneByPreorderCampaignID(createPreorderMilestoneRequest.PreorderCampaignId);
 
             foreach (var existMilestone in existingMilestones)
             {
-                if (!existMilestone.IsDeleted 
-                    && existMilestone.MilestoneNumber == createPreorderMilestoneRequest.MilestoneNumber)
+                if (existMilestone.MilestoneNumber == createPreorderMilestoneRequest.MilestoneNumber)
                 {
                     throw new ArgumentException("Milestone had been existed!");
                 }
@@ -125,7 +124,7 @@ namespace PreOrderBlindBox.Services.Services
             }
 
             // Lấy danh sách Milestone khác trong cùng PreorderCampaign
-            var existingMilestones = await GetAllPreorderMilestoneByCampaignID(preorderMilestone.PreorderCampaignId.Value);
+            var existingMilestones = await GetAllPreorderMilestoneByPreorderCampaignID(preorderMilestone.PreorderCampaignId.Value);
 
             // Kiểm tra loại PreorderCampaign
             var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(preorderMilestone.PreorderCampaignId.Value);
@@ -151,10 +150,10 @@ namespace PreOrderBlindBox.Services.Services
 
         }
 
-        public async Task<List<PreorderMilestone>> GetAllPreorderMilestoneByCampaignID(int campaignID)
+        /*public async Task<List<PreorderMilestone>> GetAllPreorderMilestoneByCampaignID(int campaignID)
         {
-           return await _preorderMilestoneRepo.GetAll(filter: x=>x.PreorderCampaignId == campaignID);   
-        }
+           return await _preorderMilestoneRepo.GetAll(filter: x=>x.PreorderCampaignId == campaignID *//*&& x.IsDeleted == false*//*);   
+        }*/
 
         public async Task<int> CalculateRemainingQuantity(int quantityMilestone, int quantityOrderDetails)
         {
