@@ -19,6 +19,7 @@ namespace PreOrderBlindBox.API.Controllers
         public TransactionController(ITransactionService transactionService, ICurrentUserService currentUserService)
         {
             _transactionService = transactionService;
+            _currentUserService = currentUserService;
         }
         [HttpGet("GetTransactionDetailVerifyUserPayment")]
         public async Task<IActionResult> GetTransactionDetailVerifyUserPayment([FromQuery] string transactionId)
@@ -61,7 +62,7 @@ namespace PreOrderBlindBox.API.Controllers
         [HttpGet("GetListOfAllTransactionByUser")]
         public async Task<IActionResult> GetListOfAllTransactionByUser([FromQuery] PaginationParameter pagination)
         {
-            var userId = _currentUserService.GetUserId();
+            int userId = _currentUserService.GetUserId();
             if (userId == null)
             {
                 return Unauthorized();
