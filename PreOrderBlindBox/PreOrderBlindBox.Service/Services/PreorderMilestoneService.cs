@@ -27,7 +27,7 @@ namespace PreOrderBlindBox.Services.Services
 
         public async Task<List<PreorderMilestone>> GetAllPreorderMilestoneByPreorderCampaignID(int preorderCampaignId)
         {
-            return await _preorderMilestoneRepo.GetAll(filter: x => x.PreorderCampaignId == preorderCampaignId);
+            return await _preorderMilestoneRepo.GetAll(filter: x => x.PreorderCampaignId == preorderCampaignId && x.IsDeleted == false);
         }
 
         public async Task<PreorderMilestone?> GetPreorderMilestoneById(int id)
@@ -78,11 +78,13 @@ namespace PreOrderBlindBox.Services.Services
 
             if (campaign.Type == PreorderCampaignType.TimedPricing.ToString())
             {
-                ValidatePreorderOneMilestone(createPreorderMilestoneRequest, existingMilestones);
+                //ValidatePreorderOneMilestone(createPreorderMilestoneRequest, existingMilestones);
+                ValidatePreorderMilestone(createPreorderMilestoneRequest, existingMilestones);
             }
             else if (campaign.Type == PreorderCampaignType.BulkOrder.ToString())
             {
-                ValidatePreorderTwoMilestone(createPreorderMilestoneRequest, existingMilestones);
+                //ValidatePreorderTwoMilestone(createPreorderMilestoneRequest, existingMilestones);
+                ValidatePreorderMilestoneTypeTow(createPreorderMilestoneRequest, existingMilestones);
             }
 
             var milestone = _mapper.Map<PreorderMilestone>(createPreorderMilestoneRequest);
@@ -163,7 +165,7 @@ namespace PreOrderBlindBox.Services.Services
             return quantityMilestone - quantityOrderDetails;
         }
 
-        /*private void ValidatePreorderMilestone(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
+        private void ValidatePreorderMilestone(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
         {
             // Kiểm tra mốc liền trước (nếu có)
             var previousMilestone = existingMilestones
@@ -186,9 +188,34 @@ namespace PreOrderBlindBox.Services.Services
             {
                 throw new ArgumentException($"Milestone {request.MilestoneNumber} phải có giá thấp hơn milestone {nextMilestone.MilestoneNumber}.");
             }
-        }*/
+        }
 
-        private void ValidatePreorderOneMilestone(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
+        private void ValidatePreorderMilestoneTypeTow(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
+        {
+            // Kiểm tra mốc liền trước (nếu có)
+            var previousMilestone = existingMilestones
+                .Where(m => m.MilestoneNumber < request.MilestoneNumber)
+                .OrderByDescending(m => m.MilestoneNumber)
+                .FirstOrDefault();
+
+            if (previousMilestone != null && request.Price >= previousMilestone.Price)
+            {
+                throw new ArgumentException($"Milestone {request.MilestoneNumber} phải có giá thấp hơn milestone {previousMilestone.MilestoneNumber}.");
+            }
+
+            // Kiểm tra mốc liền sau (nếu có)
+            var nextMilestone = existingMilestones
+                .Where(m => m.MilestoneNumber > request.MilestoneNumber)
+                .OrderBy(m => m.MilestoneNumber)
+                .FirstOrDefault();
+
+            if (nextMilestone != null && request.Price <= nextMilestone.Price)
+            {
+                throw new ArgumentException($"Milestone {request.MilestoneNumber} phải có giá cao hơn milestone {nextMilestone.MilestoneNumber}.");
+            }
+        }
+
+        /*private void ValidatePreorderOneMilestone(CreatePreorderMilestoneRequest request, List<PreorderMilestone> existingMilestones)
         {
             // Nếu đã có Milestone 3 mà muốn tạo Milestone 1, không hợp lệ
             if (existingMilestones.Any(m => m.MilestoneNumber == 3)
@@ -286,7 +313,7 @@ namespace PreOrderBlindBox.Services.Services
                     }
                 }
             }
-        }
+        }*/
 
         private void ValidateUpdatePreorderOneMilestone(
             PreorderMilestone milestone,

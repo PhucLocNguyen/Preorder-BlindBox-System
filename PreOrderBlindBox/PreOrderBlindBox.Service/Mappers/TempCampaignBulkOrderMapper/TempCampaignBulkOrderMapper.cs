@@ -17,6 +17,7 @@ namespace PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper
             return new TempCampaignBulkOrder()
             {
                 Amount = (decimal)requestCreateOrder.Amount,
+                DiscountMoney = (decimal)requestCreateOrder.DiscountMoney,
                 CustomerId = userId,
                 ReceiverName = requestCreateOrder.ReceiverName,
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,

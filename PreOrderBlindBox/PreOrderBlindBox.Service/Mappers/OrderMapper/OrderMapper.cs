@@ -16,6 +16,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
             return new Order()
             {
                 Amount = (decimal)requestCreateOrder.Amount,
+                DiscountMoney = (decimal)requestCreateOrder.DiscountMoney,
                 CustomerId = userId,
                 ReceiverName = requestCreateOrder.ReceiverName,
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
