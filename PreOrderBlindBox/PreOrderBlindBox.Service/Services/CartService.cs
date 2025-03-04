@@ -42,7 +42,7 @@ namespace PreOrderBlindBox.Services.Services
         public async Task<Cart> ChangeQuantityOfCartByCustomerID(RequestCreateCart requestCreateCart)
         {
             var orderDetailsQuantity = await _orderDetailService.GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc((int)requestCreateCart.PreorderCampaignId);
-            var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)requestCreateCart.PreorderCampaignId);
+            var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
             int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
 
             bool isEnoughQuantity = quantityForMilestone >= (orderDetailsQuantity + requestCreateCart.Quantity);
@@ -91,7 +91,7 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     requestCreateCart.Quantity = existingCart.Quantity + requestCreateCart.Quantity;
                     var orderDetailsQuantity = await _orderDetailService.GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc((int)requestCreateCart.PreorderCampaignId);
-                    var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)requestCreateCart.PreorderCampaignId);
+                    var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
                     int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
 
                     bool isEnoughQuantity = quantityForMilestone >= (orderDetailsQuantity + requestCreateCart.Quantity);
@@ -107,7 +107,7 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     await _unitOfWork.BeginTransactionAsync();
                     var orderDetailsQuantity = await _orderDetailService.GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc((int)requestCreateCart.PreorderCampaignId);
-                    var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)requestCreateCart.PreorderCampaignId);
+                    var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
                     int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
 
                     bool isEnoughQuantity = quantityForMilestone >= (orderDetailsQuantity + requestCreateCart.Quantity);
@@ -175,7 +175,7 @@ namespace PreOrderBlindBox.Services.Services
                 var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)cartItem.PreorderCampaignId);
                 var orderDetailsQuantity = preorderCampaign.PlacedOrderCount;
                 //var orderDetailsQuantity = await _orderDetailService.GetQuantitesOrderDetailsByPreorderCampaignIDSortedByTimeAsc((int)cart.PreorderCampaignId);
-                var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)cartItem.PreorderCampaignId);
+                var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)cartItem.PreorderCampaignId);
                 //Tính tổng số lượng có hàng có trong mốc đó 
 
                 foreach (var milestone in preorderMilestones)

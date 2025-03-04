@@ -245,7 +245,7 @@ namespace PreOrderBlindBox.Services.Services
                 };
             }
 
-            var milestoneList = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID(preorderCampaign.PreorderCampaignId);
+            var milestoneList = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID(preorderCampaign.PreorderCampaignId);
             var quantityCount = milestoneList.Sum(m => m.Quantity);
 
             var priceAtTime = 0m;
