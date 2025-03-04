@@ -3,7 +3,7 @@ import {
   EditBlindBox,
   GetActiveBlindBoxById,
 } from "../../../api/BlindBox/ApiBlindBox";
-import { Button, Form, Image, Input, Select, Upload } from "antd";
+import { Button, Form, Image, Input, InputNumber, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { ArrowLeftOutlined, UploadOutlined } from "@ant-design/icons";
 import noThumbnailImage from "../../../assets/noThumbnailImage.jpg";
@@ -37,6 +37,8 @@ function ProductEdit() {
     formData.append("name", values.name);
     formData.append("description", values.description);
     formData.append("size", values.size);
+    formData.append("listedPrice", values.listedPrice);
+    console.log(values.listedPrice);
     if (mainImage) formData.append("mainImage", mainImage);
     galleryImages.forEach((file, index) => {
       formData.append(`galleryImages`, file);
@@ -73,10 +75,17 @@ function ProductEdit() {
             <div className="col-span-9 ">
               <div className="bg-white  p-4 rounded-lg">
                 <div className="flex items-center mb-4">
-                <Link to="/staff/products" className="h-full flex">
-                   <ArrowLeftOutlined style={{width:"fit-content", height:"100%", padding:"10px"}}  title="Về lại trang sản phẩm"/>
-                </Link>
-                <h2 className="text-3xl font-bold">Chỉnh sửa blind box</h2>
+                  <Link to="/staff/products" className="h-full flex">
+                    <ArrowLeftOutlined
+                      style={{
+                        width: "fit-content",
+                        height: "100%",
+                        padding: "10px",
+                      }}
+                      title="Về lại trang sản phẩm"
+                    />
+                  </Link>
+                  <h2 className="text-3xl font-bold">Chỉnh sửa blind box</h2>
                 </div>
                 {/* Name */}
                 <Form.Item
@@ -92,7 +101,6 @@ function ProductEdit() {
                 {/* Description */}
                 <Form.Item
                   label="Mô tả"
-                  
                   name="description"
                   rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
                 >
@@ -143,7 +151,7 @@ function ProductEdit() {
                         detailBlindBox.images.galleryImages.map(
                           (item, index) => {
                             return (
-                              <span
+                              <span key={item.id}
                                 className={
                                   "relative  w-[100px] h-[100px] " +
                                   (deleteImagesIDGallery.includes(item.imageId)
@@ -179,6 +187,23 @@ function ProductEdit() {
             <div className="col-span-3">
               {/* Main Image */}
               <div className="py-10 bg-white px-4 rounded-lg">
+              <Form.Item
+                  label="Giá niêm yết"
+                  name="listedPrice"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập giá niêm yết" },
+                  ]}
+                >
+                  <InputNumber
+                    style={{ width: "100%" }}
+                    formatter={(value) =>
+                      `₫ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    min={10000}
+                    defaultValue={detailBlindBox.listedPrice}
+                    parser={(value) => value.replace(/₫\s?|(,*)/g, "")}
+                  />
+                </Form.Item>
                 <Form.Item name="mainImage">
                   <label className="block text-2xl text-black">Ảnh chính</label>
                   <Upload
@@ -188,16 +213,16 @@ function ProductEdit() {
                   >
                     <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                   </Upload>
-                  {detailBlindBox.images.mainImage==null?
-                  <div className="mt-2">
-                  <img
-                    src={noThumbnailImage}
-                    alt="Main"
-                    className="w-full h-[300px] object-contain mt-2 rounded-md"
-                  />
-                </div>
-                  : detailBlindBox.images.mainImage != null &&
-                  mainImage == null ? (
+                  {detailBlindBox.images.mainImage == null ? (
+                    <div className="mt-2">
+                      <img
+                        src={noThumbnailImage}
+                        alt="Main"
+                        className="w-full h-[300px] object-contain mt-2 rounded-md"
+                      />
+                    </div>
+                  ) : detailBlindBox.images.mainImage != null &&
+                    mainImage == null ? (
                     <div className="mt-2">
                       <img
                         src={detailBlindBox.images.mainImage.url}
@@ -216,14 +241,14 @@ function ProductEdit() {
                   )}
                 </Form.Item>
                 {/* Submit Button */}
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    className="w-full text-lg py-4"
-                  >
-                    Lưu
-                  </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  className="w-full text-lg py-4"
+                >
+                  Lưu
+                </Button>
               </div>
             </div>
           </div>

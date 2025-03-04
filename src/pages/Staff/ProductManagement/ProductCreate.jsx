@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select, Upload } from "antd";
+import { Button, Form, Input, InputNumber, Select, Upload } from "antd";
 const { Option } = Select;
 import { useState } from "react";
 import { ArrowLeftOutlined, UploadOutlined } from "@ant-design/icons";
@@ -26,6 +26,7 @@ function ProductCreate() {
     galleryImages.forEach((file, index) => {
       formData.append(`galleryImages`, file);
     });
+    formData.append("listedPrice", values.listedPrice);
     var result = await CreateBlindBox({ formData });
     navigate("/staff/products");
   };
@@ -48,7 +49,7 @@ function ProductCreate() {
                     />
                   </Link>
                   <h2 className="text-* font-bold">Tạo Blind Box Mới</h2>
-                </div>  
+                </div>
                 {/* Name */}
                 <Form.Item
                   label="Tên sản phẩm"
@@ -101,6 +102,22 @@ function ProductCreate() {
             <div className="col-span-3">
               {/* Main Image */}
               <div className="py-10 bg-white px-4 rounded-lg">
+                <Form.Item
+                  label="Giá niêm yết"
+                  name="listedPrice"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập giá niêm yết" },
+                  ]}
+                >
+                  <InputNumber
+                    style={{ width: "100%" }}
+                    formatter={(value) =>
+                      `₫ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    min={10000}
+                    parser={(value) => value.replace(/₫\s?|(,*)/g, "")}
+                  />
+                </Form.Item>
                 <Form.Item label="Ảnh chính">
                   <Upload
                     beforeUpload={() => false} // Ngăn upload tự động

@@ -15,8 +15,8 @@ const ProductCreatePage = lazy(() => import("../pages/Staff/ProductManagement/Pr
 const ProductEditPage = lazy(() => import("../pages/Staff/ProductManagement/ProductEdit"));
 const AdminView = lazy(() => import("../pages/Admin/AdminView"));
 const Dashboard = lazy(() => import("../pages/Admin/Dashboard"));
-const UserManagement = lazy(() => import("../pages/Admin/UserManagement/UserManagement"));
-const UserManagementDetails = lazy(() => import("../pages/Admin/UserManagement/UserManagementDetails"));
+const StaffManagement = lazy(() => import("../pages/Admin/StaffManagement/StaffManagement"));
+const StaffManagementDetails = lazy(() => import("../pages/Admin/StaffManagement/StaffManagementDetails"));
 const PreorderMilestone = lazy(() => import("../pages/Admin/PreorderMilestone"));
 const Pre_orderCampaign = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaign"));
 const Pre_orderCampaignDetails = lazy(() => import("../pages/Admin/Pre-orderCampaign/Pre_orderCampaignDetails"));
@@ -24,6 +24,7 @@ const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Vouc
 const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
+const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
 const ProductList = lazy(() => import('../pages/Home/ProductList/ProductList'));
@@ -33,6 +34,11 @@ const Wallet = lazy(() => import("../pages/Wallet/Wallet"));
 const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
 const WalletRechargeResponse = lazy(() => import("../pages/Wallet/WalletRechargeResponse"));
 const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResultPage"));
+const ForgotPassword = lazy(() => import("../pages/Account/ForgotPassword"));
+const SendEmailForgotPassword = lazy(() => import("../pages/Account/SendEmailForgotPassword"));
+const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
+
+const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
 
 const publicRoutes = [
   {
@@ -45,7 +51,23 @@ const publicRoutes = [
     component: LoginPage,
     layout: DefaultLayout,
   },
-  
+
+  {
+    path: "/staff",
+    component: StaffView,
+    children: [
+      { index: true, component: ProductsView },
+      { path: "products", component: ProductsView },
+      { path: "orders", component: OrdersView, },
+      { path: "orders/:id", component: OrderDetailView },
+      { path: "notifications", component: NotificationsView },
+      { path: "product/create", component: ProductCreatePage },
+      { path: "product/edit/:id", component: ProductEditPage },
+
+    ],
+  },
+
+
   {
     path: "/account",
     layout: DefaultLayout,
@@ -60,6 +82,18 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
+    path: '/forgot-password',
+    component: ForgotPassword
+  },
+  {
+    path: '/user-forget-password/verify-email',
+    component: SendEmailForgotPassword
+  },
+  {
+    path: '/user-forget-password',
+    component: AddNewPassword
+  },
+  {
     path: '/confirmemail',
     component: ConfirmEmailAccount
   },
@@ -69,13 +103,16 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
-		path: '/product',
-		children: [
-			{ index: true, component: ProductList },
-			{ path: ':slug', component: ProductDetail },
-		],
-		layout: DefaultLayout,
-	},
+
+    path: '/preordercampaign',
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: ProductList },
+      { path: ':slug', component: ProductDetail },
+    ],
+    layout: DefaultLayout,
+  },
+
   {
     path: '/campaign/search',
     component: SearchResultPage,
@@ -83,8 +120,7 @@ const publicRoutes = [
   },
   {
     path: '/test',
-    component: SearchResultPage,
-    layout: DefaultLayout,
+    component: SendEmailForgotPassword
   },
   {
     path: "/staff",
@@ -105,13 +141,16 @@ const publicRoutes = [
     path: "/admin",
     component: AdminView,
     children: [
-      { index: true, component: UserManagement },
-      { path: "usermanagement", component: UserManagement },
-      { path: "usermanagerment-details/:id", component: UserManagementDetails },
+
+      { index: true, component: StaffManagement },
+      { path: "usermanagement", component: StaffManagement },
+      { path: "usermanagerment-details/:id", component: StaffManagementDetails },
       { path: "preordermilestone", component: PreorderMilestone },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
       { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
       { path: "preordercampaign/create", component: PreorderCampaignCreate },
+      { path: "preordercampaign/edit/:slug", component: PreorderCampaignEdit },
+
 
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
@@ -119,6 +158,7 @@ const publicRoutes = [
       { path: "voucher/add", component: VoucherCreate },
       { path: "voucher-details/:id", component: VoucherDetails },
       { path: "voucher/update/:id", component: VoucherUpdate },
+      { path: "history-transactions", component: HistoryTransactions },
     ],
     role: ['admin']
   },
@@ -150,6 +190,6 @@ const privateRoutes = [
     layout: DefaultLayout,
     role: ['Customer']
   },
- 
+
 ];
 export { publicRoutes, privateRoutes };
