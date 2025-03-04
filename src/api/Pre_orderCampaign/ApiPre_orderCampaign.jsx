@@ -111,5 +111,5 @@ const GetActiveDetailPreorderCampaign = async (slug) => {
 export {
     GetTheActivePreorderCampaign, CreatePreorderCampaign,
     UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById, GetActiveDetailPreorderCampaign,
-    GetAllImagesByBlindBoxId};
+    GetAllImagesByBlindBoxId, DeletePendingCampaign};
 

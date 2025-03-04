@@ -9,28 +9,24 @@ import {
 } from "antd";
 const { Option } = Select;
 import { useEffect, useState } from "react";
-import {
-  ArrowLeftOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Link, useNavigate, useParams } from "react-router";
-import ProductCardModal from "../../../components/Search/SearchBlindbox";
 import TextArea from "antd/es/input/TextArea";
 import {
+  CreatePreorderCampaign,
   GetActivePreorderCampaignBySlug,
   UpdatePreorderCampaign,
 } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
-import moment from "moment";
 import StatusTag from "../../../components/Tags/StatusTag";
 import dayjs from "dayjs";
 
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { CreatePreorderMilestones } from "../../../components/PreorderMilestones/CreatePreorderMilestones";
 
 const { RangePicker } = DatePicker;
 
 function PreorderCampaignEdit() {
-dayjs.extend(isSameOrBefore);
+  dayjs.extend(isSameOrBefore);
 
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
@@ -42,7 +38,6 @@ dayjs.extend(isSameOrBefore);
   // State để xác định form có hợp lệ hay không
   const [isFormValid, setIsFormValid] = useState(false);
   const [detailPre_orderCampaign, setDetailPre_orderCampaign] = useState({});
-  const [errorLog, setErrorLog] = useState(null);
   const [isValidMilestones, setIsValidMilestones] = useState(true);
   const navigate = useNavigate();
 
@@ -63,7 +58,7 @@ dayjs.extend(isSameOrBefore);
         ],
         milestones: data.preorderMilestones,
       });
-
+      await onFieldsChange();
       setTypeOfCampaign(data.type);
       setLoading(false);
     } catch (error) {
@@ -90,7 +85,6 @@ dayjs.extend(isSameOrBefore);
       setIsFormValid(false);
       return;
     }
-    console.log(milestoneValues);
     // Kiểm tra milestone nào bị trống
     const milestoneHasEmpty = await milestoneValues.some(
       (m) => !m || !m.quantity || !m.price
@@ -99,40 +93,8 @@ dayjs.extend(isSameOrBefore);
       setIsFormValid(false);
       return;
     }
-    for (let i = 1; i < milestoneValues.length; i++) {
-      const prevPrice = milestoneValues[i - 1].price;
-      const currentPrice = milestoneValues[i].price;
-      if (typeOfCampaign == 0) {
-        // Với type 0: Giá của milestone hiện tại phải > giá của milestone trước
-        if (currentPrice >= prevPrice) {
-          // time pricing
-          setErrorLog(
-            `Lỗi tại milestone ${
-              i + 1
-            }: Giá của mốc hiện tại (${currentPrice}) phải lớn hơn giá của mốc trước (${prevPrice}).`
-          );
-          setIsValidMilestones(false);
-          break;
-        }
-      } else {
-        // Với type 1: Giá của milestone hiện tại phải < giá của milestone trước
-        if (currentPrice <= prevPrice) {
-          // bulk order
-          setErrorLog(
-            `Lỗi tại milestone ${
-              i + 1
-            }: Giá của mốc hiện tại (${currentPrice}) phải nhỏ hơn giá của mốc trước (${prevPrice}).`
-          );
-          setIsValidMilestones(false);
-          break;
-        }
-      }
-      setIsValidMilestones(true);
-      setErrorLog(null);
-    }
     // Lấy giá trị dateRange
     const dateRange = form.getFieldValue("dateRange");
-    console.log(dateRange);
     const [startDate, endDate] = dateRange.map((d) => dayjs(d));
 
     // So sánh với ngày hiện tại
@@ -146,7 +108,6 @@ dayjs.extend(isSameOrBefore);
       setIsFormValid(false);
       return;
     }
-
     // Nếu mọi thứ OK
     setIsFormValid(true);
     console.log("By pass isUpdate");
@@ -165,13 +126,13 @@ dayjs.extend(isSameOrBefore);
   };
 
   const handleSubmit = async (values) => {
+    console.log(values);
     const data = {
-      blindBoxId: parseInt(loadMainProduct?.blindBoxId) || 0,
-      type: parseInt(values.type || typeOfCampaign),
+      type: values.type,
       // Lấy giá trị ISO để lưu DB
       startDate: values.dateRange ? values.dateRange[0].toISOString() : null,
       endDate: values.dateRange ? values.dateRange[1].toISOString() : null,
-      milestoneRequests: (values.milestones || []).map((item) => ({
+      preorderMilestoneRequests: (values.milestones || []).map((item) => ({
         quantity: parseInt(item.quantity),
         price: parseFloat(item.price),
       })),
@@ -291,144 +252,13 @@ dayjs.extend(isSameOrBefore);
 
                   <h3 className="text-lg">Thêm các mốc giá và số lượng</h3>
                   {typeOfCampaign !== null && (
-                    <Form.List name="milestones">
-                      {(fields, { add, remove }) => (
-                        <>
-                          {fields.map(({ key, name, ...restField }, index) => (
-                            <Space
-                              key={key}
-                              style={{ display: "flex", marginBottom: 8 }}
-                              align="baseline"
-                            >
-                              {/* Số lượng */}
-                              <Form.Item
-                                {...restField}
-                                name={[name, "quantity"]}
-                                label="Số lượng"
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Vui lòng nhập số lượng!",
-                                  },
-                                  {
-                                    validator: (_, value) => {
-                                      if (!value) {
-                                        return Promise.resolve();
-                                      }
-                                      if (Number(value) < 1) {
-                                        return Promise.reject(
-                                          new Error("Số lượng phải >= 1")
-                                        );
-                                      }
-                                      return Promise.resolve();
-                                    },
-                                  },
-                                ]}
-                              >
-                                <InputNumber
-                                  placeholder="Số lượng"
-                                  min={1}
-                                  style={{ width: "100%" }}
-                                />
-                              </Form.Item>
-
-                              {/* Số tiền */}
-                              <Form.Item
-                                {...restField}
-                                name={[name, "price"]}
-                                label="Số tiền"
-                                dependencies={
-                                  index > 0
-                                    ? [["milestones", index - 1, "price"]]
-                                    : []
-                                }
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Vui lòng nhập số tiền!",
-                                  },
-                                  {
-                                    validator: (_, value) => {
-                                      if (!value) {
-                                        return Promise.resolve();
-                                      }
-                                      if (Number(value) < 1000) {
-                                        return Promise.reject(
-                                          new Error("Số tiền phải >= 1000")
-                                        );
-                                      }
-                                      return Promise.resolve();
-                                    },
-                                  },
-                                  // So sánh cột mốc trước
-                                  ({ getFieldValue }) => ({
-                                    validator(_, value) {
-                                      const milestones =
-                                        getFieldValue("milestones") || [];
-                                      if (index === 0) {
-                                        return Promise.resolve();
-                                      }
-                                      const prev = milestones[index - 1];
-                                      if (!prev || !prev.price) {
-                                        return Promise.resolve();
-                                      }
-                                      const prevPrice = parseFloat(prev.price);
-                                      const currentPrice = parseFloat(value);
-
-                                      // typeOfCampaign == 0 => Giá tăng dần
-                                      // typeOfCampaign == 1 => Giá giảm dần
-                                      if (typeOfCampaign === 0) {
-                                        if (currentPrice <= prevPrice) {
-                                          return Promise.reject(
-                                            new Error(
-                                              `Giá phải lớn hơn ${prevPrice} (tăng dần)`
-                                            )
-                                          );
-                                        }
-                                      } else if (typeOfCampaign === 1) {
-                                        if (currentPrice >= prevPrice) {
-                                          return Promise.reject(
-                                            new Error(
-                                              `Giá phải nhỏ hơn ${prevPrice} (giảm dần)`
-                                            )
-                                          );
-                                        }
-                                      }
-                                      return Promise.resolve();
-                                    },
-                                  }),
-                                ]}
-                              >
-                                <InputNumber
-                                  placeholder="Số tiền"
-                                  min={1000}
-                                  style={{ width: "100%" }}
-                                />
-                              </Form.Item>
-                              <MinusCircleOutlined
-                                onClick={() => remove(name)}
-                              />
-                            </Space>
-                          ))}
-                          <Form.Item>
-                            <Button
-                              type="dashed"
-                              onClick={() => add()}
-                              block
-                              icon={<PlusOutlined />}
-                            >
-                              Thêm cột mốc
-                            </Button>
-                          </Form.Item>
-                        </>
-                      )}
-                    </Form.List>
+                    <CreatePreorderMilestones
+                    setIsValidMilestones={setIsValidMilestones}
+                      form={form}
+                      typeOfCampaign={typeOfCampaign}
+                    />
                   )}
-                  {errorLog && (
-                    <div>
-                      <p className="text-red-600">{errorLog}</p>
-                    </div>
-                  )}
+                  
                 </div>
               </div>
             </div>
