@@ -50,7 +50,7 @@ namespace PreOrderBlindBox.Services.Services
 			var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)requestCreateCart.PreorderCampaignId);
 			if (preorderCampaign.Type.Equals("TimedPricing"))
 			{
-				var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)requestCreateCart.PreorderCampaignId);
+				var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
 				int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
 				bool isEnoughQuantity = quantityForMilestone >= (preorderCampaign.PlacedOrderCount + requestCreateCart.Quantity);
 				if (!isEnoughQuantity)
@@ -104,7 +104,7 @@ namespace PreOrderBlindBox.Services.Services
 					var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)requestCreateCart.PreorderCampaignId);
 					if (preorderCampaign.Type.Equals("TimedPricing"))
 					{
-						var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)requestCreateCart.PreorderCampaignId);
+						var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
 						int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
 
 						bool isEnoughQuantity = quantityForMilestone >= (preorderCampaign.PlacedOrderCount + requestCreateCart.Quantity);
@@ -173,7 +173,7 @@ namespace PreOrderBlindBox.Services.Services
 					UserId = cart.UserId,
 				};
 				var orderDetailsQuantity = preorderCampaign.PlacedOrderCount;
-				var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByCampaignID((int)cartItem.PreorderCampaignId);
+				var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)cartItem.PreorderCampaignId);
 				var blindBox = await _blindBoxService.GetBlindBoxByIdAsync((int)preorderCampaign.BlindBoxId);
 				if (preorderCampaign.Type.Equals("TimedPricing"))
 				{
