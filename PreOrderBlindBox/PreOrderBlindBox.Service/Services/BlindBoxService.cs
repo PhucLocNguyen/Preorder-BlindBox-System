@@ -176,7 +176,7 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     return false;
                 }
-                var items = _preorderCampaignRepository.Count(x => x.BlindBoxId == id && x.Status.Equals(PreorderCampaignStatus.Active));
+                var items = _preorderCampaignRepository.Count(x => x.BlindBoxId == id);
                 if (items > 0)
                 {
                     return false;
