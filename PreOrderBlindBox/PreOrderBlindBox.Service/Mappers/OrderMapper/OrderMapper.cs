@@ -22,7 +22,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
                 ReceiverPhone = requestCreateOrder.ReceiverPhone,
                 UserVoucherId = userVoucherID,
-				Status = requestCreateOrder.Status,
+				Status = "Confirmed",
 				CreatedDate = DateTime.Now,
                 UpdatedDate = null
             };
@@ -35,12 +35,12 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                UserVoucherId = order.UserVoucherId,
                CustomerId = order.CustomerId,
                Amount = order.Amount,
-               CreatedDate =  order.CreatedDate.ToString("dd MMM, yyyy"),
+               //DiscountMoney =(decimal) order.DiscountMoney,
+               CreatedDate =  order.CreatedDate.ToString("ss:mm:HH dd/MM/yyyy"),
                Receiver = order.ReceiverName,
                ReceiverPhone = order.ReceiverPhone,
                ReceiverAddress = order.ReceiverAddress,
                Status = order.Status,  
-               TotalItems = order.OrderDetails.Sum(x=>x.Quantity),
             };
         }
     }
