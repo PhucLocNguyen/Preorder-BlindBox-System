@@ -120,7 +120,7 @@ namespace PreOrderBlindBox.Services.Services
 					}
 					if (userVoucher != null)
 						await _userVoucherService.UpdateUserVoucherAsync(new RequestUpdateUserVoucher() { VoucherCampaignId = (int)userVoucher.VoucherCampaignId });
-					preorderCampaign.PlacedOrderCount += requestCreateOrder.RequestCreateCart.Quantity;
+					preorderCampaign.PlacedOrderCount += item.responseCarts.Sum(x=>x.Quantity);
 					await _preorderCampaignRepository.UpdateAsync(preorderCampaign);
 					await _unitOfWork.SaveChanges();
 				}
