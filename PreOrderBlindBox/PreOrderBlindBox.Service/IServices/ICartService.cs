@@ -11,6 +11,6 @@ namespace PreOrderBlindBox.Services.IServices
         Task<Cart> GetCartByCustomerIDAndCampaignID(int customerID, int campaignID);
         Task<bool> UpdateStatusOfCartByCustomerID(int customerID);
         Task<Cart> ChangeQuantityOfCartByCustomerID( RequestCreateCart requestUpdateCart);
-        Task<List<ResponseCart>> IdentifyPriceForCartItem(int customerID, RequestCreateCart? requestCreateCart);
+        Task<List<ResponseCartWithVoucher>> IdentifyPriceForCartItem(int customerID, Dictionary<int, int> UserVoucherIdForPreorderCampaign, RequestCreateCart? requestCreateCart);
     }
 }

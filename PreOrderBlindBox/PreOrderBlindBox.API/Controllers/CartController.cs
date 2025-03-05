@@ -44,7 +44,7 @@ namespace PreOrderBlindBox.API.Controllers
             {
                 var result = await _cartService.ChangeQuantityOfCartByCustomerID(requestCreateCart);
                 if (result != null)
-                    return Ok();
+                    return Ok(new { Message = "Update quantity in cart successfully" });
                 else return BadRequest("Something went wrong when input information");
 
 
@@ -62,8 +62,8 @@ namespace PreOrderBlindBox.API.Controllers
             try
             {
                 var itemResult = await _cartService.CreateCart(requestCreateCart);
-                if (itemResult != null) return Ok(itemResult);
-                return BadRequest(new {Message = "Add new item failed"});
+                if (itemResult != null) return Ok(new { Message = "Create cart successfully" });
+				return BadRequest(new {Message = "Add new item failed"});
 
             }catch (Exception ex)
             {
@@ -71,13 +71,13 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("GetPriceInCart")]
-        public async Task<IActionResult> GetPriceInCart([FromQuery]RequestCreateCart? requestCreateCart)
+        [HttpPost("GetPriceInCart")]
+        public async Task<IActionResult> GetPriceInCart([FromQuery]RequestCreateCart? requestCreateCart,[FromBody] Dictionary<int, int>? UserVoucherIdForPreorderCampaign)
         {
             try
             {
                 int userID = _currentUserService.GetUserId();
-                var itemResult = await _cartService.IdentifyPriceForCartItem(userID, requestCreateCart);
+                var itemResult = await _cartService.IdentifyPriceForCartItem(userID, UserVoucherIdForPreorderCampaign ,requestCreateCart);
                 if (itemResult != null) return Ok(itemResult);
                 return BadRequest(new { Message = "Something wrong when get price" });
 

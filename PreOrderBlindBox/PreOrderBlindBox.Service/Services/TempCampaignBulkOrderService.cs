@@ -26,6 +26,7 @@ namespace PreOrderBlindBox.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOrderDetailService _orderDetailService;
         private readonly IUserVoucherService _userVoucherService;
+        private readonly IPreorderCampaignService _preorderCampaignService;
 
         public TempCampaignBulkOrderService(
             ITempCampaignBulkOrderRepository tempCampaignBulkOrderRepository,
@@ -33,7 +34,8 @@ namespace PreOrderBlindBox.Services.Services
             IOrderRepository orderRepository,
             IUnitOfWork unitOfWork,
             IOrderDetailService orderDetailService,
-            IUserVoucherService userVoucherService
+            IUserVoucherService userVoucherService,
+            IPreorderCampaignService preorderCampaignService
             )
         {
             _tempCampaignBulkOrderRepository = tempCampaignBulkOrderRepository;
@@ -42,6 +44,7 @@ namespace PreOrderBlindBox.Services.Services
             _unitOfWork = unitOfWork;
             _orderDetailService = orderDetailService;
             _userVoucherService = userVoucherService;
+            _preorderCampaignService = preorderCampaignService;
         }
 
         public async Task<bool> convertTempCampaignBulkOrderToOrder(int preorderCampaignId, decimal endPriceOfCampaign)
@@ -50,6 +53,7 @@ namespace PreOrderBlindBox.Services.Services
             try
             {
                 var temCampaignBulkOrderByPreorderCampaignId = await _tempCampaignBulkOrderRepository.GetAll(filter: x => x.TempCampaignBulkOrderDetails.Any(d => d.PreorderCampaignId == preorderCampaignId), includes: x => x.TempCampaignBulkOrderDetails);
+                var preorderCampaign = await _preorderCampaignService.GetPreorderCampaignAsyncById(preorderCampaignId);
                 if (temCampaignBulkOrderByPreorderCampaignId == null)
                     throw new Exception("Preorder campaign is not valid");
                 foreach (var item in temCampaignBulkOrderByPreorderCampaignId)
@@ -66,17 +70,23 @@ namespace PreOrderBlindBox.Services.Services
                         ReceiverAddress = item.ReceiverAddress,
                         ReceiverPhone = item.ReceiverPhone,
                         UserVoucherId = item.UserVoucherId,
-                        Status = "Confirm",
+                        Status = "Confirmed",
                         CreatedDate = DateTime.Now,
                         UpdatedDate = null
                     };
-                    item.Status = "Import goods";
+                    item.Status = "Approved";
                     await _tempCampaignBulkOrderRepository.UpdateAsync(item);
-                    await _orderRepository.InsertAsync(orderEntity);
-                    await _unitOfWork.SaveChanges();
-                    
-                    await _orderDetailService.CreateTempOrderDetailToOrderDetail(temCampaignBulkOrderDetailList, orderEntity.OrderId, endPriceOfCampaign);
-                }
+                    if (preorderCampaign.Status.Equals("Reject"))
+                    {
+						await _unitOfWork.SaveChanges();
+					}
+					else if (preorderCampaign.Status.Equals("Approve")){
+						await _orderRepository.InsertAsync(orderEntity);
+						await _unitOfWork.SaveChanges();
+						await _orderDetailService.CreateTempOrderDetailToOrderDetail(temCampaignBulkOrderDetailList, orderEntity.OrderId, endPriceOfCampaign);
+
+					}
+				}
                 await _unitOfWork.CommitTransactionAsync();
                 return true;
             }
