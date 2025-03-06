@@ -1,6 +1,7 @@
 import api from "../instance";
 import { axiosConfigHeader, axiosConfigSendFileHeader } from "../axiosConfigHeader";
 import { toast } from "react-toastify";
+import { notification } from "antd";
 
 const GetTheActivePreorderCampaign = async (pageSize, pageIndex) => {
     try {
@@ -25,7 +26,7 @@ const GetTheActivePreorderCampaign = async (pageSize, pageIndex) => {
 
 const CreatePreorderCampaign = async (payload) => {
     try {
-        const response = await api.post('/PreorderCampaign/CreatePreorderCampaign', JSON.stringify(payload), axiosConfigHeader);
+        const response = await api.post('/PreorderCampaign/CreatePreorderCampaignWithMilestone', JSON.stringify(payload), axiosConfigHeader);
         toast.success("Create successful!");
         return response.data;
     } catch (error) {
@@ -34,9 +35,9 @@ const CreatePreorderCampaign = async (payload) => {
     }
 };
 
-const UpdatePreorderCampaign = async (payload, id) => {
+const UpdatePreorderCampaign = async (id, payload) => {
     try {
-        const response = await api.put(`/PreorderCampaign/UpdatePreorderCampaign/${id}`, payload, axiosConfigHeader);
+        const response = await api.put(`/PreorderCampaign/UpdatePreorderCampaignWithMilestone/${id}`, payload, axiosConfigHeader);
         toast.success("Update successful!");
         return response.data;
     } catch (error) {
@@ -60,8 +61,31 @@ const GetActivePreorderCampaignBySlug = async (slug) => {
         const respone = await api.get(`/PreorderCampaign/campaign/${slug}`, axiosConfigHeader);
         return respone.data;
     } catch (error) {
-        console.log('>>> Api get active blind box by id Error: ', error)
-        toast.error("Get active blind box by id failed!");
+        console.log('>>> Api get active preorder campaign by id Error: ', error)
+        toast.error("Get active preorder campaign by slug failed!");
+    }
+}
+
+const DeletePendingCampaign = async(id)=>{
+    try {
+
+        const response = await api.delete(`/PreorderCampaign/${id}`, axiosConfigHeader);
+
+        if (response.status === 200) {
+            notification.success({
+                message: "Success",
+                description: "The campaign has been successfully deleted.",
+            });
+            return response.status;
+        } else {
+            throw new Error("Failed to delete campaign.");
+        }
+    } catch (error) {
+        console.error("Error deleting Pre_orderCampaign:", error);
+        notification.error({
+            message: "Error",
+            description: "Failed to delete the campaign.",
+        });
     }
 }
 
@@ -74,9 +98,18 @@ const GetActiveDetailPreorderCampaign = async (slug) => {
         toast.error("Get active blind box by id failed!");
 		return null;
 	}
+}
+    const GetAllImagesByBlindBoxId = async (blindBoxId) => {
+        try {
+            const response = await api.get(`/Image/GetAllByBlindBoxId/${blindBoxId}`, axiosConfigHeader);
+            return response.data;
+        } catch (error) {
+            console.log('>>> Api Get All Images By Blind Box ID Error: ', error);
+            return [];
+        }
 };
 export {
     GetTheActivePreorderCampaign, CreatePreorderCampaign,
-    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById, GetActiveDetailPreorderCampaign
-};
+    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById, GetActiveDetailPreorderCampaign,
+    GetAllImagesByBlindBoxId, DeletePendingCampaign};
 

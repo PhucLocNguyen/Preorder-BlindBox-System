@@ -10,9 +10,7 @@ import { GetTheActivePreorderCampaign } from '../../../api/Pre_orderCampaign/Api
 const tabs = [
 	{ id: 'DỰ ÁN THỊNH HÀNH', label: 'DỰ ÁN THỊNH HÀNH' },
 	{ id: 'MỚI RA MẮT', label: 'MỚI RA MẮT' },
-	{ id: 'MỞ BÁN ĐỢT 2', label: 'MỞ BÁN ĐỢT 2' },
 	{ id: 'SẮP KẾT THÚC', label: 'SẮP KẾT THÚC' },
-	{ id: 'SẮP VỀ HÀNG', label: 'SẮP VỀ HÀNG' },
 ];
 
 const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
@@ -42,9 +40,8 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 									<button
 										key={tab.id}
 										onClick={() => setActiveTab(tab.id)}
-										className={`${
-											activeTab === tab.id ? '' : 'hover:bg-yellow-300'
-										} relative rounded-full px-3 py-1.5 text-sm font-medium text-black outline-sky-400 transition focus-visible:outline-2`}
+										className={`${activeTab === tab.id ? '' : 'hover:bg-yellow-300'
+											} relative rounded-full px-3 py-1.5 text-sm font-medium text-black outline-sky-400 transition focus-visible:outline-2`}
 										style={{
 											WebkitTapHighlightColor: 'transparent',
 										}}
@@ -58,9 +55,8 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 											/>
 										)}
 										<span
-											className={`${
-												activeTab === tab.id ? 'text-black' : 'text-gray-500'
-											} relative z-20`}
+											className={`${activeTab === tab.id ? 'text-black' : 'text-gray-500'
+												} relative z-20`}
 										>
 											{tab.label}
 										</span>
@@ -86,7 +82,7 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 										{/* Product Image */}
 										<div className='relative w-full h-48'>
 											<img
-												src={product?.blindBox?.mainImages?.url || NoThumb}
+												src={product.blindBox?.mainImages?.url || NoThumb}
 												alt={product.name}
 												className='absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-105'
 												sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw'
@@ -96,11 +92,11 @@ const ProductList = ({ title = 'ĐẶT HÀNG VỀ TAY SỚM NHẤT' }) => {
 										{/* Product Info */}
 										<div className='flex flex-col gap-2 p-4'>
 											<h3 className='text-sm font-medium line-clamp-2'>
-												{product?.blindBox.name}
+												{product.blindBox?.name}
 											</h3>
-											<p className='text-xs text-gray-500'>{product?.blindBox.description}</p>
+											<p className='text-xs text-gray-500'>{product.blindBox?.description}</p>
 											<span className='px-2 py-1 text-xs text-white bg-red-500 rounded-md w-fit'>
-												{product?.blindBox.size}
+												{product.blindBox?.size}
 											</span>
 
 											{/* Order Progress */}

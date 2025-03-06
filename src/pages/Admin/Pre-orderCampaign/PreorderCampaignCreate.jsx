@@ -67,7 +67,7 @@ function PreorderCampaignCreate() {
       setIsFormValid(false);
       return;
     }
-    if (dateRange[0] < dateNow) {
+    if (dateRange[0] <= dateNow) {
       setIsFormValid(false);
       return;
     }
@@ -90,9 +90,9 @@ function PreorderCampaignCreate() {
     const data = {
       blindBoxId: parseInt(loadMainProduct?.blindBoxId) || 0,
       type: parseInt(values.type || typeOfCampaign),
-      startTime: values.dateRange ? values.dateRange[0].toISOString() : null,
-      endTime: values.dateRange ? values.dateRange[1].toISOString() : null,
-      milestones: values.milestones
+      startDate: values.dateRange ? values.dateRange[0].toISOString() : null,
+      endDate: values.dateRange ? values.dateRange[1].toISOString() : null,
+      milestoneRequests: values.milestones
         ? values.milestones.map((item) => ({
             quantity: parseInt(item.quantity),
             price: parseFloat(item.price),
