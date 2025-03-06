@@ -8,21 +8,15 @@ const OrdersView = () => {
     const [search, setSearch] = useState("");
     const [orderBy, setOrderBy] = useState("increase");
     const [pageIndex, setPageIndex] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
-    const [totalPage, setTotalPage] = useState(0);
+    const [pagination, setPagination] = useState({
+        PageSize: 10,
+        TotalPage: 0,
+        TotalCount: 0
+    })
     const handlePageChange = (page) => {
         setPageIndex(page);
     };
 
-    const handleTotalPage = useCallback(async () => {
-        try {
-            const result = await GetAllOrder();
-            setTotalPage(result.length);
-        } catch (error) {
-
-        }
-
-    }, [])
     const handleNextPage = () => {
         setPageIndex(() => pageIndex + 1);
     };
@@ -31,17 +25,25 @@ const OrdersView = () => {
     };
     const fetchOrders = useCallback(async () => {
         try {
-            const result = await GetAllOrder(pageIndex, pageSize, search, orderBy);
+            const result = await GetAllOrder(pageIndex, pagination.PageSize, search, orderBy);
+            if (result.status === 200) {
+                const paginationData = JSON.parse(result?.headers?.get('x-pagination'))
+                console.log('Pagination Data: ', paginationData);
+                setPagination({
+                    ...pagination,
+                    TotalPage: paginationData.TotalPages,
+                    TotalCount: paginationData.TotalCount
+                })
+            }
             setOrders([...result]);
         } catch (error) {
             console.error("Fetch Orders Error:", error);
             setOrders([]);
         }
-    }, [pageSize, pageIndex, search, orderBy]);
+    }, [pagination.PageSize, pageIndex, search, orderBy]);
 
     useEffect(() => {
         fetchOrders();
-        handleTotalPage();
     }, [fetchOrders])
     const itemRender = (_, type, originalElement) => {
         if (type === 'prev') {
@@ -94,9 +96,8 @@ const OrdersView = () => {
                                 <th className="px-2 py-1">Receiver</th>
                                 <th className="px-2 py-1">Address</th>
                                 <th className="px-2 py-1">Phone</th>
-                                <th className="px-2 py-1">Items</th>
-                                <th className="px-2 py-1">Price</th>
-                                <th className="px-2 py-1">Date</th>
+                                <th className="px-2 py-1">Amount</th>
+                                <th className="px-2 py-1">Created Date</th>
                                 <th className="px-2 py-1">Status</th>
                                 <th className="px-2 py-1">Action</th>
                             </tr>
@@ -110,14 +111,11 @@ const OrdersView = () => {
                                         <td className="px-2 py-2">{data.receiver}</td>
                                         <td className="px-2 py-2">{data.receiverAddress}</td>
                                         <td className="px-2 py-2">{data.receiverPhone}</td>
-                                        <td className="px-2 py-2">{
-                                            data.totalItems
-                                        }</td>
                                         <td className="px-2 py-2">{data.amount} VND</td>
                                         <td className="px-2 py-2">{data.createdDate}</td>
 
                                         <td
-                                            className={`px-2 py-2 ${data.status === 'Completed' ? 'text-green-500' : 'text-red-500'
+                                            className={`px-2 py-2 ${data.status === 'Delivered' ? 'text-green-500' : 'text-red-500'
                                                 }`}
                                         >
                                             {data.status}
@@ -137,14 +135,14 @@ const OrdersView = () => {
                                                                 </Link>
                                                             ),
                                                         },
-                                                        {
-                                                            key: "2",
-                                                            label: (
-                                                                <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                                    <DeleteOutlined /> <span>Delete order</span>
-                                                                </div>
-                                                            ),
-                                                        },
+                                                        // {
+                                                        //     key: "2",
+                                                        //     label: (
+                                                        //         <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                        //             <DeleteOutlined /> <span>Delete order</span>
+                                                        //         </div>
+                                                        //     ),
+                                                        // },
                                                     ]
                                                 }}
                                                 trigger={['click']}
@@ -170,8 +168,8 @@ const OrdersView = () => {
                 <div className="flex justify-between items-center mt-4 p-4 bg-white shadow rounded">
                     <Pagination
                         current={pageIndex}
-                        total={totalPage}
-                        pageSize={pageSize}
+                        total={pagination.TotalCount}
+                        pageSize={pagination.PageSize}
                         onChange={handlePageChange
                         }
                         className="shadow-md p-2 rounded-md"
