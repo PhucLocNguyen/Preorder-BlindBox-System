@@ -10,7 +10,7 @@ namespace PreOrderBlindBox.Services.IServices
         Task<List<Cart>> GetAllCartByCustomerID(int customerID);
         Task<Cart> GetCartByCustomerIDAndCampaignID(int customerID, int campaignID);
         Task<bool> UpdateStatusOfCartByCustomerID(int customerID);
-        Task<Cart> ChangeQuantityOfCartByCustomerID( RequestCreateCart requestUpdateCart);
+        Task<Cart> ChangeQuantityOfCartByCustomerID(RequestCreateCart requestUpdateCart);
         Task<List<ResponseCartWithVoucher>> IdentifyPriceForCartItem(int customerID, Dictionary<int, int> UserVoucherIdForPreorderCampaign, RequestCreateCart? requestCreateCart);
     }
 }

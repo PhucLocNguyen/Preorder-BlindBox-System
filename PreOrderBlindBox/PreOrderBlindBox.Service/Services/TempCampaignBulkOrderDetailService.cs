@@ -68,7 +68,7 @@ namespace PreOrderBlindBox.Services.Services
             }
         }
 
-        public async Task<List<ResponseTempCampaignBulkOrderDetail>> GetAllOrderDetailsByOrderID(PaginationParameter? page, int TempCampaignBulkOrderId)
+        public async Task<List<ResponseTempCampaignBulkOrderDetail>> GetAllTempOrderDetailsByTempOrderID(PaginationParameter? page, int TempCampaignBulkOrderId)
         {
             List<ResponseTempCampaignBulkOrderDetail> tempCampaignBulkOrderDetailResponse = new List<ResponseTempCampaignBulkOrderDetail>();
 
