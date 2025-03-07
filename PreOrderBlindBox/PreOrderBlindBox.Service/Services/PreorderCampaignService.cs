@@ -333,6 +333,7 @@ namespace PreOrderBlindBox.Services.Services
                     Description = preorderCampaign.BlindBox.Description,
                     Size = preorderCampaign.BlindBox.Size,
                     CreatedAt = preorderCampaign.BlindBox.CreatedAt,
+                    ListedPrice = preorderCampaign.BlindBox.ListedPrice,
                     Images = images
                 } : null,
                 PreorderMilestones = milestoneList.Select(m => new ResponsePreorderMilestone
