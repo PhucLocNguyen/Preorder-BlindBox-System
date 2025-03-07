@@ -22,7 +22,7 @@ namespace PreOrderBlindBox.API.Controllers
         {
             try
             {
-                var itemResult = await _tempCampaignBulkOrderDetailService.GetAllOrderDetailsByOrderID(paginationParameter, tempCampaignBulkOrderIdTempCampaignBulkOrderId);
+                var itemResult = await _tempCampaignBulkOrderDetailService.GetAllTempOrderDetailsByTempOrderID(paginationParameter, tempCampaignBulkOrderIdTempCampaignBulkOrderId);
                 return Ok(itemResult);
             }
             catch (Exception ex)
