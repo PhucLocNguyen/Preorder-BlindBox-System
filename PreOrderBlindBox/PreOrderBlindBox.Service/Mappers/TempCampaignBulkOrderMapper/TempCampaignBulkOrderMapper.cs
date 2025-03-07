@@ -23,7 +23,7 @@ namespace PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
                 ReceiverPhone = requestCreateOrder.ReceiverPhone,
                 UserVoucherId = userVoucherID,
-                Status = requestCreateOrder.Status,
+                Status = "Waiting",
                 CreatedDate = DateTime.Now,
                 UpdatedDate = null
             };
