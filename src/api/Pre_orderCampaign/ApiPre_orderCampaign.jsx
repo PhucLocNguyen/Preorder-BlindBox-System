@@ -37,7 +37,7 @@ const CreatePreorderCampaign = async (payload) => {
 
 const UpdatePreorderCampaign = async (id, payload) => {
     try {
-        const response = await api.put(`/PreorderCampaign/UpdatePreorderCampaign/${id}`, payload, axiosConfigHeader);
+        const response = await api.put(`/PreorderCampaign/UpdatePreorderCampaignWithMilestone/${id}`, payload, axiosConfigHeader);
         toast.success("Update successful!");
         return response.data;
     } catch (error) {
@@ -89,9 +89,27 @@ const DeletePendingCampaign = async(id)=>{
     }
 }
 
+const GetActiveDetailPreorderCampaign = async (slug) => {
+	try {
+		const response = await api.get(`/PreorderCampaign/campaign/${slug}`, axiosConfigHeader);
+		return response.data;
+	} catch (error) {
+		console.log('>>> Api Get Blind Box By ID Error: ', error);
+        toast.error("Get active blind box by id failed!");
+		return null;
+	}
+}
+    const GetAllImagesByBlindBoxId = async (blindBoxId) => {
+        try {
+            const response = await api.get(`/Image/GetAllByBlindBoxId/${blindBoxId}`, axiosConfigHeader);
+            return response.data;
+        } catch (error) {
+            console.log('>>> Api Get All Images By Blind Box ID Error: ', error);
+            return [];
+        }
+};
 export {
     GetTheActivePreorderCampaign, CreatePreorderCampaign,
-    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById,DeletePendingCampaign
-
-};
+    UpdatePreorderCampaign, GetActivePreorderCampaignBySlug, GetActivePreorderCampaignById, GetActiveDetailPreorderCampaign,
+    GetAllImagesByBlindBoxId, DeletePendingCampaign};
 
