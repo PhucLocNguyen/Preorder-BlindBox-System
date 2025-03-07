@@ -8,6 +8,7 @@ import {
     ShoppingCartOutlined,
     TagOutlined,
     LogoutOutlined,
+    PictureOutlined
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -22,6 +23,7 @@ const SideBarAdmin = () => {
         { key: "/admin/history-transactions", label: "History Transactions", icon: <HistoryOutlined /> },
         { key: "/admin/pre-ordercampaign", label: "Preorder Campaign", icon: <ShoppingCartOutlined /> },
         { key: "/admin/voucher", label: "Voucher", icon: <TagOutlined /> },
+        { key: "/admin/banner-management", label: "Banner Management", icon: <PictureOutlined /> }
     ];
 
     return (
