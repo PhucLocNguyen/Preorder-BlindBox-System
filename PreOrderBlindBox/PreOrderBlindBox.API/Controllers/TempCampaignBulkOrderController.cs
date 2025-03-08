@@ -43,13 +43,27 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("convert-temp-order/{preorderCampaignId}")]
-        public async Task<IActionResult> ConvertTempCampaignBulkOrderToOrder(int preorderCampaignId, decimal endPriceOfCampaign)
+        [HttpPost("{preorderCampaignId}/accept")]
+        public async Task<IActionResult> AcceptTempOrder([FromRoute]int preorderCampaignId)
         {
             try
             {
-                var result = await _tempCampaignBulkOrderService.ConvertTempCampaignBulkOrderToOrder(preorderCampaignId, endPriceOfCampaign);
-                return Ok(new { Message = "Conver successfully" });
+                var result = await _tempCampaignBulkOrderService.AcceptTempOrder(preorderCampaignId);
+                return Ok(new { Message = "Accept successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+        }
+
+        [HttpPost("{preorderCampaignId}/reject")]
+        public async Task<IActionResult> RejectTempOrder([FromRoute] int preorderCampaignId)
+        {
+            try
+            {
+                var result = await _tempCampaignBulkOrderService.RejectTempOrder(preorderCampaignId);
+                return Ok(new { Message = "Reject successfully" });
             }
             catch (Exception ex)
             {
