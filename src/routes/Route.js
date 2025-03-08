@@ -25,6 +25,7 @@ const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/Voucher
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
+const BannerManagement = lazy(() => import("../pages/Admin/BannerManagement/BannerView"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
 const ProductList = lazy(() => import('../pages/Home/ProductList/ProductList'));
@@ -152,6 +153,7 @@ const publicRoutes = [
       { path: "preordercampaign/edit/:slug", component: PreorderCampaignEdit },
 
 
+      { path: "banner-management", component: BannerManagement },
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
       { path: "voucher", component: VoucherManagement },
