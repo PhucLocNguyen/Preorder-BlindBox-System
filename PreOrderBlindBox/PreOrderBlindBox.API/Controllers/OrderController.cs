@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
@@ -23,6 +24,7 @@ namespace PreOrderBlindBox.API.Controllers
             _currentUserService = currentUserService;
         }
         // GET: api/<OrderController>
+        //[Authorize(Roles = "3")]
         [HttpGet]
         public async Task<IActionResult> GetAllOrders([FromQuery] PaginationParameter pagination, [FromQuery] string? searchKeyWords, [FromQuery] string orderBy = "increase")
         {
@@ -81,8 +83,8 @@ namespace PreOrderBlindBox.API.Controllers
 
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateStatusOfOrder(RequestUpdateOrder requestUpdateOrder, int orderId)
+        [HttpPut("{orderId}")]
+        public async Task<IActionResult> UpdateStatusOfOrder(RequestUpdateOrder requestUpdateOrder,[FromRoute] int orderId)
         {
             try
             {
@@ -95,7 +97,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("/ViewHistoryOrder")]
+        [HttpGet("view-history-orders")]
 		public async Task<IActionResult> ViewOrderHistory([FromQuery] PaginationParameter pagination)
 		{
             try

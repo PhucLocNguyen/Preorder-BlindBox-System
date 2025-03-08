@@ -6,7 +6,7 @@ namespace PreOrderBlindBox.Services.IServices
 {
     public interface ITempCampaignBulkOrderDetailService 
     {
-        Task<List<ResponseTempCampaignBulkOrderDetail>> GetAllOrderDetailsByOrderID(PaginationParameter? page, int TempCampaignBulkOrderId);
+        Task<List<ResponseTempCampaignBulkOrderDetail>> GetAllTempOrderDetailsByTempOrderID(PaginationParameter? page, int TempCampaignBulkOrderId);
         Task<bool> CreateTempCampaignBulkOrderDetail(List<ResponseCart> carts, int TempCampaignBulkOrderId);
     }
 }
