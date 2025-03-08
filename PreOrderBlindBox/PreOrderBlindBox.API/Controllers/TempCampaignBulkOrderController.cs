@@ -72,12 +72,12 @@ namespace PreOrderBlindBox.API.Controllers
 
         }
 
-        [HttpGet("{tempOrderId}")]
+        [HttpGet("customer/{tempOrderId}")]
         public async Task<IActionResult> GetTempOrderById([FromRoute] int tempOrderId)
         {
             try
             {
-                var existingTempOrder = await _tempCampaignBulkOrderService.GetTempOrderById(tempOrderId);
+                var existingTempOrder = await _tempCampaignBulkOrderService.GetTempOrderByIdForCustomer(tempOrderId);
                 if (existingTempOrder != null)
                 {
                     return Ok(existingTempOrder);

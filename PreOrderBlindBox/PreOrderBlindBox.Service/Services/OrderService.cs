@@ -164,7 +164,15 @@ namespace PreOrderBlindBox.Services.Services
             return result;
         }
 
-        public async Task<ResponseOrder> GetOrderById(int id)
+        public async Task<ResponseOrder> GetOrderByIdForStaff(int id)
+        {
+            var orderById = await _orderRepository.GetByIdAsync(id);
+            var orderByIdResponse = orderById.toOrderRespone();
+            return orderByIdResponse;
+
+        }
+
+        public async Task<ResponseOrder> GetOrderByIdForCustomer(int id)
         {
             try
             {
@@ -185,7 +193,6 @@ namespace PreOrderBlindBox.Services.Services
                 throw;
             }
         }
-
         public async Task<ResponseOrder> UpdateStatusOfOrder(int orderId, RequestUpdateOrder requestUpdateOrder)
         {
             await _unitOfWork.BeginTransactionAsync();
@@ -223,7 +230,7 @@ namespace PreOrderBlindBox.Services.Services
                 ).ThenByDescending(x => x.CreatedDate)
                 );
             var itemsOrderDetail = orders.Select(x => x.toOrderRespone()).ToList();
-            var countItem =  _orderRepository.Count();
+            var countItem = _orderRepository.Count();
             var result = new Pagination<ResponseOrder>(itemsOrderDetail, countItem, pagination.PageIndex, pagination.PageSize);
             return result;
         }
