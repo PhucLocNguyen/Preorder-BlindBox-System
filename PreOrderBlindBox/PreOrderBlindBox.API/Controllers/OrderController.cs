@@ -50,12 +50,30 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("{orderId}")]
-        public async Task<IActionResult> GetOrderById([FromRoute] int orderId)
+        [HttpGet("staff/{orderId}")]
+        public async Task<IActionResult> GetOrderByIdForStaff([FromRoute] int orderId)
         {
             try
             {
-                var existingOrder = await _orderService.GetOrderById(orderId);
+                var existingOrder = await _orderService.GetOrderByIdForStaff(orderId);
+                if (existingOrder != null)
+                {
+                    return Ok(existingOrder);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+        }
+
+        [HttpGet("customer/{orderId}")]
+        public async Task<IActionResult> GetOrderByIdForCustomer([FromRoute] int orderId)
+        {
+            try
+            {
+                var existingOrder = await _orderService.GetOrderByIdForCustomer(orderId);
                 if (existingOrder != null)
                 {
                     return Ok(existingOrder);

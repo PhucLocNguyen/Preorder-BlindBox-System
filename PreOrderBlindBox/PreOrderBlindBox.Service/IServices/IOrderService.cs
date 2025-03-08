@@ -15,7 +15,8 @@ namespace PreOrderBlindBox.Services.IServices
     public interface IOrderService
     {
         Task<Pagination<ResponseOrder>> GetAllOrder(PaginationParameter page, string? searchKeyWords,string orderBy);
-        Task<ResponseOrder> GetOrderById(int id);
+        Task<ResponseOrder> GetOrderByIdForStaff(int id);
+        Task<ResponseOrder> GetOrderByIdForCustomer(int id);
         Task CreateOrder(RequestCreateOrder requestCreateOrder);
         Task<ResponseOrder> UpdateStatusOfOrder(int orderId, RequestUpdateOrder requestUpdateOrder);
         Task<Pagination<ResponseOrder>> OrderHistory(PaginationParameter pagination);

@@ -134,7 +134,7 @@ namespace PreOrderBlindBox.Services.Services
             return result;
         }
 
-        public async Task<ResponseTempCampaignBulkOrder> GetTempOrderById(int id)
+        public async Task<ResponseTempCampaignBulkOrder> GetTempOrderByIdForCustomer(int id)
         {
             try
             {

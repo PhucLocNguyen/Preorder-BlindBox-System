@@ -10,7 +10,7 @@ namespace PreOrderBlindBox.Services.IServices
         Task<Pagination<ResponseTempCampaignBulkOrder>> GetAllTempOrder(PaginationParameter page, string? searchKeyWords, string orderBy);
         Task<Pagination<ResponseTempCampaignBulkOrder>> TempOrderHistory(PaginationParameter pagination);
         Task<bool> ConvertTempCampaignBulkOrderToOrder(int preorderCampaignId, decimal endPriceOfCampaign);
-        Task<ResponseTempCampaignBulkOrder> GetTempOrderById(int id);
+        Task<ResponseTempCampaignBulkOrder> GetTempOrderByIdForCustomer(int id);
         Task<TempCampaignBulkOrder> CreateOrder(TempCampaignBulkOrder tempCampaignBulkOrder);
     }
 }
