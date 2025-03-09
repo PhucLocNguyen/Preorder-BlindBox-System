@@ -23,7 +23,26 @@ namespace PreOrderBlindBox.Data.Repositories
 
         public async Task<List<PreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter paginationParameter)
         {
-            var items = await GetAll(paginationParameter, x => !x.IsDeleted, null, includes: x => x.BlindBox);
+            Expression<Func<PreorderCampaign, bool>> filter = pc =>
+                !pc.IsDeleted /*&& (string.IsNullOrEmpty(type) || pc.Type == type)*/;
+            var items = await GetAll(paginationParameter, filter, null, includes: x => x.BlindBox);
+            return items;
+        }
+
+        public async Task<List<PreorderCampaign?>> GetAllCompleteBulkPreorderCampaign(PaginationParameter paginationParameter)
+        {
+            Expression<Func<PreorderCampaign, bool>> filter = pc =>
+                !pc.IsDeleted && pc.Status == PreorderCampaignStatus.Completed.ToString() && pc.BlindBox != null 
+                && pc.Type == PreorderCampaignType.BulkOrder.ToString();
+
+            Expression<Func<PreorderCampaign, object>>[] includes = new Expression<Func<PreorderCampaign, object>>[]
+            {
+                pc => pc.BlindBox,
+                pc => pc.PreorderMilestones,
+                pc => pc.OrderDetails
+            };
+
+            var items = await GetAll(paginationParameter, filter, null, includes);
             return items;
         }
 
