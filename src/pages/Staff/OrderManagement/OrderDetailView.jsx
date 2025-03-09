@@ -14,6 +14,7 @@ import { GetOrderById } from '../../../api/Order/ApiOrder';
 import { GetAllOrderDetailsByOrderID } from '../../../api/OrderDetail/ApiOrderDetail';
 import { GetUserVoucherById } from '../../../api/UserVoucher/ApiUserVoucher';
 import { GetInformationOfUser } from '../../../api/User/ApiAuthentication';
+import { UpdateStatusInOrder } from '../../../api/Order/ApiOrder';
 
 const OrderDetailView = () => {
     const navigate = useNavigate();
@@ -22,7 +23,8 @@ const OrderDetailView = () => {
     const [orderDetails, setOrderDetails] = useState([]);
     const [userVoucherById, setUserVoucherById] = useState([]);
     const [customer, setCustomer] = useState([]);
-
+    const [editMode, setEditMode] = useState(false);
+    const [updatedStatus, setUpdatedStatus] = useState(null);
 
     const fetchOrderById = useCallback(async () => {
         try {
@@ -32,6 +34,7 @@ const OrderDetailView = () => {
                 handleProgress(result)
                 fetchUserVoucher(result)
                 fetchCustomer(result)
+                setUpdatedStatus(result.status)
             }
         } catch (error) {
             console.error("Fetch Orders By Id Error:", error);
@@ -68,7 +71,6 @@ const OrderDetailView = () => {
         try {
             const result = await GetInformationOfUser(data.customerId);
             if (result) {
-                console.log("Customer", result)
                 setCustomer(result)
             }
         } catch (error) {
@@ -79,28 +81,24 @@ const OrderDetailView = () => {
 
     const initialProgress = (data) => {
         const progressArray = [
-            { stateProcessing: 'Confirming', state: 0 },
+            { stateProcessing: 'Placed', state: 0 },
             { stateProcessing: 'Processing', state: 0 },
-            { stateProcessing: 'Shipping', state: 0 },
+            { stateProcessing: 'Delivering', state: 0 },
             { stateProcessing: 'Delivered', state: 0 },
-            { stateProcessing: 'Completed', state: 0 },
         ]; let step
         if (data === undefined) return progressArray;
         else {
             switch (data.status) {
-                case 'Confirm':
-                    step = 1
-                    break;
-                case 'Processing':
+                case 'Placed':
                     step = 2
                     break;
-                case 'Delevering':
+                case 'Processing':
                     step = 3
                     break;
-                case 'Delivered':
+                case 'Delivering':
                     step = 4
                     break;
-                case 'Completed':
+                case 'Delivered':
                     step = 6
                     break;
             }
@@ -129,15 +127,74 @@ const OrderDetailView = () => {
         if (state === 2) return 'bg-blue-500';
         return 'bg-white';
     };
+    const handleStatusClick = (index) => {
+        setProgress((prevProgress) => {
+            const newProgress = prevProgress.map(item => ({ ...item }));
+
+            // Xác định trạng thái đơn hàng hiện tại
+            const currentOrderIndex = newProgress.findIndex(step => step.stateProcessing === orderById.status);
+
+            // Chỉ cho phép click vào trạng thái kế tiếp của trạng thái đơn hàng hiện tại
+            if (index !== currentOrderIndex + 1) return prevProgress;
+
+            // Toggle trạng thái giữa 1 (cam) và 2 (xanh)
+            if (newProgress[index].state === 1) {
+                newProgress[index].state = 2;
+
+                // Nếu trạng thái tiếp theo tồn tại và đang là 0, chuyển nó thành 1 (màu cam)
+                if (index + 1 < newProgress.length && newProgress[index + 1].state === 0) {
+                    newProgress[index + 1].state = 1;
+                }
+
+                // Cập nhật trạng thái mới để lưu
+                setUpdatedStatus(newProgress[index].stateProcessing);
+            }
+            else if (newProgress[index].state === 2) {
+                newProgress[index].state = 1;
+
+                // Nếu trạng thái tiếp theo đang là 1, reset nó về 0
+                if (index + 1 < newProgress.length && newProgress[index + 1].state === 1) {
+                    newProgress[index + 1].state = 0;
+                }
+
+                // Cập nhật trạng thái mới để lưu
+                setUpdatedStatus(newProgress[currentOrderIndex].stateProcessing);
+            }
+
+            return newProgress;
+        });
+    };
+
+    const isClickable = (index) => {
+        // Nếu không ở chế độ edit, không cho phép chỉnh sửa
+        if (!editMode) return false;
+
+        // Xác định trạng thái đơn hàng hiện tại
+        const currentOrderIndex = progress.findIndex(step => step.stateProcessing === orderById.status);
+
+        // Chỉ trạng thái ngay sau trạng thái đơn hàng hiện tại mới có thể bấm
+        return index === (currentOrderIndex + 1);
+    };
+    const handleSave = async () => {
+        try {
+            console.log("Updated Status:", updatedStatus);
+            const updatedOrder = await UpdateStatusInOrder(id, updatedStatus);
+            if (updatedOrder) {
+                // Cập nhật UI với trạng thái mới
+                setEditMode(false); // Tắt chế độ chỉnh sửa
+                fetchOrderById();
+            } else {
+                console.error("Không thể cập nhật trạng thái đơn hàng");
+            }
+        } catch (error) {
+            console.error("Cập nhật trạng thái đơn hàng thất bại:", error);
+        }
+    };
     useEffect(() => {
         fetchOrderById();
         fetchOrderDetails();
     }, [])
 
-    const [collapsed, setCollapsed] = useState(false);
-    const toggleCollapsed = () => {
-        setCollapsed(!collapsed);
-    };
 
     return (
         <>
@@ -148,8 +205,18 @@ const OrderDetailView = () => {
                         <p className="text-gray-500">Order History / Order Details / S-10242002 - {orderById.createdDate}</p>
                     </div>
                     <div className="flex space-x-2">
-                        <button className="bg-red-100 text-red-600 px-4 py-2 rounded-lg border border-red-600">Delete Order</button>
-                        <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg border border-gray-600">Edit Order</button>
+                        {editMode ? (
+                            <>
+                                <button className="bg-red-600 text-white px-4 py-2 rounded-lg" onClick={() => {
+                                    setEditMode(false)
+                                    fetchOrderById()
+                                }}>Cancel</button>
+                                <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleSave}>Save</button>
+                            </>
+
+                        ) : (
+                            <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg border border-gray-600" onClick={() => setEditMode(true)}>Edit Order</button>
+                        )}
                     </div>
                 </div>
                 <div className="mx-[5px]">
@@ -159,66 +226,30 @@ const OrderDetailView = () => {
                             <div className="bg-white p-4 rounded-lg shadow mb-4">
                                 <h2 className="text-lg font-bold mb-2">Progress</h2>
                                 <div className="flex justify-between items-stretch ">
-                                    <div className="flex-1 text-left rounded-lg shadow p-2 m-1">
-                                        <i className="fas fa-check-circle text-gray-500 text-2xl"></i>
-                                        <span><ShoppingOutlined /></span>
-                                        <p className="text-sm">Order Confirming</p>
-                                        <div className="w-full max-w-xl">
-                                            <div className="relative pt-1">
-                                                <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                                                    <div style={{ width: getWidthFromState(progress[0].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[0].state)}`}></div>
+                                    {progress.map((step, index) => (
+                                        <div
+                                            key={index}
+                                            className={`flex-1 text-left rounded-lg shadow p-4 m-1 transition duration-200 
+                    ${isClickable(index) ? 'cursor-pointer hover:shadow-lg' : `cursor-not-allowed ${() => { editMode ? `` : `opacity-50` }} `}`}
+                                            onClick={() => isClickable(index) && handleStatusClick(index)}
+                                        >
+                                            <span>
+                                                {index === 0 ? <ShoppingOutlined /> :
+                                                    index === 1 ? <InboxOutlined /> :
+                                                        index === 2 ? <TruckOutlined /> :
+                                                            <CheckCircleOutlined />}
+                                            </span>
+                                            <p className="text-sm font-medium">{step.stateProcessing}</p>
+                                            <div className="w-full max-w-xl mt-2">
+                                                <div className="relative pt-1">
+                                                    <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
+                                                        <div style={{ width: getWidthFromState(step.state) }}
+                                                            className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(step.state)}`}></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="flex-1 text-left rounded-lg shadow p-2 m-1">
-                                        <i className="fas fa-check-circle text-yellow-500 text-2xl"></i>
-                                        <span><ProjectOutlined /></span>
-                                        <p className="text-sm">Processing</p>
-                                        <div className="w-full max-w-xl">
-                                            <div className="relative pt-1">
-                                                <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                                                    <div style={{ width: getWidthFromState(progress[1].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[1].state)}`}></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 text-left rounded-lg shadow p-2 m-1">
-                                        <i className="fas fa-truck text-gray-500 text-2xl"></i>
-                                        <span><InboxOutlined /></span>
-                                        <p className="text-sm">Shipping</p>
-                                        <div className="w-full max-w-xl">
-                                            <div className="relative pt-1">
-                                                <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                                                    <div style={{ width: getWidthFromState(progress[2].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[2].state)}`}></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 text-left rounded-lg shadow p-2 m-1">
-                                        <i className="fas fa-box text-gray-500 text-2xl"></i>
-                                        <span><TruckOutlined /></span>
-                                        <p className="text-sm">Delivered</p>
-                                        <div className="w-full max-w-xl">
-                                            <div className="relative pt-1">
-                                                <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                                                    <div style={{ width: getWidthFromState(progress[3].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[3].state)}`}></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 text-left rounded-lg shadow p-2 m-1">
-                                        <i className="fas fa-box text-gray-500 text-2xl"></i>
-                                        <span><CheckCircleOutlined /></span>
-                                        <p className="text-sm">Completed</p>
-                                        <div className="w-full max-w-xl">
-                                            <div className="relative pt-1">
-                                                <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
-                                                    <div style={{ width: getWidthFromState(progress[4].state) }} className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${getBgClassFromState(progress[4].state)}`}></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
                             <div className="bg-white p-4 rounded-lg shadow mb-4">
@@ -270,7 +301,7 @@ const OrderDetailView = () => {
                                             <p>Discount ({userVoucherById.length === 0 ? '0' : userVoucherById.percentDiscount}%)</p>
                                             <p>- {userVoucherById.length === 0 ? '0' :
                                                 (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100) > userVoucherById.maximumMoneyDiscount
-                                                    ? userVoucherById.maximumMoneyDiscount : (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100) ?? '0'} VND</p>
+                                                    ? userVoucherById.maximumMoneyDiscount : (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100)} VND</p>
                                         </div>
                                         <div className="flex justify-between font-bold">
                                             <p>Total</p>
