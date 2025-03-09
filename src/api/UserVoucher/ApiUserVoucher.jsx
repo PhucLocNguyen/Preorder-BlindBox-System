@@ -13,10 +13,12 @@ const GetUserVoucherById = async (userVoucherId) => {
 
 const GetAllUserVoucher = async () => {
     try {
-       const respone = await api.get('/UserVouchers', axiosConfigHeader);
-       return respone.data;
+        const respone = await api.get('/UserVouchers', axiosConfigHeader);
+        if (respone?.status === 200) {
+            return respone?.data;
+        }
     } catch (error) {
-       console.log('>>> Api Get All User Voucher Error: ', error)
+        console.log('>>> Api Get All User Voucher Error: ', error)
     }
- }
+}
 export { GetUserVoucherById, GetAllUserVoucher }
