@@ -38,6 +38,7 @@ const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResu
 const ForgotPassword = lazy(() => import("../pages/Account/ForgotPassword"));
 const SendEmailForgotPassword = lazy(() => import("../pages/Account/SendEmailForgotPassword"));
 const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
+const MyVoucher = lazy(() => import("../pages/Customer/MyVoucher"));
 
 const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
 
@@ -164,6 +165,11 @@ const publicRoutes = [
     ],
     role: ['admin']
   },
+  {
+    path: '/myvoucher',
+    component: MyVoucher,
+    layout: DefaultLayout,
+  }
 ];
 
 const privateRoutes = [
