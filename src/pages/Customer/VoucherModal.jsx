@@ -38,7 +38,7 @@ function VoucherModal({
               className="flex items-center justify-between p-2 border rounded"
             >
               <div>
-                <p className="font-semibold">{voucher.title}</p>
+                <p className="font-semibold">{voucher.name}</p>
                 <p className="text-sm text-gray-600">{voucher.description}</p>
                 <p className="text-sm text-blue-500">
                   Số lượng còn lại: <span className="font-bold">{voucher.quantity}</span>
