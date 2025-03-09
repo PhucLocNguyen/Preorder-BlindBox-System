@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
@@ -23,6 +24,7 @@ namespace PreOrderBlindBox.API.Controllers
             _currentUserService = currentUserService;
         }
         // GET: api/<OrderController>
+        //[Authorize(Roles = "3")]
         [HttpGet]
         public async Task<IActionResult> GetAllOrders([FromQuery] PaginationParameter pagination, [FromQuery] string? searchKeyWords, [FromQuery] string orderBy = "increase")
         {
@@ -48,12 +50,30 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("{orderId}")]
-        public async Task<IActionResult> GetOrderById([FromRoute] int orderId)
+        [HttpGet("staff/{orderId}")]
+        public async Task<IActionResult> GetOrderByIdForStaff([FromRoute] int orderId)
         {
             try
             {
-                var existingOrder = await _orderService.GetOrderById(orderId);
+                var existingOrder = await _orderService.GetOrderByIdForStaff(orderId);
+                if (existingOrder != null)
+                {
+                    return Ok(existingOrder);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = (ex.Message) });
+            }
+        }
+
+        [HttpGet("customer/{orderId}")]
+        public async Task<IActionResult> GetOrderByIdForCustomer([FromRoute] int orderId)
+        {
+            try
+            {
+                var existingOrder = await _orderService.GetOrderByIdForCustomer(orderId);
                 if (existingOrder != null)
                 {
                     return Ok(existingOrder);
@@ -81,8 +101,8 @@ namespace PreOrderBlindBox.API.Controllers
 
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateStatusOfOrder(RequestUpdateOrder requestUpdateOrder, int orderId)
+        [HttpPut("{orderId}")]
+        public async Task<IActionResult> UpdateStatusOfOrder(RequestUpdateOrder requestUpdateOrder,[FromRoute] int orderId)
         {
             try
             {
@@ -95,7 +115,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("/ViewHistoryOrder")]
+        [HttpGet("view-history-orders")]
 		public async Task<IActionResult> ViewOrderHistory([FromQuery] PaginationParameter pagination)
 		{
             try
