@@ -54,7 +54,8 @@ function PreorderCampaignCreate() {
         m.quantity === undefined ||
         m.quantity === "" ||
         m.price === undefined ||
-        m.price === ""
+        m.price === ""||
+        m?.price >loadMainProduct.listedPrice
       );
     });
     if (milestoneHasEmpty) {

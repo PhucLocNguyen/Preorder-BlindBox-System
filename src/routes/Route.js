@@ -1,45 +1,92 @@
 import { Fragment, lazy } from "react";
 
-const PreorderCampaignCreate = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignCreate"));
-const OrderDetailView = lazy(() => import("../pages/Staff/OrderManagement/OrderDetailView"));
+const PreorderCampaignCreate = lazy(() =>
+  import("../pages/Admin/Pre-orderCampaign/PreorderCampaignCreate")
+);
+const OrderDetailView = lazy(() =>
+  import("../pages/Staff/OrderManagement/OrderDetailView")
+);
 const AdminLayout = lazy(() => import("../components/layouts/AdminLayout"));
 const DefaultLayout = lazy(() => import("../components/layouts/DefaultLayout"));
 const Home = lazy(() => import("../pages/Home/Home"));
 const LoginPage = lazy(() => import("../pages/Account/Login"));
 const RegisterPage = lazy(() => import("../pages/Account/Register"));
 const StaffView = lazy(() => import("../pages/Staff/StaffView"));
-const ProductsView = lazy(() => import("../pages/Staff/ProductManagement/ProductsView"));
-const OrdersView = lazy(() => import("../pages/Staff/OrderManagement/OrdersView"));
-const NotificationsView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationView"));
-const ProductCreatePage = lazy(() => import("../pages/Staff/ProductManagement/ProductCreate"));
-const ProductEditPage = lazy(() => import("../pages/Staff/ProductManagement/ProductEdit"));
+const ProductsView = lazy(() =>
+  import("../pages/Staff/ProductManagement/ProductsView")
+);
+const OrdersView = lazy(() =>
+  import("../pages/Staff/OrderManagement/OrdersView")
+);
+const NotificationsView = lazy(() =>
+  import("../pages/Staff/NotificationManagement/NotificationView")
+);
+const ProductCreatePage = lazy(() =>
+  import("../pages/Staff/ProductManagement/ProductCreate")
+);
+const ProductEditPage = lazy(() =>
+  import("../pages/Staff/ProductManagement/ProductEdit")
+);
 const AdminView = lazy(() => import("../pages/Admin/AdminView"));
 const Dashboard = lazy(() => import("../pages/Admin/Dashboard"));
-const StaffManagement = lazy(() => import("../pages/Admin/StaffManagement/StaffManagement"));
-const StaffManagementDetails = lazy(() => import("../pages/Admin/StaffManagement/StaffManagementDetails"));
-const PreorderMilestone = lazy(() => import("../pages/Admin/PreorderMilestone"));
-const Pre_orderCampaign = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaign"));
-const Pre_orderCampaignDetails = lazy(() => import("../pages/Admin/Pre-orderCampaign/Pre_orderCampaignDetails"));
-const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Voucher"));
-const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
-const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
-const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
-const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
-const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
+const StaffManagement = lazy(() =>
+  import("../pages/Admin/StaffManagement/StaffManagement")
+);
+const StaffManagementDetails = lazy(() =>
+  import("../pages/Admin/StaffManagement/StaffManagementDetails")
+);
+const PreorderMilestone = lazy(() =>
+  import("../pages/Admin/PreorderMilestone")
+);
+const Pre_orderCampaign = lazy(() =>
+  import("../pages/Admin/Pre-orderCampaign/PreorderCampaign")
+);
+const Pre_orderCampaignDetails = lazy(() =>
+  import("../pages/Admin/Pre-orderCampaign/Pre_orderCampaignDetails")
+);
+const VoucherManagement = lazy(() =>
+  import("../pages/Admin/VoucherCampaign/Voucher")
+);
+const VoucherDetails = lazy(() =>
+  import("../pages/Admin/VoucherCampaign/VoucherDetails")
+);
+const VoucherCreate = lazy(() =>
+  import("../pages/Admin/VoucherCampaign/VoucherCreate")
+);
+const VoucherUpdate = lazy(() =>
+  import("../pages/Admin/VoucherCampaign/VoucherEdit")
+);
+const HistoryTransactions = lazy(() =>
+  import("../pages/Admin/HistoryTransactions")
+);
+const ConfirmEmailAccount = lazy(() =>
+  import("../pages/ConfirmEmailAccount/ConfirmEmailAccount")
+);
 const Cart = lazy(() => import("../pages/Customer/Cart"));
-const ProductList = lazy(() => import('../pages/Home/ProductList/ProductList'));
-const ProductDetail = lazy(() => import('../pages/Products/ProductDetail/ProductDetail'));
+const ProductList = lazy(() => import("../pages/Home/ProductList/ProductList"));
+const ProductDetail = lazy(() =>
+  import("../pages/Products/ProductDetail/ProductDetail")
+);
 const DepositPage = lazy(() => import("../pages/Wallet/Deposit"));
 const Wallet = lazy(() => import("../pages/Wallet/Wallet"));
 const Withdraw = lazy(() => import("../pages/Wallet/Withdraw"));
-const WalletRechargeResponse = lazy(() => import("../pages/Wallet/WalletRechargeResponse"));
-const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResultPage"));
+const WalletRechargeResponse = lazy(() =>
+  import("../pages/Wallet/WalletRechargeResponse")
+);
+const SearchResultPage = lazy(() =>
+  import("../pages/SearchResultPage/SearchResultPage")
+);
 const ForgotPassword = lazy(() => import("../pages/Account/ForgotPassword"));
-const SendEmailForgotPassword = lazy(() => import("../pages/Account/SendEmailForgotPassword"));
+const SendEmailForgotPassword = lazy(() =>
+  import("../pages/Account/SendEmailForgotPassword")
+);
 const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
 
-const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
-
+const PreorderCampaignEdit = lazy(() =>
+  import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit")
+);
+const MyOrders = lazy(() => import("../pages/Customer/Orders/MyOrders"));
+const ViewDetail = lazy(() => import("../pages/Customer/Orders/ViewDetail"));
 const publicRoutes = [
   {
     index: true,
@@ -58,15 +105,13 @@ const publicRoutes = [
     children: [
       { index: true, component: ProductsView },
       { path: "products", component: ProductsView },
-      { path: "orders", component: OrdersView, },
+      { path: "orders", component: OrdersView },
       { path: "orders/:id", component: OrderDetailView },
       { path: "notifications", component: NotificationsView },
       { path: "product/create", component: ProductCreatePage },
       { path: "product/edit/:id", component: ProductEditPage },
-
     ],
   },
-
 
   {
     path: "/account",
@@ -82,45 +127,45 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
-    path: '/forgot-password',
-    component: ForgotPassword
+    path: "/forgot-password",
+    component: ForgotPassword,
   },
   {
-    path: '/user-forget-password/verify-email',
-    component: SendEmailForgotPassword
+    path: "/user-forget-password/verify-email",
+    component: SendEmailForgotPassword,
   },
   {
-    path: '/user-forget-password',
-    component: AddNewPassword
+    path: "/user-forget-password",
+    component: AddNewPassword,
   },
   {
-    path: '/confirmemail',
-    component: ConfirmEmailAccount
+    path: "/confirmemail",
+    component: ConfirmEmailAccount,
   },
   {
-    path: '/cart',
+    path: "/cart",
     component: Cart,
     layout: DefaultLayout,
   },
-  {
 
-    path: '/preordercampaign',
+  {
+    path: "/preordercampaign",
     layout: DefaultLayout,
     children: [
       { index: true, component: ProductList },
-      { path: ':slug', component: ProductDetail },
+      { path: ":slug", component: ProductDetail },
     ],
     layout: DefaultLayout,
   },
 
   {
-    path: '/campaign/search',
+    path: "/campaign/search",
     component: SearchResultPage,
-    layout: DefaultLayout
+    layout: DefaultLayout,
   },
   {
-    path: '/test',
-    component: SendEmailForgotPassword
+    path: "/test",
+    component: SendEmailForgotPassword,
   },
   {
     path: "/staff",
@@ -128,29 +173,32 @@ const publicRoutes = [
     children: [
       { index: true, component: ProductsView },
       { path: "products", component: ProductsView },
-      { path: "orders", component: OrdersView, },
+      { path: "orders", component: OrdersView },
       { path: "orders/:id", component: OrderDetailView },
       { path: "notifications", component: NotificationsView },
       { path: "product/create", component: ProductCreatePage },
       { path: "product/edit/:id", component: ProductEditPage },
-
     ],
-    role: ['staff']
+    role: ["staff"],
   },
   {
     path: "/admin",
     component: AdminView,
     children: [
-
       { index: true, component: StaffManagement },
       { path: "staffmanagement", component: StaffManagement },
-      { path: "staffmanagement-details/:id", component: StaffManagementDetails },
+      {
+        path: "staffmanagement-details/:id",
+        component: StaffManagementDetails,
+      },
       { path: "preordermilestone", component: PreorderMilestone },
       { path: "pre-ordercampaign", component: Pre_orderCampaign },
-      { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
+      {
+        path: "pre-ordercampaign-details/:slug",
+        component: Pre_orderCampaignDetails,
+      },
       { path: "preordercampaign/create", component: PreorderCampaignCreate },
       { path: "preordercampaign/edit/:slug", component: PreorderCampaignEdit },
-
 
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
@@ -160,7 +208,7 @@ const publicRoutes = [
       { path: "voucher/update/:id", component: VoucherUpdate },
       { path: "history-transactions", component: HistoryTransactions },
     ],
-    role: ['admin']
+    role: ["admin"],
   },
 ];
 
@@ -175,21 +223,29 @@ const privateRoutes = [
     component: Fragment,
   },
   {
-    path: '/wallet',
+    path: "/wallet",
     component: Wallet,
     layout: DefaultLayout,
     children: [
       { index: true, component: DepositPage, layout: null },
-      { path: 'deposit', component: Withdraw, layout: null },
+      { path: "deposit", component: Withdraw, layout: null },
     ],
-    role: ['Customer']
+    role: ["Customer"],
   },
   {
-    path: '/wallet/paymentResponse',
+    path: "/myorder",
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: MyOrders , layout: DefaultLayout },
+      { path: "detail/:id", component: ViewDetail, layout: DefaultLayout  },
+    ],
+    role: ["Customer"],
+  },
+  {
+    path: "/wallet/paymentResponse",
     component: WalletRechargeResponse,
     layout: DefaultLayout,
-    role: ['Customer']
+    role: ["Customer"],
   },
-
 ];
 export { publicRoutes, privateRoutes };
