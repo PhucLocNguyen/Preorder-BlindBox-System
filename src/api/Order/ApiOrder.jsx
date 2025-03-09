@@ -58,11 +58,21 @@ const GetApproveOrderByUser = async (pageSize,pageIndex) => {
             params.pageSize = pageSize;
         }
         var result = await api.get('/Order/view-history-orders', { ...axiosConfigHeader, params: params });
+        
+    }catch (error) {
+        console.log('>>> Api Get Approve Order By User Error: ', error);
+        return [];
+    }
+}
+const UpdateStatusInOrder = async (orderId, status) => {
+    try {
+        const payload = { status };
+        var result = await api.put(`/Order/${orderId}`, payload, axiosConfigHeader)
         if (result.status === 200) {
             return result.data;
         }
     } catch (error) {
-        console.log('>>> Api Get Approve Order By User Error: ', error);
+        console.log('>>> Api Set Update status in order By User Error: ', error);
         return [];
     }
 }
@@ -90,4 +100,5 @@ const GetPendingOrderByUser = async (pageSize,pageIndex, searchKeyWords, orderBy
     }
 }
 
-export { GetAllOrder, GetOrderById,GetApproveOrderByUser, GetPendingOrderByUser, GetTempOrderById }
+export { GetAllOrder, GetOrderById,GetApproveOrderByUser, GetPendingOrderByUser, GetTempOrderById, UpdateStatusInOrder }
+
