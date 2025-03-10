@@ -282,7 +282,7 @@ namespace PreOrderBlindBox.Services.Services
 					cartItemPricesAfterVoucher.Add(new ResponseCartWithVoucher()
 					{
 						responseCarts = cartItemPrices,
-						UserVoucherId = userVoucher.UserVoucherId ,
+						UserVoucher = userVoucher,
 						TempTotal = (decimal)cartItemPrices.Sum(x=>x.Amount),
 						DiscountMoney = discountMoney,
 						Total = (decimal)cartItemPrices.Sum(x => x.Amount) - discountMoney,
@@ -292,7 +292,7 @@ namespace PreOrderBlindBox.Services.Services
 					cartItemPricesAfterVoucher.Add(new ResponseCartWithVoucher()
 					{
 						responseCarts = cartItemPrices,
-						UserVoucherId = 0,
+						UserVoucher = null,
 						TempTotal = (decimal)cartItemPrices.Sum(x => x.Amount),
 						DiscountMoney = 0,
 						Total = (decimal)cartItemPrices.Sum(x => x.Amount) - 0,
