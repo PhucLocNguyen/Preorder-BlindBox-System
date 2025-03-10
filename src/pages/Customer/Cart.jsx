@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { GetPriceInCart, UpdateQuantityInCart, ClearAllCart } from '../../api/Cart/ApiCart';
 import { GetAllUserVoucher } from '../../api/UserVoucher/ApiUserVoucher';
 import CampaignBlock from '../Customer/CampaignBlock';
+import { formatMoney } from '../../utils/FormatMoney';
 
 function Cart() {
 
@@ -175,9 +176,6 @@ function Cart() {
   return (
     <section className="py-24">
       <div className="container mx-auto px-4">
-
-        {/* Hiển thị mỗi campaignId như 1 “khung” (CampaignBlock) */}
-        {/* {Object.keys(groupedItems).map((campaignId) => ( */}
         {(cartBlocks || []).map((block, index) => (
           <CampaignBlock
             key={index}
@@ -193,11 +191,9 @@ function Cart() {
 
         {/* Tổng tiền cả cart */}
         <div className="text-right mt-4 text-xl font-bold">
-          {/* Tổng tiền của cả giỏ hàng: {totalCartAfterVoucher.toFixed(2)} */}
           Tổng tiền của cả giỏ hàng:{" "}
-          {cartBlocks
-            .reduce((sum, block) => sum + block.total, 0)
-            .toFixed(2)}
+          {formatMoney(cartBlocks
+            .reduce((sum, block) => sum + block.total, 0))} 
         </div>
 
         {/* Footer chung cho cart: xoá giỏ hàng, thanh toán, v.v... */}

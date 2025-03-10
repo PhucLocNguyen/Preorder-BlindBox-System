@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CartItem from '../Customer/CartItem';
 import VoucherModal from '../Customer/VoucherModal';
+import { formatMoney } from '../../utils/FormatMoney';
 
 function CampaignBlock({ block, onUpdateQuantity, onRemoveItem, vouchers, onVoucherSelected, onRemoveVoucher }) {
   // Lấy campaignId từ phần tử đầu tiên của responseCarts
@@ -25,7 +26,6 @@ function CampaignBlock({ block, onUpdateQuantity, onRemoveItem, vouchers, onVouc
       voucherCampaignId: v.voucherCampaignId,
       name: v.name,
       description: `Giảm ${v.percentDiscount}% tối đa ${v.maximumMoneyDiscount}`,
-      //discountType: 'percentage',
       discountValue: v.percentDiscount / 100,
       quantity: v.quantity,
       maximumMoneyDiscount: v.maximumMoneyDiscount
@@ -108,12 +108,6 @@ function CampaignBlock({ block, onUpdateQuantity, onRemoveItem, vouchers, onVouc
           </button>
           {/* Hiển thị thông tin voucher đã chọn (nếu có) */}
           {appliedVoucher && (
-            // <div className="mt-2 text-sm bg-green-50 p-2 rounded">
-            //   <p>
-            //     <strong>Mã áp dụng:</strong> {appliedVoucher.name}
-            //   </p>
-            //   <p>{appliedVoucher.description}</p>
-            // </div>
             <div className="mt-2 text-sm bg-green-50 p-2 rounded flex items-center justify-between">
               <div>
                 <p>
@@ -138,15 +132,15 @@ function CampaignBlock({ block, onUpdateQuantity, onRemoveItem, vouchers, onVouc
 
         <div className="text-right">
           <p className="mb-1">
-            Tạm tính: <strong>{block.tempTotal.toFixed(2)}</strong>
+            Tạm tính: <strong>{formatMoney(block.tempTotal)}</strong>
           </p>
 
           <p className="mb-1">
-            Giảm giá: -<strong>{block.discountMoney.toFixed(2)}</strong>
+            Giảm giá: -<strong>{formatMoney(block.discountMoney)}</strong>
           </p>
 
           <p className="text-lg font-semibold">
-            Tổng cộng: {block.total.toFixed(2)}
+            Tổng cộng: {formatMoney(block.total)}
           </p>
         </div>
       </div>
