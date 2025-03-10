@@ -4,6 +4,7 @@ import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { GetAllImagesByBlindBoxId, GetActiveDetailPreorderCampaign } from '../../../api/Pre_orderCampaign/ApiPre_orderCampaign';
 import PreorderMilestones from '../../../components/PreorderMilestones/PreorderMilestones';
+import OrderSection from '../../../components/OrderSectionInDetailProduct/OrderSection';
 
 const ProductDetail = () => {
 	const params = useParams();
@@ -116,6 +117,7 @@ const ProductDetail = () => {
 							<button className='w-full py-4 font-medium transition-colors bg-yellow-400 rounded-full hover:bg-yellow-500'>
 								ĐĂNG KÝ ĐẶT TRƯỚC
 							</button>
+							<OrderSection data={data} />
 						</div>
 					</div>
 				</div>
