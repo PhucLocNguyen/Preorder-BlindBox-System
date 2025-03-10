@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import CartIcon from '../../assets/OrderSectionDetail/Cart.webp'
 import { GetAllUserVoucher } from "../../api/UserVoucher/ApiUserVoucher";
 import { formatShortVND } from '../../utils/FormatMoney.jsx'
+import { Link } from "react-router-dom";
 
 function OrderSection({ data }) {
 
@@ -10,7 +11,14 @@ function OrderSection({ data }) {
    const [showPopup, setShowPopup] = useState(false);
    const [dropDown, setDropdown] = useState(false)
    const [userVoucher, setUserVoucher] = useState([])
-   const [selectedVoucher, setSelectedVoucher] = useState();
+   const [buyData, setBuyData] = useState({
+      PreorderCampaignId: data?.preorderCampaignId,
+      Quantity: quantity,
+      Voucher: {
+
+      }
+   });
+   const [chooseVoucher, setChooseVoucher] = useState()
 
    const handleInputQuantity = (e) => {
       if (isNaN(e.target.value) || Number(e.target.value) < 1) {
@@ -41,8 +49,15 @@ function OrderSection({ data }) {
       })
    }
 
-   const handleChooseVoucher = (data) => {
-
+   const handleChooseVoucher = (voucher) => {
+      setBuyData({
+         ...buyData,
+         Voucher: {
+            [data?.preorderCampaignId]: voucher?.voucherCampaignId
+         }
+      })
+      setChooseVoucher(voucher)
+      handleDropDownVoucher()
    }
 
    const CallApiGetAllUserVoucher = async () => {
@@ -50,8 +65,14 @@ function OrderSection({ data }) {
       setUserVoucher(response)
    }
 
-   console.log('voucher: ', userVoucher);
+   console.log('Buy data: ', buyData);
 
+   useEffect(() => {
+      setBuyData({
+         ...buyData,
+         Quantity: quantity
+      })
+   }, [quantity])
 
    return (
       <>
@@ -79,8 +100,11 @@ function OrderSection({ data }) {
 
          {/* Popup */}
          {showPopup && (
-            <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
-               <div className="bg-white p-6 rounded shadow-lg relative">
+            <div onClick={handleShowPopup} className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+               <div onClick={(e) => e.stopPropagation()} className="bg-white p-6 rounded shadow-lg relative">
+                  {/* <div className="absolute top-[-20px] right-[-20px] w-[40px] h-[40px] border-[2px] border-solid border-[#000] rounded-full flex justify-center items-center">
+                        <CloseOutlined style={{ fontSize: '25px' }} />
+                     </div> */}
                   <div className="flex max-w-[1000px] gap-3">
                      {/* Phần hiển thị thông tin cơ bản sản phẩm */}
                      <div className="flex justify-between gap-[10px]">
@@ -105,16 +129,16 @@ function OrderSection({ data }) {
                            </h1>
                            <div className="relative inline-block min-w-[15rem] ml-[10px]">
                               <div
-                                 className="px-3 py-[5px] bg-white border border-gray-300 rounded cursor-pointer min-h-[50px] flex items-center"
+                                 className="px-3 py-[5px] bg-white border border-gray-300 rounded cursor-pointer min-h-[40px] flex items-center line-clamp-1"
                                  onClick={handleDropDownVoucher}
                               >
-                                 Voucher so 1
+                                 {chooseVoucher?.name ? chooseVoucher?.name : 'Chọn mã giảm giá'}
                               </div>
                               {dropDown && (
                                  <div className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-md z-10 h-[250px] px-[10px] overflow-y-auto">
                                     {userVoucher?.map((item, index) => {
                                        return (
-                                          <div key={index} className="relative card-con grid grid-cols-12 z-10 my-[5px] cursor-pointer">
+                                          <div onClick={() => handleChooseVoucher(item)} key={index} className="relative card-con grid grid-cols-12 z-10 my-[5px] cursor-pointer">
                                              <div
                                                 className="relative z-[11] w-full col-span-3 min-h-full rounded-lg bg-gradient-to-b from-[#FBA518] to-[#A89C29] backdrop-blur-lg shadow-lg"
                                                 style={{
@@ -154,9 +178,11 @@ function OrderSection({ data }) {
                               />
                               <button onClick={() => handleClickChangQuantity(1)} className='rounded-[0_999px_999px_0] border-r-0 text-[25px] w-[50px] h-[40px] p-[4px] flex justify-center items-center bg-[#e3e3e3] text-center align-middle border-[2px] border-solid border-transparent'>+</button>
                            </div>
-                           <button className="w-[250px] uppercase font-bold bg-[#FFDE50] text-[#000] text-[20px] h-[44px] rounded-full border-[1px] border-solid border-[#000000] shadow-[2px_2px_3px_rgba(0,0,0,0.15)]">
-                              Xác nhận mua hàng
-                           </button>
+                           <Link to='/confirm-order' state={{ buyData }}>
+                              <button className="w-[250px] uppercase font-bold bg-[#FFDE50] text-[#000] text-[20px] h-[44px] rounded-full border-[1px] border-solid border-[#000000] shadow-[2px_2px_3px_rgba(0,0,0,0.15)]">
+                                 Xác nhận mua hàng
+                              </button>
+                           </Link>
                         </div>
                      </div>
                   </div>

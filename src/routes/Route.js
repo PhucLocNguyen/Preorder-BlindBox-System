@@ -41,6 +41,7 @@ const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
 const MyVoucher = lazy(() => import("../pages/Customer/MyVoucher"));
 
 const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
+import ConfirmBuy from "../pages/ConfirmBuy/ConfirmBuy";
 
 const publicRoutes = [
   {
@@ -122,7 +123,7 @@ const publicRoutes = [
   },
   {
     path: '/test',
-    component: SendEmailForgotPassword
+    component: ConfirmBuy
   },
   {
     path: "/staff",
@@ -169,6 +170,10 @@ const publicRoutes = [
     path: '/myvoucher',
     component: MyVoucher,
     layout: DefaultLayout,
+  },
+  {
+    path: '/confirm-order',
+    component: ConfirmBuy
   }
 ];
 
