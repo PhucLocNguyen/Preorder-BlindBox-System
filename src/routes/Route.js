@@ -62,12 +62,11 @@ const SendEmailForgotPassword = lazy(() =>
 const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
 const MyVoucher = lazy(() => import("../pages/Customer/MyVoucher"));
 
-const PreorderCampaignEdit = lazy(() =>
-  import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit")
-);
+const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
 const MyOrders = lazy(() => import("../pages/Customer/Orders/MyOrders"));
 const ViewDetail = lazy(() => import("../pages/Customer/Orders/ViewDetail"));
 const ApprovalCampaign =lazy(()=>import("../pages/Admin/ApprovalCampaign/ApprovalCampaign"));
+import ConfirmBuy from "../pages/ConfirmBuy/ConfirmBuy";
 
 const publicRoutes = [
   {
@@ -146,10 +145,6 @@ const publicRoutes = [
     layout: DefaultLayout,
   },
   {
-    path: "/test",
-    component: SendEmailForgotPassword,
-  },
-  {
     path: "/staff",
     component: StaffView,
     children: [
@@ -198,19 +193,14 @@ const publicRoutes = [
     path: '/myvoucher',
     component: MyVoucher,
     layout: DefaultLayout,
+  },
+  {
+    path: '/confirm-order',
+    component: ConfirmBuy
   }
 ];
 
 const privateRoutes = [
-  {
-    path: "/editor",
-    component: Fragment,
-    layout: AdminLayout,
-  },
-  {
-    path: "/projects",
-    component: Fragment,
-  },
   {
     path: "/wallet",
     component: Wallet,
