@@ -1,56 +1,45 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import CartItem from '../Customer/CartItem';
 import VoucherModal from '../Customer/VoucherModal';
+import { formatMoney } from '../../utils/FormatMoney';
 
-function CampaignBlock({ campaignId, items, vouchers, onUpdateQuantity, onRemoveItem, onApplyVoucher}) {
+function CampaignBlock({ block, onUpdateQuantity, onRemoveItem, vouchers, onVoucherSelected, onRemoveVoucher }) {
+  // Lấy campaignId từ phần tử đầu tiên của responseCarts
+  const campaignId = block.responseCarts[0].preorderCampaignId;
+  const items = block.responseCarts;
+
+
   // Quản lý voucher của khung này
   const [showVoucherModal, setShowVoucherModal] = useState(false);
-  // Lưu cả object thay vì chỉ lưu string
+
+  // Nếu block có voucher đã áp dụng (userVoucherId khác 0) thì khởi tạo appliedVoucher từ danh sách voucher
   const [appliedVoucher, setAppliedVoucher] = useState(null);
-  const [inputVoucherCode, setInputVoucherCode] = useState('');
+
+  useEffect(() => {
+    const voucher = vouchers.find(v => v.userVoucherId === block.userVoucherId) || null;
+    setAppliedVoucher(voucher);
+  }, [block.userVoucherId, vouchers]);
 
   const availableVouchers = vouchers
     .map(v => ({
       id: v.userVoucherId,
-      title: v.name,
+      voucherCampaignId: v.voucherCampaignId,
+      name: v.name,
       description: `Giảm ${v.percentDiscount}% tối đa ${v.maximumMoneyDiscount}`,
-      //discountType: 'percentage',
       discountValue: v.percentDiscount / 100,
-      quantity: v.quantity,
+      quantity: v.quantity - v.usedQuantity,
       maximumMoneyDiscount: v.maximumMoneyDiscount
     }));
 
-  // Tính tạm tính (subtotal) = sum(amount)
-  const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
-
-  // Tính giảm giá dựa theo voucher đã áp dụng
-  const discountAmount = (() => {
-    if (!appliedVoucher) return 0;
-    // Kiểm tra điều kiện minOrder, nếu subtotal < minOrder thì không giảm
-    if (subtotal < appliedVoucher.minOrder) {
-      return 0;
-    }
-    // Tính theo discountType
-      const calculatedDiscount = subtotal * appliedVoucher.discountValue;
-      return Math.min(calculatedDiscount, appliedVoucher.maximumMoneyDiscount);
-  })();
-
-  // Tính tổng sau khi trừ giảm giá (ko âm)
-  const total = Math.max(subtotal - discountAmount, 0);
-
-  // Người dùng chọn voucher từ danh sách
-  // const applyVoucherFromList = (voucherId) => {
-  //   const chosenVoucher = availableVouchers.find((v) => v.id === voucherId);
-  //   if (chosenVoucher) {
-  //     setAppliedVoucher(chosenVoucher);
-  //   }
-  //   setShowVoucherModal(false);
-  // };
+  // Callback khi người dùng chọn voucher từ modal
   const applyVoucherFromList = (voucherId) => {
-    const chosenVoucher = availableVouchers.find((v) => v.id === voucherId);
-    if (chosenVoucher && chosenVoucher.quantity > 0) {
+    const chosenVoucher = vouchers.find(v => v.userVoucherId === voucherId);
+    if (chosenVoucher) {
       setAppliedVoucher(chosenVoucher);
-      onApplyVoucher(voucherId);  // Gọi callback cập nhật số lượng voucher
+      if (onVoucherSelected) {
+        // Truyền campaignId, voucherCampaignId và userVoucherId nếu cần
+        onVoucherSelected(campaignId, chosenVoucher.voucherCampaignId, chosenVoucher.userVoucherId);
+      }
     }
     setShowVoucherModal(false);
   };
@@ -119,33 +108,41 @@ function CampaignBlock({ campaignId, items, vouchers, onUpdateQuantity, onRemove
           </button>
           {/* Hiển thị thông tin voucher đã chọn (nếu có) */}
           {appliedVoucher && (
-            <div className="mt-2 text-sm bg-green-50 p-2 rounded">
-              <p>
-                <strong>Mã áp dụng:</strong> {appliedVoucher.title}
-              </p>
-              <p>{appliedVoucher.description}</p>
+            <div className="mt-2 text-sm bg-green-50 p-2 rounded flex items-center justify-between">
+              <div>
+                <p>
+                  <strong>Mã áp dụng:</strong> {appliedVoucher.name}
+                </p>
+                <p>{appliedVoucher.description}</p>
+              </div>
+              <button
+                className="ml-4 text-red-600 hover:text-red-800"
+                onClick={() => {
+                  if (onRemoveVoucher) {
+                    onRemoveVoucher(campaignId, appliedVoucher.voucherCampaignId, appliedVoucher.userVoucherId);
+                  }
+                  setAppliedVoucher(null);
+                }}
+              >
+                X
+              </button>
             </div>
           )}
         </div>
 
         <div className="text-right">
-          <p className="mb-1">
-            Tạm tính: <strong>{subtotal.toFixed(2)}</strong>
-          </p>
-          {/* Nếu không đủ điều kiện giảm giá => discountAmount = 0 */}
-          {appliedVoucher && discountAmount === 0 && subtotal < appliedVoucher.minOrder && (
-            <p className="text-red-500 mb-1">
-              *Chưa đủ điều kiện áp dụng mã (đơn tối thiểu {appliedVoucher.minOrder})
-            </p>
-          )}
-          {appliedVoucher && discountAmount > 0 && (
-            <p className="mb-1">
-              Giảm giá: -<strong>{discountAmount.toFixed(2)}</strong>
-            </p>
-          )}
-          <p className="text-lg font-semibold">
-            Tổng cộng: {total.toFixed(2)}
-          </p>
+          <div className="flex justify-between mb-1 gap-x-32">
+            <p className="text-left">Tạm tính:</p>
+            <p className="text-right font-semibold">{formatMoney(block.tempTotal)}</p>
+          </div>
+          <div className="flex justify-between mb-1 gap-x-32">
+            <p className="text-left">Giảm giá:</p>
+            <p className="text-right font-semibold">-{formatMoney(block.discountMoney)}</p>
+          </div>
+          <div className="flex justify-between text-lg font-semibold gap-x-32">
+            <p className="text-left">Tổng cộng:</p>
+            <p className="text-right">{formatMoney(block.total)}</p>
+          </div>
         </div>
       </div>
 
@@ -153,8 +150,8 @@ function CampaignBlock({ campaignId, items, vouchers, onUpdateQuantity, onRemove
       {showVoucherModal && (
         <VoucherModal
           vouchers={availableVouchers}
-          inputVoucherCode={inputVoucherCode}
-          setInputVoucherCode={setInputVoucherCode}
+          //inputVoucherCode={inputVoucherCode}
+          //setInputVoucherCode={setInputVoucherCode}
           //handleApplyInputVoucher={handleApplyInputVoucher}
           applyVoucherFromList={applyVoucherFromList}
           onClose={() => setShowVoucherModal(false)}

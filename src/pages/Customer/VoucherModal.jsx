@@ -38,7 +38,7 @@ function VoucherModal({
               className="flex items-center justify-between p-2 border rounded"
             >
               <div>
-                <p className="font-semibold">{voucher.title}</p>
+                <p className="font-semibold">{voucher.name}</p>
                 <p className="text-sm text-gray-600">{voucher.description}</p>
                 <p className="text-sm text-blue-500">
                   Số lượng còn lại: <span className="font-bold">{voucher.quantity}</span>
@@ -48,9 +48,8 @@ function VoucherModal({
               <button
                 //className="bg-yellow-500 text-white px-3 py-1 rounded"
                 //onClick={() => applyVoucherFromList(voucher.id)}
-                className={`bg-yellow-500 text-white px-3 py-1 rounded ${
-                  voucher.quantity <= 0 ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                className={`bg-yellow-500 text-white px-3 py-1 rounded ${voucher.quantity <= 0 ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 onClick={() => voucher.quantity > 0 && applyVoucherFromList(voucher.id)}
                 disabled={voucher.quantity <= 0}
               >
