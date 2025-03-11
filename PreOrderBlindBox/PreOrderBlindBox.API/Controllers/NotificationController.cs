@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Utils;
@@ -23,8 +24,20 @@ namespace PreOrderBlindBox.API.Controllers
         {
             try
             {
-                int userID = _currentUserService.GetUserId();   
-                return Ok(await _notificationService.GetAllNotificationByUserId(userID, paginationParameter));
+                int userID = _currentUserService.GetUserId();
+                var listNotification = await _notificationService.GetAllNotificationByUserId(userID, paginationParameter);
+				var metadata = new
+				{
+					listNotification.TotalCount,
+					listNotification.PageSize,
+					listNotification.CurrentPage,
+					listNotification.TotalPages,
+					listNotification.HasNext,
+					listNotification.HasPrevious,
+				};
+
+				Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+				return Ok(listNotification);
             }
             catch (Exception ex)
             {
@@ -32,7 +45,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("notification/{notificationId}")]
+        [HttpGet("{notificationId}")]
         public async Task<IActionResult> GetNotificationById([FromRoute]int notificationId)
         {
             try
@@ -51,5 +64,21 @@ namespace PreOrderBlindBox.API.Controllers
             }
             
         }
-    }
+
+		[HttpGet("unread-count")]
+		public async Task<IActionResult> CountNotificationIsNotRead()
+		{
+			try
+			{
+				int userID = _currentUserService.GetUserId();
+                var countResult = await _notificationService.CountNotificationIsNotRead(userID);
+				return Ok(countResult);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = (ex.Message) });
+			}
+
+		}
+	}
 }

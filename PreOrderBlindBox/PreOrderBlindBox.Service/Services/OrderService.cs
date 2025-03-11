@@ -70,11 +70,11 @@ namespace PreOrderBlindBox.Services.Services
             try
             {
                 var customer = await _userRepository.GetByIdAsync(customerId);
-                var staff = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).FirstOrDefault();
+                var staffs = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).ToList();
                 var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin", includes: x => x.Role)).FirstOrDefault();
 
                 var notificationForCustomer = (new RequestCreateNotification()).NotificationForCustomer(customerId);
-                var notificationForStaff = (new RequestCreateNotification()).NotificationForStaff(customer.FullName, staff.UserId);
+                
 
                 
 
@@ -137,8 +137,13 @@ namespace PreOrderBlindBox.Services.Services
                 }
                 if (requestCreateOrder.RequestCreateCart.PreorderCampaignId == null)
                     await _cartService.UpdateStatusOfCartByCustomerID(customerId);
-                await _notificationService.CreatNotification(notificationForStaff);
-                await _notificationService.CreatNotification(notificationForCustomer);
+
+                foreach (var staff in staffs)
+                {
+					var notificationForStaff = (new RequestCreateNotification()).NotificationForStaff(customer.FullName, staff.UserId);
+					await _notificationService.CreatNotification(notificationForStaff);
+				}
+				await _notificationService.CreatNotification(notificationForCustomer);
                 await _unitOfWork.CommitTransactionAsync();
             }
             catch (Exception ex)
