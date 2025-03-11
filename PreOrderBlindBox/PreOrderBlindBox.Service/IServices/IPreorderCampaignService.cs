@@ -14,7 +14,7 @@ namespace PreOrderBlindBox.Services.IServices
 {
     public interface IPreorderCampaignService
     {
-        Task<Pagination</*PreorderCampaign*/ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page);
+        Task<Pagination</*PreorderCampaign*/ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request);
         Task<int> AddPreorderCampaignAsync(CreatePreorderCampaignRequest createPreorderCampaignRequest);
         Task<ResponsePreorderCampaignDetail?> GetPreorderCampaignAsyncById(int id);
         Task<ResponsePreorderCampaignDetail?> GetPreorderCampaignBySlugAsync(string slug);
@@ -26,5 +26,6 @@ namespace PreOrderBlindBox.Services.IServices
         Task<bool> AddCampaignWithMilestonesAsync(CreatePreorderCampaignRequest campaignRequest);
         Task<bool> UpdatePreorderCampaignWithMilestone(int id, UpdatePreorderCampaignRequest request);
         Task<Pagination<ResponseSearchPreorderCampaign>> FilterPreorderCampaignAsync(FilterPreorderCampaignRequest request, PaginationParameter pagination);
+        Task<Pagination<ResponsePreorderCampaignDetail>> GetAllCompleteBulkCampaign(PaginationParameter pagination);
     }
 }

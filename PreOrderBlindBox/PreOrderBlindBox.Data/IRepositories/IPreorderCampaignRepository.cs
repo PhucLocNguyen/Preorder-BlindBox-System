@@ -15,12 +15,13 @@ namespace PreOrderBlindBox.Data.IRepositories
         Task<PreorderCampaign?> GetDetailPreorderCampaignById(int id);
         Task<List<PreorderCampaign>> GetAllPreorderCampaign();
         Task UpdateRangeAsync(IEnumerable<PreorderCampaign> preorderCampaigns);
-        Task<List<PreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter paginationParameter);
+        Task<List<PreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter paginationParameter, string type);
         Task<List<PreorderCampaign>> SearchPreorderCampaign(
             string blindBoxName,
             string sortOrder,
             PaginationParameter paginationParameter);
         Task<List<PreorderCampaign>> FilterPreorderCampaignsAsync(
             bool isEndingSoon, bool isNewlyLaunched, bool isTrending, PaginationParameter? pagination);
+        Task<List<PreorderCampaign?>> GetAllCompleteBulkPreorderCampaign(PaginationParameter paginationParameter);
     }
 }

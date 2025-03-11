@@ -22,9 +22,28 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPreorderCampaign([FromQuery] PaginationParameter pagination)
+        public async Task<IActionResult> GetAllPreorderCampaign([FromQuery] PaginationParameter pagination, [FromQuery] PreorderCampaignGetRequest request)
         {
-            var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination);
+            var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination, request);
+            
+            var metadata = new
+            {
+                result.TotalCount,
+                result.PageSize,
+                result.CurrentPage,
+                result.TotalPages,
+                result.HasNext,
+                result.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(result);
+        }
+
+        [HttpGet("GetAllCompleteBulkCampaign")]
+        public async Task<IActionResult> GetAllCompleteBulkCampaign([FromQuery] PaginationParameter pagination)
+        {
+            var result = await _preorderCampaignService.GetAllCompleteBulkCampaign(pagination);
             var metadata = new
             {
                 result.TotalCount,

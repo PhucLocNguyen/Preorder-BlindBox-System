@@ -9,7 +9,7 @@ using PreOrderBlindBox.Services.Mappers.NotificationMapper;
 
 namespace PreOrderBlindBox.Services.Services
 {
-    public class NotificationService : INotificationService
+	public class NotificationService : INotificationService
     {
         private readonly INotificationRepository _notificationRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +18,14 @@ namespace PreOrderBlindBox.Services.Services
             _notificationRepository = notificationRepository;
             _unitOfWork = unitOfWork;
         }
-        public async Task<ResponseNotification> CreatNotification(RequestCreateNotification requestCreateNotification)
+
+		public async Task<int> CountNotificationIsNotRead(int userId)
+		{
+            var result = await _notificationRepository.GetAll(filter: x=>x.IsRead == false && x.ReceiverId == userId);
+			return result.Count();
+		}
+
+		public async Task<ResponseNotification> CreatNotification(RequestCreateNotification requestCreateNotification)
         {
             try
             {
@@ -35,14 +42,18 @@ namespace PreOrderBlindBox.Services.Services
 
         public async Task<Pagination<ResponseNotification>> GetAllNotificationByUserId(int userId, PaginationParameter paginationParameter)
         {
-            var listNotification = await _notificationRepository.GetAll(filter: x => x.ReceiverId == userId,
-                pagination: paginationParameter);
-            return new Pagination<ResponseNotification>(listNotification.Select(x => x.toNotificationResponse()).ToList(), listNotification.Count, paginationParameter.PageIndex, paginationParameter.PageSize);
+            var listNotification = await _notificationRepository.GetAll(filter: x => x.ReceiverId == userId && x.IsDeleted == false,
+                pagination: paginationParameter, orderBy: x=>x.OrderByDescending(t => t.CreatedDate));
+            var listResponseNotification = listNotification.Select(x => x.toNotificationResponse()).ToList();
+            var countItem = _notificationRepository.Count(x => x.ReceiverId == userId);
+			return new Pagination<ResponseNotification>(listResponseNotification, countItem, paginationParameter.PageIndex, paginationParameter.PageSize);
         }
 
-        public async Task<Notification> GetNotificationById(int notificationId)
+        public async Task<ResponseNotification> GetNotificationById(int notificationId)
         {
-            return (await _notificationRepository.GetByIdAsync(notificationId));
+            var notificationById = await _notificationRepository.GetByIdAsync(notificationId);
+
+			return (notificationById.toNotificationResponse());
         }
 
         public async Task<ResponseNotification?> MarkNotificationAsRead(int notificationId)

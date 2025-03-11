@@ -106,9 +106,7 @@ namespace PreOrderBlindBox.Services.Services
 					{
 						var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
 						int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
-
 						bool isEnoughQuantity = quantityForMilestone >= (preorderCampaign.PlacedOrderCount + requestCreateCart.Quantity);
-
 						if (!isEnoughQuantity)
 						{
 							throw new Exception("The quantity has exceeded the limit allowed by that campaign.");
@@ -152,11 +150,23 @@ namespace PreOrderBlindBox.Services.Services
 			List<Cart> listCart = new List<Cart>();
 			if (requestCreateCart.PreorderCampaignId == null)
 			{
+
 				listCart = await GetAllCartByCustomerID(customerID);
 
 			}
 			else
 			{
+				var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)requestCreateCart.PreorderCampaignId);
+				if (preorderCampaign.Type.Equals("TimedPricing"))
+				{
+					var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
+					int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
+					bool isEnoughQuantity = quantityForMilestone >= (preorderCampaign.PlacedOrderCount + requestCreateCart.Quantity);
+					if (!isEnoughQuantity)
+					{
+						throw new Exception("The quantity has exceeded the limit allowed by that campaign.");
+					}
+				}
 				listCart.Add(requestCreateCart.toCartEntity(customerID));
 			}
 			foreach (var cart in listCart)
@@ -282,7 +292,7 @@ namespace PreOrderBlindBox.Services.Services
 					cartItemPricesAfterVoucher.Add(new ResponseCartWithVoucher()
 					{
 						responseCarts = cartItemPrices,
-						UserVoucherId = userVoucher.UserVoucherId ,
+						UserVoucher = userVoucher,
 						TempTotal = (decimal)cartItemPrices.Sum(x=>x.Amount),
 						DiscountMoney = discountMoney,
 						Total = (decimal)cartItemPrices.Sum(x => x.Amount) - discountMoney,
@@ -292,7 +302,7 @@ namespace PreOrderBlindBox.Services.Services
 					cartItemPricesAfterVoucher.Add(new ResponseCartWithVoucher()
 					{
 						responseCarts = cartItemPrices,
-						UserVoucherId = 0,
+						UserVoucher = null,
 						TempTotal = (decimal)cartItemPrices.Sum(x => x.Amount),
 						DiscountMoney = 0,
 						Total = (decimal)cartItemPrices.Sum(x => x.Amount) - 0,
