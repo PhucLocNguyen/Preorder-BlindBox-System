@@ -2,33 +2,17 @@ import api from '../instance';
 import { axiosConfigHeader } from '../axiosConfigHeader';
 
 const GetAllCart = async () => {
-    try {
-        var result = await api.get('/Cart', axiosConfigHeader);
-        if (result.status === 200) {
-            return result.data;
-        }
-    } catch (error) {
-        console.log('>>> Api Get All Order Error: ', error);
-        return [];
+  try {
+    var result = await api.get('/Cart', axiosConfigHeader);
+    if (result.status === 200) {
+      return result.data;
     }
-    
-}
+  } catch (error) {
+    console.log('>>> Api Get All Order Error: ', error);
+    return [];
+  }
 
-// const GetPriceInCart = async (requestCreateCart, userVoucherDict = {}) => {
-//   try {
-//       // Gọi API bằng POST, truyền voucher dictionary ở body và requestCreateCart qua params
-//       const result = await api.post('/Cart/GetPriceInCart', userVoucherDict, {
-//           ...axiosConfigHeader,
-//           params: requestCreateCart,
-//       });
-//       if (result.status === 200) {
-//           return result.data;
-//       }
-//   } catch (error) {
-//       console.error('>>> Api GetPriceInCart Error: ', error);
-//       return null;
-//   }
-// };
+}
 
 const GetPriceInCart = async (requestCreateCart = {}, userVoucherDict = {}) => {
   // Chuyển các key của userVoucherDict từ chuỗi sang số
@@ -37,43 +21,43 @@ const GetPriceInCart = async (requestCreateCart = {}, userVoucherDict = {}) => {
     return acc;
   }, {});
   try {
-      const result = await api.post('/Cart/GetPriceInCart', numericVoucherDict, {
-          ...axiosConfigHeader,
-          params: requestCreateCart,
-      });
-      if (result.status === 200) {
-          return result.data;
-      }
+    const result = await api.post('/Cart/GetPriceInCart', numericVoucherDict, {
+      ...axiosConfigHeader,
+      params: requestCreateCart,
+    });
+    if (result.status === 200) {
+      return result.data;
+    }
   } catch (error) {
-      console.error('>>> Api GetPriceInCart Error: ', error);
-      return []; // Trả về mảng rỗng để tránh lỗi khi sử dụng .map()
+    console.error('>>> Api GetPriceInCart Error: ', error);
+    return []; // Trả về mảng rỗng để tránh lỗi khi sử dụng .map()
   }
 };
 
 // API cập nhật số lượng trong giỏ hàng
 const UpdateQuantityInCart = async (requestCreateCart) => {
-    try {
-      const result = await api.put('/Cart', requestCreateCart, axiosConfigHeader);
-      if (result.status === 200) {
-        return result.data;
-      }
-    } catch (error) {
-      console.error('>>> API UpdateQuantityInCart Error: ', error);
-      throw error;
+  try {
+    const result = await api.put('/Cart', requestCreateCart, axiosConfigHeader);
+    if (result.status === 200) {
+      return result.data;
     }
+  } catch (error) {
+    console.error('>>> API UpdateQuantityInCart Error: ', error);
+    throw error;
+  }
 };
 
 // Hàm gọi API ClearAllCart
 const ClearAllCart = async () => {
-    try {
-      const result = await api.put('/Cart/ClearAllCart', null, axiosConfigHeader);
-      if (result.status === 200) {
-        return result.data;
-      }
-    } catch (error) {
-      console.error("Error clearing cart:", error);
-      throw error;
+  try {
+    const result = await api.put('/Cart/ClearAllCart', null, axiosConfigHeader);
+    if (result.status === 200) {
+      return result.data;
     }
-  };
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    throw error;
+  }
+};
 
 export { GetAllCart, GetPriceInCart, UpdateQuantityInCart, ClearAllCart }

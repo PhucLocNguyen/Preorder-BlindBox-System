@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircleOutlined, MinusCircleOutlined, DeleteOutlined } from '@ant-design/icons';
-import {formatMoney} from '../../utils/FormatMoney';
+import { formatMoney } from '../../utils/FormatMoney';
 
 function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
   const [quantity, setQuantity] = useState(item.quantity);
