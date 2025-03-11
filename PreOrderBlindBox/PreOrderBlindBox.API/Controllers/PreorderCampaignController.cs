@@ -22,9 +22,9 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPreorderCampaign([FromQuery] PaginationParameter pagination)
+        public async Task<IActionResult> GetAllPreorderCampaign([FromQuery] PaginationParameter pagination, [FromQuery] PreorderCampaignGetRequest request)
         {
-            var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination);
+            var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination, request);
             
             var metadata = new
             {

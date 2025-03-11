@@ -20,7 +20,8 @@ namespace PreOrderBlindBox.API
 			services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 			services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 			services.AddScoped<IBlindBoxRepository, BlindBoxRepository>();
-			services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<IBannerRepository, BannerRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
 			services.AddScoped<IImageRepository, ImageRepository>();
 			services.AddScoped<INotificationRepository, NotificationRepository>();
 			services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
@@ -39,6 +40,7 @@ namespace PreOrderBlindBox.API
             services.AddSingleton<IBlobService, BlobService>();
 
             //Add Scope for Services
+            services.AddScoped<IBannerService, BannerService>();
             services.AddScoped<IBlindBoxService, BlindBoxService>();
 			services.AddScoped<ICartService, CartService>();
 			services.AddScoped<IImageService, ImageService>();
