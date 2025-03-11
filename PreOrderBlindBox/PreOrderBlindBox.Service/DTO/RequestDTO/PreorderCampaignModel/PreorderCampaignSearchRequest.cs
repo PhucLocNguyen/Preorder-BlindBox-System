@@ -11,4 +11,9 @@ namespace PreOrderBlindBox.Data.Enum
         public string? BlindBoxName { get; set; }
         public PreorderCampaignSortOrderEnum SortOrder { get; set; }
     }
+
+    public class PreorderCampaignGetRequest
+    {
+        public PreorderCampaignType? Type { get; set; }
+    }
 }
