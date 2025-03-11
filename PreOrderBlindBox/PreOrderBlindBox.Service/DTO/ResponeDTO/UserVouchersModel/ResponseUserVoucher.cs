@@ -23,5 +23,6 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.UserVouchersModel
 		public int UsedQuantity { get; set; }
 
 		public DateTime CreatedDate { get; set; }
+		public DateTime ExpiredDate { get; set; }
 	}
 }

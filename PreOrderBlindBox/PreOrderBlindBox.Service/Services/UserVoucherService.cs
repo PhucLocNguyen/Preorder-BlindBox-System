@@ -144,7 +144,8 @@ namespace PreOrderBlindBox.Service.Services
 				MaximumMoneyDiscount = item.VoucherCampaign.MaximumMoneyDiscount.Value,
 				Quantity = item.Quantity,
 				UsedQuantity = item.UsedQuantity,
-				CreatedDate = item.CreatedDate
+				CreatedDate = item.CreatedDate,
+				ExpiredDate = item.VoucherCampaign.ExpiredDate
 			}).ToList();
 
 			return responseUserVoucherList ?? new List<ResponseUserVoucher>();
