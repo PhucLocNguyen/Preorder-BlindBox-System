@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PreOrderBlindBox.Services.DTO.ResponeDTO.UserVouchersModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel
 	{
 		public List<ResponseCart> responseCarts { get; set; }
 
-		public int UserVoucherId { get; set; }
+		public ResponseUserVoucher? UserVoucher { get; set; }
 
 		public decimal TempTotal { get; set; }
 
