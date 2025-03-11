@@ -23,9 +23,11 @@ namespace PreOrderBlindBox.Services.Mappers.NotificationMapper
         {
             return new ResponseNotification()
             {
+                NotificationId = notification.NotificationId,
                 Description = notification.Description,
                 IsRead = notification.IsRead,
                 Title = notification.Title,
+                CreatedDate = notification.CreatedDate,
             };
         }
     }
