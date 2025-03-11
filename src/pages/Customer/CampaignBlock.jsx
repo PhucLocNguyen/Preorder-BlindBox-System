@@ -27,7 +27,7 @@ function CampaignBlock({ block, onUpdateQuantity, onRemoveItem, vouchers, onVouc
       name: v.name,
       description: `Giảm ${v.percentDiscount}% tối đa ${v.maximumMoneyDiscount}`,
       discountValue: v.percentDiscount / 100,
-      quantity: v.quantity,
+      quantity: v.quantity - v.usedQuantity,
       maximumMoneyDiscount: v.maximumMoneyDiscount
     }));
 
