@@ -1,12 +1,14 @@
 ﻿
 using CurcusProject.CM.Helpers;
 using Microsoft.AspNetCore.Http;
+using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.Repositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.BannerModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.ImageModel;
+using PreOrderBlindBox.Services.DTO.ResponeDTO.BlindBoxModel;
 using PreOrderBlindBox.Services.IServices;
 using System;
 using System.Collections.Generic;
@@ -28,6 +30,15 @@ namespace PreOrderBlindBox.Services.Services
             _bannerRepo = bannerRepo;
             _blobService = blobService;
             _unitOfWork = unitOfWork;
+        }
+
+        public async Task<Pagination<Banner>> GetAllBanner(PaginationParameter page)
+        {
+            var item = await _bannerRepo.GetAll(page);
+            var countItem = _bannerRepo.Count();
+
+            var responseData = new Pagination<Banner>(item, countItem, page.PageIndex, page.PageSize);
+            return responseData;
         }
 
         public async Task<int> CreateBanner(CreateBannerRequest request)

@@ -43,42 +43,144 @@ namespace PreOrderBlindBox.Services.Services
             _imageRepo = imageRepo;
         }
 
-        public async Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page)
+        /*public async Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request)
         {
-            var campaigns = await _preorderCampaignRepo.GetAllActivePreorderCampaign(page);
+            string? type = null;
+            if (request.Type.HasValue)
+            {
+                if (Enum.IsDefined(typeof(PreorderCampaignType), request.Type.Value))
+                {
+                    type = request.Type.Value.ToString();
+                }
+                else
+                {
+                    type = null;
+                }
+            }
+            var campaigns = await _preorderCampaignRepo.GetAllActivePreorderCampaign(page, type);
             var result = new List<ResponsePreorderCampaign>();
 
             foreach (var campaign in campaigns)
             {
                 var responseCampaign = new ResponsePreorderCampaign
                 {
+                    PreorderCampaignId = campaign.PreorderCampaignId,
                     Slug = campaign.Slug,
                     StartDate = campaign.StartDate,
                     EndDate = campaign.EndDate,
-                    Type = campaign.Type
+                    Type = campaign.Type,
+                    Status = campaign.Status,
+                    PlacedOrderCount = campaign.PlacedOrderCount
                 };
 
+                var milestoneList = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID(preorderCampaign.PreorderCampaignId);
+                var quantityCount = milestoneList.Sum(m => m.Quantity);
+
+                ResponseImageSplit images = null;
                 if (campaign.BlindBox != null)
                 {
-                    // Thực hiện truy vấn một cách tuần tự
                     var mainImage = await _imageRepo.GetMainImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
+                    var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
 
-                    responseCampaign.BlindBox = new ResponseBlindBoxWithMainImage
+                    images = new ResponseImageSplit
                     {
-                        BlindBoxId = campaign.BlindBox.BlindBoxId,
-                        Name = campaign.BlindBox.Name,
-                        Description = campaign.BlindBox.Description,
-                        Size = campaign.BlindBox.Size,
-                        MainImages = mainImage != null ? new ResponseImageModel
+                        MainImage = mainImage != null ? new ResponseImageModel
                         {
                             ImageId = mainImage.ImageId,
-                            Url = mainImage.Url
-                        } : null
+                            Url = mainImage.Url,
+                            IsMainImage = mainImage.IsMainImage,
+                            CreatedAt = mainImage.CreatedAt
+                        } : null,
+                        GalleryImages = galleryImages
+                            .Where(img => !img.IsMainImage)
+                            .Select(img => new ResponseImageModel
+                            {
+                                ImageId = img.ImageId,
+                                Url = img.Url,
+                                IsMainImage = img.IsMainImage,
+                                CreatedAt = img.CreatedAt
+                            })
+                            .ToList()
                     };
                 }
                 result.Add(responseCampaign);
             }
             var countItem = _preorderCampaignRepo.Count(x => x.IsDeleted == false);
+            return new Pagination<ResponsePreorderCampaign>(result, countItem, page.PageIndex, page.PageSize);
+        }*/
+
+        public async Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request)
+        {
+            string? type = null;
+            if (request.Type.HasValue && Enum.IsDefined(typeof(PreorderCampaignType), request.Type.Value))
+            {
+                type = request.Type.Value.ToString();
+            }
+
+            var campaigns = await _preorderCampaignRepo.GetAllActivePreorderCampaign(page, type);
+            var result = new List<ResponsePreorderCampaign>();
+
+            foreach (var campaign in campaigns)
+            {
+                var responseCampaign = new ResponsePreorderCampaign
+                {
+                    PreorderCampaignId = campaign.PreorderCampaignId,
+                    Slug = campaign.Slug,
+                    StartDate = campaign.StartDate,
+                    EndDate = campaign.EndDate,
+                    Type = campaign.Type,
+                    Status = campaign.Status,
+                    PlacedOrderCount = campaign.PlacedOrderCount
+                };
+
+                // Lấy danh sách milestone và tính tổng số lượng
+                var milestoneList = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID(campaign.PreorderCampaignId);
+                responseCampaign.TotalQuantity = milestoneList.Sum(m => m.Quantity);
+
+                // Xử lý BlindBox nếu có
+                if (campaign.BlindBox != null)
+                {
+                    var blindBox = new ResponseBlindBox
+                    {
+                        BlindBoxId = campaign.BlindBox.BlindBoxId,
+                        Name = campaign.BlindBox.Name,
+                        Description = campaign.BlindBox.Description,
+                        ListedPrice = campaign.BlindBox.ListedPrice,
+                        Size = campaign.BlindBox.Size,
+                        CreatedAt = campaign.BlindBox.CreatedAt
+                    };
+
+                    // Lấy hình ảnh chính và thư viện ảnh song song để tối ưu hiệu suất
+                    var mainImage = await _imageRepo.GetMainImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
+                    var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
+
+                    blindBox.Images = new ResponseImageSplit
+                    {
+                        MainImage = mainImage != null ? new ResponseImageModel
+                        {
+                            ImageId = mainImage.ImageId,
+                            Url = mainImage.Url,
+                            IsMainImage = mainImage.IsMainImage,
+                            CreatedAt = mainImage.CreatedAt
+                        } : null,
+                        GalleryImages = galleryImages
+                            .Where(img => !img.IsMainImage)
+                            .Select(img => new ResponseImageModel
+                            {
+                                ImageId = img.ImageId,
+                                Url = img.Url,
+                                IsMainImage = img.IsMainImage,
+                                CreatedAt = img.CreatedAt
+                            }).ToList()
+                    };
+
+                    responseCampaign.BlindBox = blindBox;
+                }
+
+                result.Add(responseCampaign);
+            }
+
+            var countItem = _preorderCampaignRepo.Count(x => !x.IsDeleted);
             return new Pagination<ResponsePreorderCampaign>(result, countItem, page.PageIndex, page.PageSize);
         }
 
@@ -911,6 +1013,7 @@ namespace PreOrderBlindBox.Services.Services
                         Name = campaign.BlindBox.Name,
                         Description = campaign.BlindBox.Description,
                         Size = campaign.BlindBox.Size,
+                        ListedPrice = campaign.BlindBox.ListedPrice,
                         CreatedAt = campaign.BlindBox.CreatedAt,
                         Images = images
                     } : null,
@@ -922,7 +1025,7 @@ namespace PreOrderBlindBox.Services.Services
                             Quantity = m.Quantity,
                             Price = m.Price,
                             PreorderCampaignId = m.PreorderCampaignId
-                        })
+                        }) 
                         .OrderBy(m => m.MilestoneNumber)
                         .ToList()
                 };
