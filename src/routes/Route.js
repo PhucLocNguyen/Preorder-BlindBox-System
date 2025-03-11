@@ -67,6 +67,8 @@ const PreorderCampaignEdit = lazy(() =>
 );
 const MyOrders = lazy(() => import("../pages/Customer/Orders/MyOrders"));
 const ViewDetail = lazy(() => import("../pages/Customer/Orders/ViewDetail"));
+const ApprovalCampaign =lazy(()=>import("../pages/Admin/ApprovalCampaign/ApprovalCampaign"));
+
 const publicRoutes = [
   {
     index: true,
@@ -188,6 +190,7 @@ const publicRoutes = [
       { path: "voucher-details/:id", component: VoucherDetails },
       { path: "voucher/update/:id", component: VoucherUpdate },
       { path: "history-transactions", component: HistoryTransactions },
+      { path: "preordercampaignApproval", component: ApprovalCampaign },
     ],
     role: ["admin"],
   },

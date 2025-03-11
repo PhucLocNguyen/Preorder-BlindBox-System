@@ -8,7 +8,8 @@ import {
     ShoppingCartOutlined,
     TagOutlined,
     LogoutOutlined,
-    PictureOutlined
+    PictureOutlined,
+    CheckSquareOutlined
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -23,13 +24,15 @@ const SideBarAdmin = () => {
         { key: "/admin/history-transactions", label: "History Transactions", icon: <HistoryOutlined /> },
         { key: "/admin/pre-ordercampaign", label: "Preorder Campaign", icon: <ShoppingCartOutlined /> },
         { key: "/admin/voucher", label: "Voucher", icon: <TagOutlined /> },
-        { key: "/admin/banner-management", label: "Banner Management", icon: <PictureOutlined /> }
+        { key: "/admin/banner-management", label: "Banner Management", icon: <PictureOutlined /> },
+        { key: "/admin/preordercampaignApproval", label: "Campaign approval", icon: <CheckSquareOutlined /> }
+
     ];
 
     return (
         <Sider width={220} className="h-full shadow-lg bg-white">
             <div className="flex items-center justify-center py-6 text-xl font-bold">
-                BRESS
+                Admin Management
             </div>
 
             <Menu
