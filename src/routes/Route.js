@@ -41,7 +41,7 @@ const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
 const MyVoucher = lazy(() => import("../pages/Customer/MyVoucher"));
 
 const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
-import ConfirmBuy from "../pages/ConfirmBuy/ConfirmBuy";
+const ConfirmBuy = lazy(() => import("../pages/ConfirmBuy/ConfirmBuy"));
 
 const publicRoutes = [
   {
@@ -53,31 +53,6 @@ const publicRoutes = [
     path: "/login",
     component: LoginPage,
     layout: DefaultLayout,
-  },
-
-  {
-    path: "/staff",
-    component: StaffView,
-    children: [
-      { index: true, component: ProductsView },
-      { path: "products", component: ProductsView },
-      { path: "orders", component: OrdersView, },
-      { path: "orders/:id", component: OrderDetailView },
-      { path: "notifications", component: NotificationsView },
-      { path: "product/create", component: ProductCreatePage },
-      { path: "product/edit/:id", component: ProductEditPage },
-
-    ],
-  },
-
-
-  {
-    path: "/account",
-    layout: DefaultLayout,
-    children: [
-      { index: true, component: LoginPage },
-      { path: "register", component: RegisterPage },
-    ],
   },
   {
     path: "/register",
@@ -101,21 +76,10 @@ const publicRoutes = [
     component: ConfirmEmailAccount
   },
   {
-    path: '/cart',
-    component: Cart,
-    layout: DefaultLayout,
+    path: '/preordercampaign/:slug',
+    component: ProductDetail,
+    layout: DefaultLayout
   },
-  {
-
-    path: '/preordercampaign',
-    layout: DefaultLayout,
-    children: [
-      { index: true, component: ProductList },
-      { path: ':slug', component: ProductDetail },
-    ],
-    layout: DefaultLayout,
-  },
-
   {
     path: '/campaign/search',
     component: SearchResultPage,
@@ -124,21 +88,30 @@ const publicRoutes = [
   {
     path: '/test',
     component: ConfirmBuy
+  }
+];
+
+const privateRoutes = [
+  {
+    path: '/wallet',
+    component: Wallet,
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: DepositPage, layout: null },
+      { path: 'deposit', component: Withdraw, layout: null },
+    ],
+    role: ['Customer']
   },
   {
-    path: "/staff",
-    component: StaffView,
-    children: [
-      { index: true, component: ProductsView },
-      { path: "products", component: ProductsView },
-      { path: "orders", component: OrdersView, },
-      { path: "orders/:id", component: OrderDetailView },
-      { path: "notifications", component: NotificationsView },
-      { path: "product/create", component: ProductCreatePage },
-      { path: "product/edit/:id", component: ProductEditPage },
-
-    ],
-    role: ['staff']
+    path: '/wallet/paymentResponse',
+    component: WalletRechargeResponse,
+    layout: DefaultLayout,
+    role: ['Customer']
+  },
+  {
+    path: '/confirm-order',
+    component: ConfirmBuy,
+    role: ['Customer']
   },
   {
     path: "/admin",
@@ -164,45 +137,35 @@ const publicRoutes = [
       { path: "voucher/update/:id", component: VoucherUpdate },
       { path: "history-transactions", component: HistoryTransactions },
     ],
-    role: ['admin']
+    role: ['Admin']
+  },
+  {
+    path: "/staff",
+    component: StaffView,
+    children: [
+      { index: true, component: ProductsView },
+      { path: "products", component: ProductsView },
+      { path: "orders", component: OrdersView, },
+      { path: "orders/:id", component: OrderDetailView },
+      { path: "notifications", component: NotificationsView },
+      { path: "product/create", component: ProductCreatePage },
+      { path: "product/edit/:id", component: ProductEditPage },
+
+    ],
+    role: ['Staff']
+  },
+  {
+    path: '/cart',
+    component: Cart,
+    layout: DefaultLayout,
+    role: ['Customer']
   },
   {
     path: '/myvoucher',
     component: MyVoucher,
     layout: DefaultLayout,
-  },
-  {
-    path: '/confirm-order',
-    component: ConfirmBuy
+    role: ['Customer']
   }
-];
-
-const privateRoutes = [
-  {
-    path: "/editor",
-    component: Fragment,
-    layout: AdminLayout,
-  },
-  {
-    path: "/projects",
-    component: Fragment,
-  },
-  {
-    path: '/wallet',
-    component: Wallet,
-    layout: DefaultLayout,
-    children: [
-      { index: true, component: DepositPage, layout: null },
-      { path: 'deposit', component: Withdraw, layout: null },
-    ],
-    role: ['Customer']
-  },
-  {
-    path: '/wallet/paymentResponse',
-    component: WalletRechargeResponse,
-    layout: DefaultLayout,
-    role: ['Customer']
-  },
 
 ];
 export { publicRoutes, privateRoutes };
