@@ -64,7 +64,9 @@ namespace PreOrderBlindBox.Services.Services
                 };
 
                 await _bannerRepo.InsertAsync(banner);
-                return await _unitOfWork.SaveChanges();
+                var result = await _unitOfWork.SaveChanges();
+                await _unitOfWork.CommitTransactionAsync();
+                return result;
             }
             catch (Exception e)
             {

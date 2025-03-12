@@ -284,5 +284,24 @@ namespace PreOrderBlindBox.API.Controllers
 
         }
 
+        [HttpGet("similar-campaign/{id}")]
+        public async Task<IActionResult> GetSimilarPreorderCampaign(int id)
+        {
+            try
+            {
+                var preorderCampaign = await _preorderCampaignService.GetSimilarPreorderCampaign(id);
+                if (preorderCampaign == null)
+                {
+                    return NotFound(new { message = "Preorder campaign not found." });
+                }
+                return Ok(preorderCampaign);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
+        }
+
     }
 }

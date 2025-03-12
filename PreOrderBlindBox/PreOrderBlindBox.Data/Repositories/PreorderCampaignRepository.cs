@@ -154,5 +154,33 @@ namespace PreOrderBlindBox.Data.Repositories
             return await GetAll(pagination, filter, orderBy, includes);
         }
 
+        public async Task<List<PreorderCampaign>> GetSimilarPreorderCampaign(int id)
+        {
+            // Lấy thông tin bản ghi hiện tại
+            var currentCampaign = await GetDetailPreorderCampaignById(id);
+            if (currentCampaign == null)
+            {
+                return new List<PreorderCampaign>();
+            }
+
+            var currentType = currentCampaign.Type;
+            Expression<Func<PreorderCampaign, bool>> filter = pc =>
+                !pc.IsDeleted &&
+                pc.Status == "Active" &&
+                pc.BlindBox != null &&
+                pc.Type == currentType &&
+                pc.PreorderCampaignId != id;
+
+            // Include các quan hệ cần thiết (không include hình ảnh)
+            Expression<Func<PreorderCampaign, object>>[] includes = new Expression<Func<PreorderCampaign, object>>[]
+            {
+                pc => pc.BlindBox,
+                pc => pc.PreorderMilestones,
+                pc => pc.OrderDetails
+            };
+
+            return await GetAll(null, filter, null, includes);
+        }
+
     }
 }

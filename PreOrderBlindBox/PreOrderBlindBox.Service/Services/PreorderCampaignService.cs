@@ -43,72 +43,6 @@ namespace PreOrderBlindBox.Services.Services
             _imageRepo = imageRepo;
         }
 
-        /*public async Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request)
-        {
-            string? type = null;
-            if (request.Type.HasValue)
-            {
-                if (Enum.IsDefined(typeof(PreorderCampaignType), request.Type.Value))
-                {
-                    type = request.Type.Value.ToString();
-                }
-                else
-                {
-                    type = null;
-                }
-            }
-            var campaigns = await _preorderCampaignRepo.GetAllActivePreorderCampaign(page, type);
-            var result = new List<ResponsePreorderCampaign>();
-
-            foreach (var campaign in campaigns)
-            {
-                var responseCampaign = new ResponsePreorderCampaign
-                {
-                    PreorderCampaignId = campaign.PreorderCampaignId,
-                    Slug = campaign.Slug,
-                    StartDate = campaign.StartDate,
-                    EndDate = campaign.EndDate,
-                    Type = campaign.Type,
-                    Status = campaign.Status,
-                    PlacedOrderCount = campaign.PlacedOrderCount
-                };
-
-                var milestoneList = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID(preorderCampaign.PreorderCampaignId);
-                var quantityCount = milestoneList.Sum(m => m.Quantity);
-
-                ResponseImageSplit images = null;
-                if (campaign.BlindBox != null)
-                {
-                    var mainImage = await _imageRepo.GetMainImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
-                    var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
-
-                    images = new ResponseImageSplit
-                    {
-                        MainImage = mainImage != null ? new ResponseImageModel
-                        {
-                            ImageId = mainImage.ImageId,
-                            Url = mainImage.Url,
-                            IsMainImage = mainImage.IsMainImage,
-                            CreatedAt = mainImage.CreatedAt
-                        } : null,
-                        GalleryImages = galleryImages
-                            .Where(img => !img.IsMainImage)
-                            .Select(img => new ResponseImageModel
-                            {
-                                ImageId = img.ImageId,
-                                Url = img.Url,
-                                IsMainImage = img.IsMainImage,
-                                CreatedAt = img.CreatedAt
-                            })
-                            .ToList()
-                    };
-                }
-                result.Add(responseCampaign);
-            }
-            var countItem = _preorderCampaignRepo.Count(x => x.IsDeleted == false);
-            return new Pagination<ResponsePreorderCampaign>(result, countItem, page.PageIndex, page.PageSize);
-        }*/
-
         public async Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request)
         {
             string? type = null;
@@ -1035,6 +969,71 @@ namespace PreOrderBlindBox.Services.Services
 
             var countItem = _preorderCampaignRepo.Count(x => x.Status == PreorderCampaignStatus.Completed.ToString());
             return new Pagination<ResponsePreorderCampaignDetail>(responseList, countItem, pagination.PageIndex, pagination.PageSize);
+        }
+
+        public async Task<List<ResponseSearchPreorderCampaign>> GetSimilarPreorderCampaign(int id)
+        {
+            // Gọi repository để lấy danh sách PreorderCampaign theo yêu cầu
+            var campaigns = await _preorderCampaignRepo.GetSimilarPreorderCampaign(id);
+
+            var result = new List<ResponseSearchPreorderCampaign>();
+
+            // Với mỗi campaign, thực hiện mapping và gọi riêng ImageRepository để lấy hình ảnh của BlindBox
+            foreach (var campaign in campaigns)
+            {
+                // Tính khoảng giá dựa trên milestone của campaign
+                var priceFrom = campaign.PreorderMilestones.Any()
+                                    ? campaign.PreorderMilestones.Min(m => m.Price)
+                                    : 0;
+                var priceTo = campaign.PreorderMilestones.Any()
+                                    ? campaign.PreorderMilestones.Max(m => m.Price)
+                                    : 0;
+
+                // Mapping BlindBox (không chứa hình ảnh)
+                var blindBox = campaign.BlindBox;
+                var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
+
+                // Lấy hình ảnh qua ImageRepository
+                var mainImage = await _imageRepo.GetMainImageByBlindBoxID(blindBox.BlindBoxId);
+                var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(blindBox.BlindBoxId);
+
+                responseBlindBox.Images = new ResponseImageSplit
+                {
+                    MainImage = mainImage != null ? new ResponseImageModel
+                    {
+                        ImageId = mainImage.ImageId,
+                        Url = mainImage.Url,
+                        IsMainImage = mainImage.IsMainImage,
+                        CreatedAt = mainImage.CreatedAt
+                    } : null,
+                    GalleryImages = galleryImages
+                        .Where(img => !img.IsMainImage)
+                        .Select(img => new ResponseImageModel
+                        {
+                            ImageId = img.ImageId,
+                            Url = img.Url,
+                            IsMainImage = img.IsMainImage,
+                            CreatedAt = img.CreatedAt
+                        })
+                        .ToList()
+                };
+
+                result.Add(new ResponseSearchPreorderCampaign
+                {
+                    PreorderCampaignId = campaign.PreorderCampaignId,
+                    BlindBoxId = campaign.BlindBoxId,
+                    Slug = campaign.Slug,
+                    StartDate = campaign.StartDate,
+                    EndDate = campaign.EndDate,
+                    Status = campaign.Status,
+                    Type = campaign.Type,
+                    IsDeleted = campaign.IsDeleted,
+                    BlindBox = responseBlindBox,
+                    PriceFrom = priceFrom,
+                    PriceTo = priceTo,
+                });
+            }
+            return result;
         }
 
     }
