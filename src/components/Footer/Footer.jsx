@@ -35,7 +35,7 @@ export default function Footer() {
 					{/* About Us Section */}
 					<div className='space-y-4'>
 						<h3 className='text-lg font-semibold'>About us</h3>
-						<p className='text-gray-300'>Our joy is that customers get to own the products they desire.</p>
+						<p className='text-gray-300'>Committed to providing an independent shopping experience, each product in the store is carefully selected, ensuring surprise and excitement for customers. Join now to not miss the opportunity to own exclusive items!</p>
 					</div>
 				</div>
 			</div>
