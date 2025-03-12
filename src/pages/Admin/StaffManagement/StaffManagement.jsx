@@ -41,7 +41,7 @@ const StaffManagement = () => {
         setSelectedUser(record);
         setIsModalVisible(true);
     };
-    const handleViewStaff = (record) => navigate(`/admin/staffmanagement-details/${record.id}`);
+    const handleViewStaff = (record) => navigate(`/admin/staffmanagement-details/${record.userId}`);
     const handleDeleteStaff = (record) => {
         setUserToDelete(record);
         setIsDeleteModalVisible(true);
@@ -50,9 +50,19 @@ const StaffManagement = () => {
         setIsDeleteModalVisible(false);
 
         setUserToDelete(null);
+        if (!userToDelete.userId) {
+            notification.error({
+                message: "Error",
+                description: "User ID is missing!",
+            });
+            return;
+        }
         try {
-            await DeleteStaff(id);
+            const response = await DeleteStaff(userToDelete.userId);
             message.success(`User "${userToDelete.fullName}" has been deleted.`);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         } catch (error) {
             message.error("Failed to delete staff!");
             console.error("Lỗi khi xóa staff:", error);
@@ -139,7 +149,9 @@ const StaffManagement = () => {
             </Modal>
 
             <Modal open={isModalVisible} onCancel={handleCancel} footer={null} width={720}>
-                <StaffManagementEdit onSuccess={() => setIsModalVisible(false)} closable={false} maskClosable={false} />
+                <StaffManagementEdit onSuccess={() => setIsModalVisible(false)} closable={false} maskClosable={false}
+                    userId={selectedUser?.userId}
+                />
             </Modal>
 
             <Modal
