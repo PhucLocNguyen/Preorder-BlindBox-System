@@ -52,7 +52,7 @@ const CountdownTimer = ({ targetDate }) => {
 };
 
 // Chỉ định ngày đích cụ thể:
-export default function App() {
+export default function CountDown() {
 	return (
 		<div className='flex flex-col items-center space-y-2 p-2'>
 			<CountdownTimer targetDate="2025-03-31T23:59:59" />
