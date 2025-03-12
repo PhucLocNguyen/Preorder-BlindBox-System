@@ -4,6 +4,7 @@ import { GetPriceInCart, UpdateQuantityInCart, ClearAllCart } from '../../api/Ca
 import { GetAllUserVoucher } from '../../api/UserVoucher/ApiUserVoucher';
 import CampaignBlock from '../Customer/CampaignBlock';
 import { formatMoney } from '../../utils/FormatMoney';
+import EmptyCartImage from '../../assets/empty-shopping-cart.png';
 import { useCart } from '../../context/CartContext';
 
 function Cart() {
@@ -196,6 +197,36 @@ function Cart() {
       })
     );
   };
+
+  // Kiểm tra nếu cartBlocks trống thì hiển thị giao diện "empty cart"
+  if (!cartBlocks || cartBlocks.length === 0) {
+    return (
+      <section className="py-24">
+        <div className="container mx-auto px-4 flex flex-col items-center justify-center">
+          {/* Ảnh minh họa giỏ hàng trống (nếu muốn) */}
+          <img
+            src={EmptyCartImage}
+            alt="Empty cart"
+            className="w-52 h-auto mb-6"
+          />
+          {/* Tiêu đề */}
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Your cart is empty
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Keep shopping to find a course!
+          </p>
+          <Link
+            to="/"
+            className="bg-purple-600 text-white px-6 py-2 rounded uppercase font-medium text-center hover:bg-purple-700 transition-colors duration-200"
+          >
+            Keep shopping
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
 
   return (
     <section className="py-24">
