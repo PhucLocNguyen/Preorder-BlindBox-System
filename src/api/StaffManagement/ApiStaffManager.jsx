@@ -7,7 +7,7 @@ const CreateStaffAccount = async (payload) => {
         const response = await api.post('/Authen/RegisterStaff', payload, axiosConfigHeader);
         return response.data;
     } catch (error) {
-        console.log('>>> Api create voucher Error: ', error);
+        console.log('>>> Api create staff Error: ', error);
     }
 };
 
@@ -30,8 +30,25 @@ const DeleteStaff = async (staffId) => {
     }
 }
 
+const GetActiveStaff = async (id) => {
+    try {
+        const response = await api.get(`/User/${id}`, axiosConfigHeader);
+        return response.data;
+    } catch (error) {
+        console.log('>>> Api get active staff by id Error: ', error);
+        toast.error("Get active staff campaign by id failed!");
+    }
+};
 
+const EditStaff = async (id, payload) => {
+    try {
+        const response = await api.put(`/User/UpdateStaffInformation/${id}`, payload, axiosConfigHeader);
+        return response.data;
+    } catch (error) {
+        console.log('>>> Api edit staff Error: ', error);
+    }
+};
 
 export {
-    CreateStaffAccount, GetAllStaff, DeleteStaff
+    CreateStaffAccount, GetAllStaff, DeleteStaff, GetActiveStaff, EditStaff
 }
