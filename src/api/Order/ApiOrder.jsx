@@ -37,4 +37,17 @@ const GetOrderById = async (orderId) => {
     }
 }
 
-export { GetAllOrder, GetOrderById }
+const UpdateStatusInOrder = async (orderId, status) => {
+    try {
+        const payload = { status };
+        var result = await api.put(`/Order/${orderId}`, payload, axiosConfigHeader)
+        if (result.status === 200) {
+            return result.data;
+        }
+    } catch (error) {
+        console.log('>>> Api Get Order Id Error ', error);
+        return null;
+    }
+}
+
+export { GetAllOrder, GetOrderById, UpdateStatusInOrder }

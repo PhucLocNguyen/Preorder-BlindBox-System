@@ -24,6 +24,11 @@ const ProjectCard = ({ projectList }) => {
                         <p className="text-gray-600 text-lg">💰 Discount: <span className="font-semibold">{project.percentDiscount}%</span></p>
                         <p className="text-gray-600 text-lg">📦 Quantity: <span className="font-semibold">{project.quantity}</span></p>
                         <p className="text-gray-600 text-lg">📌 Status: <span className="font-semibold">{project.status}</span></p>
+                        <p className="text-gray-600 text-lg">
+                            💵 Max Money Discount: <span className="font-semibold">
+                                {project.maximumMoneyDiscount.toLocaleString()} VNĐ
+                            </span>
+                        </p>
                     </div>
                 ))
             ) : (
