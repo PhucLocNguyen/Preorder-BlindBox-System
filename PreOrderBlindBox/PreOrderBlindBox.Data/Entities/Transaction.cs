@@ -27,5 +27,9 @@ public partial class Transaction
 
     public bool IsDeleted { get; set; }
 
+    public int? TempCampaignBulkOrderId { get; set; }
+
+    public virtual TempCampaignBulkOrder TempCampaignBulkOrder { get; set; }
+
     public virtual Wallet Wallet { get; set; }
 }

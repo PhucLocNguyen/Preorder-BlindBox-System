@@ -33,5 +33,7 @@ public partial class TempCampaignBulkOrder
 
     public virtual ICollection<TempCampaignBulkOrderDetail> TempCampaignBulkOrderDetails { get; set; } = new List<TempCampaignBulkOrderDetail>();
 
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
     public virtual UserVoucher UserVoucher { get; set; }
 }
