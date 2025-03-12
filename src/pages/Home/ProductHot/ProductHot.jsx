@@ -62,7 +62,7 @@ const ProductHot = () => {
 									{/* Product Info */}
 									<div className='flex flex-col gap-2 p-4'>
 										<h3 className='text-sm font-medium line-clamp-2'>{product.name}</h3>
-										<p className='text-xs text-gray-500'>{product.description}</p>
+										<p className='text-xs text-gray-500 line-clamp-3'>{product.description}</p>
 										<span className='px-2 py-1 text-xs text-white bg-red-500 rounded-md w-fit'>
 											{product.size}
 										</span>
