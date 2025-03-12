@@ -74,7 +74,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpPut("UpdateStaffInformation/{staffId}")]
-		public async Task<IActionResult> UpdateStaffInformation(int staffId, [FromBody] RequestUpdateStaffInformation staffInformation)
+		public async Task<IActionResult> UpdateStaffInformation(int staffId, [FromForm] RequestUpdateStaffInformation staffInformation)
 		{
 			try
 			{

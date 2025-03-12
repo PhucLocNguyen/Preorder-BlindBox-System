@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CurcusProject.CM.Helpers;
 using Microsoft.Extensions.Configuration;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
@@ -24,10 +25,11 @@ namespace PreOrderBlindBox.Service.Services
 		private readonly IWalletService _walletService;
 		private readonly ICurrentUserService _currentUserService;
 		private readonly IMapper _mapper;
+		private readonly IBlobService _blobService;
 
 		public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMailService mailService,
 			IConfiguration configuration, IWalletService walletService, ICurrentUserService currentUserService,
-			IMapper mapper)
+			IMapper mapper, IBlobService blobService)
 		{
 			_userRepository = userRepository;
 			_unitOfWork = unitOfWork;
@@ -37,7 +39,7 @@ namespace PreOrderBlindBox.Service.Services
 			_walletService = walletService;
 			_currentUserService = currentUserService;
 			_mapper = mapper;
-
+			_blobService = blobService;
 		}
 
 		public async Task<bool> ConfirmEmailByTokenAsync(string confirmToken)
@@ -372,9 +374,17 @@ namespace PreOrderBlindBox.Service.Services
 			{
 				throw new Exception("The updated account is not a staff");
 			}
+			if (!string.IsNullOrEmpty(staff.Thumbnail))
+			{
+				var exisFileName = Path.GetFileName(staff.Thumbnail);
+				await _blobService.DeleteFile(exisFileName);
+			}
+
+			var file = updateStaffInformation.Thumbnail;
+
 			staff.FullName = updateStaffInformation.FullName;
 			staff.Phone = updateStaffInformation.Phone;
-			staff.Thumbnail = updateStaffInformation.Thumbnail;
+			staff.Thumbnail = await _blobService.UploadFile(file);
 			staff.Address = updateStaffInformation.Address;
 
 			await _userRepository.UpdateAsync(staff);
