@@ -23,5 +23,6 @@ namespace PreOrderBlindBox.Data.IRepositories
         Task<List<PreorderCampaign>> FilterPreorderCampaignsAsync(
             bool isEndingSoon, bool isNewlyLaunched, bool isTrending, PaginationParameter? pagination);
         Task<List<PreorderCampaign?>> GetAllCompleteBulkPreorderCampaign(PaginationParameter paginationParameter);
+        Task<List<PreorderCampaign>> GetSimilarPreorderCampaign(int id);
     }
 }
