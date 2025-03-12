@@ -68,7 +68,7 @@ const ClearAllCart = async () => {
     try {
       const result = await api.put('/Cart/ClearAllCart', null, axiosConfigHeader);
       if (result.status === 200) {
-        return result.data;
+        return result;
       }
     } catch (error) {
       console.error("Error clearing cart:", error);
@@ -76,4 +76,15 @@ const ClearAllCart = async () => {
     }
   };
 
-export { GetAllCart, GetPriceInCart, UpdateQuantityInCart, ClearAllCart }
+const ApiCreateCart = async ({payload}) => {
+  try{
+    const result = await  api.post('/Cart',payload)
+    if(result?.status === 200){
+      return result
+    }
+  }catch(error){
+    console.log('Api Create Cart Error: ', error);
+  }
+}
+
+export { GetAllCart, GetPriceInCart, UpdateQuantityInCart, ClearAllCart, ApiCreateCart }

@@ -4,6 +4,7 @@ import { GetPriceInCart, UpdateQuantityInCart, ClearAllCart } from '../../api/Ca
 import { GetAllUserVoucher } from '../../api/UserVoucher/ApiUserVoucher';
 import CampaignBlock from '../Customer/CampaignBlock';
 import { formatMoney } from '../../utils/FormatMoney';
+import { useCart } from '../../context/CartContext';
 
 function Cart() {
 
@@ -11,6 +12,14 @@ function Cart() {
   const [userVouchers, setUserVoucher] = useState([]);
 
   const [selectedVoucherMap, setSelectedVoucherMap] = useState({});
+  const { CallGetAllCart } = useCart()
+  const [buyData, setBuyData] = useState({
+    PreorderCampaignId: undefined,
+    Quantity: undefined,
+    Voucher: {
+      ...selectedVoucherMap
+    }
+  });
 
   const fetchCartsApi = useCallback(async (voucherMap = {}) => {
     try {
@@ -49,6 +58,15 @@ function Cart() {
     fetchCartsApi();
     fetchUserVoucherApi();
   }, [fetchCartsApi]);
+
+  useEffect(() => {
+    setBuyData({
+      ...buyData,
+      Voucher: {
+        ...selectedVoucherMap
+      }
+    })
+  }, [selectedVoucherMap])
 
   // console.log('Cart Items:', cartItems);
   // console.log('Voucher Campaigns:', userVouchers);
@@ -104,6 +122,9 @@ function Cart() {
       // Gọi lại API với mapping hiện tại (đã cập nhật)
       const updatedResult = await GetPriceInCart({}, selectedVoucherMap);
       setCartBlocks(updatedResult);
+      if (updatedResult) {
+        CallGetAllCart()
+      }
     } catch (error) {
       console.error('Error removing item:', error);
     }
@@ -112,10 +133,13 @@ function Cart() {
   // Clear toàn bộ cart
   const clearCart = async () => {
     try {
-      await ClearAllCart();
+      const response = await ClearAllCart();
       // Xoá luôn các voucher đã chọn khi cart được xoá
       setCartBlocks([]);
       setSelectedVoucherMap({});
+      if (response?.status === 200) {
+        CallGetAllCart()
+      }
     } catch (error) {
       console.error('Error clearing cart:', error);
     }
@@ -193,7 +217,7 @@ function Cart() {
         <div className="text-right mt-4 text-xl font-bold">
           Tổng tiền của cả giỏ hàng:{" "}
           {formatMoney(cartBlocks
-            .reduce((sum, block) => sum + block.total, 0))} 
+            .reduce((sum, block) => sum + block.total, 0))}
         </div>
 
         {/* Footer chung cho cart: xoá giỏ hàng, thanh toán, v.v... */}
@@ -212,7 +236,7 @@ function Cart() {
               Tiếp tục mua sắm
             </Link>
             <Link
-              to="/"
+              to='/confirm-order' state={{ buyData }}
               className="bg-yellow-400 text-white px-6 py-2 rounded uppercase font-medium text-center hover:bg-yellow-600 transition-colors duration-200"
             >
               Thanh Toán
