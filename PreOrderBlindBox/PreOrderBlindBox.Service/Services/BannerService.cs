@@ -115,17 +115,16 @@ namespace PreOrderBlindBox.Services.Services
                     if (string.IsNullOrEmpty(imageUrl)) return 0;
                 }
 
-                var newBanner = new Banner
-                {
-                    ImageUrl = imageUrl,
-                    Title = request.Title,
-                    CallToActionUrl = request.CallToActionUrl,
-                    Priority = request.Priority,
-                    UpdatedDate = DateTime.Now
-                };
+                banner.ImageUrl = !string.IsNullOrEmpty(imageUrl) ? imageUrl : banner.ImageUrl;
+                banner.Title = !string.IsNullOrEmpty(request.Title) ? request.Title : banner.Title;
+                banner.CallToActionUrl = !string.IsNullOrEmpty(banner.CallToActionUrl) ? banner.CallToActionUrl : banner.CallToActionUrl;
+                banner.Priority = request.Priority.HasValue ? request.Priority.Value : banner.Priority;
+                banner.UpdatedDate = DateTime.Now;
 
                 await _bannerRepo.UpdateAsync(banner);
-                return await _unitOfWork.SaveChanges();
+                var result = await _unitOfWork.SaveChanges();
+                await _unitOfWork.CommitTransactionAsync();
+                return result;
             }
             catch (Exception e)
             {

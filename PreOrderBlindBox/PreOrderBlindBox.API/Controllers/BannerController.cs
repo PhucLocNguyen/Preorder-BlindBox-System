@@ -69,7 +69,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateBannerRequest request)
+        public async Task<IActionResult> Update(int id, [FromForm] UpdateBannerRequest request)
         {
             if (!ModelState.IsValid)
             {
