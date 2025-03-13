@@ -42,6 +42,7 @@ const MyVoucher = lazy(() => import("../pages/Customer/MyVoucher"));
 
 const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
 const ConfirmBuy = lazy(() => import("../pages/ConfirmBuy/ConfirmBuy"));
+const BulkOrder = lazy(() => import("../pages/Home/BulkOrder/BulkOrder"));
 
 const publicRoutes = [
   {
@@ -87,7 +88,7 @@ const publicRoutes = [
   },
   {
     path: '/test',
-    component: ConfirmBuy
+    component: BulkOrder
   }
 ];
 
