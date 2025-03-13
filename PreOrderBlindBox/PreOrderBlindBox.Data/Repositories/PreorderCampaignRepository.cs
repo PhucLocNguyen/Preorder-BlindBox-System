@@ -21,10 +21,18 @@ namespace PreOrderBlindBox.Data.Repositories
         {
         }
 
-        public async Task<List<PreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter paginationParameter, string? type)
+        public async Task<List<PreorderCampaign>> GetAllValidPreorderCampaign(PaginationParameter paginationParameter, string? type)
         {
             Expression<Func<PreorderCampaign, bool>> filter = pc =>
                 !pc.IsDeleted && (type == null || pc.Type == type);
+            var items = await GetAll(paginationParameter, filter, null, includes: x => x.BlindBox);
+            return items;
+        }
+
+        public async Task<List<PreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter paginationParameter, string? type)
+        {
+            Expression<Func<PreorderCampaign, bool>> filter = pc =>
+                !pc.IsDeleted && (type == null || pc.Type == type) && pc.Status == "Active";
             var items = await GetAll(paginationParameter, filter, null, includes: x => x.BlindBox);
             return items;
         }
