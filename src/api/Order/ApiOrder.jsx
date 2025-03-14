@@ -27,7 +27,7 @@ const GetAllOrder = async (pageIndex, pageSize, searchKeyWords, orderBy) => {
 
 const GetOrderById = async (orderId) => {
     try {
-        var result = await api.get(`/Order/${orderId}`, axiosConfigHeader)
+        var result = await api.get(`/Order/customer/${orderId}`, axiosConfigHeader)
         if (result.status === 200) {
             return result.data;
         }
@@ -38,7 +38,7 @@ const GetOrderById = async (orderId) => {
 }
 const GetTempOrderById = async (orderId) => {
     try {
-        var result = await api.get(`/TempCampaignBulkOrder/${orderId}`, axiosConfigHeader)
+        var result = await api.get(`/TempCampaignBulkOrder/customer/${orderId}`, axiosConfigHeader)
         if (result.status === 200) {
             return result.data;
         }
@@ -58,7 +58,7 @@ const GetApproveOrderByUser = async (pageSize,pageIndex) => {
             params.pageSize = pageSize;
         }
         var result = await api.get('/Order/view-history-orders', { ...axiosConfigHeader, params: params });
-        
+        return result;
     }catch (error) {
         console.log('>>> Api Get Approve Order By User Error: ', error);
         return [];
@@ -69,7 +69,7 @@ const UpdateStatusInOrder = async (orderId, status) => {
         const payload = { status };
         var result = await api.put(`/Order/${orderId}`, payload, axiosConfigHeader)
         if (result.status === 200) {
-            return result.data;
+            return result;
         }
     } catch (error) {
         console.log('>>> Api Set Update status in order By User Error: ', error);
@@ -92,7 +92,7 @@ const GetPendingOrderByUser = async (pageSize,pageIndex, searchKeyWords, orderBy
         params.orderBy = orderBy;
         var result = await api.get('/TempCampaignBulkOrder/view-history-temp-orders', { ...axiosConfigHeader, params: params });
         if (result.status === 200) {
-            return result.data;
+            return result;
         }
     } catch (error) {
         console.log('>>> Api Get Pending Order By User Error: ', error);

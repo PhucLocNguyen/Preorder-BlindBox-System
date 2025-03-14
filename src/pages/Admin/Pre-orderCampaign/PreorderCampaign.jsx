@@ -111,7 +111,7 @@ const Pre_orderCampaign = () => {
                 render: (_, record) => (
                     <div className="flex justify-center items-center">
                         <img
-                            src={record.blindBox?.mainImages?.url || noThumbnailImage}
+                            src={record.blindBox?.images.mainImage?.url || noThumbnailImage}
                             alt="Main"
                             className="w-24 h-24 object-cover rounded-md shadow-md transition-all duration-300 hover:scale-105"
                         />

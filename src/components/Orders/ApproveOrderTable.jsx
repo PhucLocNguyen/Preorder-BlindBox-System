@@ -35,17 +35,17 @@ function ApproveOrderTable() {
       render: (value) => `${value} VND`,
     },
     {
-      title: "Receiver",
+      title: "Người nhận",
       dataIndex: "receiver",
       key: "receiver",
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
     },
     {
-      title: "Action",
+      title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Link to={`detail/${record.orderId}`}>View Detail</Link>
@@ -59,7 +59,7 @@ function ApproveOrderTable() {
       <Table
         dataSource={data}
         columns={columns}
-        rowKey="orderId"
+        rowKey={(record) => record.orderId+"OrderIdTable"}
         pagination={{ pageSize: 5 }}
         bordered
       />

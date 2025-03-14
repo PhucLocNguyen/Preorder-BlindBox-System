@@ -23,7 +23,7 @@ function TableListOrderDetail({ orderDetails }) {
         </thead>
         <tbody>
           {orderDetails.map((orderDetail) => (
-            <tr key={orderDetail.orderDetailId} className="border-t">
+            <tr key={orderDetail.orderDetailId+"OrderDetail"} className="border-t">
               <td className="py-3 px-4 flex items-center">
                 <img
                   src={orderDetail.blindBox.images.mainImage.url}

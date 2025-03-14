@@ -1,5 +1,5 @@
 import { Pagination, Spin, Table } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { GetPendingOrderByUser } from "../../api/Order/ApiOrder";
 import useFetchDataPagination from "../../hooks/useFetchDataPagination";
@@ -13,6 +13,9 @@ function PendingOrderTable() {
     GetPendingOrderByUser,
     [pageSize, pageIndex]
   );
+  useEffect(()=>{
+    console.log("Data received:", data);
+  },[data])
   const columns = [
     {
       title: "STT",
@@ -37,20 +40,20 @@ function PendingOrderTable() {
       render: (value) => `${value} VND`,
     },
     {
-      title: "Receiver",
+      title: "Người nhận",
       dataIndex: "receiver",
       key: "receiver",
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
     },
     {
-      title: "Action",
+      title: "Hành động",
       key: "action",
       render: (_, record) => (
-        <Link to={`detail/${record.orderId}`}>View Detail</Link>
+        <Link to={`pending-orders/detail/${record.tempCampaignBulkOrderId}`}>View Detail</Link>
       ),
     },
   ];
@@ -61,7 +64,7 @@ function PendingOrderTable() {
       <Table
         dataSource={data}
         columns={columns}
-        rowKey="orderId"
+        rowKey={(record) => record.tempCampaignBulkOrderId}
         pagination={{ pageSize: 5 }}
         bordered
       />

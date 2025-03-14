@@ -28,7 +28,7 @@ const GetAllOrderTempDetailsByTempOrderID = async (orderID, pageIndex, pageSize)
         if (pageSize !== undefined) {
             params.pageSize = pageSize;
         }
-        var result = await api.get(`/TempCampaignBulkOrder/${orderID}`, { ...axiosConfigHeader, params: params });
+        var result = await api.get(`/TempCampaignBulkOrderDetail/${orderID}`, { ...axiosConfigHeader, params: params });
         if (result.status === 200) {
             return result.data;
         }

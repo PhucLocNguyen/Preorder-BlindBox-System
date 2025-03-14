@@ -284,6 +284,13 @@ function PreorderCampaignCreate() {
                                           )
                                         );
                                       }
+                                      if(value>loadMainProduct.listedPrice){
+                                        return Promise.reject(
+                                          new Error(
+                                            `Giá phải nhỏ hơn hoặc bằng giá niêm yết của sản phẩm`
+                                          )
+                                        );
+                                      }
                                       return Promise.resolve();
                                     },
                                   },
@@ -307,6 +314,8 @@ function PreorderCampaignCreate() {
                                         previousMilestone.price
                                       );
                                       const currentPrice = parseFloat(value);
+                                      
+
                                       if (typeOfCampaign == 0) {
                                         if (currentPrice <= prevPrice) {
                                           return Promise.reject(
