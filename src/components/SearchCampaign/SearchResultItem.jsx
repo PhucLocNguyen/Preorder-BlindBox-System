@@ -28,7 +28,7 @@ function SearchResultItem({ data }) {
                   </div>
                </a>
                <div className='relative w-[245px] h-[245px] overflow-hidden rounded-t-[22px]'>
-                  <img className='group-hover:scale-105 object-cover w-full h-auto rounded-t-[22px]' src={data?.blindBox?.images?.mainImage?.url} alt="Hinh anh cua campaign" />
+                  <img className='group-hover:scale-105 object-cover rounded-t-[22px] w-[245px] h-[245px]' src={data?.blindBox?.images?.mainImage?.url} alt="Hinh anh cua campaign" />
                </div>
             </div>
             {/* Phần dưới */}

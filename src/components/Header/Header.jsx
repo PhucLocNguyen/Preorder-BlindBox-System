@@ -1,22 +1,30 @@
 import { ChevronDown, Search, ShoppingCart, User, Wallet } from "lucide-react"
 import { Link } from "react-router-dom"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 
-import logo from "../../assets/react.svg"
+import logo from "../../assets/Header/logo.png"
 import { AuthContext } from "../../context/AuthContext"
 import SearchImage from '../../assets/SearchInHeader/SanPham.jpg'
 import SearchInputInHeader from "../SearchCampaign/SearchInputInHeader"
+import { useCart } from "../../context/CartContext"
 
 export default function Header() {
 
     const { auth } = useContext(AuthContext)
+    const { cartData, CallGetAllCart } = useCart()
 
     console.log(auth);
+
+    useEffect(() => {
+        if (auth.roleName.toLowerCase() === 'customer') {
+            CallGetAllCart()
+        }
+    }, [])
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-white">
             <div className="container-lg mx-auto flex h-16 items-center justify-between !p-3">
-                <Link to="/" className="flex items-center w-[16%]">
+                <Link to="/" className="flex items-center w-[16%] pl-[2rem]">
                     <img
                         src={logo}
                         alt="Vaithuhay.com Logo"
@@ -56,8 +64,8 @@ export default function Header() {
                                 <button className="relative px-[5px]">
                                     <Link to='/cart'>
                                         <ShoppingCart className="h-6 w-6" />
-                                        <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                                            1
+                                        <span className={`${cartData?.length == 0 || cartData?.length == undefined ? 'hidden' : ''} absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white`}>
+                                            {cartData?.length}
                                         </span>
                                     </Link>
                                 </button>

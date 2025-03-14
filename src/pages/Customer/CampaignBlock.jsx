@@ -131,17 +131,18 @@ function CampaignBlock({ block, onUpdateQuantity, onRemoveItem, vouchers, onVouc
         </div>
 
         <div className="text-right">
-          <p className="mb-1">
-            Tạm tính: <strong>{formatMoney(block.tempTotal)}</strong>
-          </p>
-
-          <p className="mb-1">
-            Giảm giá: -<strong>{formatMoney(block.discountMoney)}</strong>
-          </p>
-
-          <p className="text-lg font-semibold">
-            Tổng cộng: {formatMoney(block.total)}
-          </p>
+          <div className="flex justify-between mb-1 gap-x-32">
+            <p className="text-left">Tạm tính:</p>
+            <p className="text-right font-semibold">{formatMoney(block.tempTotal)}</p>
+          </div>
+          <div className="flex justify-between mb-1 gap-x-32">
+            <p className="text-left">Giảm giá:</p>
+            <p className="text-right font-semibold">-{formatMoney(block.discountMoney)}</p>
+          </div>
+          <div className="flex justify-between text-lg font-semibold gap-x-32">
+            <p className="text-left">Tổng cộng:</p>
+            <p className="text-right">{formatMoney(block.total)}</p>
+          </div>
         </div>
       </div>
 

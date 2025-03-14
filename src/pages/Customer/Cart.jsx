@@ -4,6 +4,8 @@ import { GetPriceInCart, UpdateQuantityInCart, ClearAllCart } from '../../api/Ca
 import { GetAllUserVoucher } from '../../api/UserVoucher/ApiUserVoucher';
 import CampaignBlock from '../Customer/CampaignBlock';
 import { formatMoney } from '../../utils/FormatMoney';
+import EmptyCartImage from '../../assets/empty-shopping-cart.png';
+import { useCart } from '../../context/CartContext';
 
 function Cart() {
 
@@ -11,6 +13,14 @@ function Cart() {
   const [userVouchers, setUserVoucher] = useState([]);
 
   const [selectedVoucherMap, setSelectedVoucherMap] = useState({});
+  const { CallGetAllCart } = useCart()
+  const [buyData, setBuyData] = useState({
+    PreorderCampaignId: undefined,
+    Quantity: undefined,
+    Voucher: {
+      ...selectedVoucherMap
+    }
+  });
 
   const fetchCartsApi = useCallback(async (voucherMap = {}) => {
     try {
@@ -49,6 +59,15 @@ function Cart() {
     fetchCartsApi();
     fetchUserVoucherApi();
   }, [fetchCartsApi]);
+
+  useEffect(() => {
+    setBuyData({
+      ...buyData,
+      Voucher: {
+        ...selectedVoucherMap
+      }
+    })
+  }, [selectedVoucherMap])
 
   // console.log('Cart Items:', cartItems);
   // console.log('Voucher Campaigns:', userVouchers);
@@ -104,6 +123,9 @@ function Cart() {
       // Gọi lại API với mapping hiện tại (đã cập nhật)
       const updatedResult = await GetPriceInCart({}, selectedVoucherMap);
       setCartBlocks(updatedResult);
+      if (updatedResult) {
+        CallGetAllCart()
+      }
     } catch (error) {
       console.error('Error removing item:', error);
     }
@@ -112,10 +134,13 @@ function Cart() {
   // Clear toàn bộ cart
   const clearCart = async () => {
     try {
-      await ClearAllCart();
+      const response = await ClearAllCart();
       // Xoá luôn các voucher đã chọn khi cart được xoá
       setCartBlocks([]);
       setSelectedVoucherMap({});
+      if (response?.status === 200) {
+        CallGetAllCart()
+      }
     } catch (error) {
       console.error('Error clearing cart:', error);
     }
@@ -173,6 +198,36 @@ function Cart() {
     );
   };
 
+  // Kiểm tra nếu cartBlocks trống thì hiển thị giao diện "empty cart"
+  if (!cartBlocks || cartBlocks.length === 0) {
+    return (
+      <section className="py-24">
+        <div className="container mx-auto px-4 flex flex-col items-center justify-center">
+          {/* Ảnh minh họa giỏ hàng trống (nếu muốn) */}
+          <img
+            src={EmptyCartImage}
+            alt="Empty cart"
+            className="w-52 h-auto mb-6"
+          />
+          {/* Tiêu đề */}
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Your cart is empty
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Keep shopping to find a course!
+          </p>
+          <Link
+            to="/"
+            className="bg-purple-600 text-white px-6 py-2 rounded uppercase font-medium text-center hover:bg-purple-700 transition-colors duration-200"
+          >
+            Keep shopping
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+
   return (
     <section className="py-24">
       <div className="container mx-auto px-4">
@@ -193,7 +248,7 @@ function Cart() {
         <div className="text-right mt-4 text-xl font-bold">
           Tổng tiền của cả giỏ hàng:{" "}
           {formatMoney(cartBlocks
-            .reduce((sum, block) => sum + block.total, 0))} 
+            .reduce((sum, block) => sum + block.total, 0))}
         </div>
 
         {/* Footer chung cho cart: xoá giỏ hàng, thanh toán, v.v... */}
@@ -212,7 +267,7 @@ function Cart() {
               Tiếp tục mua sắm
             </Link>
             <Link
-              to="/"
+              to='/confirm-order' state={{ buyData }}
               className="bg-yellow-400 text-white px-6 py-2 rounded uppercase font-medium text-center hover:bg-yellow-600 transition-colors duration-200"
             >
               Thanh Toán
