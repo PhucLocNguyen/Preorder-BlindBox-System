@@ -125,7 +125,7 @@ namespace PreOrderBlindBox.Services.Services
                 type = request.Type.Value.ToString();
             }
 
-            var campaigns = await _preorderCampaignRepo.GetAllActivePreorderCampaign(page, type);
+            var campaigns = await _preorderCampaignRepo.FilterPreorderCampaignsAsync(type, request.isEndingSoon, request.isNewlyLaunched, request.isTrending, page);
             var result = new List<ResponsePreorderCampaign>();
 
             foreach (var campaign in campaigns)
@@ -836,7 +836,7 @@ namespace PreOrderBlindBox.Services.Services
 
         }
 
-        public async Task<Pagination<ResponseSearchPreorderCampaign>> FilterPreorderCampaignAsync(FilterPreorderCampaignRequest request, PaginationParameter pagination)
+        /*public async Task<Pagination<ResponseSearchPreorderCampaign>> FilterPreorderCampaignAsync(FilterPreorderCampaignRequest request, PaginationParameter pagination)
         {
             // Gọi repository để lấy danh sách PreorderCampaign theo yêu cầu
             var campaigns = await _preorderCampaignRepo.FilterPreorderCampaignsAsync(request.isEndingSoon, request.isNewlyLaunched, request.isTrending, pagination);
@@ -900,7 +900,7 @@ namespace PreOrderBlindBox.Services.Services
             }
             var countItem = _preorderCampaignRepo.Count(x => x.Status == "Active");
             return new Pagination<ResponseSearchPreorderCampaign>(result, countItem, pagination.PageIndex, pagination.PageSize);
-        }
+        }*/
 
         public async Task<Pagination<ResponsePreorderCampaignDetail>> GetAllCompleteBulkCampaign (PaginationParameter pagination)
         {
