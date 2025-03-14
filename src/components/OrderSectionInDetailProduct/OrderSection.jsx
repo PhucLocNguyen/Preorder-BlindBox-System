@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import CartIcon from '../../assets/OrderSectionDetail/Cart.webp'
 import { GetAllUserVoucher } from "../../api/UserVoucher/ApiUserVoucher";
 import { formatShortVND } from '../../utils/FormatMoney.jsx'
 import { Link } from "react-router-dom";
+import { ApiCreateCart } from "../../api/Cart/ApiCart.jsx";
+import { useCart } from "../../context/CartContext.jsx";
 
 function OrderSection({ data }) {
 
@@ -19,6 +22,7 @@ function OrderSection({ data }) {
       }
    });
    const [chooseVoucher, setChooseVoucher] = useState()
+   const { CallGetAllCart } = useCart()
 
    const handleInputQuantity = (e) => {
       if (isNaN(e.target.value) || Number(e.target.value) < 1) {
@@ -60,9 +64,29 @@ function OrderSection({ data }) {
       handleDropDownVoucher()
    }
 
+   const handleAddCart = () => {
+      CallApiCreateCart()
+   }
+
    const CallApiGetAllUserVoucher = async () => {
       const response = await GetAllUserVoucher();
       setUserVoucher(response)
+   }
+
+   const CallApiCreateCart = async () => {
+      const payload = {
+         preorderCampaignId: data?.preorderCampaignId,
+         quantity: quantity
+      }
+      const response = await ApiCreateCart({ payload })
+
+      // Thông báo thêm cart thành công
+      if (response?.status === 200) {
+         CallGetAllCart()
+         toast.success('Thêm vào giỏ hàng thành công')
+      } else {
+         toast.error('Thêm vào giỏ hàng thất bại')
+      }
    }
 
    console.log('Buy data: ', buyData);
@@ -89,7 +113,7 @@ function OrderSection({ data }) {
             </div>
 
             {/* Nút add cart */}
-            <button className='mx-[8px] bg-[#EBEBEB] border-[1px] border-solid border-[#D7D7D7] py-[2px] px-[18px] rounded-full h-[40px] flex text-[20px] '>
+            <button onClick={handleAddCart} className='mx-[8px] bg-[#EBEBEB] border-[1px] border-solid border-[#D7D7D7] py-[2px] px-[18px] rounded-full h-[40px] flex text-[20px] '>
                <img src={CartIcon} alt="" />
             </button>
             {/* Nút buy now */}

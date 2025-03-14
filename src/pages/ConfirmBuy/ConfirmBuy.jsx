@@ -84,16 +84,12 @@ function ConfirmBuy() {
       }
    }
 
-   console.log('Order data: ', orderData);
-
-
    useEffect(() => {
       if (!buyData) {
          navigate('/')
+      } else {
+         CallApiGetPriceOrder()
       }
-
-      CallApiGetPriceOrder()
-
    }, [buyData, navigate])
 
    return (

@@ -1,11 +1,9 @@
 import { formatMoney } from "../../utils/FormatMoney";
 
 function ConfirmBuyBLock({ data }) {
-   console.log('One data: ', data);
-
 
    return (
-      <div className="border-[1px] border-[#ccc] px-[1rem]">
+      <div className="border-[1px] border-[#ccc] px-[1rem] mb-[1.5rem]">
          {/* Một dòng đơn */}
          {
             data?.responseCarts?.map((item, index) => {
@@ -35,7 +33,7 @@ function ConfirmBuyBLock({ data }) {
          {/* Khu vực tổng tiền và hiện voucher */}
          <div className="grid grid-cols-6 grid-rows-3 py-[10px] border-t-2 border-[#ccc]">
             <div className="row-span-1 col-span-3 line-clamp-1 font-bold text-[red]">
-               Mã khuyến mãi số 1 đấ dasdsa  d d cdc dc dc d cd cda cd cd c dc d cd c dv d vd fd fdfdsfsdfsd fsd fsd fsd fds f
+               {data?.userVoucher?.name}
             </div>
             <div className="col-start-4 col-span-1 text-right font-bold">
                <h1>

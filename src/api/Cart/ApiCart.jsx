@@ -49,15 +49,26 @@ const UpdateQuantityInCart = async (requestCreateCart) => {
 
 // Hàm gọi API ClearAllCart
 const ClearAllCart = async () => {
-  try {
-    const result = await api.put('/Cart/ClearAllCart', null, axiosConfigHeader);
-    if (result.status === 200) {
-      return result.data;
+    try {
+      const result = await api.put('/Cart/ClearAllCart', null, axiosConfigHeader);
+      if (result.status === 200) {
+        return result;
+      }
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      throw error;
     }
-  } catch (error) {
-    console.error("Error clearing cart:", error);
-    throw error;
-  }
-};
+  };
 
-export { GetAllCart, GetPriceInCart, UpdateQuantityInCart, ClearAllCart }
+const ApiCreateCart = async ({payload}) => {
+  try{
+    const result = await  api.post('/Cart',payload)
+    if(result?.status === 200){
+      return result
+    }
+  }catch(error){
+    console.log('Api Create Cart Error: ', error);
+  }
+}
+
+export { GetAllCart, GetPriceInCart, UpdateQuantityInCart, ClearAllCart, ApiCreateCart }
