@@ -1,14 +1,17 @@
 import api from "../instance";
 
-const ApiGetPreOrderCampaign = async ({ PageIndex, PageSize, type }) => {
+const ApiGetPreOrderCampaign = async ({ PageIndex, PageSize, type, isEndingSoon, isNewlyLaunched, isTrending }) => {
    // 0: Time Pricing
    // 1: Bulk Order
    try {
-      const response = await api.get('/PreorderCampaign', {
+      const response = await api.get('/PreorderCampaign/active', {
          params: {
             Type: type,
             PageIndex,
-            PageSize
+            PageSize,
+            isEndingSoon,
+            isNewlyLaunched,
+            isTrending
          }
       })
       if (response?.status === 200) {
