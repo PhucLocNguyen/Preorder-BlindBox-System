@@ -26,6 +26,7 @@ const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherC
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
 const BannerManagement = lazy(() => import("../pages/Admin/BannerManagement/BannerView"));
+const BannerManagementDetails = lazy(() => import("../pages/Admin/BannerManagement/BannerViewDetails"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
 const ProductList = lazy(() => import('../pages/Home/ProductList/ProductList'));
@@ -38,11 +39,8 @@ const SearchResultPage = lazy(() => import("../pages/SearchResultPage/SearchResu
 const ForgotPassword = lazy(() => import("../pages/Account/ForgotPassword"));
 const SendEmailForgotPassword = lazy(() => import("../pages/Account/SendEmailForgotPassword"));
 const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
-const MyVoucher = lazy(() => import("../pages/Customer/MyVoucher"));
 
 const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
-const ConfirmBuy = lazy(() => import("../pages/ConfirmBuy/ConfirmBuy"));
-const BulkOrder = lazy(() => import("../pages/Home/BulkOrder/BulkOrder"));
 
 const publicRoutes = [
   {
@@ -54,6 +52,31 @@ const publicRoutes = [
     path: "/login",
     component: LoginPage,
     layout: DefaultLayout,
+  },
+
+  {
+    path: "/staff",
+    component: StaffView,
+    children: [
+      { index: true, component: ProductsView },
+      { path: "products", component: ProductsView },
+      { path: "orders", component: OrdersView, },
+      { path: "orders/:id", component: OrderDetailView },
+      { path: "notifications", component: NotificationsView },
+      { path: "product/create", component: ProductCreatePage },
+      { path: "product/edit/:id", component: ProductEditPage },
+
+    ],
+  },
+
+
+  {
+    path: "/account",
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: LoginPage },
+      { path: "register", component: RegisterPage },
+    ],
   },
   {
     path: "/register",
@@ -77,10 +100,21 @@ const publicRoutes = [
     component: ConfirmEmailAccount
   },
   {
-    path: '/preordercampaign/:slug',
-    component: ProductDetail,
-    layout: DefaultLayout
+    path: '/cart',
+    component: Cart,
+    layout: DefaultLayout,
   },
+  {
+
+    path: '/preordercampaign',
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: ProductList },
+      { path: ':slug', component: ProductDetail },
+    ],
+    layout: DefaultLayout,
+  },
+
   {
     path: '/campaign/search',
     component: SearchResultPage,
@@ -88,31 +122,22 @@ const publicRoutes = [
   },
   {
     path: '/test',
-    component: BulkOrder
-  }
-];
-
-const privateRoutes = [
+    component: SendEmailForgotPassword
+  },
   {
-    path: '/wallet',
-    component: Wallet,
-    layout: DefaultLayout,
+    path: "/staff",
+    component: StaffView,
     children: [
-      { index: true, component: DepositPage, layout: null },
-      { path: 'deposit', component: Withdraw, layout: null },
+      { index: true, component: ProductsView },
+      { path: "products", component: ProductsView },
+      { path: "orders", component: OrdersView, },
+      { path: "orders/:id", component: OrderDetailView },
+      { path: "notifications", component: NotificationsView },
+      { path: "product/create", component: ProductCreatePage },
+      { path: "product/edit/:id", component: ProductEditPage },
+
     ],
-    role: ['Customer']
-  },
-  {
-    path: '/wallet/paymentResponse',
-    component: WalletRechargeResponse,
-    layout: DefaultLayout,
-    role: ['Customer']
-  },
-  {
-    path: '/confirm-order',
-    component: ConfirmBuy,
-    role: ['Customer']
+    role: ['staff']
   },
   {
     path: "/admin",
@@ -130,6 +155,7 @@ const privateRoutes = [
 
 
       { path: "banner-management", component: BannerManagement },
+      { path: "banner-management-details/:id", component: BannerManagementDetails },
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
       { path: "voucher", component: VoucherManagement },
@@ -138,35 +164,37 @@ const privateRoutes = [
       { path: "voucher/update/:id", component: VoucherUpdate },
       { path: "history-transactions", component: HistoryTransactions },
     ],
-    role: ['Admin']
+    role: ['admin']
   },
-  {
-    path: "/staff",
-    component: StaffView,
-    children: [
-      { index: true, component: ProductsView },
-      { path: "products", component: ProductsView },
-      { path: "orders", component: OrdersView, },
-      { path: "orders/:id", component: OrderDetailView },
-      { path: "notifications", component: NotificationsView },
-      { path: "product/create", component: ProductCreatePage },
-      { path: "product/edit/:id", component: ProductEditPage },
+];
 
+const privateRoutes = [
+  {
+    path: "/editor",
+    component: Fragment,
+    layout: AdminLayout,
+  },
+  {
+    path: "/projects",
+    component: Fragment,
+  },
+  {
+    path: '/wallet',
+    component: Wallet,
+    layout: DefaultLayout,
+    children: [
+      { index: true, component: DepositPage, layout: null },
+      { path: 'deposit', component: Withdraw, layout: null },
     ],
-    role: ['Staff']
-  },
-  {
-    path: '/cart',
-    component: Cart,
-    layout: DefaultLayout,
     role: ['Customer']
   },
   {
-    path: '/myvoucher',
-    component: MyVoucher,
+    path: '/wallet/paymentResponse',
+    component: WalletRechargeResponse,
     layout: DefaultLayout,
     role: ['Customer']
-  }
+  },
 
 ];
 export { publicRoutes, privateRoutes };
+

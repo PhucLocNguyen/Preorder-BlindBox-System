@@ -1,107 +1,85 @@
-import React, { useState } from "react";
-import { Table, Button, Modal, message } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import Toroto from "../../../assets/Admin/Toroto.png";
-import Labubu from "../../../assets/Admin/Labubu.png";
+import React, { useState, useEffect, useCallback } from "react";
+import { Card, Button, Dropdown, Menu, Pagination, Modal } from "antd";
+import { PlusOutlined, FilterOutlined } from "@ant-design/icons";
+import { GetAllBanner } from "../../../api/Banner/ApiBanner";
 import BannerCreate from "./BannerCreate";
-import BannerEdit from "./BannerEdit";
+import useFetchDataPagination from "../../../hooks/useFetchDataPagination";
+import { Link } from "react-router-dom";
+
 
 const BannerView = () => {
-    const [banners, setBanners] = useState([
-        { id: 1, title: "Spring Sale", image: Toroto, status: true },
-        { id: 2, title: "New Collection", image: Labubu, status: false },
-    ]);
-
+    const [sortOrder, setSortOrder] = useState(null);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [editingBanner, setEditingBanner] = useState(null);
+    const [pageSize, setPageSize] = useState(6);
+    const [pageIndex, setPageIndex] = useState(1);
 
-    const handleOpenCreateModal = () => {
-        setIsCreateModalOpen(true);
-    };
+    // Fetch dữ liệu từ API
+    const fetchBanner = useCallback(() => GetAllBanner(pageSize, pageIndex), [pageSize, pageIndex]);
+    const { data, loading, refetch, pagination } = useFetchDataPagination(fetchBanner, [pageSize, pageIndex]);
+    console.log(">>> check data: ", data);
+    // Sắp xếp dữ liệu theo priority
+    const sortedBanners = [...data].sort((a, b) => {
+        if (sortOrder === "priority-asc") return a.priority - b.priority;
+        if (sortOrder === "priority-desc") return b.priority - a.priority;
+        return 0;
+    });
 
-    const handleOpenEditModal = (banner) => {
-        setEditingBanner(banner);
-        setIsEditModalOpen(true);
-    };
-
-    const handleSaveCreate = (values) => {
-        const newBanner = { ...values, id: banners.length + 1 };
-        setBanners([...banners, newBanner]);
-        message.success("Banner added successfully!");
-        setIsCreateModalOpen(false);
-    };
-
-    const handleSaveEdit = (values) => {
-        setBanners((prev) => prev.map((b) => (b.id === editingBanner.id ? { ...b, ...values } : b)));
-        message.success("Banner updated successfully!");
-        setIsEditModalOpen(false);
-    };
-
-    const handleDelete = (id) => {
-        setBanners(banners.filter((b) => b.id !== id));
-        message.success("Banner deleted successfully!");
-    };
-
-    const columns = [
-        {
-            title: "Image",
-            dataIndex: "image",
-            render: (src) => <img src={src} alt="Banner" className="w-16 h-16 rounded-lg" />,
-        },
-        {
-            title: "Title",
-            dataIndex: "title",
-        },
-        {
-            title: "Status",
-            dataIndex: "status",
-            render: (status) => (
-                <span className={`px-2 py-1 rounded ${status ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"}`}>
-                    {status ? "Active" : "Inactive"}
-                </span>
-            ),
-        },
-        {
-            title: "Actions",
-            render: (_, record) => (
-                <div className="flex gap-2">
-                    <Button icon={<EditOutlined />} onClick={() => handleOpenEditModal(record)}>Edit</Button>
-                    <Button icon={<DeleteOutlined />} danger onClick={() => handleDelete(record.id)}>Delete</Button>
-                </div>
-            ),
-        },
-    ];
+    const filterMenu = (
+        <Menu onClick={(e) => setSortOrder(e.key)}>
+            <Menu.Item key="priority-asc">Priority (High to Low)</Menu.Item>
+            <Menu.Item key="priority-desc">Priority (Low to High)</Menu.Item>
+        </Menu>
+    );
 
     return (
         <div className="p-6 bg-white shadow-md rounded-lg">
+            {/* Header */}
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Banner Management</h2>
-                <Button type="primary" icon={<PlusOutlined />} onClick={handleOpenCreateModal}>
-                    Add Banner
+                <h2 className="text-xl font-bold">Banners</h2>
+                <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsCreateModalOpen(true)}>
+                    Add New Banner
                 </Button>
             </div>
 
-            <Table columns={columns} dataSource={banners} rowKey="id" />
+            {/* Filter */}
+            <div className="flex gap-4 items-center mb-4">
+                <Dropdown overlay={filterMenu} trigger={["click"]}>
+                    <Button icon={<FilterOutlined />}>Filter</Button>
+                </Dropdown>
+            </div>
+
+            {/* Cards Layout */}
+            <div className="grid grid-cols-3 gap-4">
+                {sortedBanners.map((banner) => (
+                    <Card key={banner.bannerId} hoverable className="rounded-lg shadow-md overflow-hidden">
+                        <Link to={`/admin/banner-management-details/${banner.bannerId}`}>
+                            <img src={banner.imageUrl} alt={banner.title} className="w-full h-full object-cover cursor-pointer" />
+                        </Link>
+                    </Card>
+                ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="mt-6 flex justify-center">
+                <Pagination
+                    current={pagination.current}
+                    total={pagination.total}
+                    pageSize={pagination.pageSize}
+                    onChange={(page) => setPageIndex(page)}
+                    showSizeChanger={false}
+                />
+            </div>
 
             {/* Modal for Creating Banner */}
             <Modal
-                title="Add Banner"
                 open={isCreateModalOpen}
                 onCancel={() => setIsCreateModalOpen(false)}
                 footer={null}
+                width={720}
+                closable={false}
+                maskClosable={false}
             >
-                <BannerCreate onSave={handleSaveCreate} />
-            </Modal>
-
-            {/* Modal for Editing Banner */}
-            <Modal
-                title="Edit Banner"
-                open={isEditModalOpen}
-                onCancel={() => setIsEditModalOpen(false)}
-                footer={null}
-            >
-                <BannerEdit onSave={handleSaveEdit} editingBanner={editingBanner} />
+                <BannerCreate onSuccess={() => setIsCreateModalOpen(false)} />
             </Modal>
         </div>
     );

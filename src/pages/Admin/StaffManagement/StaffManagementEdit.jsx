@@ -5,27 +5,12 @@ import { GetActiveStaff, EditStaff } from "../../../api/StaffManagement/ApiStaff
 
 const StaffManagementEdit = ({ userId, onSuccess }) => {
     const [form] = Form.useForm();
-    const [fileList, setFileList] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    const getBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
+    const [imagePreview, setImagePreview] = useState(null);
+    const [staffImage, setStaffImage] = useState(null);
+    const handleStaffImageChange = ({ file }) => {
+        setStaffImage(file);
     };
-
-    const handleUploadChange = async ({ fileList }) => {
-        if (fileList.length > 0) {
-            const base64 = await getBase64(fileList[0].originFileObj);
-            setFileList([{ ...fileList[0], base64 }]);
-        } else {
-            setFileList([]);
-        }
-    };
-
     useEffect(() => {
         const fetchStaff = async () => {
             try {
@@ -35,8 +20,11 @@ const StaffManagementEdit = ({ userId, onSuccess }) => {
                         fullName: staffData.fullName,
                         address: staffData.address,
                         phone: staffData.phone || "",
+
                     });
                 }
+                setImagePreview(staffData.thumbnail);
+                console.log("check data", staffData);
             } catch (error) {
                 message.error("Failed to fetch staff details!");
             } finally {
@@ -50,19 +38,17 @@ const StaffManagementEdit = ({ userId, onSuccess }) => {
     }, [userId, form]);
 
     const onFinish = async (values) => {
-        const payload = {
-            fullName: values.fullName,
-            phone: values.phone,
-            address: values.address,
-            thumbnail: fileList.length > 0 ? fileList[0].base64 : "",
-        };
+        const formData = new FormData();
+        formData.append("fullName", values.fullName);
+        formData.append("phone", values.phone);
+        formData.append("thumbnail", staffImage);
+        formData.append("address", values.address);
+
 
         try {
-            const result = await EditStaff(userId, payload);
-            console.log("Update staff result:", result);
+            await EditStaff({ formData, userId });
             message.success("Staff updated successfully!");
             onSuccess();
-
             setTimeout(() => {
                 window.location.reload();
             }, 1000);
@@ -70,6 +56,8 @@ const StaffManagementEdit = ({ userId, onSuccess }) => {
             message.error("Update failed!");
         }
     };
+
+
 
     return (
         <Card className="max-w-lg mx-auto p-6 shadow-lg rounded-xl bg-white">
@@ -90,10 +78,31 @@ const StaffManagementEdit = ({ userId, onSuccess }) => {
                     <Input size="large" className="w-full border-gray-300 rounded-lg" />
                 </Form.Item>
 
-                <Form.Item label="Hình đại diện" name="thumbnail">
-                    <Upload beforeUpload={() => false} onChange={handleUploadChange} fileList={fileList} listType="picture">
-                        <Button icon={<UploadOutlined />} size="large">Upload Thumbnail</Button>
+                <Form.Item label="Hình đại diện">
+                    <Upload
+                        beforeUpload={() => false}
+                        onChange={handleStaffImageChange}
+                        showUploadList={false}
+                    >
+                        <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                     </Upload>
+                    {staffImage ? (
+                        <div className="mt-2">
+                            <img
+                                src={URL.createObjectURL(staffImage)}
+                                alt="Main"
+                                className="w-full h-[300px] object-contain mt-2 rounded-md"
+                            />
+                        </div>
+                    ) : imagePreview ? (
+                        <div className="mt-2">
+                            <img
+                                src={imagePreview}
+                                alt="Current Staff"
+                                className="w-full h-[300px] object-contain mt-2 rounded-md"
+                            />
+                        </div>
+                    ) : null}
                 </Form.Item>
 
                 <div className="flex justify-center gap-4 mt-4">
