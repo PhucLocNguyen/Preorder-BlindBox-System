@@ -40,7 +40,7 @@ namespace PreOrderBlindBox.Data.Repositories
         public async Task<List<PreorderCampaign?>> GetAllCompleteBulkPreorderCampaign(PaginationParameter paginationParameter)
         {
             Expression<Func<PreorderCampaign, bool>> filter = pc =>
-                !pc.IsDeleted && pc.Status == PreorderCampaignStatus.Completed.ToString() && pc.BlindBox != null 
+                !pc.IsDeleted && pc.Status == PreorderCampaignStatus.Completed.ToString() && pc.BlindBox != null
                 && pc.Type == PreorderCampaignType.BulkOrder.ToString();
 
             Expression<Func<PreorderCampaign, object>>[] includes = new Expression<Func<PreorderCampaign, object>>[]
@@ -132,7 +132,7 @@ namespace PreOrderBlindBox.Data.Repositories
             return await GetAll(paginationParameter, filter, orderBy, includes);
         }
 
-        public async Task<List<PreorderCampaign>> FilterPreorderCampaignsAsync(
+        public async Task<List<PreorderCampaign>> FilterPreorderCampaignsAsync(string? type,
             bool isEndingSoon, bool isNewlyLaunched, bool isTrending, PaginationParameter? pagination)
         {
             var now = DateTime.UtcNow;
@@ -141,9 +141,12 @@ namespace PreOrderBlindBox.Data.Repositories
                 pc.Status == "Active" &&
                 pc.BlindBox != null &&
                 (
+                    // Nếu cả isEndingSoon và isNewlyLaunched đều false, bỏ qua điều kiện thời gian.
+                    (!isEndingSoon && !isNewlyLaunched) ||
+                    // Nếu có một trong hai là true thì áp dụng điều kiện tương ứng.
                     (isEndingSoon && pc.EndDate >= now && pc.EndDate <= now.AddDays(2)) ||
                     (isNewlyLaunched && pc.StartDate <= now && pc.StartDate >= now.AddDays(-2))
-                );
+                ) && (type == null || pc.Type == type);
 
             Expression<Func<PreorderCampaign, object>>[] includes = new Expression<Func<PreorderCampaign, object>>[]
             {

@@ -24,7 +24,7 @@ namespace PreOrderBlindBox.Services.IServices
         Task<Pagination<ResponseSearchPreorderCampaign>> SearchPreorderCampaignAsync(PreorderCampaignSearchRequest searchRequest, PaginationParameter pagination);
         Task<bool> AddCampaignWithMilestonesAsync(CreatePreorderCampaignRequest campaignRequest);
         Task<bool> UpdatePreorderCampaignWithMilestone(int id, UpdatePreorderCampaignRequest request);
-        Task<Pagination<ResponseSearchPreorderCampaign>> FilterPreorderCampaignAsync(FilterPreorderCampaignRequest request, PaginationParameter pagination);
+        //Task<Pagination<ResponseSearchPreorderCampaign>> FilterPreorderCampaignAsync(FilterPreorderCampaignRequest request, PaginationParameter pagination);
         Task<Pagination<ResponsePreorderCampaignDetail>> GetAllCompleteBulkCampaign(PaginationParameter pagination);
         Task<List<ResponseSearchPreorderCampaign>> GetSimilarPreorderCampaign(int id);
     }

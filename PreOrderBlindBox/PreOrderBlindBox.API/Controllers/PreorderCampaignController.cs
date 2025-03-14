@@ -223,7 +223,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("Filter")]
+        /*[HttpGet("Filter")]
         public async Task<IActionResult> FilterPreorderCampaign([FromQuery] FilterPreorderCampaignRequest request, [FromQuery] PaginationParameter pagination)
         {
             try
@@ -251,7 +251,7 @@ namespace PreOrderBlindBox.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
 
-        }
+        }*/
 
         [HttpGet("similar-campaign/{id}")]
         public async Task<IActionResult> GetSimilarPreorderCampaign(int id)
