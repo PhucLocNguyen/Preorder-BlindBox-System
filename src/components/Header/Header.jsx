@@ -2,7 +2,7 @@ import { ChevronDown, Search, ShoppingCart, User, Wallet } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useContext, useEffect } from "react"
 
-import logo from "../../assets/react.svg"
+import logo from "../../assets/Header/logo.png"
 import { AuthContext } from "../../context/AuthContext"
 import SearchImage from '../../assets/SearchInHeader/SanPham.jpg'
 import SearchInputInHeader from "../SearchCampaign/SearchInputInHeader"
@@ -19,12 +19,12 @@ export default function Header() {
         if (auth.roleName.toLowerCase() === 'customer') {
             CallGetAllCart()
         }
-    }, [])    
+    }, [])
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-white">
             <div className="container-lg mx-auto flex h-16 items-center justify-between !p-3">
-                <Link to="/" className="flex items-center w-[16%]">
+                <Link to="/" className="flex items-center w-[16%] pl-[2rem]">
                     <img
                         src={logo}
                         alt="Vaithuhay.com Logo"
