@@ -32,8 +32,7 @@ namespace PreOrderBlindBox.Services.Services
             , IPreorderMilestoneService preorderMilestoneService
             , IBlindBoxRepository blindBoxRepo
             , IMapper mapper
-            , IImageRepository imageRepo
-            , IPreorderMilestoneRepository preorderMilestoneRepo)
+            , IImageRepository imageRepo)
         {
             _preorderCampaignRepo = preorderCampaignRepo;
             _unitOfWork = unitOfWork;
@@ -211,6 +210,12 @@ namespace PreOrderBlindBox.Services.Services
                 }
                 responseCampaign.PriceAtTime = priceAtTime;
 
+                var discountPercent = 0m;
+                var discount = campaign.BlindBox.ListedPrice - priceAtTime;
+                discountPercent = (discount / campaign.BlindBox.ListedPrice) * 100;
+
+                responseCampaign.DiscountPercent = discountPercent;
+
                 // Xử lý BlindBox nếu có
                 if (campaign.BlindBox != null)
                 {
@@ -266,58 +271,6 @@ namespace PreOrderBlindBox.Services.Services
                           .Replace("+", "")
                           .Replace("/", "");
         }
-
-        /*public async Task<int> AddPreorderCampaignAsync(CreatePreorderCampaignRequest createPreorderCampaignRequest)
-        {
-            if (createPreorderCampaignRequest == null)
-            {
-                throw new ArgumentNullException("Invalid create data");
-            }
-
-            if (createPreorderCampaignRequest.EndDate < createPreorderCampaignRequest.StartDate)
-            {
-                throw new ArgumentException("End date cannot be earlier than start date.");
-            }
-
-            if (createPreorderCampaignRequest.EndDate <= DateTime.Now || createPreorderCampaignRequest.StartDate < DateTime.Now)
-            {
-                throw new ArgumentException("Start date and end date must be in future");
-            }
-            if (createPreorderCampaignRequest.StartDate.AddDays(3) > createPreorderCampaignRequest.EndDate)
-            {
-                throw new ArgumentException("End date must be at least 3 day after start date");
-            }
-
-            var blindBox = await _blindBoxRepo.GetDetailBlindBoxById(createPreorderCampaignRequest.BlindBoxId.Value);
-            if (blindBox == null || blindBox.IsDeleted)
-            {
-                throw new ArgumentException("Blind box does not exist or had deleted");
-            }
-
-            // Kiểm tra giá trị enum
-            if (!Enum.IsDefined(typeof(PreorderCampaignType), createPreorderCampaignRequest.Type))
-            {
-                throw new ArgumentException("Invalid campaign type. Must be TimedPricing (0) or BulkOrder (1).");
-            }
-
-            var preorderCampaign = new PreorderCampaign
-            {
-                BlindBoxId = createPreorderCampaignRequest.BlindBoxId*//* ?? throw new ArgumentException("BlindBoxId is required.")*//*,
-                Slug = GenerateShortUniqueString(),
-                StartDate = createPreorderCampaignRequest.StartDate,
-                EndDate = createPreorderCampaignRequest.EndDate,
-                Status = PreorderCampaignStatus.Pending.ToString(),
-                Type = createPreorderCampaignRequest.Type.ToString(),
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
-                IsDeleted = false
-            };
-
-            await _preorderCampaignRepo.InsertAsync(preorderCampaign);
-            return await _unitOfWork.SaveChanges();
-
-
-        }*/
 
         public async Task<ResponsePreorderCampaignDetail?> GetPreorderCampaignAsyncById(int id)
         {
@@ -567,56 +520,6 @@ namespace PreOrderBlindBox.Services.Services
             return false;
         }
 
-        /*public async Task<int> UpdatePreorderCampaign(int id, UpdatePreorderCampaignRequest request)
-        {
-            var preorderCampaign = await _preorderCampaignRepo.GetByIdAsync(id);
-
-            if (preorderCampaign == null)
-            {
-                throw new ArgumentException("Pre-Order Campaign not found");
-            }
-
-            if (request == null)
-            {
-                throw new ArgumentNullException("Invalid update Pre-Order Campaign data");
-            }
-
-            if (preorderCampaign.IsDeleted || preorderCampaign.Status == PreorderCampaignStatus.Active.ToString()
-                || preorderCampaign.Status == PreorderCampaignStatus.Completed.ToString())
-            {
-                throw new ArgumentException("Cannot update Pre-Order Campaign had deleted or active or completed");
-            }
-
-            if (request.EndDate < request.StartDate)
-            {
-                throw new ArgumentException("End date cannot be earlier than start date.");
-            }
-
-            if (request.EndDate <= DateTime.Now || request.StartDate < DateTime.Now)
-            {
-                throw new ArgumentException("Start date and end date must be in future");
-            }
-
-            if (request.StartDate.AddDays(5) > request.EndDate)
-            {
-                throw new ArgumentException("End date must be at least 5 day after start date");
-            }
-
-            // Kiểm tra giá trị enum
-            if (!Enum.IsDefined(typeof(PreorderCampaignType), request.Type))
-            {
-                throw new ArgumentException("Invalid campaign type. Must be TimedPricing (0) or BulkOrder (1).");
-            }
-
-            _mapper.Map(request, preorderCampaign);
-            // Gọi repository để cập nhật thực thể
-            await _preorderCampaignRepo.UpdateAsync(preorderCampaign);
-
-            // Lưu thay đổi vào database
-            return await _unitOfWork.SaveChanges();
-
-        }*/
-
         public async Task BackGroundUpdatePreorderCampaign()
         {
             try
@@ -815,6 +718,12 @@ namespace PreOrderBlindBox.Services.Services
                 // Lặp qua từng milestone, gán PreorderCampaignId và tạo milestone
                 for (int i = 0; i < campaignRequest.MilestoneRequests.Count; i++)
                 {
+                    var listedPrice = blindBox.ListedPrice;
+
+                    if (campaignRequest.MilestoneRequests[i].Price >= listedPrice)
+                    {
+                        throw new ArgumentException("Price in campaign cannot greater than or equal with listed price");
+                    }
                     var milestone = new CreatePreorderMilestoneRequest
                     {
                         PreorderCampaignId = campaign.PreorderCampaignId,
@@ -898,6 +807,12 @@ namespace PreOrderBlindBox.Services.Services
                     // Lặp qua từng milestone, gán PreorderCampaignId và tạo milestone
                     for (int i = 0; i < request.PreorderMilestoneRequests.Count; i++)
                     {
+                        var listedPrice = preorderCampaign.BlindBox.ListedPrice;
+
+                        if (request.PreorderMilestoneRequests[i].Price >= listedPrice)
+                        {
+                            throw new ArgumentException("Price in campaign cannot greater than or equal with listed price");
+                        }
                         var milestone = new CreatePreorderMilestoneRequest
                         {
                             PreorderCampaignId = preorderCampaign.PreorderCampaignId,
