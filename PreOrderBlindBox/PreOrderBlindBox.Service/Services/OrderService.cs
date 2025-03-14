@@ -74,10 +74,6 @@ namespace PreOrderBlindBox.Services.Services
                 var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin", includes: x => x.Role)).FirstOrDefault();
 
                 var notificationForCustomer = (new RequestCreateNotification()).NotificationForCustomer(customerId);
-                
-
-                
-
                 List<ResponseCartWithVoucher> priceForCarts = await _cartService.IdentifyPriceForCartItem(customerId, requestCreateOrder.UserVoucherIdForPreorderCampaign, requestCreateOrder.RequestCreateCart);
                 if (priceForCarts.Count == 0)
                     throw new Exception("The cart is empty");
@@ -86,7 +82,7 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     var requestAdminTransactionCreateModel = new RequestTransactionCreateModel()
                     {
-                        Description = "Recharge",
+                        
                         Money = 0,
                         WalletId = admin.WalletId,
                         Type = TypeOfTransactionEnum.Recharge,
@@ -94,7 +90,7 @@ namespace PreOrderBlindBox.Services.Services
 
                     var requestCustomerTransactionCreateModel = new RequestTransactionCreateModel()
                     {
-                        Description = "Purchase",
+                        
                         Money = 0,
                         WalletId = customer.WalletId,
                         Type = TypeOfTransactionEnum.Purchase,
@@ -108,22 +104,29 @@ namespace PreOrderBlindBox.Services.Services
 
                     if (preorderCampaign.Type.Equals("BulkOrder"))
                     {
-                        var tempCampaignBulkOrderEntity = requestCreateOrder.toTempCampaignBulkOrder(customerId, userVoucher.UserVoucherId);
+                        var tempCampaignBulkOrderEntity = requestCreateOrder.toTempCampaignBulkOrder(customerId) ;
+                        
+                        if(userVoucher != null) tempCampaignBulkOrderEntity.UserVoucherId = userVoucher.UserVoucherId;
                         tempCampaignBulkOrderEntity = await _tempCampaignBulkOrderService.CreateOrder(tempCampaignBulkOrderEntity);
                         await _unitOfWork.SaveChanges();
                         await _tempCampaignBulkOrderDetailService.CreateTempCampaignBulkOrderDetail(item.responseCarts, tempCampaignBulkOrderEntity.TempCampaignBulkOrderId);
-                       /* requestAdminTransactionCreateModel.OrderId = ;
-                        requestCustomerTransactionCreateModel.OrderId = ;*/
+                        requestAdminTransactionCreateModel.TempCampaignBulkOrderId = tempCampaignBulkOrderEntity.TempCampaignBulkOrderId;
+                        requestCustomerTransactionCreateModel.TempCampaignBulkOrderId = tempCampaignBulkOrderEntity.TempCampaignBulkOrderId;
+						requestAdminTransactionCreateModel.Description = $"The system has received a payment from the user {customer.FullName} for Order #{tempCampaignBulkOrderEntity.TempCampaignBulkOrderId}, and an amount of {item.Total} has been credited to the admin's wallet.";
+                        requestCustomerTransactionCreateModel.Description = $"When the user makes a payment for Order #{tempCampaignBulkOrderEntity.TempCampaignBulkOrderId}, an amount of {item.Total} has been deducted from the user {customer.FullName}'s wallet.";
                     }
                     else
                     {
-                        var orderEntity = requestCreateOrder.toOrderEntity(customerId, userVoucher.UserVoucherId);
-                        await _orderRepository.InsertAsync(orderEntity);
+                        var orderEntity = requestCreateOrder.toOrderEntity(customerId);
+						if (userVoucher != null) orderEntity.UserVoucherId = userVoucher.UserVoucherId;
+						await _orderRepository.InsertAsync(orderEntity);
                         await _unitOfWork.SaveChanges();
                         await _orderDetailService.CreateOrderDetail(item.responseCarts, orderEntity.OrderId);
                         requestAdminTransactionCreateModel.OrderId = orderEntity.OrderId;
                         requestCustomerTransactionCreateModel.OrderId = orderEntity.OrderId;
-                    }
+						requestAdminTransactionCreateModel.Description = $"The system has received a payment from the user {customer.FullName} for Order #{orderEntity.OrderId}, and an amount of {item.Total} has been credited to the admin's wallet.";
+						requestCustomerTransactionCreateModel.Description = $"When the user makes a payment for Order #{orderEntity.OrderId}, an amount of {item.Total} has been deducted from the user {customer.FullName}'s wallet.";
+					}
                     if (userVoucher != null)
                         await _userVoucherService.UpdateUserVoucherAsync(new RequestUpdateUserVoucher() { VoucherCampaignId = (int)userVoucher.VoucherCampaignId });
                     preorderCampaign.PlacedOrderCount += item.responseCarts.Sum(x => x.Quantity);

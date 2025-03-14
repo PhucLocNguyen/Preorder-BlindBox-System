@@ -12,7 +12,8 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.TempCampaignBulkOrderDetailMo
         public int TempCampaignBulkOrderDetailId { get; set; }
         public ResponseBlindBox BlindBox { get; set; }
         public int Quantity { get; set; }
-        public decimal? UnitEndCampaignPrice { get; set; }
+		public decimal UnitPriceAtTime { get; set; }
+		public decimal? UnitEndCampaignPrice { get; set; }
         public decimal? Amount { get; set; }
     }
 }
