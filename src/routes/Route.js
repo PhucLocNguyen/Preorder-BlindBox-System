@@ -26,6 +26,7 @@ const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherC
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
 const BannerManagement = lazy(() => import("../pages/Admin/BannerManagement/BannerView"));
+const BannerViewDetails = lazy(() => import("../pages/Admin/BannerManagement/BannerViewDetails"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
 const ProductList = lazy(() => import('../pages/Home/ProductList/ProductList'));
@@ -43,7 +44,6 @@ const MyVoucher = lazy(() => import("../pages/Customer/MyVoucher"));
 const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
 const ConfirmBuy = lazy(() => import("../pages/ConfirmBuy/ConfirmBuy"));
 const BulkOrder = lazy(() => import("../pages/Home/BulkOrder/BulkOrder"));
-import TimePricing from "../pages/Home/TimePricing/TimePricing";
 
 const publicRoutes = [
   {
@@ -89,7 +89,7 @@ const publicRoutes = [
   },
   {
     path: '/test',
-    component: TimePricing
+    component: BulkOrder
   }
 ];
 
@@ -131,6 +131,7 @@ const privateRoutes = [
 
 
       { path: "banner-management", component: BannerManagement },
+      { path: "banner-management-details/:id", component: BannerViewDetails },
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
       { path: "voucher", component: VoucherManagement },

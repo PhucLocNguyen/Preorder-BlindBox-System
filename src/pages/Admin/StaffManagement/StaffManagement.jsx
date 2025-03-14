@@ -144,12 +144,12 @@ const StaffManagement = () => {
                 />
             )}
 
-            <Modal open={isModalVisibleCreate} onCancel={() => setIsModalVisibleCreate(false)} footer={null} width={720}>
-                <StaffManagementCreate onSuccess={() => setIsModalVisibleCreate(false)} closable={false} maskClosable={false} />
+            <Modal open={isModalVisibleCreate} onCancel={() => setIsModalVisibleCreate(false)} footer={null} width={720} closable={false} maskClosable={false}>
+                <StaffManagementCreate onSuccess={() => setIsModalVisibleCreate(false)} />
             </Modal>
 
-            <Modal open={isModalVisible} onCancel={handleCancel} footer={null} width={720}>
-                <StaffManagementEdit onSuccess={() => setIsModalVisible(false)} closable={false} maskClosable={false}
+            <Modal open={isModalVisible} onCancel={handleCancel} footer={null} width={720} closable={false} maskClosable={false}>
+                <StaffManagementEdit onSuccess={() => setIsModalVisible(false)}
                     userId={selectedUser?.userId}
                 />
             </Modal>

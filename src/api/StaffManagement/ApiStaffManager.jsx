@@ -1,5 +1,5 @@
 import api from '../instance';
-import { axiosConfigHeader } from '../axiosConfigHeader';
+import { axiosConfigHeader, axiosConfigSendFileHeader } from '../axiosConfigHeader';
 import { toast } from "react-toastify";
 
 const CreateStaffAccount = async (payload) => {
@@ -40,9 +40,9 @@ const GetActiveStaff = async (id) => {
     }
 };
 
-const EditStaff = async (id, payload) => {
+const EditStaff = async ({ formData: payload, userId }) => {
     try {
-        const response = await api.put(`/User/UpdateStaffInformation/${id}`, payload, axiosConfigHeader);
+        const response = await api.put(`/User/UpdateStaffInformation/${userId}`, payload, axiosConfigSendFileHeader);
         return response.data;
     } catch (error) {
         console.log('>>> Api edit staff Error: ', error);
