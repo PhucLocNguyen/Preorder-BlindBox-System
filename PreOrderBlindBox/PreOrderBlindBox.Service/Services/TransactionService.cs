@@ -64,6 +64,7 @@ namespace PreOrderBlindBox.Service.Services
                 transactionCreate.Description = model.Description;
                 transactionCreate.CreatedDate = DateTime.Now;
                 transactionCreate.OrderId = model.OrderId;
+                transactionCreate.TempCampaignBulkOrderId = model.TempCampaignBulkOrderId;
                 transactionCreate.Status = TransactionStatusEnum.Success.ToString();
 
                 _transactionRepository.AddTransaction(transactionCreate);

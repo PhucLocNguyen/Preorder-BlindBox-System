@@ -82,8 +82,9 @@ namespace PreOrderBlindBox.Services.Services
                     TempCampaignBulkOrderDetailId = (int)item.TempCampaignBulkOrderDetailId,
                     BlindBox = blindBoxResponse,
                     Quantity = item.Quantity,
+                    UnitPriceAtTime = item.UnitPriceAtTime,
                     UnitEndCampaignPrice = item.UnitEndCampaignPrice,
-                    Amount = item.Quantity * item.UnitEndCampaignPrice
+                    Amount = item.Quantity * item.UnitPriceAtTime
                 });
             }
 

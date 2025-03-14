@@ -29,6 +29,8 @@ public partial class Transaction
 
     public int? TempCampaignBulkOrderId { get; set; }
 
+    public virtual Order Order { get; set; }
+
     public virtual TempCampaignBulkOrder TempCampaignBulkOrder { get; set; }
 
     public virtual Wallet Wallet { get; set; }
