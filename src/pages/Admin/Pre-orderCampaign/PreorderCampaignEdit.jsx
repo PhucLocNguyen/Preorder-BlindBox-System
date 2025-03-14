@@ -260,6 +260,7 @@ function PreorderCampaignEdit() {
                     setIsValidMilestones={setIsValidMilestones}
                       form={form}
                       typeOfCampaign={typeOfCampaign}
+                      loadMainProduct={loadMainProduct}
                     />
                   )}
                   

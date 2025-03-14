@@ -6,6 +6,7 @@ export const CreatePreorderMilestones = ({
   form,
   typeOfCampaign,
   setIsValidMilestones,
+  loadMainProduct
 }) => {
   // Sử dụng useWatch để theo dõi giá trị milestones
   const milestones = Form.useWatch("milestones", form);
@@ -77,6 +78,7 @@ export const CreatePreorderMilestones = ({
                             new Error("Số lượng phải >= 1")
                           );
                         }
+                       
                         return Promise.resolve();
                       },
                     },
@@ -105,6 +107,13 @@ export const CreatePreorderMilestones = ({
                         if (Number(value) < 1000) {
                           return Promise.reject(
                             new Error("Số tiền phải >= 1000")
+                          );
+                        }
+                        if(value>loadMainProduct.listedPrice){
+                          return Promise.reject(
+                            new Error(
+                              `Giá phải nhỏ hơn hoặc bằng giá niêm yết của sản phẩm`
+                            )
                           );
                         }
                         return Promise.resolve();

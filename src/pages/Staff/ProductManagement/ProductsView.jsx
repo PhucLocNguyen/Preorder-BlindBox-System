@@ -58,7 +58,7 @@ const ProductsView = () => {
         <img
           src={url ? url : noThumbnailImage}
           alt="Main"
-          className="w-32 h-32 object-contain rounded-md shadow-md"
+          className="h-[100px] w-[500px] object-contain rounded-md shadow-md"
         />
       ),
     },
@@ -79,12 +79,12 @@ const ProductsView = () => {
         <Space size="middle">
           <Link
             to={"/staff/product/edit/" + record.blindBoxId}
-            className="flex bg-blue-600 px-10 py-4 min-h-[40px]  rounded-lg text-white"
+            className="flex bg-blue-600 px-10 py-4 min-h-[40px]  rounded-xl text-white"
           >
             Update
           </Link>
           <button
-            className="px-10 py-4 border bg-transparent border-red-600 text-red-600 hover:border-red-800 hover:text-red-800 rounded-lg"
+            className="px-10 py-4 border bg-transparent rounded-xl border-red-600 text-red-600 hover:border-red-800 hover:text-red-800"
             onClick={() => {
               showModal(record.blindBoxId);
             }}
@@ -144,7 +144,7 @@ const ProductsView = () => {
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">Quản lý Blind box</h2>
         <div>
-          <Link to={"/staff/product/create/"} className="text-lg bg-blue-600 text-white rounded-lg p-4 ">
+          <Link to={"/staff/product/create/"} className="text-lg bg-blue-600 text-white rounded-xl p-4 ">
             Thêm sản phẩm
           </Link>
         </div>
