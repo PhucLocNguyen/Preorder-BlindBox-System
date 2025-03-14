@@ -22,10 +22,29 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPreorderCampaign([FromQuery] PaginationParameter pagination, [FromQuery] PreorderCampaignGetRequest request)
+        public async Task<IActionResult> GetAllValidPreorderCampaign([FromQuery] PaginationParameter pagination, [FromQuery] PreorderCampaignGetRequest request)
+        {
+            var result = await _preorderCampaignService.GetAllValidPreorderCampaign(pagination, request);
+            
+            var metadata = new
+            {
+                result.TotalCount,
+                result.PageSize,
+                result.CurrentPage,
+                result.TotalPages,
+                result.HasNext,
+                result.HasPrevious
+            };
+
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(result);
+        }
+
+        [HttpGet("active")]
+        public async Task<IActionResult> GetAllActivePreorderCampaign([FromQuery] PaginationParameter pagination, [FromQuery] PreorderCampaignGetRequest request)
         {
             var result = await _preorderCampaignService.GetAllActivePreorderCampaign(pagination, request);
-            
+
             var metadata = new
             {
                 result.TotalCount,
@@ -110,32 +129,6 @@ namespace PreOrderBlindBox.API.Controllers
             return Ok(preorderCampaign);
         }
 
-        [HttpPost("CreatePreorderCampaign")]
-        public async Task<IActionResult> CreatePreoderCampaign([FromBody]CreatePreorderCampaignRequest request)
-        {
-            try
-            {
-                var preorderCampaign = await _preorderCampaignService.AddPreorderCampaignAsync(request);
-                if (preorderCampaign > 0)
-                {
-                    return Ok(preorderCampaign);
-                }
-                return BadRequest();
-            }
-            catch (ArgumentNullException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
-            }
-        }
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePreorderCampaign(int id)
         {
@@ -151,30 +144,6 @@ namespace PreOrderBlindBox.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while deleting the preorder campaign.", error = ex.Message });
-            }
-        }
-
-        [HttpPut("UpdatePreorderCampaign/{id}")]
-        public async Task<IActionResult> UpdatePreorderCampaign(int id, [FromBody] UpdatePreorderCampaignRequest request)
-        {
-            try
-            {
-                var preorderCampaign = await _preorderCampaignService.UpdatePreorderCampaign(id, request);
-
-                if (preorderCampaign <= 0)
-                {
-                    return NotFound(new { message = "Preorder campaign not found." });
-                }
-
-                return Ok(preorderCampaign);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
 
@@ -254,7 +223,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        [HttpGet("Filter")]
+        /*[HttpGet("Filter")]
         public async Task<IActionResult> FilterPreorderCampaign([FromQuery] FilterPreorderCampaignRequest request, [FromQuery] PaginationParameter pagination)
         {
             try
@@ -282,7 +251,7 @@ namespace PreOrderBlindBox.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
 
-        }
+        }*/
 
         [HttpGet("similar-campaign/{id}")]
         public async Task<IActionResult> GetSimilarPreorderCampaign(int id)

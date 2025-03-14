@@ -14,18 +14,17 @@ namespace PreOrderBlindBox.Services.IServices
 {
     public interface IPreorderCampaignService
     {
-        Task<Pagination</*PreorderCampaign*/ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request);
-        Task<int> AddPreorderCampaignAsync(CreatePreorderCampaignRequest createPreorderCampaignRequest);
+        Task<Pagination</*PreorderCampaign*/ResponsePreorderCampaign>> GetAllValidPreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request);
+        Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request);
         Task<ResponsePreorderCampaignDetail?> GetPreorderCampaignAsyncById(int id);
         Task<ResponsePreorderCampaignDetail?> GetPreorderCampaignBySlugAsync(string slug);
         Task<bool> DeletePreorderCampaign(int id);
-        Task<int> UpdatePreorderCampaign(int id, UpdatePreorderCampaignRequest request);
         Task BackGroundUpdatePreorderCampaign();
         Task<int> CancelPreorderCampaign(int id);
         Task<Pagination<ResponseSearchPreorderCampaign>> SearchPreorderCampaignAsync(PreorderCampaignSearchRequest searchRequest, PaginationParameter pagination);
         Task<bool> AddCampaignWithMilestonesAsync(CreatePreorderCampaignRequest campaignRequest);
         Task<bool> UpdatePreorderCampaignWithMilestone(int id, UpdatePreorderCampaignRequest request);
-        Task<Pagination<ResponseSearchPreorderCampaign>> FilterPreorderCampaignAsync(FilterPreorderCampaignRequest request, PaginationParameter pagination);
+        //Task<Pagination<ResponseSearchPreorderCampaign>> FilterPreorderCampaignAsync(FilterPreorderCampaignRequest request, PaginationParameter pagination);
         Task<Pagination<ResponsePreorderCampaignDetail>> GetAllCompleteBulkCampaign(PaginationParameter pagination);
         Task<List<ResponseSearchPreorderCampaign>> GetSimilarPreorderCampaign(int id);
     }

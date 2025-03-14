@@ -18,6 +18,8 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.PreorderCampaignModel
         public string Type { get; set; }
         public string Status { get; set; }
         public int? PlacedOrderCount { get; set; }
+        public decimal PriceAtTime { get; set; }
+        public decimal DiscountPercent { get; set; }
         public int TotalQuantity { get; set; }
         public ResponseBlindBox BlindBox { get; set; }
     }
