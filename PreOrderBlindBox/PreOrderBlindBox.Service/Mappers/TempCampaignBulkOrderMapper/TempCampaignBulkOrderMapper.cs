@@ -12,7 +12,7 @@ namespace PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper
 {
     public static class TempCampaignBulkOrderMapper
     {
-        public static TempCampaignBulkOrder toTempCampaignBulkOrder(this RequestCreateOrder requestCreateOrder, int userId, int? userVoucherID)
+        public static TempCampaignBulkOrder toTempCampaignBulkOrder(this RequestCreateOrder requestCreateOrder, int userId)
         {
             return new TempCampaignBulkOrder()
             {
@@ -22,7 +22,6 @@ namespace PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper
                 ReceiverName = requestCreateOrder.ReceiverName,
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
                 ReceiverPhone = requestCreateOrder.ReceiverPhone,
-                UserVoucherId = userVoucherID,
                 Status = "Waiting",
                 CreatedDate = DateTime.Now,
                 UpdatedDate = null
@@ -36,12 +35,11 @@ namespace PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper
                 UserVoucherId = tempCampaignBulkOrder.UserVoucherId,
                 CustomerId = tempCampaignBulkOrder.CustomerId,
                 Amount = tempCampaignBulkOrder.Amount,
-                CreatedDate = tempCampaignBulkOrder.CreatedDate.ToString("dd MMM, yyyy"),
+                CreatedDate = tempCampaignBulkOrder.CreatedDate.ToString("mm:HH dd/MM/yyyy"),
                 Receiver = tempCampaignBulkOrder.ReceiverName,
                 ReceiverPhone = tempCampaignBulkOrder.ReceiverPhone,
                 ReceiverAddress = tempCampaignBulkOrder.ReceiverAddress,
                 Status = tempCampaignBulkOrder.Status,
-                TotalItems = tempCampaignBulkOrder.TempCampaignBulkOrderDetails.Sum(x => x.Quantity),
             };
         }
     }

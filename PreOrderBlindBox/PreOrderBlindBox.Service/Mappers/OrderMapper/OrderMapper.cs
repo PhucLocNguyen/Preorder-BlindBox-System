@@ -11,7 +11,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
 {
     public static class OrderMapper
     {
-        public static Order toOrderEntity(this RequestCreateOrder requestCreateOrder, int userId, int? userVoucherID)
+        public static Order toOrderEntity(this RequestCreateOrder requestCreateOrder, int userId)
         {
             return new Order()
             {
@@ -21,8 +21,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                 ReceiverName = requestCreateOrder.ReceiverName,
                 ReceiverAddress = requestCreateOrder.ReceiverAddress,
                 ReceiverPhone = requestCreateOrder.ReceiverPhone,
-                UserVoucherId = userVoucherID,
-				Status = "Confirmed",
+				Status = "Placed",
 				CreatedDate = DateTime.Now,
                 UpdatedDate = null
             };
@@ -36,7 +35,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                CustomerId = order.CustomerId,
                Amount = order.Amount,
                //DiscountMoney =(decimal) order.DiscountMoney,
-               CreatedDate =  order.CreatedDate.ToString("ss:mm:HH dd/MM/yyyy"),
+               CreatedDate =  order.CreatedDate.ToString("mm:HH dd/MM/yyyy"),
                Receiver = order.ReceiverName,
                ReceiverPhone = order.ReceiverPhone,
                ReceiverAddress = order.ReceiverAddress,

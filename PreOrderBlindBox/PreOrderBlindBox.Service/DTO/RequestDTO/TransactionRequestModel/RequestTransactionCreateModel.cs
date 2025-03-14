@@ -22,6 +22,7 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel
         public int? WalletId { get; set; }
 
         public int? OrderId { get; set; }
+		public int? TempCampaignBulkOrderId { get; set; }
 
-    }
+	}
 }
