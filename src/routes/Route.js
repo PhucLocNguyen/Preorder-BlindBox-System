@@ -10,7 +10,8 @@ const RegisterPage = lazy(() => import("../pages/Account/Register"));
 const StaffView = lazy(() => import("../pages/Staff/StaffView"));
 const ProductsView = lazy(() => import("../pages/Staff/ProductManagement/ProductsView"));
 const OrdersView = lazy(() => import("../pages/Staff/OrderManagement/OrdersView"));
-const NotificationsView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationView"));
+const NotificationsView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationsView"));
+const NotificationDetailView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationDetailView"));
 const ProductCreatePage = lazy(() => import("../pages/Staff/ProductManagement/ProductCreate"));
 const ProductEditPage = lazy(() => import("../pages/Staff/ProductManagement/ProductEdit"));
 const AdminView = lazy(() => import("../pages/Admin/AdminView"));
@@ -61,6 +62,7 @@ const publicRoutes = [
       { path: "orders", component: OrdersView, },
       { path: "orders/:id", component: OrderDetailView },
       { path: "notifications", component: NotificationsView },
+      { path: "notifications/:id", component: NotificationDetailView },
       { path: "product/create", component: ProductCreatePage },
       { path: "product/edit/:id", component: ProductEditPage },
 

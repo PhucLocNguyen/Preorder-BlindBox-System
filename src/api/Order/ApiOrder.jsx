@@ -17,7 +17,7 @@ const GetAllOrder = async (pageIndex, pageSize, searchKeyWords, orderBy) => {
         params.orderBy = orderBy;
         var result = await api.get('/Order', { ...axiosConfigHeader, params: params });
         if (result.status === 200) {
-            return result.data;
+            return result;
         }
     } catch (error) {
         console.log('>>> Api Get All Order Error: ', error);
@@ -27,7 +27,7 @@ const GetAllOrder = async (pageIndex, pageSize, searchKeyWords, orderBy) => {
 
 const GetOrderById = async (orderId) => {
     try {
-        var result = await api.get(`/Order/${orderId}`, axiosConfigHeader)
+        var result = await api.get(`/Order/staff/${orderId}`, axiosConfigHeader)
         if (result.status === 200) {
             return result.data;
         }

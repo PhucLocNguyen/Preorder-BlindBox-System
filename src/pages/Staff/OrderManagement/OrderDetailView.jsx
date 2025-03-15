@@ -5,7 +5,6 @@ import {
     ShoppingOutlined,
     TruckOutlined,
     InboxOutlined,
-    ProjectOutlined,
     UserOutlined,
     HomeOutlined,
     CheckCircleOutlined
@@ -201,8 +200,8 @@ const OrderDetailView = () => {
             <div className='h-screen overflow-y-auto'>
                 <div className="sticky top-0 z-10 bg-white shadow-md rounded-lg p-2 flex justify-between items-center m-2 w-full max-w-[1176px] mx-auto">
                     <div>
-                        <h1 className="text-2xl font-bold"><button className="bg-white p-4 rounded-lg shadow mb-4 border-2 border-black w-14" onClick={() => navigate(-1)}><ArrowLeftOutlined /></button>  #S-10242002</h1>
-                        <p className="text-gray-500">Order History / Order Details / S-10242002 - {orderById.createdDate}</p>
+                        <h1 className="text-2xl font-bold"><button className="bg-white p-4 rounded-lg shadow mb-4 border-2 border-black w-14" onClick={() => navigate(-1)}><ArrowLeftOutlined /></button>  #{id}</h1>
+                        <p className="text-gray-500">Lịch sử đơn hàng / Chi tiết đơn hàng / #{id} - {orderById.createdDate}</p>
                     </div>
                     <div className="flex space-x-2">
                         {editMode ? (
@@ -210,12 +209,17 @@ const OrderDetailView = () => {
                                 <button className="bg-red-600 text-white px-4 py-2 rounded-lg" onClick={() => {
                                     setEditMode(false)
                                     fetchOrderById()
-                                }}>Cancel</button>
-                                <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleSave}>Save</button>
+                                }}>Hủy</button>
+                                <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleSave}>
+                                    Lưu
+                                </button>
                             </>
 
                         ) : (
-                            <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg border border-gray-600" onClick={() => setEditMode(true)}>Edit Order</button>
+                            <button className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg border border-gray-600"
+                                onClick={() => setEditMode(true)}>
+                                Chỉnh sửa đơn hàng
+                            </button>
                         )}
                     </div>
                 </div>
@@ -224,13 +228,14 @@ const OrderDetailView = () => {
                     <div className='flex justify-around'>
                         <div className='w-[70%]'>
                             <div className="bg-white p-4 rounded-lg shadow mb-4">
-                                <h2 className="text-lg font-bold mb-2">Progress</h2>
+                                <h2 className="text-lg font-bold mb-2">Tiến độ</h2>
                                 <div className="flex justify-between items-stretch ">
                                     {progress.map((step, index) => (
                                         <div
                                             key={index}
                                             className={`flex-1 text-left rounded-lg shadow p-4 m-1 transition duration-200 
-                    ${isClickable(index) ? 'cursor-pointer hover:shadow-lg' : `cursor-not-allowed ${() => { editMode ? `` : `opacity-50` }} `}`}
+                                    ${isClickable(index) ? 'cursor-pointer hover:shadow-lg' :
+                                                    `cursor-not-allowed ${() => { editMode ? `` : `opacity-50` }} `}`}
                                             onClick={() => isClickable(index) && handleStatusClick(index)}
                                         >
                                             <span>
@@ -254,16 +259,16 @@ const OrderDetailView = () => {
                             </div>
                             <div className="bg-white p-4 rounded-lg shadow mb-4">
                                 <div className="flex justify-between items-center mb-4">
-                                    <h2 className="text-lg font-bold">Product</h2>
+                                    <h2 className="text-lg font-bold">Sản phẩm</h2>
                                 </div>
                                 <table className="min-w-full bg-white rounded-lg overflow-hidden border border-gray-200 shadow-md">
                                     <thead>
                                         <tr className="bg-gray-100">
-                                            <th className="py-3 px-4 border border-gray-200 text-center">Item</th>
-                                            <th className="py-3 px-4 border border-gray-200 text-center">Size</th>
-                                            <th className="py-3 px-4 border border-gray-200 text-center">Quantity</th>
-                                            <th className="py-3 px-4 border border-gray-200 text-center">Price</th>
-                                            <th className="py-3 px-4 border border-gray-200 text-center">Amount</th>
+                                            <th className="py-3 px-4 border border-gray-200 text-center">Sản phẩm</th>
+                                            <th className="py-3 px-4 border border-gray-200 text-center">Kích thước</th>
+                                            <th className="py-3 px-4 border border-gray-200 text-center">Số lượng</th>
+                                            <th className="py-3 px-4 border border-gray-200 text-center">Giá</th>
+                                            <th className="py-3 px-4 border border-gray-200 text-center">Thành tiền</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -273,12 +278,9 @@ const OrderDetailView = () => {
                                                     <img src={orderDetail.blindBox.images.mainImage.url} className="w-10 h-10 mr-2 rounded-md" />
                                                     <div>
                                                         <p className="font-medium">{orderDetail.blindBox.name}</p>
-                                                        {/* <p className="text-gray-500 text-sm">{product.category}</p> */}
                                                     </div>
                                                 </td>
-                                                <td className="py-3 px-4 text-center">
-                                                    <span className={`px-3 py-1 rounded-lg `}>{orderDetail.blindBox.size}</span>
-                                                </td>
+                                                <td className="py-3 px-4 text-center">{orderDetail.blindBox.size}</td>
                                                 <td className="py-3 px-4 text-center">{orderDetail.quantity}</td>
                                                 <td className="py-3 px-4 text-center">{orderDetail.unitEndCampaignPrice}</td>
                                                 <td className="py-3 px-4 text-center">{orderDetail.amount}</td>
@@ -288,37 +290,38 @@ const OrderDetailView = () => {
                                 </table>
                             </div>
                         </div>
+
                         <div className='w-[25%]'>
                             <div className="grid grid-cols-1 gap-4">
                                 <div className="bg-white p-4 rounded-lg shadow">
-                                    <h2 className="text-lg font-bold mb-2">Payment</h2>
+                                    <h2 className="text-lg font-bold mb-2">Thanh toán</h2>
                                     <div className="space-y-2">
                                         <div className="flex justify-between">
-                                            <p>Subtotal</p>
+                                            <p>Tạm tính</p>
                                             <p>{orderDetails.reduce((acc, item) => acc + item.amount, 0)} VND</p>
                                         </div>
                                         <div className="flex justify-between">
-                                            <p>Discount ({userVoucherById.length === 0 ? '0' : userVoucherById.percentDiscount}%)</p>
-                                            <p>- {userVoucherById.length === 0 ? '0' :
+                                            <p>Giảm giá ({userVoucherById.length === 0 ? '0' : userVoucherById.percentDiscount}%)</p>
+                                            <p>{userVoucherById.length === 0 ? '0' :
                                                 (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100) > userVoucherById.maximumMoneyDiscount
-                                                    ? userVoucherById.maximumMoneyDiscount : (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100)} VND</p>
+                                                    ? userVoucherById.maximumMoneyDiscount : (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100)} VND
+                                            </p>
                                         </div>
                                         <div className="flex justify-between font-bold">
-                                            <p>Total</p>
+                                            <p>Tổng cộng</p>
                                             <p>{orderById.amount} VND</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="bg-white p-3 rounded-lg shadow-md">
-                                <h2 className="text-lg font-bold mb-2">Customer</h2>
-                                <p className="text-gray-500 text-sm mb-4">Information Detail</p>
+                                <h2 className="text-lg font-bold mb-2">Khách hàng</h2>
+                                <p className="text-gray-500 text-sm mb-4">Thông tin chi tiết</p>
 
                                 <div className="space-y-4">
-                                    {/* General Information */}
                                     <div className="bg-gray-100 p-4 rounded-lg">
                                         <h3 className="font-bold flex items-center">
-                                            <UserOutlined className="mr-2 text-gray-500" /> General Information
+                                            <UserOutlined className="mr-2 text-gray-500" /> Thông tin chung
                                         </h3>
                                         <p className="text-gray-700 mt-2">• {customer.fullName}</p>
                                         <p className="text-gray-700">• {customer.email}</p>
@@ -327,10 +330,9 @@ const OrderDetailView = () => {
                                         )}
                                     </div>
 
-                                    {/* Shipping Address */}
                                     <div className="bg-gray-100 p-4 rounded-lg">
                                         <h3 className="font-bold flex items-center">
-                                            <HomeOutlined className="mr-2 text-gray-500" /> Shipping Information
+                                            <HomeOutlined className="mr-2 text-gray-500" /> Thông tin giao hàng
                                         </h3>
                                         <p className="text-gray-700 mt-2">• {orderById.receiver}</p>
                                         <p className="text-gray-700">• {orderById.receiverAddress}</p>
