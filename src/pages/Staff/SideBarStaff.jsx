@@ -1,10 +1,12 @@
 import React from "react";
 import LogoutButton from "../../assets/Logout/logoutbutton.jpg";
 import { Link, useLocation } from "react-router-dom";
+import useLogout from "../../hooks/useLogout";
 
 
 const SideBarStaff = (props) => {
     const location = useLocation();
+    const logout = useLogout()
     return (
         //<SlideBarStaff />
         <div className="bg-white w-64 h-full shadow-lg p-4 flex flex-col">
@@ -70,7 +72,7 @@ const SideBarStaff = (props) => {
 
                 {/* Logout Icon */}
                 <button
-                    onClick={() => alert("Logout")}
+                    onClick={() => logout()}
                     className="ml-4 p-2 text-gray-500 hover:text-red-500 transition"
                     title="Logout"
                 >
