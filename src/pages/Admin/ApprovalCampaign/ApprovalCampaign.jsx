@@ -1,21 +1,20 @@
 import { useCallback, useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { GetTheActivePreorderCampaign } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
+import { Link } from "react-router";
+import { GetCompletedBulkOrderCampaign } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
 import { Button, Input, Modal, Pagination, Space, Spin, Table } from "antd";
 import useFetchDataPagination from "../../../hooks/useFetchDataPagination";
-import { EyeOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import noThumbnailImage from "../../../assets/noThumbnailImage.jpg";
 
 const { Search } = Input;
 function ApprovalCampaign() {
     const [search, setSearch] = useState("");
     const [warning, setWarning] = useState('');
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(6);
     const [pageIndex, setPageIndex] = useState(1);
-    const navigate = useNavigate();
     
     const fetchPreorderCampaign = useCallback(
-        () => GetTheActivePreorderCampaign(pageSize, pageIndex),
+        () => GetCompletedBulkOrderCampaign(pageSize, pageIndex),
         [pageSize, pageIndex]
     );
 
@@ -26,7 +25,7 @@ function ApprovalCampaign() {
 
     const columns = [
         {
-            title: <span style={{ fontSize: "18px" }}>{"No."}</span>,
+            title: <span style={{ fontSize: "18px" }}>{"STT"}</span>,
             key: "index",
             align: "center",
             render: (_, __, index) =>
@@ -35,7 +34,7 @@ function ApprovalCampaign() {
                 </div>,
         },
         {
-            title: <span style={{ fontSize: "18px" }}>{"Image"}</span>,
+            title: <span style={{ fontSize: "18px" }}>{"Hình ảnh"}</span>,
             key: "mainImage",
             align: "center",
             render: (_, record) => (
@@ -49,32 +48,38 @@ function ApprovalCampaign() {
             ),
         },
         {
-            title: <span style={{ fontSize: "18px" }}>{"Name"}</span>,
+            title: <span style={{ fontSize: "18px" }}>{"Tên chiến dịch"}</span>,
             key: "name",
             align: "center",
             sorter: (a, b) => (a.blindBox?.name || "").localeCompare(b.blindBox?.name || ""),
             render: (_, record) => <div className="text-center font-semibold">{record.blindBox?.name || "N/A"}</div>,
         },
         {
-            title: <span style={{ fontSize: "18px" }}>{"Type"}</span>,
+            title: <span style={{ fontSize: "18px" }}>{"Loại"}</span>,
             key: "type",
             align: "center",
             render: (_, record) => <div className="text-center">{record.type || "Unknown"}</div>,
         },
         {
-            title: <span style={{ fontSize: "18px" }}>{"Size"}</span>,
-            key: "size",
+            title: <span style={{ fontSize: "18px" }}>{"Ngày bắt đầu"}</span>,
+            key: "startDate",
             align: "center",
-            render: (_, record) => <div className="text-center">{record.blindBox?.size || "Unknown"}</div>,
+            render: (_, record) => <div className="text-center"> {record.startDate
+                ? new Date(record.startDate).toLocaleDateString("vi-VN", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                })
+                : "N/A"}</div>,
         },
         {
-            title: <span style={{ fontSize: "18px" }}>{"Start Date"}</span>,
-            key: "startDate",
+            title: <span style={{ fontSize: "18px" }}>{"Ngày kết thúc"}</span>,
+            key: "endDate",
             align: "center",
             render: (_, record) =>
                 <div className="text-center">
-                    {record.startDate
-                        ? new Date(record.startDate).toLocaleDateString("vi-VN", {
+                    {record.endDate
+                        ? new Date(record.endDate).toLocaleDateString("vi-VN", {
                             day: "2-digit",
                             month: "2-digit",
                             year: "numeric",
@@ -83,13 +88,13 @@ function ApprovalCampaign() {
                 </div>,
         },
         {
-            title: <span style={{ fontSize: "18px" }}>{"Action"}</span>,
+            title: <span style={{ fontSize: "18px" }}>{"Hành động"}</span>,
             key: "action",
             align: "center",
             render: (_, record) => (
                 <Space size="middle" className="justify-between">
                     <Button className="" type="primary" htmlType="button">
-                    <Link to={`/admin/preordercampaignApproval/confirm/${record.slug}`}>View detail</Link>
+                    <Link to={`/admin/preordercampaignApproval/confirm/${record.slug}`}>Xem chi tiết</Link>
                     </Button>
                 </Space>
             ),
@@ -105,7 +110,7 @@ function ApprovalCampaign() {
         <div className="dashboard-container overflow-auto h-screen pr-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-thumb-opacity-80">
             <div className="w-full mx-auto mt-5 p-5 bg-white shadow-lg rounded-lg">
                 <div className="flex justify-between">
-                    <h2 className="text-2xl font-bold mb-4">Bulk order campaign waiting for approve</h2>
+                    <h2 className="text-2xl font-bold mb-4">Các chiến dịch gom đơn hàng đang chờ duyệt</h2>
                 </div>
 
                 <Search placeholder="Search products..." allowClear enterButton={<SearchOutlined />} style={{ width: 300 }} onChange={(e) => setSearch(e.target.value)} />
@@ -133,10 +138,10 @@ function ApprovalCampaign() {
                             <Pagination
                                 current={pagination.current}
                                 total={pagination.total}
-                                pageSize={pagination.pageSize}
+                                pageSize={pageSize}
                                 showSizeChanger
                                 showQuickJumper
-                                pageSizeOptions={["5", "10", "20"]}
+                                pageSizeOptions={["6", "10", "20"]}
                                 onChange={(page, pageSize) => {
                                     setPageIndex(page);
                                     setPageSize(pageSize);

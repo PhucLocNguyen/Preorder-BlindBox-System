@@ -11,6 +11,7 @@ import {
     PictureOutlined,
     CheckSquareOutlined
 } from "@ant-design/icons";
+import AdminIcon from "../../assets/Admin/AdminIcon.png"
 
 const { Sider } = Layout;
 
@@ -19,20 +20,20 @@ const SideBarAdmin = () => {
     const navigate = useNavigate();
 
     const menuItems = [
-        { key: "/admin/dashboard", label: "Dashboard", icon: <DashboardOutlined /> },
-        { key: "/admin/staffmanagement", label: "Staff", icon: <UserOutlined /> },
+        { key: "/admin/dashboard", label: "Thống kê", icon: <DashboardOutlined /> },
+        { key: "/admin/staffmanagement", label: "Quản lý nhân viên", icon: <UserOutlined /> },
         { key: "/admin/history-transactions", label: "History Transactions", icon: <HistoryOutlined /> },
-        { key: "/admin/pre-ordercampaign", label: "Preorder Campaign", icon: <ShoppingCartOutlined /> },
-        { key: "/admin/voucher", label: "Voucher", icon: <TagOutlined /> },
-        { key: "/admin/banner-management", label: "Banner Management", icon: <PictureOutlined /> },
-        { key: "/admin/preordercampaignApproval", label: "Campaign approval", icon: <CheckSquareOutlined /> }
+        { key: "/admin/pre-ordercampaign", label: "Quản lý các chiến dịch", icon: <ShoppingCartOutlined /> },
+        { key: "/admin/voucher", label: "Mã giảm giá", icon: <TagOutlined /> },
+        { key: "/admin/banner-management", label: "Quản lý Banner", icon: <PictureOutlined /> },
+        { key: "/admin/preordercampaignApproval", label: "Xét duyệt chiến dịch", icon: <CheckSquareOutlined /> }
 
     ];
 
     return (
         <Sider width={220} className="h-full shadow-lg bg-white">
             <div className="flex items-center justify-center py-6 text-xl font-bold">
-                Admin Management
+                 Admin 
             </div>
 
             <Menu
@@ -51,7 +52,7 @@ const SideBarAdmin = () => {
             <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between p-3 bg-gray-100 rounded-lg">
                 <div className="flex items-center">
                     <img
-                        src="https://placehold.co/40x40"
+                        src={AdminIcon}
                         alt="Profile"
                         className="rounded-full w-10 h-10"
                     />

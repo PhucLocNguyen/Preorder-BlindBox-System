@@ -29,11 +29,6 @@ function PendingOrderTable() {
       key: "createdDate",
     },
     {
-      title: "Tổng số lượng",
-      dataIndex: "totalItems",
-      key: "totalItems",
-    },
-    {
       title: "Tổng tiền",
       dataIndex: "amount",
       key: "amount",

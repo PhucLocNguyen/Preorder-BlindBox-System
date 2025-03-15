@@ -96,7 +96,7 @@ const Pre_orderCampaign = () => {
 
         const columns = [
             {
-                title: <span style={{ fontSize: "18px" }}>{"No."}</span>,
+                title: <span style={{ fontSize: "18px" }}>{"STT"}</span>,
                 key: "index",
                 align: "center",
                 render: (_, __, index) =>
@@ -105,7 +105,7 @@ const Pre_orderCampaign = () => {
                     </div>,
             },
             {
-                title: <span style={{ fontSize: "18px" }}>{"Image"}</span>,
+                title: <span style={{ fontSize: "18px" }}>{"Hình ảnh"}</span>,
                 key: "mainImage",
                 align: "center",
                 render: (_, record) => (
@@ -119,26 +119,26 @@ const Pre_orderCampaign = () => {
                 ),
             },
             {
-                title: <span style={{ fontSize: "18px" }}>{"Name"}</span>,
+                title: <span style={{ fontSize: "18px" }}>{"Tên"}</span>,
                 key: "name",
                 align: "center",
                 sorter: (a, b) => (a.blindBox?.name || "").localeCompare(b.blindBox?.name || ""),
                 render: (_, record) => <div className="text-center font-semibold">{record.blindBox?.name || "N/A"}</div>,
             },
             {
-                title: <span style={{ fontSize: "18px" }}>{"Type"}</span>,
+                title: <span style={{ fontSize: "18px" }}>{"Loại chiến dịch"}</span>,
                 key: "type",
                 align: "center",
                 render: (_, record) => <div className="text-center">{record.type || "Unknown"}</div>,
             },
             {
-                title: <span style={{ fontSize: "18px" }}>{"Size"}</span>,
+                title: <span style={{ fontSize: "18px" }}>{"Kích cỡ"}</span>,
                 key: "size",
                 align: "center",
                 render: (_, record) => <div className="text-center">{record.blindBox?.size || "Unknown"}</div>,
             },
             {
-                title: <span style={{ fontSize: "18px" }}>{"Start Date"}</span>,
+                title: <span style={{ fontSize: "18px" }}>{"Ngày bắt đầu"}</span>,
                 key: "startDate",
                 align: "center",
                 render: (_, record) =>
@@ -153,7 +153,22 @@ const Pre_orderCampaign = () => {
                     </div>,
             },
             {
-                title: <span style={{ fontSize: "18px" }}>{"Action"}</span>,
+                title: <span style={{ fontSize: "18px" }}>{"Ngày kết thúc"}</span>,
+                key: "endDate",
+                align: "center",
+                render: (_, record) =>
+                    <div className="text-center">
+                        {record.endDate
+                            ? new Date(record.endDate).toLocaleDateString("vi-VN", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                            })
+                            : "N/A"}
+                    </div>,
+            },
+            {
+                title: <span style={{ fontSize: "18px" }}>{"Hành động"}</span>,
                 key: "action",
                 align: "center",
                 render: (_, record) => (
@@ -184,10 +199,10 @@ const Pre_orderCampaign = () => {
             <div className="dashboard-container overflow-auto h-screen pr-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-thumb-opacity-80">
                 <div className="w-full mx-auto mt-5 p-5 bg-white shadow-lg rounded-lg">
                     <div className="flex justify-between">
-                        <h2 className="text-2xl font-bold mb-4">Pre-order Campaign Management</h2>
+                        <h2 className="text-2xl font-bold mb-4">Quản lý các chiến dịch</h2>
                         <div>
                             <Button className="bg-blue-500 text-white px-4 py-2 rounded mt-8" icon={<PlusOutlined />} onClick={handleAddPre_orderCampaign}>
-                                Add New Campaign
+                               Tạo mới chiến dịch
                             </Button>
                         </div>
                     </div>
