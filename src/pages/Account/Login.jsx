@@ -19,9 +19,20 @@ function LoginPage() {
     const CallApiLoginByEmailAndPassword = async (payload) => {
         const responseLogin = await ApiLoginByEmailAndPassword({ payload });
         if (responseLogin?.status === 200) {
-            await CallApiGetCurrentAccountRole();
+            const role = await CallApiGetCurrentAccountRole();
+            console.log('current role:', role);
+
             toast.success('Đăng nhập thành công!');
-            navigate(fromPage, { replace: true });
+            if (role.toLowerCase() == 'admin') {
+                console.log('Dăng nhập admin');
+                navigate('/admin', { replace: true })
+
+            } else if (role.toLowerCase() == 'staff') {
+                navigate('/staff', { replace: true })
+
+            } else {
+                navigate(fromPage, { replace: true });
+            }
         } else {
             toast.error('Đăng nhập thất bại!');
         }
@@ -32,6 +43,7 @@ function LoginPage() {
         setAuth({
             roleName: response.roleName,
         })
+        return response?.roleName
     }
 
     const onFinish = async (values) => {
@@ -40,8 +52,12 @@ function LoginPage() {
 
     // Chặn người dùng đã đăng nhập vào trang login
     const checkRole = () => {
-        if (auth.roleName.toLowerCase() !== 'guest' && fromPage === '/') {
+        if (auth.roleName.toLowerCase() == 'customer') {
             navigate('/')
+        } else if (auth.roleName.toLowerCase() == 'admin') {
+            navigate('/admin')
+        } else if (auth.roleName.toLowerCase() == 'staff') {
+            navigate('/staff')
         }
     }
 

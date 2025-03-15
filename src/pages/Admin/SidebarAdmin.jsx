@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import {
     DashboardOutlined,
@@ -12,12 +12,13 @@ import {
     CheckSquareOutlined
 } from "@ant-design/icons";
 import AdminIcon from "../../assets/Admin/AdminIcon.png"
+import useLogout from "../../hooks/useLogout";
 
 const { Sider } = Layout;
 
 const SideBarAdmin = () => {
     const location = useLocation();
-    const navigate = useNavigate();
+    const logout = useLogout()
 
     const menuItems = [
         { key: "/admin/dashboard", label: "Thống kê", icon: <DashboardOutlined /> },
@@ -33,7 +34,7 @@ const SideBarAdmin = () => {
     return (
         <Sider width={220} className="h-full shadow-lg bg-white">
             <div className="flex items-center justify-center py-6 text-xl font-bold">
-                 Admin 
+                Admin
             </div>
 
             <Menu
@@ -62,7 +63,7 @@ const SideBarAdmin = () => {
                     </div>
                 </div>
                 <button
-                    onClick={() => navigate("/login")}
+                    onClick={() => logout()}
                     className="p-2 text-gray-500 hover:text-red-500 transition"
                     title="Logout"
                 >
