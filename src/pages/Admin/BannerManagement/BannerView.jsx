@@ -26,8 +26,8 @@ const BannerView = () => {
 
     const filterMenu = (
         <Menu onClick={(e) => setSortOrder(e.key)}>
-            <Menu.Item key="priority-asc">Priority (High to Low)</Menu.Item>
-            <Menu.Item key="priority-desc">Priority (Low to High)</Menu.Item>
+            <Menu.Item key="priority-asc">Độ ưu tiên(Thấp tới cao)</Menu.Item>
+            <Menu.Item key="priority-desc">Độ ưu tiên(Cao tới thấp)</Menu.Item>
         </Menu>
     );
 
@@ -37,14 +37,14 @@ const BannerView = () => {
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Banners</h2>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsCreateModalOpen(true)}>
-                    Add New Banner
+                    Tạo mới Banner
                 </Button>
             </div>
 
             {/* Filter */}
             <div className="flex gap-4 items-center mb-4">
                 <Dropdown overlay={filterMenu} trigger={["click"]}>
-                    <Button icon={<FilterOutlined />}>Filter</Button>
+                    <Button icon={<FilterOutlined />}>Lọc</Button>
                 </Dropdown>
             </div>
 

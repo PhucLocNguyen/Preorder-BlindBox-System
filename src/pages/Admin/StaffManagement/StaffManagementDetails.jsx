@@ -27,7 +27,7 @@ const StaffManagementDetails = () => {
                 <Link to="/admin/staffmanagement">
                     <ArrowLeft className="w-10 h-10 text-gray-600 hover:text-black transition" />
                 </Link>
-                <h1 className="text-4xl font-bold text-gray-800">Staff Details</h1>
+                <h1 className="text-4xl font-bold text-gray-800">Thông tin nhân viên</h1>
             </div>
 
             {/* Content */}
@@ -44,7 +44,7 @@ const StaffManagementDetails = () => {
                     <div className="flex items-center gap-6 border-b pb-4">
                         <User className="w-10 h-10 text-gray-500" />
                         <div>
-                            <p className="text-gray-800 text-xl font-bold">Full Name</p>
+                            <p className="text-gray-800 text-xl font-bold">Họ và tên</p>
                             <p className="text-2xl font-medium text-gray-900">{detailStaff.fullName}</p>
                         </div>
                     </div>
@@ -52,7 +52,7 @@ const StaffManagementDetails = () => {
                     <div className="flex items-center gap-6 border-b pb-4">
                         <Phone className="w-10 h-10 text-gray-500" />
                         <div>
-                            <p className="text-gray-800 text-xl font-bold">Phone</p>
+                            <p className="text-gray-800 text-xl font-bold">Số điện thoại</p>
                             <p className={`text-2xl font-medium px-3 py-1 rounded ${detailStaff.phone ? "text-gray-900" : "text-red-500 border border-red-500"}`}>
                                 {detailStaff.phone || "None"}
                             </p>
@@ -70,7 +70,7 @@ const StaffManagementDetails = () => {
                     <div className="flex items-center gap-6 border-b pb-4">
                         <MapPin className="w-10 h-10 text-gray-500" />
                         <div>
-                            <p className="text-gray-800 text-xl font-bold">Address</p>
+                            <p className="text-gray-800 text-xl font-bold">Địa Chỉ</p>
                             <p className="text-2xl font-medium text-gray-900">{detailStaff.address}</p>
                         </div>
                     </div>

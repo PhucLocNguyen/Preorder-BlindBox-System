@@ -77,7 +77,7 @@ const BannerCreate = ({ onSuccess }) => {
                     className="w-1/2 rounded-lg h-12 bg-gray-200 hover:bg-gray-300 text-gray-800"
                     onClick={onSuccess}
                 >
-                    Cancel
+                    Hủy
                 </Button>
                 <Button
                     type="primary"
@@ -86,7 +86,7 @@ const BannerCreate = ({ onSuccess }) => {
                     className="w-1/2 rounded-lg h-12 bg-blue-600 hover:bg-blue-700 text-white"
                     onClick={onSuccess}
                 >
-                    Create
+                    Tạo
                 </Button>
             </div>
         </Form>

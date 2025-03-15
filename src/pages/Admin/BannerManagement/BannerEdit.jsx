@@ -107,7 +107,7 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
                     className="w-1/2 rounded-lg h-12 bg-gray-200 hover:bg-gray-300 text-gray-800"
                     onClick={onSuccess}
                 >
-                    Cancel
+                    Hủy
                 </Button>
                 <Button
                     type="primary"
@@ -115,7 +115,7 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
                     size="large"
                     className="w-1/2 rounded-lg h-12 bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                    Update
+                    Lưu
                 </Button>
             </div>
         </Form>

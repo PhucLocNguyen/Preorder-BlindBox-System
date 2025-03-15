@@ -106,8 +106,8 @@ const StaffManagementEdit = ({ userId, onSuccess }) => {
                 </Form.Item>
 
                 <div className="flex justify-center gap-4 mt-4">
-                    <Button size="large" onClick={onSuccess} className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg">Cancel</Button>
-                    <Button type="primary" htmlType="submit" size="large" className="bg-blue-600 text-white px-6 py-2 rounded-lg">Update</Button>
+                    <Button size="large" onClick={onSuccess} className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg">Hủy</Button>
+                    <Button type="primary" htmlType="submit" size="large" className="bg-blue-600 text-white px-6 py-2 rounded-lg">Lưu</Button>
                 </div>
             </Form>
         </Card>
