@@ -10,6 +10,7 @@ import noThumbnailImage from "../../../assets/noThumbnailImage.jpg";
 import { Modal } from "antd";
 import { Link } from "react-router";
 import useFetchDataPagination from "../../../hooks/useFetchDataPagination";
+import { formatMoney } from "../../../utils/FormatMoney";
 const ProductsView = () => {
   const [pageSize, setPageSize] = useState(4);
   const [pageIndex, setPageIndex] = useState(1);
@@ -58,30 +59,30 @@ const ProductsView = () => {
         <img
           src={url ? url : noThumbnailImage}
           alt="Main"
-          className="h-[100px] w-[500px] object-contain rounded-md shadow-md"
+          className="h-[150px] w-[150px] object-contain rounded-md "
         />
       ),
     },
 
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Description", dataIndex: "description", key: "description" },
-    { title: "Size", dataIndex: "size", key: "size" },
+    { title: "Tên sản phẩm", dataIndex: "name", key: "name" },
+    { title: "Giá niêm yết", dataIndex: "listedPrice", key: "listedPrice", render:(listedPrice)=>formatMoney(listedPrice)},
+    { title: "Kích cỡ", dataIndex: "size", key: "size" },
     {
-      title: "Created At",
+      title: "Tạo vào lúc",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date) => new Date(date).toLocaleString(),
     },
     {
-      title: "Action",
+      title: "Hành động",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
           <Link
             to={"/staff/product/edit/" + record.blindBoxId}
-            className="flex bg-blue-600 px-10 py-4 min-h-[40px]  rounded-xl text-white"
+            className="flex bg-blue-600 flex-nowrap w-max min-h-[40px] py-4 px-6  rounded-xl text-white"
           >
-            Update
+          Chỉnh sửa
           </Link>
           <button
             className="px-10 py-4 border bg-transparent rounded-xl border-red-600 text-red-600 hover:border-red-800 hover:text-red-800"
@@ -89,7 +90,7 @@ const ProductsView = () => {
               showModal(record.blindBoxId);
             }}
           >
-            Delete
+            Xoá
           </button>
           <Modal
             title={
@@ -110,7 +111,7 @@ const ProductsView = () => {
                     }}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
                   >
-                    Cancel
+                    Từ chối
                   </button>
                   <button
                     onClick={(e) => {
@@ -119,7 +120,7 @@ const ProductsView = () => {
                     }}
                     className="border border-red-600 text-red-600 hover:bg-red-700 hover:text-white px-4 py-2 rounded-md"
                   >
-                    Delete
+                    Xoá
                   </button>
                 </div>
               </>

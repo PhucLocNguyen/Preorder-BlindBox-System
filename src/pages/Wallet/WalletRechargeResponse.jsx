@@ -77,16 +77,16 @@ function WalletRechargeResponse() {
                 loop={false}
               />
             </div>
-            <h3 className="text-[32px] text-center">Congratulations,</h3>
+            <h3 className="text-[32px] text-center">Chúc mừng,</h3>
             <h3 className="text-[32px] text-center mb-12">
-              Your payment has been sent successfully
+              Thanh toán của bạn đã được nạp vào ví thành công.
             </h3>
             <div className="flex justify-center w-full">
               <GradientButton
                 variant="contained"
                 className="min-w-[400px] min-h-[50px]"
                 onClick={moveToWalletPage}
-                text="Go back to your wallet"
+                text="Về lại trang ví của bạn"
               />
             </div>
           </div>
@@ -102,7 +102,7 @@ function WalletRechargeResponse() {
               />
             </div>
             <h3 className="text-[32px] text-center mb-6">
-              Your payment was failed
+              Thanh toán của bạn đã thất bại
             </h3>
 <div className="flex justify-center w-full">
 
@@ -110,7 +110,7 @@ function WalletRechargeResponse() {
               variant="contained"
               className="min-w-[400px] min-h-[50px]"
               onClick={moveToWalletPage}
-              text=" Go to your wallet"
+              text="Về lại trang ví của bạn"
             />
 </div>
           </div>
