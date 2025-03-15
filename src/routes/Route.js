@@ -26,6 +26,7 @@ const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherC
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
 const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
 const BannerManagement = lazy(() => import("../pages/Admin/BannerManagement/BannerView"));
+const BannerViewDetails = lazy(() => import("../pages/Admin/BannerManagement/BannerViewDetails"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
 const Cart = lazy(() => import("../pages/Customer/Cart"));
 const ProductList = lazy(() => import('../pages/Home/ProductList/ProductList'));
@@ -42,6 +43,13 @@ const MyVoucher = lazy(() => import("../pages/Customer/MyVoucher"));
 
 const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
 const ConfirmBuy = lazy(() => import("../pages/ConfirmBuy/ConfirmBuy"));
+const BulkOrder = lazy(() => import("../pages/Home/BulkOrder/BulkOrder"));
+
+const ApprovalCampaign = lazy(() =>import("../pages/Admin/ApprovalCampaign/ApprovalCampaign"));
+const ApprovalCampaignDetail = lazy(() =>import("../pages/Admin/ApprovalCampaign/ApprovalCampaignDetail"));
+const MyOrders = lazy(() => import("../pages/Customer/Orders/MyOrders"));
+const ViewPendingOrderDetail = lazy(() =>import("../pages/Customer/Orders/ViewPendingOrderDetail"));
+const ViewDetailOrder = lazy(() =>import("../pages/Customer/Orders/ViewDetailOrder"));
 
 const publicRoutes = [
   {
@@ -87,7 +95,7 @@ const publicRoutes = [
   },
   {
     path: '/test',
-    component: ConfirmBuy
+    component: BulkOrder
   }
 ];
 
@@ -114,6 +122,29 @@ const privateRoutes = [
     role: ['Customer']
   },
   {
+    path: "/my-order",
+    layout: DefaultLayout,
+    children: [
+      {
+        index: true,
+        component: MyOrders,
+        layout: DefaultLayout,
+      },
+      {
+        path: "pending-orders/detail/:id",
+        component: ViewPendingOrderDetail,
+        layout: DefaultLayout,
+      },
+      {
+        path: "detail/:id",
+        component: ViewDetailOrder,
+        layout: DefaultLayout,
+      },
+    ],
+    role: ["Customer"],
+  },
+
+  {
     path: "/admin",
     component: AdminView,
     children: [
@@ -129,6 +160,7 @@ const privateRoutes = [
 
 
       { path: "banner-management", component: BannerManagement },
+      { path: "banner-management-details/:id", component: BannerViewDetails },
       { path: "notifications", component: NotificationsView },
       { path: "dashboard", component: Dashboard },
       { path: "voucher", component: VoucherManagement },
@@ -136,6 +168,8 @@ const privateRoutes = [
       { path: "voucher-details/:id", component: VoucherDetails },
       { path: "voucher/update/:id", component: VoucherUpdate },
       { path: "history-transactions", component: HistoryTransactions },
+      { path: "preordercampaignApproval", component: ApprovalCampaign },
+      { path: "preordercampaignApproval/confirm/:slug", component: ApprovalCampaignDetail},
     ],
     role: ['Admin']
   },

@@ -7,6 +7,8 @@ import ProductHot from './ProductHot/ProductHot';
 import CustomerSupport from './CustomerSupport/CustomerSupport';
 import Header from '../../components/Header/Header';
 const description = 'This is a description.';
+import BulkOrder from './BulkOrder/BulkOrder';
+import TimePricing from './TimePricing/TimePricing';
 
 function Home() {
 	return (
@@ -14,6 +16,11 @@ function Home() {
 			<Banner />
 			<ProductList />	
 			<ProductHot />
+			<BulkOrder />
+			<TimePricing />
+
+			{/* <ProductList /> */}
+			{/* <ProductHot /> */}
 			
 			<VoucherCampaignSection />
 			<CustomerSupport/>

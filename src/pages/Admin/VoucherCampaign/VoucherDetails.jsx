@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Button, Card, Popconfirm, message } from "antd";
 import {
     EditOutlined,
@@ -12,7 +12,7 @@ import {
     DollarCircleOutlined
 } from "@ant-design/icons";
 import { GetTheActiveVoucherCampaignByID, DeleteVoucher } from "../../../api/VoucherCampaign/ApiVoucherCampaign";
-
+import { ArrowLeftOutlined } from "@ant-design/icons";
 const VoucherDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -50,8 +50,11 @@ const VoucherDetails = () => {
             <Card className="w-full max-w-2xl bg-white shadow-xl rounded-xl p-6">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
+                    <Link to="/admin/voucher" className="h-full flex">
+                        <ArrowLeftOutlined className="text-xl ml-1" />
+                    </Link>
                     <h1 className="text-3xl font-bold text-gray-800 flex items-center">
-                        🎟️ Voucher Details
+                        🎟️ Thông tin Voucher
                     </h1>
                     <div className="flex space-x-2">
                         <Button
@@ -61,7 +64,7 @@ const VoucherDetails = () => {
                             className="rounded-lg shadow-md bg-blue-500 hover:bg-blue-600 transition-all"
                             onClick={handleUpdateVoucher}
                         >
-                            Update
+                            Chỉnh sửa
                         </Button>
                         <Popconfirm
                             title="Are you sure to delete this voucher?"
@@ -76,7 +79,7 @@ const VoucherDetails = () => {
                                 size="large"
                                 className="rounded-lg shadow-md"
                             >
-                                Delete
+                                Xóa
                             </Button>
                         </Popconfirm>
                     </div>
@@ -84,30 +87,30 @@ const VoucherDetails = () => {
 
                 {/* Nội dung */}
                 <div className="space-y-4 text-lg text-gray-700">
-                    <p><strong>📢 Name:</strong> {voucherDetail.name}</p>
+                    <p><strong>📢 Tên:</strong> {voucherDetail.name}</p>
                     <p className="flex items-center">
                         <CalendarOutlined className="mr-2 text-blue-500" />
-                        <strong>Start Date:</strong> {voucherDetail.startDate}
+                        <strong>Ngày bắt đầu:</strong> {voucherDetail.startDate}
                     </p>
                     <p className="flex items-center">
                         <CalendarOutlined className="mr-2 text-red-500" />
-                        <strong>End Date:</strong> {voucherDetail.endDate}
+                        <strong>Ngày kết thúc:</strong> {voucherDetail.endDate}
                     </p>
                     <p className="flex items-center">
                         <ShoppingCartOutlined className="mr-2 text-green-500" />
-                        <strong>Quantity:</strong> {voucherDetail.quantity} (Taken: {voucherDetail.takenQuantity})
+                        <strong>Số Lượng:</strong> {voucherDetail.quantity} (Đã nhận: {voucherDetail.takenQuantity})
                     </p>
                     <p className="flex items-center">
                         <UserOutlined className="mr-2 text-purple-500" />
-                        <strong>Max vouchers per user:</strong> {voucherDetail.maximumUserCanGet}
+                        <strong>Số lượng voucher tối đa cho mỗi người:</strong> {voucherDetail.maximumUserCanGet}
                     </p>
                     <p className="flex items-center">
                         <PercentageOutlined className="mr-2 text-orange-500" />
-                        <strong>Discount:</strong> {voucherDetail.percentDiscount}%
+                        <strong>Ưu đãi:</strong> {voucherDetail.percentDiscount}%
                     </p>
                     <p className="flex items-center">
                         <CheckCircleOutlined className={`mr-2 ${voucherDetail.status === "Active" ? "text-green-500" : "text-red-500"}`} />
-                        <strong>Status:</strong> {voucherDetail.status}
+                        <strong>Trạng Thái:</strong> {voucherDetail.status}
                     </p>
                 </div>
             </Card>

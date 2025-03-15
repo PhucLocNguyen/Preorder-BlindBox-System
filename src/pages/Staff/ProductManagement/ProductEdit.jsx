@@ -71,9 +71,9 @@ function ProductEdit() {
             size: detailBlindBox.size,
           }}
         >
-          <div className="grid grid-cols-12 gap-4 min-h-screen mx-auto mt-5 p-5 bg-[#e5e7eb] shadow-lg rounded-lg">
+          <div className="grid grid-cols-12 gap-4 min-h-screen mx-auto mt-5 p-5 bg-[#e5e7eb] shadow-lg ">
             <div className="col-span-9 ">
-              <div className="bg-white  p-4 rounded-lg">
+              <div className="bg-white  p-4 rounded-xl">
                 <div className="flex items-center mb-4">
                   <Link to="/staff/products" className="h-full flex">
                     <ArrowLeftOutlined
@@ -146,7 +146,7 @@ function ProductEdit() {
                         detailBlindBox != null &&
                         detailBlindBox.images?.galleryImages != null
                       ) ? (
-                        <div>There are no images please upload for view</div>
+                        <div>Đang không có hình ảnh vui lòng upload ảnh để hiển thị</div>
                       ) : (
                         detailBlindBox.images.galleryImages.map(
                           (item, index) => {
@@ -186,7 +186,7 @@ function ProductEdit() {
             </div>
             <div className="col-span-3">
               {/* Main Image */}
-              <div className="py-10 bg-white px-4 rounded-lg">
+              <div className="py-10 bg-white px-4 rounded-xl">
               <Form.Item
                   label="Giá niêm yết"
                   name="listedPrice"
@@ -196,13 +196,18 @@ function ProductEdit() {
                 >
                   <InputNumber
                     style={{ width: "100%" }}
-                    formatter={(value) =>
-                      `₫ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                    }
                     min={10000}
+                    formatter={(value) => {
+                      if (!value) return "";
+                      return (
+                        value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                        " VND"
+                      );
+                    }}
                     defaultValue={detailBlindBox.listedPrice}
-                    parser={(value) => value.replace(/₫\s?|(,*)/g, "")}
+                    parser={(value) => value.replace(/\s?VND|(,*)/g, "")}
                   />
+                 
                 </Form.Item>
                 <Form.Item name="mainImage">
                   <label className="block text-2xl text-black">Ảnh chính</label>

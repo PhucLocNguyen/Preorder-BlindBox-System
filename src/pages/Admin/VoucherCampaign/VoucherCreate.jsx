@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, DatePicker, Row, Col, Slider, InputNumber, Card } from "antd";
+import { Button, Form, Input, DatePicker, Row, Col, Slider, InputNumber, Card, message } from "antd";
 import { CreateVoucher } from "../../../api/VoucherCampaign/ApiVoucherCampaign";
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router';
@@ -33,11 +33,11 @@ const VoucherCreate = () => {
             const result = await CreateVoucher(payload, config);
             toast.success('Voucher created successfully!');
             navigate('/admin/voucher');
-
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         } catch (error) {
-            toast.error('Error creating voucher: ' + (error.response?.data?.message || error.message));
-        } finally {
-            setLoading(false); // Tắt loading dù thành công hay thất bại
+            message.error("Tạo voucher thất bại: " + (error.response?.data?.message || error.message));
         }
     };
 
@@ -49,21 +49,24 @@ const VoucherCreate = () => {
                     <Link to="/admin/voucher" className="h-full flex">
                         <ArrowLeftOutlined className="text-2xl mr-6" />
                     </Link>
-                    <h1 className="text-3xl font-bold">Create new voucher</h1>
+                    <h1 className="text-3xl font-bold">Tạo mới voucher</h1>
                 </div>
                 <Form form={form} layout="vertical" onFinish={handleSubmit} className="space-y-6">
-                    <Button type="primary" htmlType="submit" size="large" className="rounded-xl px-8 py-3 text-xl h-14">
-                        Create
+                    <Button type="primary"
+                        htmlType="submit"
+                        size="large"
+                        className="rounded-xl px-8 py-3 text-xl">
+                        Tạo
                     </Button>
                     <Row gutter={[32, 20]}>
                         <Col span={12}>
-                            <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please enter the name!" }]}>
+                            <Form.Item label="Tên" name="name" rules={[{ required: true, message: "Please enter the name!" }]}>
                                 <Input placeholder="Enter voucher name" className="rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label="Maximum Money Discount"
+                                label="Mức giảm giá tối đa"
                                 name="maximumMoneyDiscount"
                                 rules={[{ required: true, message: "Please enter maximum money discount!" }]}
                             >
@@ -87,12 +90,12 @@ const VoucherCreate = () => {
 
                     <Row gutter={[32, 20]}>
                         <Col span={12}>
-                            <Form.Item label="Quantity" name="quantity" rules={[{ required: true, message: "Please enter the quantity!" }]}>
+                            <Form.Item label="Số Lượng" name="quantity" rules={[{ required: true, message: "Please enter the quantity!" }]}>
                                 <Input type="number" placeholder="Enter quantity" min={1} className="rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Validity Duration" name="setNumberExpirationDate" rules={[{ required: true, message: "Please enter the quantity!" }]}>
+                            <Form.Item label="Thời hạn hiệu lực" name="setNumberExpirationDate" rules={[{ required: true, message: "Please enter the quantity!" }]}>
                                 <Input type="number" placeholder="Enter Validity Duration" min={1} className="rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
@@ -100,7 +103,7 @@ const VoucherCreate = () => {
 
                     <Row gutter={[32, 20]}>
                         <Col span={24}>
-                            <Form.Item label="Start & End Date" name="dateRange" rules={[{ required: true, message: "Please select date range!" }]}>
+                            <Form.Item label="Ngày bắt đầu và kết thúc" name="dateRange" rules={[{ required: true, message: "Please select date range!" }]}>
                                 <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" className="w-full rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
@@ -108,12 +111,12 @@ const VoucherCreate = () => {
 
                     <Row gutter={[32, 20]}>
                         <Col span={12}>
-                            <Form.Item label="Maximum User Can Get" name="maximumUserCanGet">
+                            <Form.Item label="Mức tối đa người dùng có thể nhận" name="maximumUserCanGet">
                                 <Slider min={0} max={10} marks={{ 0: '0', 5: '5', 10: '10' }} tooltipVisible={{ always: true }} className="h-8" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Percent Discount" name="percentDiscount">
+                            <Form.Item label="Phần trăm giảm giá" name="percentDiscount">
                                 <Slider min={0} max={100} marks={{ 0: '0%', 50: '50%', 100: '100%' }} tooltipVisible={{ always: true }} className="h-8" />
                             </Form.Item>
                         </Col>
