@@ -3,7 +3,7 @@ import 'swiper/css/effect-fade';
 import 'swiper/css';
 import { Autoplay, EffectFade } from 'swiper/modules';
 import { useState, useEffect } from 'react';
-import { GetAllBanners } from '../../api/Banner/ApiBanner';
+import { GetAllBanner } from '../../api/Banner/Banner';
 
 export default function Banner() {
   const [banners, setBanners] = useState([]);
@@ -12,13 +12,18 @@ export default function Banner() {
 
   useEffect(() => {
     const fetchBanners = async () => {
-      const data = await GetAllBanners();
-      if (data.length > 0) {
-        setBanners(data);
-      } else {
+      try {
+        const { data } = await GetAllBanner(10, 1); // Lấy 10 banner từ trang 1
+        if (data?.length) {
+          setBanners(data);
+        } else {
+          setError('Không có banner nào!');
+        }
+      } catch (err) {
         setError('Lỗi khi lấy dữ liệu banner!');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchBanners();
@@ -42,7 +47,7 @@ export default function Banner() {
             <img
               src={banner.imageUrl}
               alt={banner.title}
-              className='w-full h-full object-contain'
+              className='w-full h-full object-cover'
             />
           </SwiperSlide>
         ))}
