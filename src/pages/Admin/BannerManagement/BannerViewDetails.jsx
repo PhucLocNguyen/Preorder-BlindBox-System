@@ -37,7 +37,7 @@ const BannerViewDetails = () => {
         <div className="p-6 bg-white shadow-md rounded-lg">
             <div className="flex items-center mb-6 cursor-pointer" onClick={() => navigate("/admin/banner-management")}>
                 <ArrowLeftOutlined className="text-2xl mr-4" />
-                <h1 className="text-3xl font-bold">Banner Details</h1>
+                <h1 className="text-3xl font-bold">Thông tin Banner</h1>
             </div>
             <div className="mt-4 flex justify-end gap-4 mb-6">
                 <Button
@@ -47,13 +47,13 @@ const BannerViewDetails = () => {
                     className="rounded-lg shadow-md bg-blue-500 hover:bg-blue-600 transition-all"
                     onClick={() => setIsModalVisibleEdit(true)}
                 >
-                    Edit
+                    Chỉnh sửa
                 </Button>
                 <Popconfirm
-                    title="Are you sure to delete this banner?"
+                    title="Ban có chắc chắn muốn xóa banner này không?"
                     onConfirm={handleDeleteBanner}
-                    okText="Yes"
-                    cancelText="No"
+                    okText="Có"
+                    cancelText="Không"
                 >
                     <Button
                         type="primary"
@@ -62,7 +62,7 @@ const BannerViewDetails = () => {
                         size="large"
                         className="rounded-lg shadow-md"
                     >
-                        Delete
+                        Xóa
                     </Button>
                 </Popconfirm>
             </div>

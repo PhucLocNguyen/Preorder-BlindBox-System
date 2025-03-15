@@ -69,11 +69,11 @@ const StaffManagement = () => {
         }
     };
     const columns = [
-        { title: <span style={{ fontSize: "18px" }}>{"Full Name"}</span>, dataIndex: "fullName", key: "fullName", align: "center" },
+        { title: <span style={{ fontSize: "18px" }}>{"Họ và Tên"}</span>, dataIndex: "fullName", key: "fullName", align: "center" },
         { title: <span style={{ fontSize: "18px" }}>{"Email"}</span>, dataIndex: "email", key: "email", align: "center" },
-        { title: <span style={{ fontSize: "18px" }}>{"Address"}</span>, dataIndex: "address", key: "address", align: "center" },
+        { title: <span style={{ fontSize: "18px" }}>{"Địa chỉ"}</span>, dataIndex: "address", key: "address", align: "center" },
         {
-            title: <span style={{ fontSize: "18px" }}>{"Action"}</span>,
+            title: <span style={{ fontSize: "18px" }}>{"Chức Năng"}</span>,
             key: "action",
             align: "center",
             render: (_, record) => (
@@ -114,7 +114,7 @@ const StaffManagement = () => {
             <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2">
                     <Search
-                        placeholder="Search staff by name..."
+                        placeholder="Tìm kiếm nhân viên theo tên..."
                         allowClear
                         enterButton={<SearchOutlined />}
                         style={{ width: 300 }}
@@ -125,7 +125,7 @@ const StaffManagement = () => {
                     </Dropdown>
                 </div>
                 <Button className="bg-blue-500 text-white px-4 py-2 rounded" icon={<PlusOutlined />} onClick={handleAddStaff}>
-                    Add New Staff
+                    Tạo mới nhân viên
                 </Button>
             </div>
 
@@ -155,7 +155,7 @@ const StaffManagement = () => {
             </Modal>
 
             <Modal
-                title="Delete user"
+                title="Xóa Nnân viên"
                 open={isDeleteModalVisible}
                 onCancel={() => setIsDeleteModalVisible(false)}
                 footer={[
@@ -164,7 +164,7 @@ const StaffManagement = () => {
                 ]}
                 closable={false}
             >
-                <p>Do you want to delete user "{userToDelete?.fullName}"?</p>
+                <p>Bạn có muốn xóa nhân viên "{userToDelete?.fullName}"?</p>
             </Modal>
         </div>
     );
