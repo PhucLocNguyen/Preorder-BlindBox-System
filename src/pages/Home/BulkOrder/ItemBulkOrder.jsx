@@ -75,7 +75,7 @@ function ItemBulkOrder({ data }) {
                   </div>
                </div>
                <div>
-                  <span className='text-[#000] font-bold text-[15px] line-clamp-2 mb-[5px]'>
+                  <span className='text-[#000] font-bold text-[16px] line-clamp-2 mb-[5px]'>
                      {data?.blindBox?.name}
                   </span>
                   <div>

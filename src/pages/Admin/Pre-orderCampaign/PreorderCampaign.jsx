@@ -13,240 +13,240 @@ const { Search } = Input;
 
 const Pre_orderCampaign = () => {
 
-    const [search, setSearch] = useState("");
-    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-    const [warning, setWarning] = useState('');
-    const [pageSize, setPageSize] = useState(5);
-    const [pageIndex, setPageIndex] = useState(1);
-    const navigate = useNavigate();
-    const [detailPre_orderCampaign_bySlug, setDetailPre_orderCampaign_bySlug] = useState([]);
-    const [selectedPreorderCampaignId, setSelectedPreorderCampaignId] = useState(null);
+        const [search, setSearch] = useState("");
+        const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+        const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+        const [warning, setWarning] = useState('');
+        const [pageSize, setPageSize] = useState(5);
+        const [pageIndex, setPageIndex] = useState(1);
+        const navigate = useNavigate();
+        const [detailPre_orderCampaign_bySlug, setDetailPre_orderCampaign_bySlug] = useState([]);
+        const [selectedPreorderCampaignId, setSelectedPreorderCampaignId] = useState(null);
 
-    const fetchPreorderCampaign = useCallback(
-        () => GetTheActivePreorderCampaign(pageSize, pageIndex),
-        [pageSize, pageIndex]
-    );
-    const { data, loading, refetch, pagination } = useFetchDataPagination(fetchPreorderCampaign, [
-        pageSize,
-        pageIndex,
-    ]);
-    const handleAddPre_orderCampaign = () => {
-        navigate("/admin/preordercampaign/create");
+        const fetchPreorderCampaign = useCallback(
+            () => GetTheActivePreorderCampaign(pageSize, pageIndex),
+            [pageSize, pageIndex]
+        );
+        const { data, loading, refetch, pagination } = useFetchDataPagination(fetchPreorderCampaign, [
+            pageSize,
+            pageIndex,
+        ]);
+        const handleAddPre_orderCampaign = () => {
+            navigate("/admin/preordercampaign/create");
 
-    };
+        };
 
-    const handleViewPre_orderCampaign = (record) => {
-        navigate(`/admin/pre-ordercampaign-details/${record.slug}`);
-    };
+        const handleViewPre_orderCampaign = (record) => {
+            navigate(`/admin/pre-ordercampaign-details/${record.slug}`);
+        };
 
-    const handleCancelEdit = () => {
-        setIsEditModalVisible(false);
-    };
+        const handleCancelEdit = () => {
+            setIsEditModalVisible(false);
+        };
 
-    const handleDeletePre_orderCampaign = async (record) => {
-        try {
-            console.log("Fetching details for campaign:", record.slug);
+        const handleDeletePre_orderCampaign = async (record) => {
+            try {
+                console.log("Fetching details for campaign:", record.slug);
 
-            const campaignDetails = await GetActivePreorderCampaignBySlug(record.slug);
-            if (campaignDetails) {
-                console.log("Received campaign details:", campaignDetails);
-                setDetailPre_orderCampaign_bySlug(campaignDetails);
-                setIsDeleteModalVisible(true);
-            } else {
+                const campaignDetails = await GetActivePreorderCampaignBySlug(record.slug);
+                if (campaignDetails) {
+                    console.log("Received campaign details:", campaignDetails);
+                    setDetailPre_orderCampaign_bySlug(campaignDetails);
+                    setIsDeleteModalVisible(true);
+                } else {
+                    notification.error({
+                        message: "Error",
+                        description: "Failed to fetch campaign details.",
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching campaign details:", error);
                 notification.error({
                     message: "Error",
-                    description: "Failed to fetch campaign details.",
+                    description: "Could not fetch campaign details.",
                 });
             }
-        } catch (error) {
-            console.error("Error fetching campaign details:", error);
-            notification.error({
-                message: "Error",
-                description: "Could not fetch campaign details.",
-            });
-        }
-    };
+        };
 
-    const confirmDeletePre_orderCampaign = async () => {
-        if (!detailPre_orderCampaign_bySlug?.preorderCampaignId) {
-            notification.error({
-                message: "Error",
-                description: "Pre-order campaign ID is missing!",
-            });
-            return;
-        }
-        if(detailPre_orderCampaign_bySlug.status ==="Pending"){
-            var response = await DeletePendingCampaign(detailPre_orderCampaign_bySlug.preorderCampaignId);
-            if(response ==200){
-                setIsDeleteModalVisible(false);
-                refetch(); // Refresh data after deletion
+        const confirmDeletePre_orderCampaign = async () => {
+            if (!detailPre_orderCampaign_bySlug?.preorderCampaignId) {
+                notification.error({
+                    message: "Error",
+                    description: "Pre-order campaign ID is missing!",
+                });
+                return;
             }
-        }else{
-            notification.error({
-                message: "Error",
-                description: "This campaign must be in pending status to delete",
-            });
-            return;
-        }
-        
-    };
+            if(detailPre_orderCampaign_bySlug.status ==="Pending"){
+                var response = await DeletePendingCampaign(detailPre_orderCampaign_bySlug.preorderCampaignId);
+                if(response ==200){
+                    setIsDeleteModalVisible(false);
+                    refetch(); // Refresh data after deletion
+                }
+            }else{
+                notification.error({
+                    message: "Error",
+                    description: "This campaign must be in pending status to delete",
+                });
+                return;
+            }
+            
+        };
 
 
 
-    const columns = [
-        {
-            title: <span style={{ fontSize: "18px" }}>{"No."}</span>,
-            key: "index",
-            align: "center",
-            render: (_, __, index) =>
-                <div className="text-center text-red-500 font-bold">
-                    {(pagination.current - 1) * pagination.pageSize + index + 1}
-                </div>,
-        },
-        {
-            title: <span style={{ fontSize: "18px" }}>{"Image"}</span>,
-            key: "mainImage",
-            align: "center",
-            render: (_, record) => (
-                <div className="flex justify-center items-center">
-                    <img
-                        src={record.blindBox?.mainImages?.url || noThumbnailImage}
-                        alt="Main"
-                        className="w-24 h-24 object-cover rounded-md shadow-md transition-all duration-300 hover:scale-105"
-                    />
-                </div>
-            ),
-        },
-        {
-            title: <span style={{ fontSize: "18px" }}>{"Name"}</span>,
-            key: "name",
-            align: "center",
-            sorter: (a, b) => (a.blindBox?.name || "").localeCompare(b.blindBox?.name || ""),
-            render: (_, record) => <div className="text-center font-semibold">{record.blindBox?.name || "N/A"}</div>,
-        },
-        {
-            title: <span style={{ fontSize: "18px" }}>{"Type"}</span>,
-            key: "type",
-            align: "center",
-            render: (_, record) => <div className="text-center">{record.type || "Unknown"}</div>,
-        },
-        {
-            title: <span style={{ fontSize: "18px" }}>{"Size"}</span>,
-            key: "size",
-            align: "center",
-            render: (_, record) => <div className="text-center">{record.blindBox?.size || "Unknown"}</div>,
-        },
-        {
-            title: <span style={{ fontSize: "18px" }}>{"Start Date"}</span>,
-            key: "startDate",
-            align: "center",
-            render: (_, record) =>
-                <div className="text-center">
-                    {record.startDate
-                        ? new Date(record.startDate).toLocaleDateString("vi-VN", {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "numeric",
-                        })
-                        : "N/A"}
-                </div>,
-        },
-        {
-            title: <span style={{ fontSize: "18px" }}>{"Action"}</span>,
-            key: "action",
-            align: "center",
-            render: (_, record) => (
-                <Space size="middle" className="justify-between">
-                    <EyeOutlined className="text-blue-500 text-xl cursor-pointer transition-all hover:scale-110"
-                        onClick={() => handleViewPre_orderCampaign(record)}
-                    />
-                    <Link to={`/admin/preordercampaign/edit/${record.slug}`}>
-                    <EditOutlined className="text-orange-500 text-xl cursor-pointer transition-all hover:scale-110"/>
-                    </Link>
-                    <DeleteOutlined className="text-red-500 text-xl cursor-pointer transition-all hover:scale-110"
-                        onClick={() => handleDeletePre_orderCampaign(record)}
-                    />
-                </Space>
-            ),
-        },
-    ];
-
-
-    const filteredData = data.filter((item) =>
-        item.blindBox?.name?.toLowerCase().includes(search.toLowerCase())
-    );
-
-
-
-
-    return (
-        <div className="dashboard-container overflow-auto h-screen pr-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-thumb-opacity-80">
-            <div className="w-full mx-auto mt-5 p-5 bg-white shadow-lg rounded-lg">
-                <div className="flex justify-between">
-                    <h2 className="text-2xl font-bold mb-4">Pre-order Campaign Management</h2>
-                    <div>
-                        <Button className="bg-blue-500 text-white px-4 py-2 rounded mt-8" icon={<PlusOutlined />} onClick={handleAddPre_orderCampaign}>
-                            Add New Campaign
-                        </Button>
-                    </div>
-                </div>
-
-                <Search placeholder="Search products..." allowClear enterButton={<SearchOutlined />} style={{ width: 300 }} onChange={(e) => setSearch(e.target.value)} />
-
-                {warning && <div className="w-full text-right text-red-500 mt-2">{warning}</div>}
-
-                {loading ? (
-                    <div className="flex justify-center ">
-                        <Spin size="large" />
-                    </div>
-                ) : (
-                    <>
-                        <Table
-                            bordered={true}
-                            columns={columns}
-                            dataSource={filteredData}
-                            pagination={false}
-                            rowKey="id"
-
-                            className="border rounded-md mt-5"
+        const columns = [
+            {
+                title: <span style={{ fontSize: "18px" }}>{"No."}</span>,
+                key: "index",
+                align: "center",
+                render: (_, __, index) =>
+                    <div className="text-center text-red-500 font-bold">
+                        {(pagination.current - 1) * pagination.pageSize + index + 1}
+                    </div>,
+            },
+            {
+                title: <span style={{ fontSize: "18px" }}>{"Image"}</span>,
+                key: "mainImage",
+                align: "center",
+                render: (_, record) => (
+                    <div className="flex justify-center items-center">
+                        <img
+                            src={record.blindBox?.images.mainImage?.url || noThumbnailImage}
+                            alt="Main"
+                            className="w-24 h-24 object-cover rounded-md shadow-md transition-all duration-300 hover:scale-105"
                         />
+                    </div>
+                ),
+            },
+            {
+                title: <span style={{ fontSize: "18px" }}>{"Name"}</span>,
+                key: "name",
+                align: "center",
+                sorter: (a, b) => (a.blindBox?.name || "").localeCompare(b.blindBox?.name || ""),
+                render: (_, record) => <div className="text-center font-semibold">{record.blindBox?.name || "N/A"}</div>,
+            },
+            {
+                title: <span style={{ fontSize: "18px" }}>{"Type"}</span>,
+                key: "type",
+                align: "center",
+                render: (_, record) => <div className="text-center">{record.type || "Unknown"}</div>,
+            },
+            {
+                title: <span style={{ fontSize: "18px" }}>{"Size"}</span>,
+                key: "size",
+                align: "center",
+                render: (_, record) => <div className="text-center">{record.blindBox?.size || "Unknown"}</div>,
+            },
+            {
+                title: <span style={{ fontSize: "18px" }}>{"Start Date"}</span>,
+                key: "startDate",
+                align: "center",
+                render: (_, record) =>
+                    <div className="text-center">
+                        {record.startDate
+                            ? new Date(record.startDate).toLocaleDateString("vi-VN", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                            })
+                            : "N/A"}
+                    </div>,
+            },
+            {
+                title: <span style={{ fontSize: "18px" }}>{"Action"}</span>,
+                key: "action",
+                align: "center",
+                render: (_, record) => (
+                    <Space size="middle" className="justify-between">
+                        <EyeOutlined className="text-blue-500 text-xl cursor-pointer transition-all hover:scale-110"
+                            onClick={() => handleViewPre_orderCampaign(record)}
+                        />
+                        <Link to={`/admin/preordercampaign/edit/${record.slug}`}>
+                        <EditOutlined className="text-orange-500 text-xl cursor-pointer transition-all hover:scale-110"/>
+                        </Link>
+                        <DeleteOutlined className="text-red-500 text-xl cursor-pointer transition-all hover:scale-110"
+                            onClick={() => handleDeletePre_orderCampaign(record)}
+                        />
+                    </Space>
+                ),
+            },
+        ];
 
 
-                        <div className="flex justify-end mt-4">
-                            <Pagination
-                                current={pagination.current}
-                                total={pagination.total}
-                                pageSize={pagination.pageSize}
-                                showSizeChanger
-                                showQuickJumper
-                                pageSizeOptions={["5", "10", "20"]}
-                                onChange={(page, pageSize) => {
-                                    setPageIndex(page);
-                                    setPageSize(pageSize);
-                                }}
-                                className="shadow-md p-2 rounded-md bg-gray-100 transition-all duration-300 hover:bg-gray-200"
+        const filteredData = data.filter((item) =>
+            item.blindBox?.name?.toLowerCase().includes(search.toLowerCase())
+        );
+
+
+
+
+        return (
+            <div className="dashboard-container overflow-auto h-screen pr-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-thumb-opacity-80">
+                <div className="w-full mx-auto mt-5 p-5 bg-white shadow-lg rounded-lg">
+                    <div className="flex justify-between">
+                        <h2 className="text-2xl font-bold mb-4">Pre-order Campaign Management</h2>
+                        <div>
+                            <Button className="bg-blue-500 text-white px-4 py-2 rounded mt-8" icon={<PlusOutlined />} onClick={handleAddPre_orderCampaign}>
+                                Add New Campaign
+                            </Button>
+                        </div>
+                    </div>
+
+                    <Search placeholder="Search products..." allowClear enterButton={<SearchOutlined />} style={{ width: 300 }} onChange={(e) => setSearch(e.target.value)} />
+
+                    {warning && <div className="w-full text-right text-red-500 mt-2">{warning}</div>}
+
+                    {loading ? (
+                        <div className="flex justify-center ">
+                            <Spin size="large" />
+                        </div>
+                    ) : (
+                        <>
+                            <Table
+                                bordered={true}
+                                columns={columns}
+                                dataSource={filteredData}
+                                pagination={false}
+                                rowKey="id"
+
+                                className="border rounded-md mt-5"
                             />
 
-                        </div>
-                    </>
-                )}
-                <Modal
-                    open={isEditModalVisible}
-                    onCancel={handleCancelEdit}
-                    footer={null}
-                    width={720}
-                    closable={false}
-                >
-                    <Pre_orderCampaignEdit
-                        preorderCampaignId={selectedPreorderCampaignId}
-                        onSuccess={handleCancelEdit}
-                    />
-                </Modal>
 
-                <Modal
-                    title="Delete product"
-                    open={isDeleteModalVisible}
+                            <div className="flex justify-end mt-4">
+                                <Pagination
+                                    current={pagination.current}
+                                    total={pagination.total}
+                                    pageSize={pagination.pageSize}
+                                    showSizeChanger
+                                    showQuickJumper
+                                    pageSizeOptions={["5", "10", "20"]}
+                                    onChange={(page, pageSize) => {
+                                        setPageIndex(page);
+                                        setPageSize(pageSize);
+                                    }}
+                                    className="shadow-md p-2 rounded-md bg-gray-100 transition-all duration-300 hover:bg-gray-200"
+                                />
+
+                            </div>
+                        </>
+                    )}
+                    <Modal
+                        open={isEditModalVisible}
+                        onCancel={handleCancelEdit}
+                        footer={null}
+                        width={720}
+                        closable={false}
+                    >
+                        <Pre_orderCampaignEdit
+                            preorderCampaignId={selectedPreorderCampaignId}
+                            onSuccess={handleCancelEdit}
+                        />
+                    </Modal>
+
+                    <Modal
+                        title="Delete product"
+                        open={isDeleteModalVisible}
                     onCancel={() => setIsDeleteModalVisible(false)}
                     footer={[
                         <Button key="cancel" onClick={() => setIsDeleteModalVisible(false)}>
