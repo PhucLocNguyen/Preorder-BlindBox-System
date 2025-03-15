@@ -16,7 +16,7 @@ function VoucherCampaignSection() {
     fetchVoucherCampaigns();
   },[])
   return (
-    <section className="bg-gray-100 py-12 md:min-h-[500px]">
+    <section className="bg-[#ffffff] py-12 md:min-h-[500px] px-[40px]">
       <div
         style={{
           position: "relative",

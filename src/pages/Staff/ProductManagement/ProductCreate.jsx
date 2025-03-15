@@ -111,11 +111,15 @@ function ProductCreate() {
                 >
                   <InputNumber
                     style={{ width: "100%" }}
-                    formatter={(value) =>
-                      `₫ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                    }
                     min={10000}
-                    parser={(value) => value.replace(/₫\s?|(,*)/g, "")}
+                    formatter={(value) => {
+                      if (!value) return "";
+                      return (
+                        value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                        " VND"
+                      );
+                    }}
+                    parser={(value) => value.replace(/\s?VND|(,*)/g, "")}
                   />
                 </Form.Item>
                 <Form.Item label="Ảnh chính">

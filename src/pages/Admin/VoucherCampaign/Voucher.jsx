@@ -21,11 +21,11 @@ const ProjectCard = ({ projectList }) => {
                         onClick={() => handleCardClick(project.voucherCampaignId)}
                     >
                         <h3 className="text-2xl font-semibold text-gray-800 mb-2">{project.name}</h3>
-                        <p className="text-gray-600 text-lg">💰 Discount: <span className="font-semibold">{project.percentDiscount}%</span></p>
-                        <p className="text-gray-600 text-lg">📦 Quantity: <span className="font-semibold">{project.quantity}</span></p>
-                        <p className="text-gray-600 text-lg">📌 Status: <span className="font-semibold">{project.status}</span></p>
+                        <p className="text-gray-600 text-lg">💰 Ưu đãi: <span className="font-semibold">{project.percentDiscount}%</span></p>
+                        <p className="text-gray-600 text-lg">📦 Số Lượng: <span className="font-semibold">{project.quantity}</span></p>
+                        <p className="text-gray-600 text-lg">📌 Trạng Thái: <span className="font-semibold">{project.status}</span></p>
                         <p className="text-gray-600 text-lg">
-                            💵 Max Money Discount: <span className="font-semibold">
+                            💵Mức giảm giá tối đa: <span className="font-semibold">
                                 {project.maximumMoneyDiscount.toLocaleString()} VNĐ
                             </span>
                         </p>
@@ -81,9 +81,9 @@ const Voucher = () => {
             <div className="max-w-6xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <div>
-                        <h1 className="text-4xl font-bold text-gray-800">🎟️ Awesome Vouchers</h1>
+                        <h1 className="text-4xl font-bold text-gray-800">🎟️ Ưu đãi hấp dẫn</h1>
                         <p className="text-gray-600 text-lg mt-2">
-                            Discover our latest vouchers with amazing discounts. Click on any voucher to see more details.
+                            Nhận ngay những ưu đãi cực sốc với các voucher mới nhất.Nhấp vào bất kỳ voucher nào để xem chi tiết!
                         </p>
                     </div>
                     <Button
@@ -93,7 +93,7 @@ const Voucher = () => {
                         className="rounded-xl px-6 py-3 text-lg shadow-md bg-blue-500 hover:bg-blue-600 transition-all"
                         onClick={handleAddVoucher}
                     >
-                        Add New Voucher
+                        Thêm mới voucher
                     </Button>
                 </div>
 

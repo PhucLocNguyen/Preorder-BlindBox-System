@@ -1,118 +1,113 @@
-import React from 'react';
-import { Form, Input, Button, Row, Col, Card, DatePicker, message } from 'antd';
+import React, { useState, useEffect } from "react";
+import { Form, Input, Button, Upload, message, Card } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { GetActiveStaff, EditStaff } from "../../../api/StaffManagement/ApiStaffManager";
 
-const StaffManagementEdit = ({ onSuccess }) => {
-    const onFinish = (values) => {
-        onSuccess();
+const StaffManagementEdit = ({ userId, onSuccess }) => {
+    const [form] = Form.useForm();
+    const [loading, setLoading] = useState(true);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [staffImage, setStaffImage] = useState(null);
+    const handleStaffImageChange = ({ file }) => {
+        setStaffImage(file);
     };
+    useEffect(() => {
+        const fetchStaff = async () => {
+            try {
+                const staffData = await GetActiveStaff(userId);
+                if (staffData) {
+                    form.setFieldsValue({
+                        fullName: staffData.fullName,
+                        address: staffData.address,
+                        phone: staffData.phone || "",
+
+                    });
+                }
+                setImagePreview(staffData.thumbnail);
+                console.log("check data", staffData);
+            } catch (error) {
+                message.error("Failed to fetch staff details!");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (userId) {
+            fetchStaff();
+        }
+    }, [userId, form]);
+
+    const onFinish = async (values) => {
+        const formData = new FormData();
+        formData.append("fullName", values.fullName);
+        formData.append("phone", values.phone);
+        formData.append("thumbnail", staffImage);
+        formData.append("address", values.address);
+
+
+        try {
+            await EditStaff({ formData, userId });
+            message.success("Staff updated successfully!");
+            onSuccess();
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } catch (error) {
+            message.error("Update failed!");
+        }
+    };
+
+
+
     return (
-        <Card
-            className="p-5 bg-white rounded-lg shadow-md"
-            style={{ maxWidth: '600px', margin: '0 auto' }}
-        >
-            <h2 className="text-xl font-bold mb-4 text-center">Update User</h2>
-            <Form layout="vertical" onFinish={onFinish}>
-                <Row gutter={16}>
-                    <Col span={6}>
-                        <Form.Item label="Role ID" name="roleID" rules={[{ required: true, message: 'Please enter Role ID!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item label="Wallet ID" name="walletID" rules={[{ required: true, message: 'Please enter Wallet ID!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={10}>
-                        <Form.Item label="Full Name" name="fullname" rules={[{ required: true, message: 'Please enter full name!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                </Row>
+        <Card className="max-w-lg mx-auto p-6 shadow-lg rounded-xl bg-white">
+            <h2 className="text-2xl font-semibold text-center mb-6">Chỉnh sửa nhân viên</h2>
+            <Form form={form} layout="vertical" onFinish={onFinish} className="space-y-4">
+                <Form.Item label="Họ và tên" name="fullName" rules={[{ required: true, message: "Please enter full name!" }]}>
+                    <Input size="large" className="w-full border-gray-300 rounded-lg" />
+                </Form.Item>
 
-                <Row gutter={16}>
-                    <Col span={6}>
-                        <Form.Item label="Status" name="status">
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item label="Phone" name="phone" rules={[{ required: true, message: 'Please enter phone number!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={10}>
-                        <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter password!' }]}>
-                            <Input.Password />
-                        </Form.Item>
-                    </Col>
-                </Row>
+                <Form.Item label="Số điện thoại" name="phone" rules={[
+                    { required: true, message: "Please enter phone number!" },
+                    { max: 10, message: "Phone number must be at maximum 10 number digits!" },
+                ]}>
+                    <Input size="large" className="w-full border-gray-300 rounded-lg" />
+                </Form.Item>
 
-                <Row gutter={16}>
+                <Form.Item label="Địa chỉ" name="address" rules={[{ required: true, message: "Please enter address!" }]}>
+                    <Input size="large" className="w-full border-gray-300 rounded-lg" />
+                </Form.Item>
 
-
-                    <Col span={12}>
-                        <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email', message: 'Please enter a valid email!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Please enter address!' }]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-
-
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item label="Bank Account Number" name="bankAccountNumber">
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="Bank Name" name="bankName">
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item label="Created Date" name="createdDate">
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item label="Updated Date" name="updatedDate">
-                            <DatePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row gutter={16}>
-                    <Col span={24}>
-                        <Form.Item label="Thumbnail" name="thumbnail">
-                            <Input placeholder="Image URL" />
-                        </Form.Item>
-                    </Col>
-
-                </Row>
-                <div className="flex justify-center gap-2 mt-4">
-                    <Button
-                        size="large"
-                        onClick={onSuccess} // Đóng Modal khi bấm Cancel
+                <Form.Item label="Hình đại diện">
+                    <Upload
+                        beforeUpload={() => false}
+                        onChange={handleStaffImageChange}
+                        showUploadList={false}
                     >
-                        Cancel
-                    </Button>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        size="large"
-                    >
-                        Create
-                    </Button>
+                        <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                    </Upload>
+                    {staffImage ? (
+                        <div className="mt-2">
+                            <img
+                                src={URL.createObjectURL(staffImage)}
+                                alt="Main"
+                                className="w-full h-[300px] object-contain mt-2 rounded-md"
+                            />
+                        </div>
+                    ) : imagePreview ? (
+                        <div className="mt-2">
+                            <img
+                                src={imagePreview}
+                                alt="Current Staff"
+                                className="w-full h-[300px] object-contain mt-2 rounded-md"
+                            />
+                        </div>
+                    ) : null}
+                </Form.Item>
+
+                <div className="flex justify-center gap-4 mt-4">
+                    <Button size="large" onClick={onSuccess} className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg">Hủy</Button>
+                    <Button type="primary" htmlType="submit" size="large" className="bg-blue-600 text-white px-6 py-2 rounded-lg">Lưu</Button>
                 </div>
             </Form>
         </Card>

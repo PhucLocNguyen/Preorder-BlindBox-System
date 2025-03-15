@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircleOutlined, MinusCircleOutlined, DeleteOutlined } from '@ant-design/icons';
+import { formatMoney } from '../../utils/FormatMoney';
 
 function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
   const [quantity, setQuantity] = useState(item.quantity);
@@ -33,7 +34,7 @@ function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
   };
 
   const imageUrl = item.blindBox?.images?.mainImage?.url || '';
-  const description = item.blindBox?.description || '';
+  const name = item.blindBox?.name || '';
 
   return (
     <tr>
@@ -45,12 +46,12 @@ function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
             alt="Product"
           />
           <div className="ml-4">
-            <p className="text-gray-700">{description}</p>
+            <p className="text-gray-700">{name}</p>
           </div>
         </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <span className="text-gray-900">{item.price.toFixed(2)}</span>
+        <span className="text-gray-900">{formatMoney(item.price)}</span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center space-x-2">
@@ -79,7 +80,7 @@ function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <span className="text-gray-900">
-          {item.amount.toFixed(2)}
+          {formatMoney(item.amount)}
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
