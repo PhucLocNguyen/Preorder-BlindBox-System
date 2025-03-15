@@ -18,6 +18,7 @@ import { Link, useNavigate } from "react-router";
 import ProductCardModal from "../../../components/Search/SearchBlindbox";
 import TextArea from "antd/es/input/TextArea";
 import { CreatePreorderCampaign } from "../../../api/Pre_orderCampaign/ApiPre_orderCampaign";
+import { formatMoney } from "../../../utils/FormatMoney";
 
 const { RangePicker } = DatePicker;
 
@@ -100,7 +101,7 @@ function PreorderCampaignCreate() {
           }))
         : [],
     };
-
+    
     await CreatePreorderCampaign(data);
     navigate("/admin/pre-ordercampaign");
   };
@@ -146,7 +147,7 @@ function PreorderCampaignCreate() {
                           <img
                             src={loadMainProduct.images?.mainImage.url}
                             alt="Main"
-                            className="w-full h-[290px] object-cover mt-2"
+                            className="w-full h-full object-cover mt-2"
                             style={{ borderRadius: "10px" }}
                           />
                         </div>
@@ -159,6 +160,14 @@ function PreorderCampaignCreate() {
                             initialValue={loadMainProduct?.name}
                           >
                             <Input disabled />
+                          </Form.Item>
+                          <h3 className="text-[16px] mt-2 mb-">Giá niêm yết</h3>
+                          <Form.Item
+                            name="listedPrice"
+                            initialValue={formatMoney(loadMainProduct?.listedPrice)}
+                          >
+                            <Input disabled />
+                            
                           </Form.Item>
                           <h3 className="text-[16px] mt-2 mb-1">Mô tả</h3>
                           <Form.Item
@@ -386,6 +395,7 @@ function PreorderCampaignCreate() {
                     <RangePicker
                       showTime={{ format: "HH:mm" }}
                       format="YYYY-MM-DD HH:mm"
+                      placeholder={['Ngày bắt đầu', 'Ngày kết thúc']}
                     />
                   </Form.Item>
                 </div>

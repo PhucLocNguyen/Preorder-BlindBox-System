@@ -285,6 +285,7 @@ function PreorderCampaignEdit() {
                   <RangePicker
                     showTime={{ format: "HH:mm" }}
                     format="YYYY-MM-DD HH:mm"
+                    placeholder={['Ngày bắt đầu', 'Ngày kết thúc']}
                   />
                 </Form.Item>
 
