@@ -9,11 +9,13 @@ const PreorderMilestones = ({ milestones, placedOrderCount }) => {
 	// Calculate original price (using the highest price as the reference price)
 	const originalPrice = 10500000; // This should ideally come from your data
 
+	console.log('milestones', milestones);
+
 	return (
 		<div className='flex flex-wrap justify-between gap-4 my-6'>
 			{sortedMilestones.map((milestone) => {
 				// Convert price from USD to VND (assuming price is in USD)
-				const priceInVND = milestone.price * 350000;
+				const priceInVND = milestone.price;
 
 				// Calculate discount percentage
 				const discountPercentage = Math.round(((originalPrice - priceInVND) / originalPrice) * 100);
@@ -48,7 +50,9 @@ const PreorderMilestones = ({ milestones, placedOrderCount }) => {
 
 						<div className='p-3'>
 							<div className='text-sm text-gray-500'>Giá niêm yết</div>
-							<div className='text-sm text-gray-500 line-through'>{originalPrice.toLocaleString()}đ</div>
+							<div className='text-sm text-gray-500 line-through'>
+								{milestone.price.toLocaleString()}đ
+							</div>
 							<div
 								className={`mt-1 text-2xl font-bold ${
 									discountPercentage > 50 ? 'text-red-600' : 'text-gray-300'

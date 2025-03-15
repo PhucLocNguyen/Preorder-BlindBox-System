@@ -1,37 +1,29 @@
 import React, { useEffect, useState } from 'react';
 
-const CountdownTimer = () => {
-	const [timeLeft, setTimeLeft] = useState({
-		days: 8,
-		hours: 3,
-		minutes: 51,
-		seconds: 21,
-	});
+const CountdownTimer = ({ targetDate }) => {
+	const calculateTimeLeft = () => {
+		const difference = new Date(targetDate) - new Date();
+		if (difference <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+		const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+		const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+		const minutes = Math.floor((difference / (1000 * 60)) % 60);
+		const seconds = Math.floor((difference / 1000) % 60);
+
+		return { days, hours, minutes, seconds };
+	};
+
+	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
 	useEffect(() => {
 		const timer = setInterval(() => {
-			setTimeLeft((prev) => {
-				const newSeconds = prev.seconds - 1;
-				if (newSeconds >= 0) return { ...prev, seconds: newSeconds };
-
-				const newMinutes = prev.minutes - 1;
-				if (newMinutes >= 0) return { ...prev, minutes: newMinutes, seconds: 59 };
-
-				const newHours = prev.hours - 1;
-				if (newHours >= 0) return { ...prev, hours: newHours, minutes: 59, seconds: 59 };
-
-				const newDays = prev.days - 1;
-				if (newDays >= 0) return { days: newDays, hours: 23, minutes: 59, seconds: 59 };
-
-				clearInterval(timer);
-				return prev;
-			});
+			setTimeLeft(calculateTimeLeft());
 		}, 1000);
 
 		return () => clearInterval(timer);
-	}, []);
+	}, [targetDate]);
 
-	// Ensure two-digit formatting
+	// Format số có 2 chữ số
 	const formatTime = (num) => String(num).padStart(2, '0');
 
 	return (
@@ -59,4 +51,11 @@ const CountdownTimer = () => {
 	);
 };
 
-export default CountdownTimer;
+// Chỉ định ngày đích cụ thể:
+export default function CountDown() {
+	return (
+		<div className='flex flex-col items-center space-y-2 p-2'>
+			<CountdownTimer targetDate="2025-03-31T23:59:59" />
+		</div>
+	);
+}
