@@ -9,7 +9,7 @@ import {
     HomeOutlined,
     CheckCircleOutlined
 } from '@ant-design/icons';
-import { GetOrderById } from '../../../api/Order/ApiOrder';
+import { GetOrderByIdForStaff } from '../../../api/Order/ApiOrder';
 import { GetAllOrderDetailsByOrderID } from '../../../api/OrderDetail/ApiOrderDetail';
 import { GetUserVoucherById } from '../../../api/UserVoucher/ApiUserVoucher';
 import { GetInformationOfUser } from '../../../api/User/ApiAuthentication';
@@ -27,7 +27,7 @@ const OrderDetailView = () => {
 
     const fetchOrderById = useCallback(async () => {
         try {
-            const result = await GetOrderById(id);
+            const result = await GetOrderByIdForStaff(id);
             if (result) {
                 setOrderById(result)
                 handleProgress(result)

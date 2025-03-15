@@ -34,7 +34,6 @@ const SideBarStaff = (props) => {
                     <Link to="/staff/notifications" className="flex items-center w-full">
                         <i className="fas fa-bell"></i>
                         <span className="ml-2">Thông báo</span>
-                        <span className="ml-auto bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">2</span>
                     </Link>
                 </li>
             </ul >
