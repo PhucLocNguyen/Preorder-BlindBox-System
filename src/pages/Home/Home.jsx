@@ -11,7 +11,6 @@ const description = 'This is a description.';
 function Home() {
 	return (
 		<div>
-			<Header />
 			<Banner />
 			<ProductList />	
 			<ProductHot />

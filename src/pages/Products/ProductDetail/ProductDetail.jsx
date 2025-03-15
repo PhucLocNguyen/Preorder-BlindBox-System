@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { GetAllImagesByBlindBoxId, GetActiveDetailPreorderCampaign } from '../../../api/Pre_orderCampaign/ApiPre_orderCampaign';
 import PreorderMilestones from '../../../components/PreorderMilestones/PreorderMilestones';
 import OrderSection from '../../../components/OrderSectionInDetailProduct/OrderSection';
+import SimilarCampaign from '../../../components/SimilarCampaign/SimilarCampaign';
+import { Package, CheckCircle } from 'lucide-react';
 
 const ProductDetail = () => {
 	const params = useParams();
@@ -36,6 +38,7 @@ const ProductDetail = () => {
 	useEffect(() => {
 		productDetailBlind();
 	}, []);
+
 	if (loading) {
 		return (
 			<div className='flex items-center justify-center min-h-screen'>
@@ -49,7 +52,7 @@ const ProductDetail = () => {
 			<div className='container-lg'>
 				<div className='relative flex flex-col justify-between gap-6 lg:flex-row'>
 					{/* IMG */}
-					<div className='top-0 w-full lg:w-1/2 lg:sticky h-max'>
+					<div className='top-0 w-full lg:w-1/2 lg:sticky h-max bg-white rounded-2xl shadow-lg border border-gray-200 p-6'>
 						{images && images.length > 0 ? (
 							<ProductImages items={images} />
 						) : (
@@ -61,7 +64,7 @@ const ProductDetail = () => {
 
 					{/* TEXTS */}
 					<div className='flex flex-col w-full gap-3 lg:w-1/2'>
-						<div className='w-full p-6 mx-auto bg-white rounded-lg shadow-sm'>
+						<div className='w-full p-6 mx-auto bg-white rounded-2xl shadow-lg border border-gray-200'>
 							<div className='inline-block px-4 py-1 mb-6 text-white rounded-full bg-emerald-400'>
 								Đặt trước
 							</div>
@@ -69,7 +72,7 @@ const ProductDetail = () => {
 							<h1 className='mb-6 text-3xl font-bold'>{data?.blindBox.name}</h1>
 
 							{/* Milestone pricing display */}
-							{data?.preorderMilestones && (
+							{data?.preorderMilestones && data?.preorderMilestones.length > 0 && (
 								<PreorderMilestones
 									milestones={data.preorderMilestones}
 									placedOrderCount={data.placedOrderCount}
@@ -77,27 +80,21 @@ const ProductDetail = () => {
 								/>
 							)}
 
-							{/* <div className='flex items-center gap-2 mb-4'>
-								<span className='inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 rounded-full'>
-									<span>
-										Thời gian đặt trước: {formattedStartDate} - {formattedEndDate}
-									</span>
-								</span>
-							</div> */}
-
 							<CountdownTimer endDate={data?.endDate} />
 
 							<div className='flex items-center gap-2 my-4'>
 								<span className='inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 rounded-full'>
-									<span>Mục tiêu dự kiến: {data?.totalQuantity} sản phẩm</span>
+								<Package /> <span>Mục tiêu dự kiến: {data?.totalQuantity} sản phẩm</span>
 								</span>
 							</div>
 
 							<div className='flex items-center gap-2 my-4'>
 								<span className='inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 rounded-full'>
-									<span>Đã đặt: {data?.placedOrderCount} sản phẩm</span>
+								<CheckCircle /> <span>Đã đặt: {data?.placedOrderCount} sản phẩm</span>
 								</span>
 							</div>
+
+							<hr className='my-4 border-gray-300' />
 
 							<div className='mb-8 space-y-6'>
 								<p className='leading-relaxed text-gray-600'>{data?.blindBox.description}</p>
@@ -107,7 +104,7 @@ const ProductDetail = () => {
 										<h3 className='mb-2 text-gray-700'>Size:</h3>
 										<div className='flex gap-2'>
 											<span className='px-4 py-2 bg-yellow-100 rounded-full'>
-												{data?.blindBox.size}
+											{data?.blindBox.size}
 											</span>
 										</div>
 									</div>
@@ -119,6 +116,15 @@ const ProductDetail = () => {
 							</button>
 							<OrderSection data={data} />
 						</div>
+					</div>
+				</div>
+
+				{/* Similar Campaign Section */}
+				<div className='mt-10'>
+					{/* Adding margin-top to create space between Image section and Similar Campaign */}
+					<h2 className='text-2xl font-bold mb-6'></h2>
+					<div className='flex gap-4 overflow-x-auto pb-4'>
+						<SimilarCampaign />
 					</div>
 				</div>
 			</div>
