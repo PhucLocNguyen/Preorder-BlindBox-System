@@ -69,7 +69,26 @@ const GetInformationOfUser = async (userId) => {
    }
 }
 
+const ApiLoginWithGoogle = async (credential) => {
+   try {
+      const result = await api.post('/Authen/LoginGoogle', `"${credential}"`, {
+         headers: {
+            'Content-Type': 'application/json'
+         }
+      })
+      if (result.status === 200) {
+         const decodedToken = jwtDecode(result.data.accessToken)
+         const maxAge = decodedToken.exp - Math.floor(Date.now() / 1000);
+         document.cookie = `auth=${JSON.stringify(result.data)}; path=/; max-age=${maxAge}`;
+      }
+      return result
+   } catch (error) {
+      console.log('>>> Api login with google error: ', error);
+
+   }
+}
+
 export {
    ApiLoginByEmailAndPassword, ApiGetCurrentAccountRole, GetAccessToken, ApiRegisterByEmailAndPassword
-   , ApiConfirmEmailAccount, GetInformationOfUser
+   , ApiConfirmEmailAccount, GetInformationOfUser, ApiLoginWithGoogle
 }
