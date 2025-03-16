@@ -9,7 +9,7 @@ const useLogout = () => {
    const logout = () => {
       document.cookie = "auth=; path=/; max-age=0";
       setAuth({ roleName: 'Guest' });
-      navigate('/', { relative: true })
+      navigate('/login', { relative: true })
    };
 
    return logout

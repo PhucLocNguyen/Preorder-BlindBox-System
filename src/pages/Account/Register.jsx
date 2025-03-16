@@ -2,10 +2,11 @@ import { Form, Input, Button } from "antd";
 import { Link, useNavigate } from "react-router";
 import { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
+import { GoogleLogin } from '@react-oauth/google';
 
 import GoogleIcon from '../../assets/Login/GoogleIcon.png';
 import FacebookIcon from '../../assets/Login/FacebookIcon.png'
-import { ApiRegisterByEmailAndPassword } from "../../api/User/ApiAuthentication";
+import { ApiRegisterByEmailAndPassword, ApiLoginWithGoogle } from "../../api/User/ApiAuthentication";
 import { AuthContext } from "../../context/AuthContext";
 
 function RegisterPage() {
@@ -37,6 +38,30 @@ function RegisterPage() {
         if (auth.roleName.toLowerCase() !== 'guest') {
             navigate('/')
         }
+    }
+
+    const CallApiLoginWithGoogle = async (credential) => {
+        const response = await ApiLoginWithGoogle(credential)
+        if (response?.status === 200) {
+            const role = await CallApiGetCurrentAccountRole();
+            toast.success('Đăng nhập thành công!');
+
+            if (role.toLowerCase() == 'admin') {
+                navigate('/admin', { replace: true })
+
+            } else if (role.toLowerCase() == 'staff') {
+                navigate('/staff', { replace: true })
+
+            } else {
+                navigate(fromPage, { replace: true });
+            }
+        } else {
+            toast.error('Đăng nhập thất bại!');
+        }
+    }
+
+    const handleLoginWithGoogle = (credential) => {
+        CallApiLoginWithGoogle(credential)
     }
 
     useEffect(() => {
@@ -156,8 +181,16 @@ function RegisterPage() {
                             <div className="text-[#95989d] text-[12px] leading-[15px] mb-[16px] text-center">
                                 Or continue with social account
                             </div>
-                            <div className='flex gap-[16px]'>
-                                <div className='cursor-pointer group hover:bg-[#2275fc] text-[#575864] bg-[#fff] border-[#ecf0f4] h-[50px] py-[15px] px-[22px] flex items-center justify-center text-[14px] gap-[8px] font-bold leading-[20px] border-[1px] border-solid rounded-[12px] w-full '>
+                            <div className='flex gap-[16px] items-center justify-center'>
+                                <GoogleLogin
+                                    onSuccess={credentialResponse => {
+                                        handleLoginWithGoogle(credentialResponse?.credential)
+                                    }}
+                                    onError={() => {
+                                        console.log('Login Failed');
+                                    }} />
+
+                                {/* <div className='cursor-pointer group hover:bg-[#2275fc] text-[#575864] bg-[#fff] border-[#ecf0f4] h-[50px] py-[15px] px-[22px] flex items-center justify-center text-[14px] gap-[8px] font-bold leading-[20px] border-[1px] border-solid rounded-[12px] w-full '>
                                     <img src={GoogleIcon} alt='Google Icon' className='w-[20px] h-[20px]' />
                                     <span className='text-[#111] group-hover:text-[white]'>
                                         Sign in with Google
@@ -169,7 +202,7 @@ function RegisterPage() {
                                     <span className='text-[#111] group-hover:text-[white]'>
                                         Sign in with Facebook
                                     </span>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         {/* Phần đã có tài khoản chuyển qua login */}
