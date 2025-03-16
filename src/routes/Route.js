@@ -10,7 +10,8 @@ const RegisterPage = lazy(() => import("../pages/Account/Register"));
 const StaffView = lazy(() => import("../pages/Staff/StaffView"));
 const ProductsView = lazy(() => import("../pages/Staff/ProductManagement/ProductsView"));
 const OrdersView = lazy(() => import("../pages/Staff/OrderManagement/OrdersView"));
-const NotificationsView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationView"));
+const NotificationsView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationsView"));
+const NotificationDetailView = lazy(() => import("../pages/Staff/NotificationManagement/NotificationDetailView"));
 const ProductCreatePage = lazy(() => import("../pages/Staff/ProductManagement/ProductCreate"));
 const ProductEditPage = lazy(() => import("../pages/Staff/ProductManagement/ProductEdit"));
 const AdminView = lazy(() => import("../pages/Admin/AdminView"));
@@ -45,8 +46,8 @@ const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign
 const ConfirmBuy = lazy(() => import("../pages/ConfirmBuy/ConfirmBuy"));
 const BulkOrder = lazy(() => import("../pages/Home/BulkOrder/BulkOrder"));
 
-const ApprovalCampaign = lazy(() =>import("../pages/Admin/ApprovalCampaign/ApprovalCampaign"));
-const ApprovalCampaignDetail = lazy(() =>import("../pages/Admin/ApprovalCampaign/ApprovalCampaignDetail"));
+const ApprovalCampaign = lazy(() => import("../pages/Admin/ApprovalCampaign/ApprovalCampaign"));
+const ApprovalCampaignDetail = lazy(() => import("../pages/Admin/ApprovalCampaign/ApprovalCampaignDetail"));
 const MyOrders = lazy(() => import("../pages/Customer/Orders/MyOrders"));
 const ViewPendingOrderDetail = lazy(() =>import("../pages/Customer/Orders/ViewPendingOrderDetail"));
 const ViewDetailOrder = lazy(() =>import("../pages/Customer/Orders/ViewDetailOrder"));
@@ -173,7 +174,7 @@ const privateRoutes = [
       { path: "voucher/update/:id", component: VoucherUpdate },
       { path: "history-transactions", component: HistoryTransactions },
       { path: "preordercampaignApproval", component: ApprovalCampaign },
-      { path: "preordercampaignApproval/confirm/:slug", component: ApprovalCampaignDetail},
+      { path: "preordercampaignApproval/confirm/:slug", component: ApprovalCampaignDetail },
     ],
     role: ['Admin']
   },
@@ -186,9 +187,9 @@ const privateRoutes = [
       { path: "orders", component: OrdersView, },
       { path: "orders/:id", component: OrderDetailView },
       { path: "notifications", component: NotificationsView },
+      { path: "notifications/:id", component: NotificationDetailView },
       { path: "product/create", component: ProductCreatePage },
       { path: "product/edit/:id", component: ProductEditPage },
-
     ],
     role: ['Staff']
   },

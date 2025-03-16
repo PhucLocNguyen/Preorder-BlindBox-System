@@ -14,8 +14,6 @@ function Home() {
 	return (
 		<div>
 			<Banner />
-			<ProductList />	
-			<ProductHot />
 			<BulkOrder />
 			<TimePricing />
 
