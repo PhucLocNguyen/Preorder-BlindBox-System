@@ -211,16 +211,16 @@ function Cart() {
           />
           {/* Tiêu đề */}
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Your cart is empty
+            Không có sản phẩm nào trong giỏ hàng
           </h2>
           <p className="text-gray-600 mb-6">
-            Keep shopping to find a course!
+            Tiếp tục mua sắm để tìm sản phẩm!
           </p>
           <Link
             to="/"
             className="bg-purple-600 text-white px-6 py-2 rounded uppercase font-medium text-center hover:bg-purple-700 transition-colors duration-200"
           >
-            Keep shopping
+            Tiếp tục mua sắm
           </Link>
         </div>
       </section>
