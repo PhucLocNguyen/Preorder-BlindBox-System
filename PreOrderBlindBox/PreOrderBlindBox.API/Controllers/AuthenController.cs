@@ -199,5 +199,19 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 		}
 
+		[HttpPost("LoginGoogle")]
+		public async Task<IActionResult> LoginWithGoogle([FromBody] string credential)
+		{
+			try
+			{
+				var result = await _userService.LoginByGoogle(credential);
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
 	}
 }

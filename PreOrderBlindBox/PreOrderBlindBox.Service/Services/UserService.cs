@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using CurcusProject.CM.Helpers;
+using Google.Apis.Auth;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.UnitOfWork;
@@ -451,6 +453,87 @@ namespace PreOrderBlindBox.Service.Services
 			await _userRepository.UpdateAsync(user);
 			return await _unitOfWork.SaveChanges();
 
+		}
+
+		public async Task<ResponseLogin> LoginByGoogle(string credential)
+		{
+			await _unitOfWork.BeginTransactionAsync();
+			string clientId = _configuration["GoogleCredential:ClientId"];
+			var settings = new GoogleJsonWebSignature.ValidationSettings()
+			{
+				Audience = new List<string> { clientId }
+			};
+			var payload = await GoogleJsonWebSignature.ValidateAsync(credential, settings);
+
+			if (payload == null)
+			{
+				throw new Exception("Credential không hợp lệ");
+			}
+
+			var existUser = await _userRepository.GetUserByEmailAsync(payload.Email);
+
+			//Nếu đã tồn tại user trong hệ thống 
+			if (existUser != null)
+			{
+				if (existUser.IsActive == false)
+				{
+					throw new Exception("Account disabled");
+				}
+
+				var accessToken = GenerateAccessToken(existUser);
+				return new ResponseLogin
+				{
+					AccessToken = accessToken,
+					RefreshToken = ""
+				};
+			}
+			else
+			{
+				try
+				{
+					var role = await _roleRepository.GetRoleByRoleName("Customer");
+
+					User newUser = new User()
+					{
+						FullName = payload.Name,
+						Email = payload.Email,
+						Address = "",
+						IsEmailConfirm = true,
+						IsActive = true,
+						EmailConfirmToken = "",
+						RoleId = role.RoleId,
+						Password = "",
+						Thumbnail = payload.Picture
+					};
+
+					//Thêm ví cho người dùng
+					newUser.Wallet = new Wallet()
+					{
+						Balance = 0,
+						CreatedDate = DateTime.Now,
+					};
+
+					await _userRepository.InsertAsync(newUser);
+					var result = await _unitOfWork.SaveChanges();
+					if (result > 0)
+					{
+						await _unitOfWork.CommitTransactionAsync();
+						var accessToken = GenerateAccessToken(newUser);
+						return new ResponseLogin
+						{
+							AccessToken = accessToken,
+							RefreshToken = ""
+						};
+					}
+
+					throw new Exception("Cannot create new user");
+				}
+				catch (Exception ex)
+				{
+					await _unitOfWork.RollbackTransactionAsync();
+					throw;
+				}
+			}
 		}
 	}
 }
