@@ -32,7 +32,7 @@ function MyVoucher() {
       <div className="relative p-8 rounded-lg bg-white">
         <div className="relative">
           <h2 className="text-[36px] text-center text-black mb-10 font-bold uppercase">
-            Danh sách Voucher của bạn
+            Danh sách phiếu giảm giá của bạn
           </h2>
 
           <div className="grid grid-cols-12 gap-4">
