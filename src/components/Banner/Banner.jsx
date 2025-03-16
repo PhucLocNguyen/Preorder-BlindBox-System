@@ -3,7 +3,7 @@ import 'swiper/css/effect-fade';
 import 'swiper/css';
 import { Autoplay, EffectFade } from 'swiper/modules';
 import { useState, useEffect } from 'react';
-import { GetAllBanners } from '../../api/Banner/Banner';
+import { GetAllBanner } from '../../api/Banner/ApiBanner';
 
 export default function Banner() {
   const [banners, setBanners] = useState([]);
@@ -12,12 +12,8 @@ export default function Banner() {
 
   useEffect(() => {
     const fetchBanners = async () => {
-      const data = await GetAllBanners();
-      if (data.length > 0) {
-        setBanners(data);
-      } else {
-        setError('Lỗi khi lấy dữ liệu banner!');
-      }
+      const { data } = await GetAllBanner();
+      setBanners(data);
       setLoading(false);
     };
 
@@ -29,12 +25,12 @@ export default function Banner() {
 
   return (
     <div className='w-full text-center'>
-      <Swiper
+      {banners != null ? <Swiper
         spaceBetween={0}
         effect={'fade'}
         autoplay={{ delay: 2500, disableOnInteraction: false }}
         modules={[Autoplay, EffectFade]}
-        className='mySwiper w-full h-[600px] md:h-[700px] lg:h-[800px]'
+        className='mySwiper w-full h-[350px] object-cover'
         loop
       >
         {banners.map((banner) => (
@@ -42,11 +38,12 @@ export default function Banner() {
             <img
               src={banner.imageUrl}
               alt={banner.title}
-              className='w-full h-full object-contain'
+              className='w-full h-full object-cover'
             />
           </SwiperSlide>
         ))}
-      </Swiper>
+      </Swiper> : null}
+
     </div>
   );
 }
