@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Data.IRepositories
 {
-    public interface IOrderDetailRepository : IGenericRepository<OrderDetail>
-    {
-    }
+	public interface IOrderDetailRepository : IGenericRepository<OrderDetail>
+	{
+		public Task<List<OrderDetail>> GetTopThreeCampaignByOrder(DateTime fromDate, DateTime toDate);
+	}
 }

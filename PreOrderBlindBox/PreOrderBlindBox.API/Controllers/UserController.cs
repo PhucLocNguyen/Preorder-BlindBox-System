@@ -53,7 +53,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpPut("UpdateCustomerInformation")]
-		public async Task<IActionResult> UpdateCustomerInformation(RequestUpdateCustomerInformation customerInformation)
+		public async Task<IActionResult> UpdateCustomerInformation([FromForm] RequestUpdateCustomerInformation customerInformation)
 		{
 			try
 			{
