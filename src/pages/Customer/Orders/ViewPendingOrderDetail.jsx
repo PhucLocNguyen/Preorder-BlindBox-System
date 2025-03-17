@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import {
-  GetAllOrderDetailsByOrderID,
   GetAllOrderTempDetailsByTempOrderID,
 } from "../../../api/OrderDetail/ApiOrderDetail";
 import { GetOrderById, GetTempOrderById } from "../../../api/Order/ApiOrder";
@@ -11,6 +10,7 @@ import { HomeOutlined, ShoppingOutlined } from "@ant-design/icons";
 import { Link } from "react-router";
 import TableListOrderDetail from "../../../components/OrderDetails/TableListOrderDetail";
 import { GetUserVoucherById } from "../../../api/UserVoucher/ApiUserVoucher";
+import { formatShortVND } from "../../../utils/FormatMoney";
 
 function ViewPendingOrderDetail() {
   const { id } = useParams();
@@ -97,7 +97,7 @@ function ViewPendingOrderDetail() {
               />
             </Card>
             <div className="grid grid-cols-12 gap-4">
-              <div className="col-span-9">
+              <div className="col-span-8">
                 <Card title="Thông tin người nhận đơn hàng" bordered>
                   <p>
                     <b>Người nhận:</b> {orderInformation.receiver}
@@ -120,7 +120,7 @@ function ViewPendingOrderDetail() {
                   <TableListOrderDetail orderDetails={orderDetails} />
                 </Card>
               </div>
-              <div className="col-span-3">
+              <div className="col-span-4">
                 <Card title="Thanh toán">
                   <div className="bg-white p-4 rounded-lg shadow">
                     <h2 className="text-lg font-bold mb-2">Thanh toán</h2>
@@ -131,9 +131,9 @@ function ViewPendingOrderDetail() {
                       </div>
                       <div className="flex justify-between">
                         <p>
-                          Giảm giá ({userVoucherById.percentDiscount || 0}%)
+                          Giảm giá ({userVoucherById.percentDiscount || 0}% tối đa {formatShortVND(userVoucherById.maximumMoneyDiscount)} )
                         </p>
-                        <p>-{discountAmount.toLocaleString()} VND</p>
+                        <p>({discountAmount.toLocaleString()}) VND</p>
                       </div>
                       <div className="flex justify-between font-bold">
                         <p>Tổng tiền sau cùng</p>

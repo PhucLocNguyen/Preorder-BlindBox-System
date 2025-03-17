@@ -53,13 +53,8 @@ const ProductDetail = () => {
 				<div className='relative flex flex-col justify-between gap-6 lg:flex-row'>
 					{/* IMG */}
 					<div className='top-0 w-full lg:w-1/2 lg:sticky h-max bg-white rounded-2xl shadow-lg border border-gray-200 p-6'>
-						{images && images.length > 0 ? (
-							<ProductImages items={images} />
-						) : (
-							data?.blindBox?.images?.galleryImages.length > 0 && (
-								<ProductImages items={data?.blindBox?.images?.galleryImages} />
-							)
-						)}
+					<ProductImages items={images} />
+						
 					</div>
 
 					{/* TEXTS */}

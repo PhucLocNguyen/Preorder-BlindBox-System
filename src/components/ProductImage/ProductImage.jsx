@@ -54,9 +54,7 @@ const ProductImages = ({ items =[] }) => {
 					onClick={() => swiperRef.current?.slideNext()}
 					className='absolute z-10 p-2 transition-all -translate-y-1/2 rounded-full shadow-md right-4 top-1/2 bg-white/80 hover:bg-white'
 					aria-label='Next slide'
-				>
-					<ChevronRight className='w-6 h-6' />
-				</button>
+				><ChevronRight className='w-6 h-6' /></button>
 			</div>
 
 			{/* Thumbnail Swiper */}

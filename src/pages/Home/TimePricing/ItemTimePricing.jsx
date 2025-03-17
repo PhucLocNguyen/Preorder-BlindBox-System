@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import FakeImage from '../../../assets/BulkOrder/FakeImage.webp'
-
 import { formatMoney } from '../../../utils/FormatMoney'
 
 function ItemTimePricing({ data }) {
