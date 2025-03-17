@@ -27,7 +27,7 @@ const CountdownTimer = ({ targetDate }) => {
 	const formatTime = (num) => String(num).padStart(2, '0');
 
 	return (
-		<div className='bg-red-600 text-white rounded-lg p-4 flex items-center justify-center gap-4'>
+		<div className='bg-red-600 text-white p-4 flex items-center justify-center gap-4 rounded-xl'>
 			<div className='text-center'>
 				<div className='text-3xl font-bold'>{formatTime(timeLeft.days)}</div>
 				<div className='text-sm'>ngày</div>
@@ -52,10 +52,10 @@ const CountdownTimer = ({ targetDate }) => {
 };
 
 // Chỉ định ngày đích cụ thể:
-export default function CountDown() {
+export default function CountDown({targetDate}) {
 	return (
-		<div className='flex flex-col items-center space-y-2 p-2'>
-			<CountdownTimer targetDate="2025-03-31T23:59:59" />
+		<div className='flex flex-col items-center space-y-2 p-2 '>
+			<CountdownTimer targetDate={targetDate} />
 		</div>
 	);
 }
