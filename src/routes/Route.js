@@ -99,7 +99,8 @@ const publicRoutes = [
     component: BulkOrder
   },
   {
-    path: '/test2',
+    path: '/gioi-thieu',
+    layout:DefaultLayout,
     component: IntroductionPage
   }
 ];
