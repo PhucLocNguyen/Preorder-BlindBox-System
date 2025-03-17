@@ -7,6 +7,7 @@ import PreorderMilestones from '../../../components/PreorderMilestones/PreorderM
 import OrderSection from '../../../components/OrderSectionInDetailProduct/OrderSection';
 import SimilarCampaign from '../../../components/SimilarCampaign/SimilarCampaign';
 import { Package, CheckCircle } from 'lucide-react';
+import MyPreorderSteps from '../../../components/Steps/MyPreorderSteps';
 
 const ProductDetail = () => {
 	const params = useParams();
@@ -15,7 +16,6 @@ const ProductDetail = () => {
 	const [data, setData] = useState();
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(true);
-
 	console.log('data', data);
 
 	const productDetailBlind = async () => {
@@ -35,10 +35,10 @@ const ProductDetail = () => {
 		}
 	};
 
-	useEffect(() => {
+	useEffect(()=>{
 		productDetailBlind();
-	}, []);
 
+	},[slug])
 	if (loading) {
 		return (
 			<div className='flex items-center justify-center min-h-screen'>
@@ -48,9 +48,9 @@ const ProductDetail = () => {
 	}
 
 	return (
-		<div className='sec-com'>
-			<div className='container-lg'>
-				<div className='relative flex flex-col justify-between gap-6 lg:flex-row'>
+		<div className='py-4 bg-[#f5f4f7]'>
+			<div className=' w-full max-w-screen-2xl mx-auto'>
+				<div className='relative flex flex-col justify-between gap-6 lg:flex-row w-full mb-12'>
 					{/* IMG */}
 					<div className='top-0 w-full lg:w-1/2 lg:sticky h-max bg-white rounded-2xl shadow-lg border border-gray-200 p-6'>
 					<ProductImages items={images} />
@@ -67,15 +67,15 @@ const ProductDetail = () => {
 							<h1 className='mb-6 text-3xl font-bold'>{data?.blindBox.name}</h1>
 
 							{/* Milestone pricing display */}
-							{data?.preorderMilestones && data?.preorderMilestones.length > 0 && (
+							{data.type==="TimedPricing"&& data?.preorderMilestones && data?.preorderMilestones.length > 0 && (
 								<PreorderMilestones
+								originalPrice={data.blindBox.listedPrice}
 									milestones={data.preorderMilestones}
 									placedOrderCount={data.placedOrderCount}
 									totalQuantity={data.totalQuantity}
 								/>
 							)}
-
-							<CountdownTimer endDate={data?.endDate} />
+							<CountdownTimer targetDate={data?.endDate} />
 
 							<div className='flex items-center gap-2 my-4'>
 								<span className='inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 rounded-full'>
@@ -96,7 +96,7 @@ const ProductDetail = () => {
 
 								<div className='space-y-4'>
 									<div>
-										<h3 className='mb-2 text-gray-700'>Size:</h3>
+										<h3 className='mb-2 text-gray-700'>Kích cỡ:</h3>
 										<div className='flex gap-2'>
 											<span className='px-4 py-2 bg-yellow-100 rounded-full'>
 											{data?.blindBox.size}
@@ -106,19 +106,33 @@ const ProductDetail = () => {
 								</div>
 							</div>
 
-							<button className='w-full py-4 font-medium transition-colors bg-yellow-400 rounded-full hover:bg-yellow-500'>
-								ĐĂNG KÝ ĐẶT TRƯỚC
-							</button>
 							<OrderSection data={data} />
 						</div>
 					</div>
 				</div>
 
 				{/* Similar Campaign Section */}
-				<div className='mt-10'>
+				<div className="bg-white rounded-[24px] py-[30px] px-[50px] relative">
 					{/* Adding margin-top to create space between Image section and Similar Campaign */}
-					<h2 className='text-2xl font-bold mb-6'></h2>
-					<div className='flex gap-4 overflow-x-auto pb-4'>
+					{data.type!="TimedPricing"?<>
+					
+						<div className='w-fit absolute -top-5 left-14 py-3 px-12 font-bold text-xl transition-colors bg-yellow-400 rounded-full hover:bg-yellow-500 text-white'>
+						Cập nhật chiến dịch
+								</div>
+								<div className='mb-20'></div>
+						<div id="stepContainer" className='mb-10' >
+							
+						<MyPreorderSteps
+					detailPreorderCampaign={data}
+					preorderMilestones={data.preorderMilestones}
+					/>
+					</div>
+					<h2 className="text-4xl font-bold mb-4 text-center ">Các Chiến Dịch Liên Quan</h2>
+
+					</>:<div className='w-fit absolute -top-5 left-14 py-3 px-12 font-bold text-xl transition-colors bg-yellow-400 rounded-full hover:bg-yellow-500 text-white'>
+									Các Chiến dịch liên quan
+								</div>}
+					<div className='flex w-full gap-4 overflow-x-auto pb-4'>
 						<SimilarCampaign />
 					</div>
 				</div>

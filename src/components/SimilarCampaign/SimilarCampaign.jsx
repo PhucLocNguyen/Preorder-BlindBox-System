@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GetSimilarCampaigns } from '../../api/SimilarCampaign/ApiSimilarCampaign';
+import { Link } from 'react-router';
 
 const SimilarCampaign = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -34,8 +35,7 @@ const SimilarCampaign = () => {
   if (error) return <p className="text-red-500 text-center">{error}</p>;
 
   return (
-    <div className="p-6 bg-yellow-100">
-      <h2 className="text-2xl font-bold mb-4">Chiến Dịch Tương Tự</h2>
+    <div className="p-6 bg-yellow-100 w-full mt-4 rounded-xl">
 
       <div className="flex gap-6 overflow-x-auto whitespace-nowrap pb-4">
         {campaigns.map((item) => (
@@ -64,19 +64,9 @@ const SimilarCampaign = () => {
                 </div>
               </div>
 
-              <div className="mt-4">
-                {item.status === 'coming_soon' ? (
-                  <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full">COMING SOON</span>
-                ) : item.status === 'preorder' ? (
-                  <button className="w-full bg-red-600 text-white font-bold py-2 rounded-lg">
-                    ĐĂNG KÝ ĐẶT TRƯỚC
-                  </button>
-                ) : (
-                  <button className="w-full bg-red-600 text-white font-bold py-2 rounded-lg">
-                    THAM KHẢO
-                  </button>
-                )}
-              </div>
+                  <Link to={"/preordercampaign/"+item.slug} className="w-full uppercase rounded-lg px-4 flex text-center justify-center bg-red-600 text-white font-bold py-2">
+                    Xem chi tiết
+                  </Link>
             </div>
           </div>
         ))}
