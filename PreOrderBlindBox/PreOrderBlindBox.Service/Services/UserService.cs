@@ -346,9 +346,19 @@ namespace PreOrderBlindBox.Service.Services
 			{
 				throw new Exception("The updated account is not a customer");
 			}
+
+			if (!string.IsNullOrEmpty(user.Thumbnail))
+			{
+				var exisFileName = Path.GetFileName(user.Thumbnail);
+				await _blobService.DeleteFile(exisFileName);
+			}
+
+			var file = updateCustomerInformation.Thumbnail;
+
+
 			user.FullName = updateCustomerInformation.FullName;
 			user.Phone = updateCustomerInformation.Phone;
-			user.Thumbnail = updateCustomerInformation.Thumbnail;
+			user.Thumbnail = await _blobService.UploadFile(file);
 			user.Address = updateCustomerInformation.Address;
 			user.BankName = updateCustomerInformation.BankName;
 			user.BankAccountNumber = updateCustomerInformation.BankAccountNumber;
