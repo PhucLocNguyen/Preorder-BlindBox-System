@@ -51,7 +51,7 @@ const ApprovalCampaignDetail = lazy(() => import("../pages/Admin/ApprovalCampaig
 const MyOrders = lazy(() => import("../pages/Customer/Orders/MyOrders"));
 const ViewPendingOrderDetail = lazy(() => import("../pages/Customer/Orders/ViewPendingOrderDetail"));
 const ViewDetailOrder = lazy(() => import("../pages/Customer/Orders/ViewDetailOrder"));
-
+const Profile = lazy(() => import("../pages/Customer/Profile"));
 const publicRoutes = [
   {
     index: true,
@@ -120,6 +120,11 @@ const privateRoutes = [
   {
     path: '/confirm-order',
     component: ConfirmBuy,
+    role: ['Customer']
+  },
+  {
+    path: '/profile',
+    component: Profile,
     role: ['Customer']
   },
   {

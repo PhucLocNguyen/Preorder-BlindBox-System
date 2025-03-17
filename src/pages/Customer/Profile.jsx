@@ -1,0 +1,154 @@
+import React, { useState, useEffect } from "react";
+import { Form, Input, Button, Card, Upload, message } from "antd";
+import { UploadOutlined, UserOutlined } from "@ant-design/icons";
+import Header from "../../components/Header/Header";
+import { UpdateProfile } from "../../api/Profile/ApiProfile";
+import { GetActiveStaff } from "../../api/StaffManagement/ApiStaffManager";
+import { toast } from "react-toastify";
+import { use } from "react";
+
+const Profile = () => {
+    const [form] = Form.useForm();
+    const [profileImage, setProfileImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+
+    const handleProfileImageChange = ({ file }) => {
+        setProfileImage(file); // Lưu file để gửi lên API
+    };
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const data = await GetActiveStaff(25);
+                if (data.fullName) {
+                    const nameParts = data.fullName.split(" ");
+                    form.setFieldsValue({
+                        firstName: nameParts[0],
+                        lastName: nameParts.slice(1).join(" "),
+                        phone: data.phone,
+                        address: data.address,
+                        bankName: data.bankName,
+                        bankAccountNumber: data.bankAccountNumber,
+                    });
+                    setImagePreview(data.thumbnail);
+                }
+
+                console.log("check data", data);
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu hồ sơ:", error);
+            }
+        };
+
+        fetchProfile();
+    }, [form]);
+
+
+
+    const onFinish = async (values) => {
+        const formData = new FormData();
+        const fullName = `${values.firstName ? values.firstName : ""} ${values.lastName ? values.lastName : ""}`.trim();
+        formData.append("fullName", fullName);
+        formData.append("phone", values.phone);
+        formData.append("thumbnail", profileImage);
+        formData.append("address", values.address);
+        formData.append("bankName", values.bankName);
+        formData.append("bankAccountNumber", values.bankAccountNumber);
+        try {
+            const result = await UpdateProfile({ formData });
+            if (result.status === 200) {
+                toast.success("Cập nhật thông tin cá nhân thành công!");
+            }
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } catch (error) {
+            message.error("Cập nhật thất bại!");
+        }
+    };
+
+    return (
+        <div className="bg-gray-100 min-h-screen">
+            <Header />
+            <div className="max-w-3xl mx-auto mt-10">
+                <Card className="p-6 rounded-xl shadow-lg bg-white">
+                    <h1 className="text-3xl font-semibold text-center mb-6 text-gray-800">Thông tin cá nhân</h1>
+                    <Form form={form} layout="vertical" onFinish={onFinish}>
+
+                        {/* Avatar Upload */}
+                        <Form.Item>
+                            <div className="flex flex-col items-center mb-6">
+                                <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-gray-300">
+                                    {profileImage ? (
+
+                                        <img
+                                            src={URL.createObjectURL(profileImage)}
+                                            alt="Main"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : imagePreview ? (
+                                        <img src={imagePreview} alt="Current Profile" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <UserOutlined className="text-gray-400 text-6xl flex items-center justify-center w-full h-full" />
+                                    )}
+                                    <Upload
+                                        showUploadList={false}
+                                        onChange={handleProfileImageChange}
+                                        beforeUpload={() => false}
+                                    >
+                                        <div className="absolute bottom-0 bg-black bg-opacity-50 w-full text-center py-2 cursor-pointer text-white text-sm hover:bg-opacity-70 transition-all">
+                                            <UploadOutlined /> Chọn ảnh
+                                        </div>
+                                    </Upload>
+                                </div>
+                            </div>
+                        </Form.Item>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <Form.Item label="Họ *" name="firstName" rules={[{ required: true, message: "Vui lòng nhập họ!" }]}>
+                                <Input size="large" className="rounded-lg border-gray-300" />
+                            </Form.Item>
+
+                            <Form.Item label="Tên *" name="lastName" rules={[{ required: true, message: "Vui lòng nhập tên!" }]}>
+                                <Input size="large" className="rounded-lg border-gray-300" />
+                            </Form.Item>
+                        </div>
+
+                        <Form.Item label="Số điện thoại" name="phone" rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}>
+                            <Input size="large" className="rounded-lg border-gray-300" />
+                        </Form.Item>
+
+                        <Form.Item label="Địa chỉ" name="address" rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}>
+                            <Input size="large" className="rounded-lg border-gray-300" />
+                        </Form.Item>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <Form.Item label="Ngân hàng" name="bankName" rules={[{ required: true, message: "Vui lòng nhập tên ngân hàng!" }]}>
+                                <Input size="large" className="rounded-lg border-gray-300" />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Số tài khoản"
+                                name="bankAccountNumber"
+                                rules={[
+                                    { required: true, message: "Vui lòng nhập số tài khoản!" },
+                                    { max: 10, message: "Tối đa 10 số!" },
+                                ]}
+                            >
+                                <Input size="large" className="rounded-lg border-gray-300" />
+                            </Form.Item>
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="flex justify-center gap-4 mt-4">
+                            <Button type="primary" htmlType="submit" size="large" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                                Lưu thay đổi
+                            </Button>
+                        </div>
+                    </Form>
+                </Card>
+            </div>
+        </div>
+    );
+};
+
+export default Profile;
