@@ -9,6 +9,7 @@ import ItemTimePricing from './ItemTimePricing'
 import LeftButton from '../../../assets/BulkOrder/LeftButton.png'
 import RightButton from '../../../assets/BulkOrder/RightButton.png'
 import { ApiGetPreOrderCampaign } from '../../../api/PreOrderCampaign/ApiPreOrderCampaign';
+import { Link } from 'react-router';
 
 function TimePricing() {
    const [filter, setFilter] = useState(1)
@@ -80,8 +81,11 @@ function TimePricing() {
                                     {listTimePricing?.map((item, index) => {
                                        return (
                                           <SwiperSlide key={index} className='group'>
-                                             <ItemTimePricing data={item} />
+                                             <Link to={"/preordercampaign/"+item.slug}>
+                                                <ItemTimePricing data={item} />
+                                             </Link>
                                           </SwiperSlide>
+                                          
                                        )
                                     })}
                                  </Swiper>
