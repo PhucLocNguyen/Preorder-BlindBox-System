@@ -12,14 +12,6 @@ function ViewDetailOrder() {
   const { id } = useParams();
   const [orderInformation, setOrderInformation] = useState();
   const [userVoucherById, setUserVoucherById] = useState({
-    userVoucherId: 1,
-    voucherCampaignId: 1,
-    name: "Summer Sale",
-    percentDiscount: 10,
-    maximumMoneyDiscount: 100,
-    quantity: 1,
-    usedQuantity: 0,
-    createdDate: "2025-02-27T23:20:43.197",
   });
   const [orderDetails, setOrderDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +19,6 @@ function ViewDetailOrder() {
     var responseOrderDetails = await GetAllOrderDetailsByOrderID(id);
     var responseOrderInformation = await GetOrderById(id);
     var userVoucher = await GetUserVoucherById(responseOrderInformation.userVoucherId);
-    console.log(userVoucher);
     setUserVoucherById(userVoucher);
     setOrderInformation(responseOrderInformation);
     setOrderDetails(responseOrderDetails);

@@ -11,6 +11,7 @@ import LeftButton from '../../../assets/BulkOrder/LeftButton.png'
 import RightButton from '../../../assets/BulkOrder/RightButton.png'
 import ItemBulkOrder from './ItemBulkOrder';
 import { ApiGetPreOrderCampaign } from '../../../api/PreOrderCampaign/ApiPreOrderCampaign';
+import { Link } from 'react-router';
 
 
 function BulkOrder() {
@@ -73,7 +74,9 @@ function BulkOrder() {
                            {listBulkOrder?.map((item, index) => {
                               return (
                                  <SwiperSlide key={index} className='group'>
-                                    <ItemBulkOrder data={item} />
+                                    <Link to={"/preordercampaign/"+item.slug}>
+                                       <ItemBulkOrder data={item} />
+                                    </Link>
                                  </SwiperSlide>
                               )
                            })}

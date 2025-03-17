@@ -1,27 +1,42 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { CollectActiveVoucherCampaign } from "../api/VoucherCampaign/ApiVoucherCampaign";
 import { IsExpired } from "../utils/DateChecking";
 import { formatShortVND } from "../utils/FormatMoney";
 import GradientButton from "./Buttons/GradientButton";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 function Voucher({ VoucherDetail }) {
   const [isCollectedState, setIsCollectedState] = useState(
     VoucherDetail.isCollected
   );
   const [popupReceiveQuantity, setPopupReceiveQuantity] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
+  const {auth} = useContext(AuthContext);
+  const navigation = useNavigate();
   console.log(VoucherDetail);
   const collectVoucher = async (voucherDetailID) => {
-    const response = await CollectActiveVoucherCampaign(voucherDetailID);
+    if(auth.roleName==="Guest"){
+      toast.error("Nhận voucher thất bại: Bạn cần đăng nhập");
+      navigation("/login");
+      return;
+    }
+    if(auth.roleName==="Customer"){
+      const response = await CollectActiveVoucherCampaign(voucherDetailID);
 
-    setPopupReceiveQuantity(response.quantity);
-    setIsCollectedState(true);
-    setShowPopup(true);
-
-    // Ẩn popup sau 1.2 giây
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 1200);
+      setPopupReceiveQuantity(response.quantity);
+      setIsCollectedState(true);
+      setShowPopup(true);
+  
+      // Ẩn popup sau 1.2 giây
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 1200);
+    }else{
+      toast.error("Nhận voucher thất bại: Bạn cần đăng nhập với tư cách customer để nhận");
+    }
+    
   };
 
   return (
