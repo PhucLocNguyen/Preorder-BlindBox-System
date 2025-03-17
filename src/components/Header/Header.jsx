@@ -95,6 +95,11 @@ export default function Header() {
                                             <li onClick={handleMyOrder} className="cursor-pointer py-[8px] hover:bg-[#ccc] px-[16px] flex items-start w-full h-auto text-left whitespace-normal text-[16px]">
                                                     Đơn hàng của tôi
                                                 </li>
+                                                <Link to="/myvoucher">
+                                                    <li className="cursor-pointer py-[8px] hover:bg-[#ccc] px-[16px] flex items-start w-full h-auto text-left whitespace-normal text-[16px]">
+                                                        Phiếu giảm giá
+                                                    </li>
+                                                </Link>
                                                 <li onClick={handleLogout} className="cursor-pointer py-[8px] hover:bg-[#ccc] px-[16px] flex items-start w-full h-auto text-left whitespace-normal text-[16px]">
                                                     Đăng xuất
                                                 </li>
