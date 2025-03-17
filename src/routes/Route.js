@@ -49,9 +49,9 @@ const BulkOrder = lazy(() => import("../pages/Home/BulkOrder/BulkOrder"));
 const ApprovalCampaign = lazy(() => import("../pages/Admin/ApprovalCampaign/ApprovalCampaign"));
 const ApprovalCampaignDetail = lazy(() => import("../pages/Admin/ApprovalCampaign/ApprovalCampaignDetail"));
 const MyOrders = lazy(() => import("../pages/Customer/Orders/MyOrders"));
-const ViewPendingOrderDetail = lazy(() => import("../pages/Customer/Orders/ViewPendingOrderDetail"));
-const ViewDetailOrder = lazy(() => import("../pages/Customer/Orders/ViewDetailOrder"));
-
+const ViewPendingOrderDetail = lazy(() =>import("../pages/Customer/Orders/ViewPendingOrderDetail"));
+const ViewDetailOrder = lazy(() =>import("../pages/Customer/Orders/ViewDetailOrder"));
+const IntroductionPage = lazy(() =>import("../pages/IntroductionPage/IntroductionPage"));
 const publicRoutes = [
   {
     index: true,
@@ -97,6 +97,10 @@ const publicRoutes = [
   {
     path: '/test',
     component: BulkOrder
+  },
+  {
+    path: '/test2',
+    component: IntroductionPage
   }
 ];
 
