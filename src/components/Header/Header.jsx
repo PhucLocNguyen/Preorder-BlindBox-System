@@ -87,8 +87,15 @@ export default function Header() {
                                     </Link>
                                 </button>
 
-                                <div className="px-[1rem] group h-10 flex items-center">
-                                    <User className="h-6 w-6" />
+                                <div className="pr-[2rem] group h-10 flex items-center">
+                                    <Link
+                                        to="/profile"
+                                        className="flex items-center justify-center h-[50px] w-[50px] rounded-full overflow-hidden bg-transparent"
+                                    >
+                                        <div className="flex items-center justify-center h-[60%] w-[60%] rounded-full bg-gray-300">
+                                            <User className="h-5 w-5 text-gray-600" />
+                                        </div>
+                                    </Link>
                                     <div className="absolute top-[80%] right-[10px] hidden group-hover:block">
                                         <div className="mt-[15px] min-w-[16rem] bg-[#fff] rounded-[8px] shadow-[0_0_0_1px_#d1d2e0,0_2px_4px_rgba(6,17,118,0.08),0_4px_12px_rgba(6,17,118,0.08)]">
                                             <ul className="py-[8px] ">
@@ -110,6 +117,7 @@ export default function Header() {
                             </>
                         ) : (
                             <>
+
                                 <Link to='/login' className="pl-[10px] py-[10px] ">
                                     Đăng nhập
                                 </Link>
