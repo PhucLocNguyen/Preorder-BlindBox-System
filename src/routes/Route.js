@@ -54,6 +54,7 @@ const ViewPendingOrderDetail = lazy(() => import("../pages/Customer/Orders/ViewP
 const ViewDetailOrder = lazy(() => import("../pages/Customer/Orders/ViewDetailOrder"));
 const Profile = lazy(() => import("../pages/Customer/Profile"));
 const IntroductionPage = lazy(() => import("../pages/IntroductionPage/IntroductionPage"));
+
 const publicRoutes = [
   {
     index: true,

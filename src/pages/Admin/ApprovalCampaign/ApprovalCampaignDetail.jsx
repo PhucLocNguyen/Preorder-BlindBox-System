@@ -5,7 +5,7 @@ import { ApproveBulkOrderCampaign, GetActivePreorderCampaignBySlug, RejectBulkOr
 import {
   ArrowLeftOutlined,
 } from "@ant-design/icons";
-import "./style.css";
+
 import MyPreorderSteps from "../../../components/Steps/MyPreorderSteps";
 const { Step } = Steps;
 

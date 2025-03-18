@@ -113,8 +113,8 @@ function OrderSection({ data }) {
             </div>
 
             {/* Nút add cart */}
-            <button onClick={handleAddCart} className='mx-[8px] bg-[#EBEBEB] border-[1px] border-solid border-[#D7D7D7] py-[2px] px-[18px] rounded-full h-[40px] flex text-[20px] '>
-               <img src={CartIcon} alt="" />
+            <button onClick={handleAddCart} className='mx-[8px] bg-[#EBEBEB] border-[1px] border-solid border-[#D7D7D7] py-[2px] px-[18px] rounded-full flex text-[20px] '>
+               <img src={CartIcon} alt="" className="h-[40px]" />
             </button>
             {/* Nút buy now */}
             <button onClick={handleShowPopup} className="uppercase min-w-[185px] h-[40px] font-bold text-[20px] mx-[14px] rounded-full bg-[#323232] border-[1px] border-solid border-[#000000] text-[#fff] shadow-[2px_2px_3px_rgba(0,0,0,0.15)]">

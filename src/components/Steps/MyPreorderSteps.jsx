@@ -1,32 +1,29 @@
 import React from "react";
+import "./style.css";
 import { Steps, Tooltip, Progress } from "antd";
 
 const { Step } = Steps;
 
-const MyPreorderSteps = ({ preorderMilestones, detailPreorderCampaign, setWarning }) => {
+const MyPreorderSteps = ({ preorderMilestones, detailPreorderCampaign, setWarning=undefined }) => {
   const placedOrderCount = detailPreorderCampaign?.placedOrderCount || 0;
   
-  // 1. Tính tổng tích luỹ cho từng mốc
   const cumulativeOrdersArr = preorderMilestones.reduce((acc, milestone, i) => {
     const prevSum = acc[i - 1] || 0;
     acc.push(prevSum + milestone.quantity);
     return acc;
   }, []);
 
-  // 2. Tìm step hiện tại
   let currentStep = cumulativeOrdersArr.findIndex(
     (cumulative) => placedOrderCount < cumulative
   );
   if (currentStep === -1) {
-    // nghĩa là placedOrderCount >= cột mốc cuối
     currentStep = preorderMilestones.length;
   }
-if(currentStep<=1){
+if(setWarning!= undefined && currentStep<=1){
   setWarning("Lưu ý ! Chiến dịch này chưa được tính ở giá mốc 2 !")
 }
   return (
     <Steps progressDot current={currentStep} size="default" className="formatStepsProgressDot">
-      {/* Vòng lặp qua các milestone */}
       {preorderMilestones.map((milestone, index) => {
         const cumulativeOrders = cumulativeOrdersArr[index];
         const isActive = index === currentStep;
@@ -34,6 +31,7 @@ if(currentStep<=1){
           <Step
             key={index}
             className={`relative ${isActive ? "Active" : ""}`}
+            
             title={
               <>
                 <Tooltip title={`Mức giá: ${milestone.price.toLocaleString()} VND`}>
