@@ -1,5 +1,5 @@
 import { WarningOutlined } from '@ant-design/icons';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { data, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Form, Input, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -13,6 +13,7 @@ function ConfirmBuy() {
    const navigate = useNavigate()
    const [form] = Form.useForm()
    const buyData = location.state?.buyData
+   const [loading, setLoading] = useState(false)
 
    const [formData, setFormData] = useState({
       receiver: '',
@@ -62,6 +63,7 @@ function ConfirmBuy() {
    }
 
    const handleConfirmBuy = async () => {
+      setLoading(true)
       try {
          const values = await form.validateFields();
 
@@ -77,10 +79,12 @@ function ConfirmBuy() {
                quantity: buyData?.Quantity
             }
          }
-         CallApiOrderCampaign(payload)
+         await CallApiOrderCampaign(payload)
 
       } catch (error) {
-         return
+         console.error("Order failed:", error);
+      } finally {
+         setLoading(false)
       }
    }
 
@@ -216,10 +220,10 @@ function ConfirmBuy() {
                            </p>
                         </div>
 
-                        <div onClick={handleConfirmBuy} className="mb-[0.5rem] w-full">
-                           <button className="h-[45px] inline-flex px-[0.8rem] w-full items-center justify-center align-bottom min-w-[5rem] bg-[#FFDE50] text-[#000] rounded-full">
+                        <div className="mb-[0.5rem] w-full">
+                           <button onClick={handleConfirmBuy} disabled={loading} className={`${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#FFDE50]'} h-[45px] inline-flex px-[0.8rem] w-full items-center justify-center align-bottom min-w-[5rem]  text-[#000] rounded-full`}>
                               <span className="text-[20px] font-bold">
-                                 Thanh toán
+                                 {loading ? 'Đang xử lý...' : 'Thanh toán'}
                               </span>
                            </button>
                         </div>
