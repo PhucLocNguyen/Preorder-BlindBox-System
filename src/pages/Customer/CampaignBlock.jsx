@@ -3,11 +3,10 @@ import CartItem from '../Customer/CartItem';
 import VoucherModal from '../Customer/VoucherModal';
 import { formatMoney } from '../../utils/FormatMoney';
 
-function CampaignBlock({ block, onUpdateQuantity, onRemoveItem, vouchers, onVoucherSelected, onRemoveVoucher }) {
+function CampaignBlock({ block, selectedVoucherMap, onUpdateQuantity, onRemoveItem, vouchers, onVoucherSelected, onRemoveVoucher }) {
   // Lấy campaignId từ phần tử đầu tiên của responseCarts
   const campaignId = block.responseCarts[0].preorderCampaignId;
   const items = block.responseCarts;
-
 
   // Quản lý voucher của khung này
   const [showVoucherModal, setShowVoucherModal] = useState(false);
@@ -16,9 +15,13 @@ function CampaignBlock({ block, onUpdateQuantity, onRemoveItem, vouchers, onVouc
   const [appliedVoucher, setAppliedVoucher] = useState(null);
 
   useEffect(() => {
-    const voucher = vouchers.find(v => v.userVoucherId === block.userVoucherId) || null;
+    // Lấy voucherCampaignId từ mapping dựa theo campaignId
+    const selectedVoucherCampaignId = selectedVoucherMap[campaignId];
+    const voucher = selectedVoucherCampaignId 
+      ? vouchers.find(v => v.voucherCampaignId === selectedVoucherCampaignId)
+      : null;
     setAppliedVoucher(voucher);
-  }, [block.userVoucherId, vouchers]);
+  }, [selectedVoucherMap, campaignId, vouchers]);
 
   const availableVouchers = vouchers
     .map(v => ({

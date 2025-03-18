@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CollectActiveVoucherCampaign } from "../api/VoucherCampaign/ApiVoucherCampaign";
 import { IsExpired } from "../utils/DateChecking";
 import { formatShortVND } from "../utils/FormatMoney";
@@ -38,6 +38,9 @@ function Voucher({ VoucherDetail }) {
     }
     
   };
+  useEffect(()=>{
+    console.log(isCollectedState);
+  },[isCollectedState])
 
   return (
     <div className="relative card-con grid grid-cols-12 z-10">

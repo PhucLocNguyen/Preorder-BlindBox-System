@@ -105,7 +105,6 @@ const ProductDetail = () => {
 									</div>
 								</div>
 							</div>
-
 							<OrderSection data={data} />
 						</div>
 					</div>
@@ -133,7 +132,7 @@ const ProductDetail = () => {
 									Các Chiến dịch liên quan
 								</div>}
 					<div className='flex w-full gap-4 overflow-x-auto pb-4'>
-						<SimilarCampaign />
+						<SimilarCampaign id={data.preorderCampaignId} />
 					</div>
 				</div>
 			</div>

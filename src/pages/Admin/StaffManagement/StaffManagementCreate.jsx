@@ -27,11 +27,12 @@ const StaffManagementCreate = ({ onSuccess }) => {
             const response = await CreateStaffAccount(payload, config);
             console.log(response);
             toast.success("Staff account created successfully!");
-
-
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000); // Chờ 1 giây để hiển thị thông báo trước khi reload
+            if (response) {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                onSuccess();
+            }
         } catch (error) {
             toast.error(
                 "Error creating staff account: " +
