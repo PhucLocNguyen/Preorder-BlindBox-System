@@ -545,5 +545,16 @@ namespace PreOrderBlindBox.Service.Services
 				}
 			}
 		}
+
+		public async Task<ResponseUserInfomation> GetUserInformation()
+		{
+			int userId = _currentUserService.GetUserId();
+			var user = await _userRepository.GetUserById(userId);
+			if (user == null)
+			{
+				throw new Exception("Account does not exist");
+			}
+			return _mapper.Map<ResponseUserInfomation>(user);
+		}
 	}
 }
