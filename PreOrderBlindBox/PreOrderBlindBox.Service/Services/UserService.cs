@@ -513,7 +513,8 @@ namespace PreOrderBlindBox.Service.Services
 						EmailConfirmToken = "",
 						RoleId = role.RoleId,
 						Password = "",
-						Thumbnail = payload.Picture
+						Thumbnail = payload.Picture,
+						GoogleId = payload.JwtId
 					};
 
 					//Thêm ví cho người dùng

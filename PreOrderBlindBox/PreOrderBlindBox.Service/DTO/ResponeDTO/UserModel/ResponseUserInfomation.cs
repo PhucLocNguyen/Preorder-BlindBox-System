@@ -17,6 +17,7 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.UserModel
 		public string BankName { get; set; }
 		public string BankAccountNumber { get; set; }
 		public bool IsActive { get; set; }
+		public string GoogleId { get; set; }
 
 	}
 }
