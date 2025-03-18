@@ -236,6 +236,7 @@ function Cart() {
             key={index}
             block={block}
             vouchers={userVouchers}
+            selectedVoucherMap={selectedVoucherMap}
             onUpdateQuantity={updateQuantityApi}
             onRemoveItem={removeItem}
             onVoucherSelected={onVoucherSelected}
