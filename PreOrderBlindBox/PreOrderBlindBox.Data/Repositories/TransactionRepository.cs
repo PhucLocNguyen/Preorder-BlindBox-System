@@ -34,11 +34,11 @@ namespace PreOrderBlindBox.Data.Repositories
         public async Task<(int TotalCount, List<Transaction> Transactions)> GetListOfAllTransaction(PaginationParameter paginationParameters, TypeOfTransactionEnum? type = null, DateTime? fromDate = null, DateTime? toDate = null, Func<IQueryable<Transaction>, IOrderedQueryable<Transaction>>? orderBy = null)
         {
             IQueryable<Transaction> query = dbSet;
-            if (fromDate!=null && fromDate != DateTime.MinValue)
+            if (fromDate != DateTime.MinValue)
             {
                 query = query.Where(x => x.CreatedDate >= fromDate);
             }
-            if (toDate!=null && toDate != DateTime.MinValue)
+            if (toDate != DateTime.MinValue)
             {
                 query = query.Where(x => x.CreatedDate <= toDate);
             }
