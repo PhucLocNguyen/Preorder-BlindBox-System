@@ -140,13 +140,7 @@ namespace PreOrderBlindBox.Data.Repositories
             Expression<Func<PreorderCampaign, bool>> filter = pc => !pc.IsDeleted &&
                 pc.Status == "Active" &&
                 pc.BlindBox != null &&
-                (
-                    // Nếu cả isEndingSoon và isNewlyLaunched đều false, bỏ qua điều kiện thời gian.
-                    (!isEndingSoon && !isNewlyLaunched) ||
-                    // Nếu có một trong hai là true thì áp dụng điều kiện tương ứng.
-                    (isEndingSoon && pc.EndDate >= now && pc.EndDate <= now.AddDays(2)) ||
-                    (isNewlyLaunched && pc.StartDate <= now && pc.StartDate >= now.AddDays(-2))
-                ) && (type == null || pc.Type == type);
+                (type == null || pc.Type == type);
 
             Expression<Func<PreorderCampaign, object>>[] includes = new Expression<Func<PreorderCampaign, object>>[]
             {
@@ -160,6 +154,14 @@ namespace PreOrderBlindBox.Data.Repositories
             if (isTrending)
             {
                 orderBy = q => q.OrderByDescending(pc => pc.PlacedOrderCount);
+            }
+            if (isNewlyLaunched)
+            {
+                orderBy = q => q.OrderByDescending(pc => pc.StartDate);
+            }
+            if (isEndingSoon)
+            {
+                orderBy = q => q.OrderBy(pc => pc.EndDate);
             }
 
             return await GetAll(pagination, filter, orderBy, includes);
