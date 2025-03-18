@@ -23,6 +23,7 @@ namespace PreOrderBlindBox.API.Controllers
             _transactionService = transactionService;
             _currentUserService = currentUserService;
         }
+        [Authorize(Roles = "Customer")]
         [HttpGet("GetTransactionDetailVerifyUserPayment")]
         public async Task<IActionResult> GetTransactionDetailVerifyUserPayment([FromQuery] string transactionId)
         {
@@ -39,6 +40,8 @@ namespace PreOrderBlindBox.API.Controllers
             }
             return Ok(transactionDetail);
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetListOfAllTransaction")]
         public async Task<IActionResult> GetListOfAllTransaction([FromQuery] RequestTransactionReportModel modelRequest)
         {

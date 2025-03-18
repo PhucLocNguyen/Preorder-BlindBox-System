@@ -31,7 +31,7 @@ namespace PreOrderBlindBox.Data.Repositories
             return await _context.Transactions.Include(x => x.Wallet).FirstOrDefaultAsync(x => x.TransactionId == transactionId);
         }
 
-        public Task<List<Transaction>> GetListOfAllTransaction(PaginationParameter paginationParameters, TypeOfTransactionEnum? type = null, DateTime? fromDate = null, DateTime? toDate = null, Func<IQueryable<Transaction>, IOrderedQueryable<Transaction>>? orderBy = null)
+        public async Task<(int TotalCount, List<Transaction> Transactions)> GetListOfAllTransaction(PaginationParameter paginationParameters, TypeOfTransactionEnum? type = null, DateTime? fromDate = null, DateTime? toDate = null, Func<IQueryable<Transaction>, IOrderedQueryable<Transaction>>? orderBy = null)
         {
             IQueryable<Transaction> query = dbSet;
             if (fromDate != DateTime.MinValue)
@@ -51,13 +51,14 @@ namespace PreOrderBlindBox.Data.Repositories
             {
                 query = orderBy(query);
             }
+            int totalItems = query.Count();
             if (paginationParameters != null)
             {
                 query = query.Skip((paginationParameters.PageIndex - 1) * paginationParameters.PageSize)
                     .Take(paginationParameters.PageSize);
             }
-            return query.ToListAsync();
-            throw new NotImplementedException();
+            List<Transaction> transactions = await query.ToListAsync();
+            return  (totalItems, transactions);
         }
     }
 }
