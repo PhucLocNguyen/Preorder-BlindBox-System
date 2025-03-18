@@ -12,6 +12,7 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel
         public string Description { get; set; }
 
         public TypeOfTransactionEnum Type { get; set; }
+        public TransactionStatusEnum Status { get; set; } = TransactionStatusEnum.Success;
 
         public decimal Money { get; set; }
 
