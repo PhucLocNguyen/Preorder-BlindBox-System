@@ -13,9 +13,11 @@ namespace PreOrderBlindBox.Services.IServices
     public interface ITransactionService
     {
         public Task<ResponseTransactionResult> GetDetailTransactionVerifyUser(string transactionId, int userId);
-        public Task<Pagination<ResponseTransactionResult>> GetListOfAllTransaction(PaginationParameter paginationParameter);
+        public Task<Pagination<ResponseTransactionResult>> GetListOfAllTransaction(RequestTransactionReportModel model);
         public Task<Pagination<ResponseTransactionResult>> GetListOfTransactionByUser(PaginationParameter paginationParameter, int userId);
         public Task<bool> CreateTransaction(RequestTransactionCreateModel model);
-
+        public Task<bool> CreateWithdrawRequest(int userId, decimal money);
+        public Task<bool> ConfirmWithdrawTransaction(int transactionId);
+        public Task<Pagination<ResponseTransactionResult>> GetListPendingWithdrawRequest(PaginationParameter paginationParameter);
     }
 }
