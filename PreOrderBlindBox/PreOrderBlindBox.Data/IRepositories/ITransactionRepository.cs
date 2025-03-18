@@ -1,4 +1,6 @@
-﻿using PreOrderBlindBox.Data.Entities;
+﻿using PreOrderBlindBox.Data.Commons;
+using PreOrderBlindBox.Data.Entities;
+using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.GenericRepository;
 using System;
 using System.Collections.Generic;
@@ -12,5 +14,6 @@ namespace PreOrderBlindBox.Data.IRepositories
     {
         public Transaction AddTransaction(Transaction transaction);
         public Task<Transaction> GetDetailTransaction(int transactionId);
+        public Task<List<Transaction>> GetListOfAllTransaction(PaginationParameter paginationParameters,TypeOfTransactionEnum? type, DateTime? fromDate, DateTime? toDate, Func<IQueryable<Transaction>, IOrderedQueryable<Transaction>>? orderBy);
     }
 }
