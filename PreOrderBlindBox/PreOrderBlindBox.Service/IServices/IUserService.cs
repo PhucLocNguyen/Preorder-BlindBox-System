@@ -24,5 +24,6 @@ namespace PreOrderBlindBox.Services.IServices
 		public Task<int> UpdateStaffInformation(RequestUpdateStaffInformation updateStaffInformation, int staffId);
 		public Task<int> DeleteStaff(int staffId);
 		public Task<ResponseLogin> LoginByGoogle(string credential);
+		public Task<ResponseUserInfomation> GetUserInformation();
 	}
 }
