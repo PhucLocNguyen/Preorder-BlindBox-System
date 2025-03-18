@@ -99,12 +99,17 @@ export default function Header() {
                                     <div className="absolute top-[80%] right-[10px] hidden group-hover:block">
                                         <div className="mt-[15px] min-w-[16rem] bg-[#fff] rounded-[8px] shadow-[0_0_0_1px_#d1d2e0,0_2px_4px_rgba(6,17,118,0.08),0_4px_12px_rgba(6,17,118,0.08)]">
                                             <ul className="py-[8px] ">
-                                            <li onClick={handleMyOrder} className="cursor-pointer py-[8px] hover:bg-[#ccc] px-[16px] flex items-start w-full h-auto text-left whitespace-normal text-[16px]">
+                                                <li onClick={handleMyOrder} className="cursor-pointer py-[8px] hover:bg-[#ccc] px-[16px] flex items-start w-full h-auto text-left whitespace-normal text-[16px]">
                                                     Đơn hàng của tôi
                                                 </li>
                                                 <Link to="/myvoucher">
                                                     <li className="cursor-pointer py-[8px] hover:bg-[#ccc] px-[16px] flex items-start w-full h-auto text-left whitespace-normal text-[16px]">
                                                         Phiếu giảm giá
+                                                    </li>
+                                                </Link>
+                                                <Link to="/change-password">
+                                                    <li className="cursor-pointer py-[8px] hover:bg-[#ccc] px-[16px] flex items-start w-full h-auto text-left whitespace-normal text-[16px]">
+                                                        Đổi mật khẩu
                                                     </li>
                                                 </Link>
                                                 <li onClick={handleLogout} className="cursor-pointer py-[8px] hover:bg-[#ccc] px-[16px] flex items-start w-full h-auto text-left whitespace-normal text-[16px]">

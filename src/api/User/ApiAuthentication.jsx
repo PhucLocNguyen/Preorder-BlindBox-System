@@ -88,7 +88,18 @@ const ApiLoginWithGoogle = async (credential) => {
    }
 }
 
+const ApiUpdatePassword = async ({ payload }) => {
+   try {
+      const response = await api.post('/Authen/ChangePassword', payload)
+      if (response?.status === 200) {
+         return response
+      }
+   } catch (error) {
+      console.log('>>> Api update password error: ', error);
+   }
+}
+
 export {
    ApiLoginByEmailAndPassword, ApiGetCurrentAccountRole, GetAccessToken, ApiRegisterByEmailAndPassword
-   , ApiConfirmEmailAccount, GetInformationOfUser, ApiLoginWithGoogle
+   , ApiConfirmEmailAccount, GetInformationOfUser, ApiLoginWithGoogle, ApiUpdatePassword
 }

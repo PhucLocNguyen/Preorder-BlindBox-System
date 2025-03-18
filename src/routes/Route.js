@@ -54,6 +54,7 @@ const ViewPendingOrderDetail = lazy(() => import("../pages/Customer/Orders/ViewP
 const ViewDetailOrder = lazy(() => import("../pages/Customer/Orders/ViewDetailOrder"));
 const Profile = lazy(() => import("../pages/Customer/Profile"));
 const IntroductionPage = lazy(() => import("../pages/IntroductionPage/IntroductionPage"));
+const UpdatePassword = lazy(() => import("../pages/Account/UpdatePassword"));
 
 const publicRoutes = [
   {
@@ -211,6 +212,12 @@ const privateRoutes = [
   {
     path: '/myvoucher',
     component: MyVoucher,
+    layout: DefaultLayout,
+    role: ['Customer']
+  },
+  {
+    path: '/change-password',
+    component: UpdatePassword,
     layout: DefaultLayout,
     role: ['Customer']
   }
