@@ -17,10 +17,10 @@ const OrderTrackingSteps = ({ status, TypeOfOrder = "Confirmed" }) => {
   // Xác định bước hiện tại dựa trên trạng thái đơn hàng
   if (TypeOfOrder === "Confirmed") {
     const statusToStepIndex = {
-      confirmed: 0,
-      proccessing: 1,
-      delivering: 2,
-      delivered: 3,
+      Placed: 0,
+      Processing: 1,
+      Delivering: 2,
+      Delivered: 3,
     };
     const currentStep = statusToStepIndex[status] || 0;
     return (
