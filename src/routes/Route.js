@@ -133,6 +133,7 @@ const privateRoutes = [
   {
     path: '/profile',
     component: Profile,
+    layout: DefaultLayout,
     role: ['Customer']
   },
   {
