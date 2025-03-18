@@ -55,6 +55,7 @@ const ViewDetailOrder = lazy(() => import("../pages/Customer/Orders/ViewDetailOr
 const Profile = lazy(() => import("../pages/Customer/Profile"));
 const IntroductionPage = lazy(() => import("../pages/IntroductionPage/IntroductionPage"));
 const UpdatePassword = lazy(() => import("../pages/Account/UpdatePassword"));
+const DepositHistory = lazy(() => import("../pages/Wallet/DepositHistory"));
 
 const publicRoutes = [
   {
@@ -117,6 +118,7 @@ const privateRoutes = [
     children: [
       { index: true, component: DepositPage, layout: null },
       { path: 'deposit', component: Withdraw, layout: null },
+      { path: 'deposit-history', component: DepositHistory, layout: null },
     ],
     role: ['Customer']
   },
