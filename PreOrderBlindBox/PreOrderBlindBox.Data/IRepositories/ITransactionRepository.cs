@@ -14,6 +14,6 @@ namespace PreOrderBlindBox.Data.IRepositories
     {
         public Transaction AddTransaction(Transaction transaction);
         public Task<Transaction> GetDetailTransaction(int transactionId);
-        public Task<List<Transaction>> GetListOfAllTransaction(PaginationParameter paginationParameters,TypeOfTransactionEnum? type, DateTime? fromDate, DateTime? toDate, Func<IQueryable<Transaction>, IOrderedQueryable<Transaction>>? orderBy);
+        public Task<(int TotalCount, List<Transaction> Transactions)> GetListOfAllTransaction(PaginationParameter paginationParameters,TypeOfTransactionEnum? type, DateTime? fromDate, DateTime? toDate, Func<IQueryable<Transaction>, IOrderedQueryable<Transaction>>? orderBy);
     }
 }

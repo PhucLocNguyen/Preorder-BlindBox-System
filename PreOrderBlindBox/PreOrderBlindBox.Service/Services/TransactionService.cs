@@ -176,11 +176,11 @@ namespace PreOrderBlindBox.Service.Services
 
         public async Task<Pagination<ResponseTransactionResult>> GetListOfAllTransaction(RequestTransactionReportModel model)
         {
-
-            List<Transaction> transactions = await _transactionRepository.GetListOfAllTransaction(paginationParameters: model.PaginationParameter, model.Type, model.FromDate,model.EndDate,orderBy:x=>x.OrderBy(x=>x.CreatedDate));
+            List<Transaction> transactions = new();
+            int totalCount = 0;
+            (totalCount, transactions) = await _transactionRepository.GetListOfAllTransaction(paginationParameters: model.PaginationParameter, model.Type, model.FromDate, model.EndDate, orderBy: x => x.OrderBy(x => x.CreatedDate));
             var response = _mapper.Map<List<ResponseTransactionResult>>(transactions);
-            int totalItemsCount = _transactionRepository.Count();
-            var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, model.PaginationParameter.PageIndex, model.PaginationParameter.PageSize);
+            var responseMap = new Pagination<ResponseTransactionResult>(response, totalCount, model.PaginationParameter.PageIndex, model.PaginationParameter.PageSize);
             return responseMap;
         }
 
@@ -204,7 +204,7 @@ namespace PreOrderBlindBox.Service.Services
 
         public async Task<Pagination<ResponseTransactionResult>> GetListPendingWithdrawRequest(PaginationParameter paginationParameter)
         {
-            List<Transaction> transactions = await _transactionRepository.GetAll(pagination: paginationParameter, filter: x => x.Status==TransactionStatusEnum.Pending.ToString() && x.Type == TypeOfTransactionEnum.Withdraw.ToString());
+            List<Transaction> transactions = await _transactionRepository.GetAll(pagination: paginationParameter, filter: x => x.Status == TransactionStatusEnum.Pending.ToString() && x.Type == TypeOfTransactionEnum.Withdraw.ToString());
             var response = _mapper.Map<List<ResponseTransactionResult>>(transactions);
             int totalItemsCount = _transactionRepository.Count();
             var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);
