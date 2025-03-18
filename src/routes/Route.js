@@ -103,7 +103,7 @@ const publicRoutes = [
   },
   {
     path: '/gioi-thieu',
-    layout:DefaultLayout,
+    layout: DefaultLayout,
     component: IntroductionPage
   }
 ];

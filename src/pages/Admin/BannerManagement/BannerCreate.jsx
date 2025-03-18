@@ -24,11 +24,14 @@ const BannerCreate = ({ onSuccess }) => {
             console.log("Form data:", formData);
             console.log("File binary:", file);
             console.log("Create banner result:", result);
-            toast.success("Banner created successfully!");
-            onSuccess();
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            if (result) {
+                toast.success("Banner created successfully!");
+                onSuccess();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+
         } catch (error) {
             console.error("Upload error:", error);
             message.error("Create banner failed");

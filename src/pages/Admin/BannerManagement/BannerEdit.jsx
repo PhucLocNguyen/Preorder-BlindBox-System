@@ -4,10 +4,10 @@ import { UploadOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { EditBanner, GetActiveBanner } from "../../../api/Banner/ApiBanner";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import noThumbnailImage from "../../../assets/noThumbnailImage.jpg";
 const BannerEdit = ({ bannerId, onSuccess }) => {
     const [form] = Form.useForm();
-    const [imagePreview, setImagePreview] = useState(null);
+    const [imagePreview, setImagePreview] = useState({});
     const navigate = useNavigate();
     const [bannerImage, setBannerImage] = useState(null);
     const handleBannerImageChange = ({ file }) => {
@@ -20,10 +20,12 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
                 const data = await GetActiveBanner(bannerId);
                 form.setFieldsValue({
                     title: data.title,
+                    imageUrl: data.imageUrl,
                     callToActionUrl: data.callToActionUrl,
                     priority: data.priority,
+
                 });
-                setImagePreview(data.imageUrl); // Cập nhật ảnh preview
+                setImagePreview(data); // Cập nhật ảnh preview
                 console.log("check data", data);
             } catch (error) {
                 console.error("Error when fetching data", error);
@@ -46,12 +48,14 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
             console.log(">>> check formData: ", formData);
             var result = await EditBanner({ formData, bannerId });
             console.log(">>> check result: ", result);
-            toast.success("Banner edited successfully!");
-            onSuccess();
+            if (result) {
+                toast.success("Banner edited successfully!");
+                onSuccess();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
             navigate("/admin/banner-management");
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
         } catch (error) {
             message.error("Edit banner failed");
         }
@@ -80,23 +84,33 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
                 >
                     <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                 </Upload>
-                {bannerImage ? (
+                {imagePreview == null ? (
                     <div className="mt-2">
                         <img
-                            src={URL.createObjectURL(bannerImage)}
+                            src={noThumbnailImage}
                             alt="Main"
                             className="w-full h-[300px] object-contain mt-2 rounded-md"
                         />
                     </div>
-                ) : imagePreview ? (
-                    <div className="mt-2">
-                        <img
-                            src={imagePreview}
-                            alt="Current Banner"
-                            className="w-full h-[300px] object-contain mt-2 rounded-md"
-                        />
-                    </div>
-                ) : null}
+                )
+                    : imagePreview != null &&
+                        bannerImage == null ? (
+                        <div className="mt-2">
+                            <img
+                                src={imagePreview.imageUrl}
+                                alt="Main"
+                                className="w-full h-[300px] object-contain mt-2 rounded-md"
+                            />
+                        </div>
+                    ) : (
+                        <div className="mt-2">
+                            <img
+                                src={URL.createObjectURL(bannerImage)}
+                                alt="Main"
+                                className="w-full h-[300px] object-contain mt-2 rounded-md"
+                            />
+                        </div>
+                    )}
             </Form.Item>
 
 

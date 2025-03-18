@@ -82,12 +82,15 @@ const VoucherEdit = () => {
 
         try {
             const config = { headers: { 'Content-Type': 'application/json' } };
-            await UpdateVoucher(id, payload, config);
-            toast.success("Voucher cập nhật thành công!");
-            navigate('/admin/voucher');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            const result = await UpdateVoucher(id, payload, config);
+            if (result) {
+                toast.success("Voucher cập nhật thành công!");
+                navigate('/admin/voucher');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+
         } catch (error) {
             toast.error("Lỗi khi cập nhật voucher:", error);
         }
