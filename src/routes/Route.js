@@ -53,7 +53,7 @@ const MyOrders = lazy(() => import("../pages/Customer/Orders/MyOrders"));
 const ViewPendingOrderDetail = lazy(() => import("../pages/Customer/Orders/ViewPendingOrderDetail"));
 const ViewDetailOrder = lazy(() => import("../pages/Customer/Orders/ViewDetailOrder"));
 const Profile = lazy(() => import("../pages/Customer/Profile"));
-
+const IntroductionPage = lazy(() => import("../pages/IntroductionPage/IntroductionPage"));
 const publicRoutes = [
   {
     index: true,
@@ -102,7 +102,7 @@ const publicRoutes = [
   },
   {
     path: '/gioi-thieu',
-    layout:DefaultLayout,
+    layout: DefaultLayout,
     component: IntroductionPage
   }
 ];
