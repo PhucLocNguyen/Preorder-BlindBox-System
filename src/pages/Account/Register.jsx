@@ -1,6 +1,6 @@
 import { Form, Input, Button } from "antd";
 import { Link, useNavigate } from "react-router";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { GoogleLogin } from '@react-oauth/google';
 
@@ -13,6 +13,7 @@ function RegisterPage() {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const { auth } = useContext(AuthContext);
+    const [loading, setLoading] = useState(false)
 
     const validateConfirmPassword = (_, value) => {
         if (!value || form.getFieldValue('password') === value) {
@@ -31,7 +32,14 @@ function RegisterPage() {
     }
 
     const onFinish = async (values) => {
-        await CallApiRegisterByEmailAndPassword(values)
+        setLoading(true)
+        try {
+            await CallApiRegisterByEmailAndPassword(values)
+        } catch (error) {
+            console.error("Registration failed:", error);
+        } finally {
+            setLoading(false)
+        }
     }
 
     const checkRole = () => {
@@ -169,7 +177,7 @@ function RegisterPage() {
 
                                 <Form.Item className="mb-0">
                                     <Button className='mt-[1rem] h-[50px] py-[15px] px-[22px] flex items-center justify-center text-[14px] font-bold leading-[20px] w-full' type="primary"
-                                        htmlType='submit'
+                                        htmlType='submit' disabled={loading}
                                     >
                                         Register
                                     </Button>
