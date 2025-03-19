@@ -9,7 +9,8 @@ import {
     TagOutlined,
     LogoutOutlined,
     PictureOutlined,
-    CheckSquareOutlined
+    CheckSquareOutlined,
+    MoneyCollectOutlined
 } from "@ant-design/icons";
 import AdminIcon from "../../assets/Admin/AdminIcon.png"
 import useLogout from "../../hooks/useLogout";
@@ -27,7 +28,9 @@ const SideBarAdmin = () => {
         { key: "/admin/pre-ordercampaign", label: "Quản lý các chiến dịch", icon: <ShoppingCartOutlined /> },
         { key: "/admin/voucher", label: "Mã giảm giá", icon: <TagOutlined /> },
         { key: "/admin/banner-management", label: "Quản lý Banner", icon: <PictureOutlined /> },
-        { key: "/admin/preordercampaignApproval", label: "Xét duyệt chiến dịch", icon: <CheckSquareOutlined /> }
+        { key: "/admin/preordercampaignApproval", label: "Xét duyệt chiến dịch", icon: <CheckSquareOutlined /> },
+        { key: "/admin/withdraw-request", label: "Các yêu cầu rút tiền", icon:  <MoneyCollectOutlined /> }
+
 
     ];
 

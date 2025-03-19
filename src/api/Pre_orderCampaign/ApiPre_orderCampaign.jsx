@@ -28,10 +28,11 @@ const CreatePreorderCampaign = async (payload) => {
     try {
         const response = await api.post('/PreorderCampaign/CreatePreorderCampaignWithMilestone', JSON.stringify(payload), axiosConfigHeader);
         toast.success("Create successful!");
-        return response.data;
+        return true;
     } catch (error) {
         console.log('>>> Api create preorder campaign Error: ', error);
-        toast.error("Create failed!");
+        toast.error("Create failed! "+ error);
+        return false;
     }
 };
 

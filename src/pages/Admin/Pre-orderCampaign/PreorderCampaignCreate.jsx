@@ -76,6 +76,7 @@ function PreorderCampaignCreate() {
     // validate 3 ngay sau khi start date
     if (dateRange[1].isBefore(dateRange[0].clone().add(3, "days"))) {
       setIsFormValid(false);
+
       return;
     }
     const hasErrors = fieldsError.some((field) => field.errors.length > 0);
@@ -102,8 +103,12 @@ function PreorderCampaignCreate() {
         : [],
     };
     
-    await CreatePreorderCampaign(data);
-    navigate("/admin/pre-ordercampaign");
+    var result = await CreatePreorderCampaign(data);
+    console.log(result)
+    if(result){
+
+      navigate("/admin/pre-ordercampaign");
+    }
   };
 
   return (
@@ -293,10 +298,10 @@ function PreorderCampaignCreate() {
                                           )
                                         );
                                       }
-                                      if(value>loadMainProduct.listedPrice){
+                                      if(value>=loadMainProduct.listedPrice){
                                         return Promise.reject(
                                           new Error(
-                                            `Giá phải nhỏ hơn hoặc bằng giá niêm yết của sản phẩm`
+                                            `Giá phải nhỏ hơn giá niêm yết của sản phẩm`
                                           )
                                         );
                                       }

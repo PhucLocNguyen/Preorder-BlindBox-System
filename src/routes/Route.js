@@ -54,6 +54,8 @@ const ViewPendingOrderDetail = lazy(() => import("../pages/Customer/Orders/ViewP
 const ViewDetailOrder = lazy(() => import("../pages/Customer/Orders/ViewDetailOrder"));
 const Profile = lazy(() => import("../pages/Customer/Profile"));
 const IntroductionPage = lazy(() => import("../pages/IntroductionPage/IntroductionPage"));
+const WithdrawTransactionDetail= lazy(()=> import("../pages/Admin/WithdrawTransaction/WithdrawTransactionDetail"));
+const WithdrawTransaction = lazy(()=> import("../pages/Admin/WithdrawTransaction/WithdrawTransaction"));
 const UpdatePassword = lazy(() => import("../pages/Account/UpdatePassword"));
 const DepositHistory = lazy(() => import("../pages/Wallet/DepositHistory"));
 
@@ -188,6 +190,8 @@ const privateRoutes = [
       { path: "history-transactions", component: HistoryTransactions },
       { path: "preordercampaignApproval", component: ApprovalCampaign },
       { path: "preordercampaignApproval/confirm/:slug", component: ApprovalCampaignDetail },
+      { path: "withdraw-request", component: WithdrawTransaction },
+      { path: "withdraw-request/:id", component: WithdrawTransactionDetail },
     ],
     role: ['Admin']
   },
