@@ -6,6 +6,7 @@ using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.TransactionModel;
 using PreOrderBlindBox.Services.IServices;
+using PreOrderBlindBox.Services.Mappers.TransactionMapper;
 using System.ComponentModel;
 
 namespace PreOrderBlindBox.Service.Services
@@ -87,6 +88,10 @@ namespace PreOrderBlindBox.Service.Services
             var user = await _userRepository.GetByIdAsync(userId);
             try
             {
+                if(string.IsNullOrEmpty(user.BankName) || string.IsNullOrEmpty(user.BankAccountNumber))
+                {
+                    return false;
+                }
                 var walletDetail = await _walletRepository.GetByIdAsync(user.WalletId.Value);
                 if (walletDetail == null)
                 {
@@ -128,7 +133,7 @@ namespace PreOrderBlindBox.Service.Services
                 transaction.Status = TransactionStatusEnum.Success.ToString();
                 await _transactionRepository.UpdateAsync(transaction);
 
-                var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin", includes: x => x.Role)).FirstOrDefault();
+                var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin" && x.WalletId!=null, includes: [x => x.Role, x => x.Wallet])).FirstOrDefault();
                 Wallet systemWallet = await _walletRepository.GetByIdAsync(admin.WalletId.Value);
                 var systemTransaction = new RequestTransactionCreateModel()
                 {
@@ -197,18 +202,24 @@ namespace PreOrderBlindBox.Service.Services
             }
             List<Transaction> transactions = await _transactionRepository.GetAll(pagination: paginationParameter, filter: x => x.WalletId == user.WalletId);
             var response = _mapper.Map<List<ResponseTransactionResult>>(transactions);
-            int totalItemsCount = _transactionRepository.Count();
+            int totalItemsCount = _transactionRepository.Count(filter: x => x.WalletId == user.WalletId);
             var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);
             return responseMap;
         }
 
-        public async Task<Pagination<ResponseTransactionResult>> GetListPendingWithdrawRequest(PaginationParameter paginationParameter)
+        public async Task<Pagination<ResponsePendingWithdraw>> GetListPendingWithdrawRequest(PaginationParameter paginationParameter)
         {
-            List<Transaction> transactions = await _transactionRepository.GetAll(pagination: paginationParameter, filter: x => x.Status == TransactionStatusEnum.Pending.ToString() && x.Type == TypeOfTransactionEnum.Withdraw.ToString());
-            var response = _mapper.Map<List<ResponseTransactionResult>>(transactions);
-            int totalItemsCount = _transactionRepository.Count();
-            var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);
+            List<Transaction> transactions = await _transactionRepository.GetAllFullIncludeTransaction(pagination: paginationParameter, filter: x => x.Status == TransactionStatusEnum.Pending.ToString() && x.Type == TypeOfTransactionEnum.Withdraw.ToString());
+            var response = transactions.Select(x => x.toReposonePendingWithdrawTransaction()).ToList();
+            int totalItemsCount = _transactionRepository.Count(filter: x => x.Status == TransactionStatusEnum.Pending.ToString() && x.Type == TypeOfTransactionEnum.Withdraw.ToString());
+            var responseMap = new Pagination<ResponsePendingWithdraw>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);
             return responseMap;
+        }
+        public async Task<ResponsePendingWithdraw> GetDetailPendingWithdraw(int transactionId)
+        {
+            Transaction transactionDetail = await _transactionRepository.GetDetailTransaction(transactionId);
+            var response = transactionDetail.toReposonePendingWithdrawTransaction();
+            return response;
         }
     }
 
