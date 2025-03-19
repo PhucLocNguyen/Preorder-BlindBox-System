@@ -56,6 +56,8 @@ const Profile = lazy(() => import("../pages/Customer/Profile"));
 const IntroductionPage = lazy(() => import("../pages/IntroductionPage/IntroductionPage"));
 const WithdrawTransactionDetail= lazy(()=> import("../pages/Admin/WithdrawTransaction/WithdrawTransactionDetail"));
 const WithdrawTransaction = lazy(()=> import("../pages/Admin/WithdrawTransaction/WithdrawTransaction"));
+const UpdatePassword = lazy(() => import("../pages/Account/UpdatePassword"));
+const DepositHistory = lazy(() => import("../pages/Wallet/DepositHistory"));
 
 const publicRoutes = [
   {
@@ -105,7 +107,7 @@ const publicRoutes = [
   },
   {
     path: '/gioi-thieu',
-    layout:DefaultLayout,
+    layout: DefaultLayout,
     component: IntroductionPage
   }
 ];
@@ -118,6 +120,7 @@ const privateRoutes = [
     children: [
       { index: true, component: DepositPage, layout: null },
       { path: 'deposit', component: Withdraw, layout: null },
+      { path: 'deposit-history', component: DepositHistory, layout: null },
     ],
     role: ['Customer']
   },
@@ -135,6 +138,7 @@ const privateRoutes = [
   {
     path: '/profile',
     component: Profile,
+    layout: DefaultLayout,
     role: ['Customer']
   },
   {
@@ -215,6 +219,12 @@ const privateRoutes = [
   {
     path: '/myvoucher',
     component: MyVoucher,
+    layout: DefaultLayout,
+    role: ['Customer']
+  },
+  {
+    path: '/change-password',
+    component: UpdatePassword,
     layout: DefaultLayout,
     role: ['Customer']
   }
