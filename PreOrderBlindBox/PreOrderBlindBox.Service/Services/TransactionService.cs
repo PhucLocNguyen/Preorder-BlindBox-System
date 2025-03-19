@@ -102,9 +102,13 @@ namespace PreOrderBlindBox.Service.Services
                     WalletId = user.WalletId,
                     Description = "Withdraw money from website wallet",
                     Type = TypeOfTransactionEnum.Withdraw,
-                    Status = TransactionStatusEnum.Pending
-                };
+                    Status = TransactionStatusEnum.Pending,
+                    BalanceAtTime = walletDetail.Balance,
+                    
 
+                };
+                walletDetail.Balance -= money;
+                await _walletRepository.UpdateAsync(walletDetail);
                 return await CreateTransaction(requestCustomerTransactionCreateModel);
             }
             catch (Exception ex)
@@ -121,11 +125,7 @@ namespace PreOrderBlindBox.Service.Services
             }
             if (transaction.Status.Equals(TransactionStatusEnum.Pending.ToString()) && transaction.Type.Equals(TypeOfTransactionEnum.Withdraw.ToString()))
             {
-                Wallet wallet = await _walletRepository.GetByIdAsync(transaction.WalletId.Value);
-                transaction.BalanceAtTime = wallet.Balance;
                 transaction.Status = TransactionStatusEnum.Success.ToString();
-                wallet.Balance -= transaction.Money;
-                await _walletRepository.UpdateAsync(wallet);
                 await _transactionRepository.UpdateAsync(transaction);
 
                 var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin", includes: x => x.Role)).FirstOrDefault();
