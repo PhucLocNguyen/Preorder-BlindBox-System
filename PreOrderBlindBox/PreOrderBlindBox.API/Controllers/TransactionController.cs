@@ -117,6 +117,17 @@ namespace PreOrderBlindBox.API.Controllers
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(model);
         }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("withdrawals/{transactionId}")]
+        public async Task<IActionResult> GetListOfWithdrawRequest([FromRoute] int transactionId)
+        {
+            var model = await _transactionService.GetDetailPendingWithdraw(transactionId);
+            if (model == null)
+            {
+                return NotFound();
+            }
+            return Ok(model);
+        }
         [Authorize(Roles = "Customer")]
         [HttpPost("withdrawals")]
         public async Task<IActionResult> CreateWithdrawMoneyFromWallet([FromBody] RequestDepositWallet model)
@@ -134,7 +145,7 @@ namespace PreOrderBlindBox.API.Controllers
             return Ok();
         }
         [Authorize(Roles = "Admin")]
-        [HttpPost("/withdrawals/{withdrawalId}/approval")]
+        [HttpPost("withdrawals/{withdrawalId}/approval")]
         public async Task<IActionResult> ApproveWithdrawal([FromRoute] int withdrawalId)
         {
             bool result = await _transactionService.ConfirmWithdrawTransaction(withdrawalId);

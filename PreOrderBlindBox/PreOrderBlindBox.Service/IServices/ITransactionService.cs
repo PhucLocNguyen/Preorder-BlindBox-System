@@ -18,6 +18,7 @@ namespace PreOrderBlindBox.Services.IServices
         public Task<bool> CreateTransaction(RequestTransactionCreateModel model);
         public Task<bool> CreateWithdrawRequest(int userId, decimal money);
         public Task<bool> ConfirmWithdrawTransaction(int transactionId);
-        public Task<Pagination<ResponseTransactionResult>> GetListPendingWithdrawRequest(PaginationParameter paginationParameter);
+        public Task<Pagination<ResponsePendingWithdraw>> GetListPendingWithdrawRequest(PaginationParameter paginationParameter);
+        public Task<ResponsePendingWithdraw> GetDetailPendingWithdraw(int transactionId);
     }
 }
