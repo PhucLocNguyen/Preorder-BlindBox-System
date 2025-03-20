@@ -78,9 +78,20 @@ const GetListOfAllTransaction = async (accessToken, { Type, FromDate, EndDate, P
     }
 };
 
+const ApiWithdrawMoney = async ({ payload }) => {
+    try {
+        const response = await api.post('/Transaction/withdrawals', payload)
+        if (response?.status === 200) {
+            return response
+        }
+    } catch (error) {
+        console.log('>>> APi Withdraw Money Error: ', error)
+    }
+}
+
 
 
 export {
     GetTheWithdrawTransactionRequest, GetWithdrawTransactionDetailRequest, ApproveWithdrawTransactionRequest
-    , GetListOfAllTransaction
+    , GetListOfAllTransaction, ApiWithdrawMoney
 };
