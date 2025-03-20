@@ -42,7 +42,7 @@ function DepositPage() {
 
    const validateInputDeposit = (_, value) => {
       if (value < 10000) {
-         return Promise.reject('Minimum deposit amount is 10,000 VND!');
+         return Promise.reject('Số tiền tối thiểu nạp là 10,000 VND!');
       }
       return Promise.resolve();
    }
@@ -83,7 +83,7 @@ function DepositPage() {
                               {formatMoney(walletInfo?.balance)}
                            </h5>
                         </div>
-                        <div className="px-[10px] w-[50%] text-[14px] text-[#212529] font-normal leading-[1.5]">
+                        <div className="hidden px-[10px] w-[50%] text-[14px] text-[#212529] font-normal leading-[1.5]">
                            <div className="text-[#747373] ">
                               Số tiền chờ hoàn
                            </div>
@@ -105,7 +105,7 @@ function DepositPage() {
                            rules={[
                               {
                                  required: true,
-                                 message: 'Please input valid money!',
+                                 message: 'Vui lòng nhập số tiền hợp lệ!',
                               },
                               {
                                  validator: validateInputDeposit
@@ -121,7 +121,7 @@ function DepositPage() {
                            rules={[
                               {
                                  required: true,
-                                 message: 'Please select a payment method!',
+                                 message: 'Vui lòng chọn phương thức thanh toán!',
                               }
                            ]}
                         >
