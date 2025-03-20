@@ -36,6 +36,17 @@ namespace PreOrderBlindBox.API.Controllers
 
             return Ok(await _walletService.GetWalletByUserIdAsync(userId));
         }
+        [HttpGet("transactions")]
+        public async Task<IActionResult> GetDetailWalletBySelectedTime([FromQuery] RequestShowHistoryWallet model)
+        {
+            var userId = _currentUserService.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            var result = await _walletService.ShowDetailWalletAtTime(userId, model);
+            return Ok(result);
+        }
         [HttpPost("CreatePaymentUrlMomo")]
         public async Task<IActionResult> CreateDepositUrl([FromBody] RequestDepositWallet request)
         {
