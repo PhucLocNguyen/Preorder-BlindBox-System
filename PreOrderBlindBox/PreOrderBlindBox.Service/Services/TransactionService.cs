@@ -112,8 +112,6 @@ namespace PreOrderBlindBox.Service.Services
                     
 
                 };
-                walletDetail.Balance -= money;
-                await _walletRepository.UpdateAsync(walletDetail);
                 return await CreateTransaction(requestCustomerTransactionCreateModel);
             }
             catch (Exception ex)
@@ -206,7 +204,6 @@ namespace PreOrderBlindBox.Service.Services
             var responseMap = new Pagination<ResponseTransactionResult>(response, totalItemsCount, paginationParameter.PageIndex, paginationParameter.PageSize);
             return responseMap;
         }
-
         public async Task<Pagination<ResponsePendingWithdraw>> GetListPendingWithdrawRequest(PaginationParameter paginationParameter)
         {
             List<Transaction> transactions = await _transactionRepository.GetAllFullIncludeTransaction(pagination: paginationParameter, filter: x => x.Status == TransactionStatusEnum.Pending.ToString() && x.Type == TypeOfTransactionEnum.Withdraw.ToString());
