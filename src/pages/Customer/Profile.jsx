@@ -34,10 +34,8 @@ const Profile = () => {
                 const data = await GetUserInformation(accessToken);
 
                 if (data.fullName) {
-                    const nameParts = data.fullName.split(" ");
                     form.setFieldsValue({
-                        firstName: nameParts[0],
-                        lastName: nameParts.slice(1).join(" "),
+                        fullName: data.fullName,
                         phone: data.phone,
                         address: data.address,
                         bankName: data.bankName,
@@ -60,8 +58,7 @@ const Profile = () => {
 
     const onFinish = async (values) => {
         const formData = new FormData();
-        const fullName = `${values.firstName ? values.firstName : ""} ${values.lastName ? values.lastName : ""}`.trim();
-        formData.append("fullName", fullName);
+        formData.append("fullName", values.fullName);
         formData.append("phone", values.phone);
         formData.append("thumbnail", profileImage);
         formData.append("address", values.address);
@@ -119,22 +116,15 @@ const Profile = () => {
                     </Form.Item>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <Form.Item label="Họ *" name="firstName" rules={[{ required: true, message: "Vui lòng nhập họ!" }]}>
+                        <Form.Item label="Họ và Tên*" name="fullName" rules={[{ required: true, message: "Vui lòng nhập họ và tên!" }]}>
                             <Input size="large" className="rounded-lg border-gray-300" />
                         </Form.Item>
 
-                        <Form.Item label="Tên *" name="lastName" rules={[{ required: true, message: "Vui lòng nhập tên!" }]}>
+                        <Form.Item label="Số điện thoại" name="phone" rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}>
                             <Input size="large" className="rounded-lg border-gray-300" />
                         </Form.Item>
+
                     </div>
-
-                    <Form.Item label="Số điện thoại" name="phone" rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}>
-                        <Input size="large" className="rounded-lg border-gray-300" />
-                    </Form.Item>
-
-                    <Form.Item label="Địa chỉ" name="address" rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}>
-                        <Input size="large" className="rounded-lg border-gray-300" />
-                    </Form.Item>
 
                     <div className="grid grid-cols-2 gap-4">
                         <Form.Item label="Ngân hàng" name="bankName" rules={[{ required: true, message: "Vui lòng nhập tên ngân hàng!" }]}>
@@ -153,6 +143,9 @@ const Profile = () => {
                         </Form.Item>
                     </div>
 
+                    <Form.Item label="Địa chỉ" name="address" rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}>
+                        <Input size="large" className="rounded-lg border-gray-300" />
+                    </Form.Item>
                     {/* Buttons */}
                     <div className="flex justify-center gap-4 mt-4">
                         <Button type="primary" htmlType="submit" size="large" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
