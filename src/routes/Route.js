@@ -25,7 +25,7 @@ const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Vouc
 const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
-const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
+const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactions"));
 const BannerManagement = lazy(() => import("../pages/Admin/BannerManagement/BannerView"));
 const BannerViewDetails = lazy(() => import("../pages/Admin/BannerManagement/BannerViewDetails"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
