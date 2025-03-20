@@ -161,7 +161,7 @@ const HistoryTransactionsRecharge = () => {
     return (
         <div className="p-6 bg-white rounded-lg shadow-lg">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">Lịch sử nạp tiền </h2>
+                <h2 className="text-2xl font-bold">Lịch sử Nạp tiền </h2>
 
                 <div className="flex space-x-4">
                     <Dropdown
