@@ -10,6 +10,7 @@ using PreOrderBlindBox.Data.IRepositories;
 using PreOrderBlindBox.Data.Repositories;
 using PreOrderBlindBox.Data.UnitOfWork;
 using PreOrderBlindBox.Services.DTO.RequestDTO.MomoModel;
+using PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.VnPayModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.PaymentModel;
 using PreOrderBlindBox.Services.IServices;
@@ -32,14 +33,15 @@ namespace PreOrderBlindBox.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITransactionRepository _transaction;
         private readonly IWalletRepository _walletRepository;
-
-        public PaymentService(IUserRepository userRepository, IConfiguration configuration, IUnitOfWork unitOfWork, ITransactionRepository transaction, IWalletRepository walletRepository)
+        private readonly ITransactionService _transactionService;
+        public PaymentService(IUserRepository userRepository, IConfiguration configuration, IUnitOfWork unitOfWork, ITransactionRepository transaction, IWalletRepository walletRepository, ITransactionService transactionService)
         {
             _userRepository = userRepository;
             _configuration = configuration;
             _unitOfWork = unitOfWork;
             _transaction = transaction;
             _walletRepository = walletRepository;
+            _transactionService = transactionService;
         }
         //MOMO payment
         public async Task<string> CreatePaymentInMomoAsync(int userId, decimal amount)
@@ -283,7 +285,7 @@ namespace PreOrderBlindBox.Services.Services
 
             var vnp_SecureHash = request.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
             bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _configuration["Vnpay:HashSecret"]);
-           
+
             //_cache.Remove(vnpay.GetResponseData("vnp_TxnRef"));
             if (checkSignature)
             {
@@ -300,6 +302,19 @@ namespace PreOrderBlindBox.Services.Services
 
                     if (vnpay.GetResponseData("vnp_ResponseCode") == "00")
                     {
+                        var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin" && x.WalletId != null, includes: [x => x.Role, x => x.Wallet])).FirstOrDefault();
+                        Wallet systemWallet = await _walletRepository.GetByIdAsync(admin.WalletId.Value);
+                        var systemTransaction = new RequestTransactionCreateModel()
+                        {
+                            Money = transactionDetail.Money,
+                            WalletId = systemWallet.WalletId,
+                            Description = "Recharge money to system wallet after customer recharge VNPAY",
+                            Type = TypeOfTransactionEnum.Recharge,
+                            BalanceAtTime = systemWallet.Balance,
+                            Status = TransactionStatusEnum.Success
+                        };
+                        await _transactionService.CreateTransaction(systemTransaction);
+
                         transactionDetail.Status = "Success";
                         transactionDetail.BalanceAtTime = walletDetail.Balance;
                         walletDetail.Balance += transactionDetail.Money;
@@ -387,6 +402,18 @@ namespace PreOrderBlindBox.Services.Services
                 }
                 try
                 {
+                    var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin" && x.WalletId != null, includes: [x => x.Role, x => x.Wallet])).FirstOrDefault();
+                    Wallet systemWallet = await _walletRepository.GetByIdAsync(admin.WalletId.Value);
+                    var systemTransaction = new RequestTransactionCreateModel()
+                    {
+                        Money = transactionDetail.Money,
+                        WalletId = systemWallet.WalletId,
+                        Description = "Recharge money to system wallet after customer recharge Momo",
+                        Type = TypeOfTransactionEnum.Recharge,
+                        BalanceAtTime = systemWallet.Balance,
+                        Status = TransactionStatusEnum.Success
+                    };
+                    await _transactionService.CreateTransaction(systemTransaction);
 
                     Wallet wallet = await _walletRepository.GetByIdAsync(userDetail.WalletId);
                     decimal walletBalance = wallet.Balance;
@@ -428,7 +455,7 @@ namespace PreOrderBlindBox.Services.Services
         {
             var keyBytes = Encoding.UTF8.GetBytes(secretKey);
             var messageBytes = Encoding.UTF8.GetBytes(message);
-                
+
             byte[] hashBytes;
 
             using (var hmac = new HMACSHA256(keyBytes))
