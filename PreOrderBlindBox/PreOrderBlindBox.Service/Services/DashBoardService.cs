@@ -80,5 +80,35 @@ namespace PreOrderBlindBox.Services.Services
 
 			return result ?? new List<ResponseTopThreeCampaign>();
 		}
+
+
+		public async Task<ResponseOrdersComparedLastMonth> GetOrderInFormationComparedToLastMonth()
+		{
+			DateTime currentTime = DateTime.Now;
+
+			var listOrderCurrentMonth = await _orderRepository.GetListOrderByMonth(currentTime);
+			var listOrderPreviousMonth = await _orderRepository.GetListOrderByMonth(currentTime.AddMonths(-1));
+
+			double percentageChange = 0;
+
+			if (listOrderPreviousMonth.Count != 0)
+			{
+				percentageChange = ((double)(listOrderCurrentMonth.Count - listOrderPreviousMonth.Count) / listOrderPreviousMonth.Count) * 100;
+			}
+			else
+			{
+				percentageChange = listOrderCurrentMonth.Count > 0 ? 100 : 0;
+			}
+
+			var result = new ResponseOrdersComparedLastMonth
+			{
+				CurrentMonthOrder = listOrderCurrentMonth.Count,
+				PercentComparedLastMonth = percentageChange
+			};
+
+			return result;
+
+		}
+
 	}
 }

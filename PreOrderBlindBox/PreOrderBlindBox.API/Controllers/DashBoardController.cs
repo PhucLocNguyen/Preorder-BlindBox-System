@@ -45,5 +45,19 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 		}
 
+		[HttpGet("last-month-comparison")]
+		public async Task<IActionResult> GetOrderInFormationComparedToLastMonth()
+		{
+			try
+			{
+				var result = await _dashBoardService.GetOrderInFormationComparedToLastMonth();
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
 	}
 }

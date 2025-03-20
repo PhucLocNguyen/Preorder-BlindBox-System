@@ -13,5 +13,6 @@ namespace PreOrderBlindBox.Services.IServices
 	{
 		public Task<List<RevenueDto>> GetRevenuedByTime(DateTime? fromDate, DateTime? toDate);
 		public Task<List<ResponseTopThreeCampaign>> GetTopThreeCampaign(DateTime? fromDate, DateTime? toDate);
+		public Task<ResponseOrdersComparedLastMonth> GetOrderInFormationComparedToLastMonth();
 	}
 }
