@@ -14,9 +14,9 @@ const UpdateProfile = async ({ formData: payload }) => {
 const GetUserInformation = async (accessToken) => {
     try {
         const result = await api.get('/User/user-information', {
+            ...axiosConfigHeader,
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
-                "Accept": "application/json"
             }
         });
         return result.data; // Trả về dữ liệu người dùng

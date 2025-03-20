@@ -54,10 +54,16 @@ const ViewPendingOrderDetail = lazy(() => import("../pages/Customer/Orders/ViewP
 const ViewDetailOrder = lazy(() => import("../pages/Customer/Orders/ViewDetailOrder"));
 const Profile = lazy(() => import("../pages/Customer/Profile"));
 const IntroductionPage = lazy(() => import("../pages/IntroductionPage/IntroductionPage"));
-const WithdrawTransactionDetail= lazy(()=> import("../pages/Admin/WithdrawTransaction/WithdrawTransactionDetail"));
-const WithdrawTransaction = lazy(()=> import("../pages/Admin/WithdrawTransaction/WithdrawTransaction"));
+const WithdrawTransactionDetail = lazy(() => import("../pages/Admin/WithdrawTransaction/WithdrawTransactionDetail"));
+const WithdrawTransaction = lazy(() => import("../pages/Admin/WithdrawTransaction/WithdrawTransaction"));
 const UpdatePassword = lazy(() => import("../pages/Account/UpdatePassword"));
 const DepositHistory = lazy(() => import("../pages/Wallet/DepositHistory"));
+
+const HistoryTransactionsAll = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsAll"));
+const HistoryTransactionsRecharge = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsRecharge"));
+const HistoryTransactionsPurchase = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsPurchase"));
+const HistoryTransactionsWithdraw = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsWithdraw"));
+const HistoryTransactionsRefund = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsRefund"));
 
 const publicRoutes = [
   {
@@ -187,13 +193,26 @@ const privateRoutes = [
       { path: "voucher/add", component: VoucherCreate },
       { path: "voucher-details/:id", component: VoucherDetails },
       { path: "voucher/update/:id", component: VoucherUpdate },
-      { path: "history-transactions", component: HistoryTransactions },
       { path: "preordercampaignApproval", component: ApprovalCampaign },
       { path: "preordercampaignApproval/confirm/:slug", component: ApprovalCampaignDetail },
       { path: "withdraw-request", component: WithdrawTransaction },
       { path: "withdraw-request/:id", component: WithdrawTransactionDetail },
     ],
     role: ['Admin']
+  },
+  {
+    path: "/admin/history-transactions",
+    component: HistoryTransactions,
+    layout: AdminLayout,
+
+    children: [
+      { path: "all", component: HistoryTransactionsAll }, // Mặc định là All
+      { path: "recharge", component: HistoryTransactionsRecharge },
+      { path: "purchase", component: HistoryTransactionsPurchase },
+      { path: "withdraw", component: HistoryTransactionsWithdraw },
+      { path: "refund", component: HistoryTransactionsRefund },
+    ],
+    role: ["Admin"],
   },
   {
     path: "/staff",
