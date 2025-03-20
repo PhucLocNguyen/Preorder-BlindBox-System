@@ -28,6 +28,13 @@ namespace PreOrderBlindBox.Data.Repositories
 				})
 				.ToListAsync();
 		}
+
+
+		public async Task<List<Order>> GetListOrderByMonth(DateTime currentTime)
+		{
+			return await _context.Orders.Where(x => x.CreatedDate.Month == currentTime.Month && x.CreatedDate.Year == currentTime.Year).ToListAsync();
+		}
+
 	}
 
 	public class RevenueDto
