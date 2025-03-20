@@ -138,9 +138,9 @@ const Dashboard = () => {
                 />
             </div>
             {/* Main Content */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch h-[500px]">
                 {/* Left Side */}
-                <div className="space-y-6">
+                <div className="space-y-6 flex flex-col h-full">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="p-4 bg-white rounded-lg shadow">
                             <p className="text-gray-600">Wallet Balance</p>
@@ -156,29 +156,31 @@ const Dashboard = () => {
                     </div>
 
                     {/* Monthly Sales Chart */}
-                    <div className="p-4 bg-white rounded-lg shadow">
+                    <div className="p-4 bg-white rounded-lg shadow flex-1 overflow-hidden">
                         <h3 className="text-lg font-bold">Monthly Sales</h3>
-                        <Chart options={barChartOptions} series={barChartSeries} type="bar" height={300} />
+                        <Chart options={barChartOptions} series={barChartSeries} type="bar" height={250} />
                     </div>
                 </div>
 
-                {/* Right Side - Monthly Target with Radial Chart */}
-                <div className="p-6 bg-white rounded-lg shadow text-center">
-                    <h2 className="text-4xl font-bold mb-4">Top 3 Campaigns</h2>
-                    <p className="text-gray-600 mb-4">Campaigns with the highest number of orders</p>
+                {/* Right Side - Top 3 Campaigns */}
+                <div className="p-6 bg-white rounded-lg shadow text-center flex flex-col h-full">
+                    <h2 className="text-3xl font-bold mb-2">Top 3 Campaigns</h2>
+                    <p className="text-gray-600 text-sm mb-4">Campaigns with the highest number of orders</p>
 
-                    <div className="grid grid-cols-3 gap-10 justify-center items-end">
+                    <div className="grid grid-cols-3 gap-6 justify-center items-end flex-grow">
                         {formattedCampaigns.map((campaign) => (
                             <div key={campaign.name} className="relative flex flex-col items-center">
                                 <FaMedal
-                                    className={`text-4xl mb-3 ${campaign.rank === 1 ? 'text-yellow-500' : campaign.rank === 2 ? 'text-gray-400' : 'text-orange-600'}`}
+                                    className={`text-3xl mb-2 ${campaign.rank === 1 ? 'text-yellow-500' : campaign.rank === 2 ? 'text-gray-400' : 'text-orange-600'
+                                        }`}
                                 />
-                                <p className="mt-2 text-lg font-bold text-center">{campaign.name}</p>
-                                <p className="text-gray-600 text-lg mb-2">{campaign.totalOrder} orders</p>
+                                <p className="mt-1 text-base font-bold text-center leading-tight">{campaign.name}</p>
+                                <p className="text-gray-600 text-sm mb-1">{campaign.totalOrder} {campaign.totalOrder > 1 ? 'orders' : 'order'}</p>
+
                                 <div
-                                    className="w-28 flex items-center justify-center text-white font-bold text-2xl rounded-lg shadow-lg"
+                                    className="w-20 flex items-center justify-center text-white font-bold text-xl rounded-lg shadow-lg"
                                     style={{
-                                        height: `${campaign.totalOrder * 30 + 50}px`, // Sử dụng totalOrder để điều chỉnh chiều cao
+                                        height: `${Math.max(40, campaign.totalOrder * 40)}px`,
                                         background: campaign.color
                                     }}
                                 >
@@ -188,7 +190,6 @@ const Dashboard = () => {
                         ))}
                     </div>
                 </div>
-
             </div>
 
             {/* Revenue Statistics */}

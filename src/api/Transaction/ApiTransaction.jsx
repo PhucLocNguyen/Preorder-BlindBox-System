@@ -21,7 +21,7 @@ const GetTheWithdrawTransactionRequest = async (pageSize, pageIndex) => {
         return { data: [], pagination: null };
     }
 };
-const GetWithdrawTransactionDetailRequest = async(transactionId)=>{
+const GetWithdrawTransactionDetailRequest = async (transactionId) => {
     try {
         const response = await api.get(`/Transaction/withdrawals/${transactionId}`, axiosConfigHeader);
         return response.data;
@@ -30,7 +30,7 @@ const GetWithdrawTransactionDetailRequest = async(transactionId)=>{
         toast.error("Get detail withdraw transaction by id failed!");
     }
 }
-const ApproveWithdrawTransactionRequest = async(transactionId)=>{
+const ApproveWithdrawTransactionRequest = async (transactionId) => {
     try {
         const response = await api.post(`/Transaction/withdrawals/${transactionId}/approval`, axiosConfigHeader);
         message.success("Chấp nhận rút tiền thành công");
@@ -38,6 +38,49 @@ const ApproveWithdrawTransactionRequest = async(transactionId)=>{
     } catch (error) {
         console.log('>>> Api approve withdraw transaction by id Error: ', error);
         toast.error("Approve withdraw transaction by id failed!");
-    } 
+    }
 }
-export {GetTheWithdrawTransactionRequest, GetWithdrawTransactionDetailRequest,ApproveWithdrawTransactionRequest};
+const GetListOfAllTransaction = async (accessToken, { Type, FromDate, EndDate, PageIndex, PageSize }) => {
+    try {
+        if (PageIndex === undefined || PageSize === undefined) {
+            throw new Error("PaginationParameter is required");
+        }
+        // Chỉ thêm vào params nếu có giá trị
+
+        let params = {
+            "PaginationParameter.PageIndex": PageIndex,
+            "PaginationParameter.PageSize": PageSize
+        };
+        if (Type) params["Type"] = Type;
+        if (FromDate) params["FromDate"] = FromDate;
+        if (EndDate) params["EndDate"] = EndDate;
+        const response = await api.get('/Transaction/GetListOfAllTransaction', {
+            ...axiosConfigHeader,
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+            },
+            params: params,
+            paramsSerializer: (params) => {
+                return new URLSearchParams(params).toString();
+            }
+        });
+
+        const data = response.data;
+        const paginationHeader = response.headers["x-pagination"];
+        console.log("Pagination Header:", paginationHeader);
+
+        const pagination = paginationHeader ? JSON.parse(paginationHeader) : null;
+
+        return { data, pagination };
+    } catch (error) {
+        console.log('>>> Lấy danh sách giao dịch thất bại: ', error);
+        return null;
+    }
+};
+
+
+
+export {
+    GetTheWithdrawTransactionRequest, GetWithdrawTransactionDetailRequest, ApproveWithdrawTransactionRequest
+    , GetListOfAllTransaction
+};
