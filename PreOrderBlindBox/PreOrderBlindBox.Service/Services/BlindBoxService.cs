@@ -40,7 +40,7 @@ namespace PreOrderBlindBox.Services.Services
                     Description = request.Description,
                     IsDeleted = false,
                     Size = request.Size,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow.AddHours(7),
                     ListedPrice = Decimal.Parse(request.listedPrice) 
                 };
                 _blindBoxRepository.InsertBlindBox(blindbox);
@@ -118,14 +118,11 @@ namespace PreOrderBlindBox.Services.Services
                 blindbox.ListedPrice = decimal.Parse(request.listedPrice);
                 if (request.MainImage != null)
                 {
-                    // Neu co hinh anh moi
                     var oldMainImage = await _imageService.GetMainImageIdByBlindBoxID(blindbox.BlindBoxId);
                     if (oldMainImage != null)
                     {
-                        // Xoa hinh anh cu
                         await _imageService.DeleteImage(oldMainImage.ImageId);
                     }
-                    // Them hinh anh moi
                     var mainImageUpdate = new AddMainImageRequest()
                     {
                         BlindBoxId = blindbox.BlindBoxId,
@@ -152,7 +149,6 @@ namespace PreOrderBlindBox.Services.Services
                     };
                     await _imageService.UploadImage(galleryImagesUpdate);
                 }
-                // Update hinh anh tu image service ....
                 await _blindBoxRepository.UpdateAsync(blindbox);
                 await _unitOfWork.SaveChanges();
                 await _unitOfWork.CommitTransactionAsync();

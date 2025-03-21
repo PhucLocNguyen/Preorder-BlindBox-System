@@ -18,17 +18,13 @@ namespace PreOrderBlindBox.Service.Services
         private readonly IWalletRepository _walletRepository;
         private readonly IUserRepository _userRepository;
         private readonly ITransactionRepository _transactionRepository;
-        private readonly IPaymentSerivce _paymentSerivce;
-        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        public WalletService(IWalletRepository walletRepository, IUserRepository userRepository, ITransactionRepository transactionRepository, IMapper mapper, IUnitOfWork unitOfWork, IPaymentSerivce paymentService)
+        public WalletService(IWalletRepository walletRepository, IUserRepository userRepository, ITransactionRepository transactionRepository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _walletRepository = walletRepository;
             _userRepository = userRepository;
             _transactionRepository = transactionRepository;
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _paymentSerivce = paymentService;
         }
 
         public async Task<bool> CreateWalletAsync(int userId)
@@ -115,7 +111,7 @@ namespace PreOrderBlindBox.Service.Services
             var startDate = new DateTime(model.Year, model.Month, 1);
             var endDate = startDate.AddMonths(1).AddSeconds(-1);
 
-            var listTransactionAtTime = await _transactionRepository.GetAllFullIncludeTransaction(filter: x => x.WalletId==userDetail.WalletId && x.Status.Equals(TransactionStatusEnum.Success.ToString()) && (x.CreatedDate >= startDate && x.CreatedDate <= endDate),orderBy:x=>x.OrderByDescending(x =>x.CreatedDate));
+            var listTransactionAtTime = await _transactionRepository.GetAllFullIncludeTransaction(filter: x => x.WalletId==userDetail.WalletId && (x.CreatedDate >= startDate && x.CreatedDate <= endDate),orderBy:x=>x.OrderByDescending(x =>x.CreatedDate));
             decimal closingBalance;
             if (listTransactionAtTime.Count == 0)
             {

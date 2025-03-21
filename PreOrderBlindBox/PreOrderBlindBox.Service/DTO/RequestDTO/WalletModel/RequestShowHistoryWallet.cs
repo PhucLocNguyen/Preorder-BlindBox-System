@@ -11,11 +11,11 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.WalletModel
     {
         [Required(ErrorMessage = "Month is required.")]
         [Range(1, 12, ErrorMessage = "Month must be between 1 and 12.")]
-        public int Month { get; set; }
+        public int Month { get; set; } =DateTime.Now.Month;
 
         [Required(ErrorMessage = "Year is required.")]
         [Range(1900, 2100, ErrorMessage = "Year must be between 1900 and 2100.")]
-        public int Year { get; set; }
+        public int Year { get; set; } = DateTime.Now.Year;
     }
 
 }

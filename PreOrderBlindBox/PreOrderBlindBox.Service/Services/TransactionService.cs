@@ -65,7 +65,7 @@ namespace PreOrderBlindBox.Service.Services
                 }
                 await _walletRepository.UpdateAsync(wallet);
                 transactionCreate.Description = model.Description;
-                transactionCreate.CreatedDate = DateTime.Now;
+                transactionCreate.CreatedDate = DateTime.UtcNow.AddHours(7);
                 transactionCreate.OrderId = model.OrderId;
                 transactionCreate.TempCampaignBulkOrderId = model.TempCampaignBulkOrderId;
                 transactionCreate.Status = model.Status.ToString();
@@ -110,7 +110,6 @@ namespace PreOrderBlindBox.Service.Services
                     Status = TransactionStatusEnum.Pending,
                     BalanceAtTime = walletDetail.Balance,
                     
-
                 };
                 return await CreateTransaction(requestCustomerTransactionCreateModel);
             }
