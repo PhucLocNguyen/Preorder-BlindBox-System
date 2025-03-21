@@ -1,5 +1,5 @@
 import api from "../instance";
-
+import { axiosConfigHeader } from "../axiosConfigHeader";
 const ApiGetWalletInfomation = async () => {
    try {
       const result = await api.get('/Wallet')
@@ -36,7 +36,7 @@ const ApiDepositByVnpay = async ({ payload }) => {
 const ApiVerifyPaymentByMomo = async (queryString) => {
    try {
       const response = await api.get(`/Wallet/DepositConfirmFromMomo?${queryString}`);
-         return response.data;
+      return response.data;
    } catch (error) {
       console.log('Api verify payment By Momo Error: ', error);
    }
@@ -44,9 +44,47 @@ const ApiVerifyPaymentByMomo = async (queryString) => {
 const ApiVerifyPaymentByVnpay = async (queryString) => {
    try {
       const response = await api.get(`/Wallet/DepositConfirmFromVnPay?${queryString}`);
-         return response.data;
+      return response.data;
    } catch (error) {
       console.log('Api verify payment By Vnpay Error: ', error);
    }
 }
-export { ApiGetWalletInfomation, ApiDepositByMono, ApiDepositByVnpay, ApiVerifyPaymentByMomo, ApiVerifyPaymentByVnpay }
+
+const GetWallet = async (accessToken) => {
+   try {
+      const result = await api.get('/Wallet', {
+         ...axiosConfigHeader,
+         headers: {
+            "Authorization": `Bearer ${accessToken}`,
+         }
+      });
+      return result.data;
+   } catch (error) {
+      console.log('>>> GetUserInformation error: ', error);
+      return null;
+   }
+};
+
+const GetTransactions = async (accessToken, Month, Year) => {
+   try {
+      const result = await api.get('/Wallet/transactions', {
+         ...axiosConfigHeader,
+         headers: {
+            "Authorization": `Bearer ${accessToken}`,
+         },
+         params: {
+            Month, Year
+         }
+      });
+      return result.data;
+   } catch (error) {
+      console.log('>>> GetUserInformation error: ', error);
+      return null;
+   }
+};
+
+
+export {
+   ApiGetWalletInfomation, ApiDepositByMono, ApiDepositByVnpay, ApiVerifyPaymentByMomo, ApiVerifyPaymentByVnpay,
+   GetWallet, GetTransactions
+}

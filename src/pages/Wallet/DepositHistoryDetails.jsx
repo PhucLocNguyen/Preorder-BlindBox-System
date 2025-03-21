@@ -60,11 +60,19 @@ const DepositHistoryDetails = () => {
         <Title level={3} className="text-center mb-4 font-bold text-gray-900">
           Chi tiết giao dịch
         </Title>
-
-        <div className="mb-4 flex items-center">
-          <Text strong className="text-lg">Mô tả:</Text>
-          <Text className="text-lg font-medium text-gray-700 ml-5">{transactionDetail.description}</Text>
-        </div>
+        {
+          transactionDetail.type === "Purchase" ? (<div className="mb-4">
+            <Text strong className="text-lg block">Mô tả:</Text>
+            <Text className="text-lg font-medium text-gray-700 break-words">
+              {transactionDetail.description}
+            </Text>
+          </div>
+          ) : (<div className="mb-4 flex items-center">
+            <Text strong className="text-lg">Mô tả:</Text>
+            <Text className="text-lg font-medium text-gray-700 ml-5">{transactionDetail.description}</Text>
+          </div>
+          )
+        }
 
         <div className="mb-4 flex items-center">
           <Text strong className="text-lg">Loại:</Text>
