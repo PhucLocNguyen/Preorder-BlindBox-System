@@ -58,6 +58,7 @@ const WithdrawTransactionDetail = lazy(() => import("../pages/Admin/WithdrawTran
 const WithdrawTransaction = lazy(() => import("../pages/Admin/WithdrawTransaction/WithdrawTransaction"));
 const UpdatePassword = lazy(() => import("../pages/Account/UpdatePassword"));
 const DepositHistory = lazy(() => import("../pages/Wallet/DepositHistory"));
+const DepositHistoryDetails = lazy(() => import("../pages/Wallet/DepositHistoryDetails"));
 
 const HistoryTransactionsAll = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsAll"));
 const HistoryTransactionsRecharge = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsRecharge"));
@@ -127,6 +128,7 @@ const privateRoutes = [
       { index: true, component: DepositPage, layout: null },
       { path: 'deposit', component: Withdraw, layout: null },
       { path: 'deposit-history', component: DepositHistory, layout: null },
+      { path: 'deposit-history/details/:id', component: DepositHistoryDetails, layout: null },
     ],
     role: ['Customer']
   },
