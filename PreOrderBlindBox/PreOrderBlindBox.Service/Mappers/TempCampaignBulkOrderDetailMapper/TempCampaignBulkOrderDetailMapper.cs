@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderDetailMapper
 {
-    public static class TempCampaignBulkOrderDetailMapper
+    public static class TransactionMapper
     {
         public static TempCampaignBulkOrderDetail toTempCampaignBulkOrderDetail(this ResquestCreateTempCampaignBulkOrderDetail  requestCreateTempCampaignBulkOrderDetail)
         {

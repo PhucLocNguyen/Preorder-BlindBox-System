@@ -35,7 +35,7 @@ namespace PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper
                 UserVoucherId = tempCampaignBulkOrder.UserVoucherId,
                 CustomerId = tempCampaignBulkOrder.CustomerId,
                 Amount = tempCampaignBulkOrder.Amount,
-                CreatedDate = tempCampaignBulkOrder.CreatedDate.ToString("mm:HH dd/MM/yyyy"),
+                CreatedDate = tempCampaignBulkOrder.CreatedDate.ToString("HH:mm dd/MM/yyyy"),
                 Receiver = tempCampaignBulkOrder.ReceiverName,
                 ReceiverPhone = tempCampaignBulkOrder.ReceiverPhone,
                 ReceiverAddress = tempCampaignBulkOrder.ReceiverAddress,

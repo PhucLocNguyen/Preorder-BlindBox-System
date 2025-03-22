@@ -45,5 +45,33 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 		}
 
+		[HttpGet("last-month-comparison")]
+		public async Task<IActionResult> GetOrderInFormationComparedToLastMonth()
+		{
+			try
+			{
+				var result = await _dashBoardService.GetOrderInFormationComparedToLastMonth();
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
+		[HttpGet("monthly-report/{year}")]
+		public async Task<IActionResult> GetOrderByYear(int year)
+		{
+			try
+			{
+				var result = await _dashBoardService.GetOrderByYear(year);
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
 	}
 }
