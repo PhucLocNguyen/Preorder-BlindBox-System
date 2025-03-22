@@ -23,10 +23,9 @@ namespace PreOrderBlindBox.API.Controllers
             _orderService = orderService;
             _currentUserService = currentUserService;
         }
-        // GET: api/<OrderController>
-        //[Authorize(Roles = "3")]
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders([FromQuery] PaginationParameter pagination, [FromQuery] string? searchKeyWords, [FromQuery] string orderBy = "increase")
+		[Authorize(Roles = "Staff")]
+		public async Task<IActionResult> GetAllOrders([FromQuery] PaginationParameter pagination, [FromQuery] string? searchKeyWords, [FromQuery] string orderBy = "increase")
         {
             try
             {
@@ -51,7 +50,8 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpGet("staff/{orderId}")]
-        public async Task<IActionResult> GetOrderByIdForStaff([FromRoute] int orderId)
+		[Authorize(Roles = "Staff")]
+		public async Task<IActionResult> GetOrderByIdForStaff([FromRoute] int orderId)
         {
             try
             {
@@ -69,7 +69,8 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpGet("customer/{orderId}")]
-        public async Task<IActionResult> GetOrderByIdForCustomer([FromRoute] int orderId)
+		[Authorize(Roles = "Customer")]
+		public async Task<IActionResult> GetOrderByIdForCustomer([FromRoute] int orderId)
         {
             try
             {
@@ -102,6 +103,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPut("{orderId}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> UpdateStatusOfOrder(RequestUpdateOrder requestUpdateOrder,[FromRoute] int orderId)
         {
             try

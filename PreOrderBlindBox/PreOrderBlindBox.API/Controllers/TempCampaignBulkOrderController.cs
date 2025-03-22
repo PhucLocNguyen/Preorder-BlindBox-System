@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
@@ -44,7 +45,8 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPost("{preorderCampaignId}/accept")]
-        public async Task<IActionResult> AcceptTempOrder([FromRoute]int preorderCampaignId)
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> AcceptTempOrder([FromRoute]int preorderCampaignId)
         {
             try
             {
@@ -58,7 +60,8 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPost("{preorderCampaignId}/reject")]
-        public async Task<IActionResult> RejectTempOrder([FromRoute] int preorderCampaignId)
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> RejectTempOrder([FromRoute] int preorderCampaignId)
         {
             try
             {
@@ -72,7 +75,8 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpGet("view-history-temp-orders")]
-        public async Task<IActionResult> ViewTempOrderHistory([FromQuery] PaginationParameter pagination)
+		[Authorize(Roles = "Customer")]
+		public async Task<IActionResult> ViewTempOrderHistory([FromQuery] PaginationParameter pagination)
         {
             try
             {
@@ -87,7 +91,8 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpGet("customer/{tempOrderId}")]
-        public async Task<IActionResult> GetTempOrderById([FromRoute] int tempOrderId)
+		[Authorize(Roles = "Customer")]
+		public async Task<IActionResult> GetTempOrderById([FromRoute] int tempOrderId)
         {
             try
             {

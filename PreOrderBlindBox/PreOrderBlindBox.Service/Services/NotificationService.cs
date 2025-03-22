@@ -6,17 +6,24 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.NotificationRequestModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.NotificationResponseModel;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Mappers.NotificationMapper;
+using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.Services.Services
 {
 	public class NotificationService : INotificationService
     {
         private readonly INotificationRepository _notificationRepository;
+        private readonly ICurrentUserService _currentUserService;
         private readonly IUnitOfWork _unitOfWork;
-        public NotificationService(INotificationRepository notificationRepository, IUnitOfWork unitOfWork)
+        public NotificationService(
+            INotificationRepository notificationRepository, 
+            IUnitOfWork unitOfWork,
+            ICurrentUserService currentUserService
+            )
         {
             _notificationRepository = notificationRepository;
             _unitOfWork = unitOfWork;
+            _currentUserService = currentUserService;
         }
 
 		public async Task<int> CountNotificationIsNotRead(int userId)
@@ -56,7 +63,30 @@ namespace PreOrderBlindBox.Services.Services
 			return (notificationById.toNotificationResponse());
         }
 
-        public async Task<ResponseNotification?> MarkNotificationAsRead(int notificationId)
+		public async Task<bool> MarkAllNotificationsAsRead()
+		{
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+				var userId = _currentUserService.GetUserId();
+                var allNotificationByUserId = await _notificationRepository.GetAll(filter: x=> x.ReceiverId == userId);
+                foreach (var item in allNotificationByUserId)
+                {
+                    item.IsRead = true;
+                    await _notificationRepository.UpdateAsync(item);
+                }
+                await _unitOfWork.SaveChanges();
+                await _unitOfWork.CommitTransactionAsync();
+                return true;
+            }
+			catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                return false;
+            }
+		}
+
+		public async Task<ResponseNotification?> MarkNotificationAsRead(int notificationId)
         {
             var existingNoti = await _notificationRepository.GetByIdAsync(notificationId);
             existingNoti.IsRead = true;

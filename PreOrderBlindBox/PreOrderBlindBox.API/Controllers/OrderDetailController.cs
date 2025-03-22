@@ -5,6 +5,7 @@ using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Services.IServices;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PreOrderBlindBox.API.Controllers
 {
@@ -19,6 +20,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpGet("{orderID}")]
+		[Authorize(Roles = "Staff")]
 		public async Task<IActionResult> GetAllOrderDetailsByOrderID([FromRoute] int orderID, [FromQuery] PaginationParameter paginationParameter)
 		{
 			try
