@@ -2,21 +2,24 @@ import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
-import { GetRevenueByTime, GetTopThreeCampaign } from "../../api/DashBoard/ApiDashBoard";
+import { GetRevenueByTime, GetTopThreeCampaign, GetLastMonthComparison } from "../../api/DashBoard/ApiDashBoard";
+import { GetWallet } from "../../api/Wallet/ApiWallet";
 import { FaMedal } from "react-icons/fa";
+import { formatMoney } from "../../utils/FormatMoney";
 const { RangePicker } = DatePicker;
 const Dashboard = () => {
-
-    // Bar Chart (Monthly Sales)
+    const [lastMonthComparison, setLastMonthComparison] = useState({});
+    const [wallet, setWallet] = useState({});
+    // Bar Chart (Total orders per month)
     const barChartOptions = {
-        chart: { id: "monthly-sales" },
+        chart: { id: "monthly-total_orders" },
         xaxis: {
             categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
         },
     };
 
     const barChartSeries = [
-        { name: "Sales", data: [100, 300, 150, 250, 170, 200, 260, 120, 180, 320, 220, 90] },
+        { name: "Total orders", data: [100, 300, 150, 250, 170, 200, 260, 120, 180, 320, 220, 90] },
     ];
 
     // Line Chart (Statistics)
@@ -52,8 +55,41 @@ const Dashboard = () => {
             }
         };
 
+        const fetchLastMonthComparison = async () => {
+            try {
+                const data = await GetLastMonthComparison();
+                setLastMonthComparison(data);
+                console.log(data);
+            } catch (error) {
+                console.error("Failed to fetch last month comparison", error);
+            }
+        }
+
+        const fetchWallet = async () => {
+            try {
+                // Lấy accessToken từ cookie
+                const authData = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('auth='))
+                    ?.split('=')[1];
+
+                if (!authData) {
+                    console.error("Không tìm thấy accessToken!");
+                    return;
+                }
+                const { accessToken } = JSON.parse(authData);
+                const data = await GetWallet(accessToken);
+                setWallet(data);
+            } catch (error) {
+                console.error("Lỗi khi lấy ví điện tử:", error);
+            }
+        };
+
+        fetchWallet();
+        fetchLastMonthComparison();
         fetchRevenueData();
         fetchTopCampaigns();
+
     }, [dateRange]);
 
     // // Generate sample data for last 5 years to next 5 years
@@ -143,29 +179,33 @@ const Dashboard = () => {
                 <div className="space-y-6 flex flex-col h-full">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="p-4 bg-white rounded-lg shadow">
-                            <p className="text-gray-600">Wallet Balance</p>
-                            <h3 className="text-2xl font-bold">3,782,000 VNĐ</h3>
-                            <span className="text-green-500">↑ 11.01%</span>
+                            <p className="text-gray-600">Số dư ví điện tử</p>
+                            <span className="text-red-600 flex justify-start">
+                                <h3 className="text-2xl font-bold mt-4">{formatMoney(wallet?.balance)}</h3>
+                            </span>
+                        </div>
+                        <div className="p-4 bg-white rounded-lg shadow">
+                            <p className="text-gray-600">Đơn hàng trong tháng</p>
+                            <h3 className="text-2xl font-bold">{lastMonthComparison.currentMonthOrder}</h3>
+                            <span className={`text-${lastMonthComparison.percentComparedLastMonth >= 0 ? "green" : "red"}-500`}>
+                                {lastMonthComparison.percentComparedLastMonth >= 0 ? "↑" : "↓"}
+                                {Math.round(lastMonthComparison.percentComparedLastMonth * 100) / 100}%
+                            </span>
                         </div>
 
-                        <div className="p-4 bg-white rounded-lg shadow">
-                            <p className="text-gray-600">Orders</p>
-                            <h3 className="text-2xl font-bold">5,359</h3>
-                            <span className="text-red-500">↓ 9.05%</span>
-                        </div>
                     </div>
 
                     {/* Monthly Sales Chart */}
                     <div className="p-4 bg-white rounded-lg shadow flex-1 overflow-hidden">
-                        <h3 className="text-lg font-bold">Monthly Sales</h3>
+                        <h3 className="text-lg font-bold">Tổng số đơn hàng trong 1 năm </h3>
                         <Chart options={barChartOptions} series={barChartSeries} type="bar" height={250} />
                     </div>
                 </div>
 
                 {/* Right Side - Top 3 Campaigns */}
                 <div className="p-6 bg-white rounded-lg shadow text-center flex flex-col h-full">
-                    <h2 className="text-3xl font-bold mb-2">Top 3 Campaigns</h2>
-                    <p className="text-gray-600 text-sm mb-4">Campaigns with the highest number of orders</p>
+                    <h2 className="text-3xl font-bold mb-2">Top 3 chiến dịch nổi bật</h2>
+                    <p className="text-gray-600 text-sm mb-4">Các Chiến dịch có số đơn hàng cao nhất</p>
 
                     <div className="grid grid-cols-3 gap-6 justify-center items-end flex-grow">
                         {formattedCampaigns.map((campaign) => (
@@ -194,8 +234,8 @@ const Dashboard = () => {
 
             {/* Revenue Statistics */}
             <div className="p-4 bg-white rounded-lg shadow mt-6">
-                <h3 className="text-lg font-bold">Revenue Statistics</h3>
-                <p className="text-gray-600">View revenue within a specific date range</p>
+                <h3 className="text-lg font-bold">Thống kê doanh thu</h3>
+                <p className="text-gray-600">Xem doanh thu trong khoảng thời gian cụ thể</p>
 
 
 

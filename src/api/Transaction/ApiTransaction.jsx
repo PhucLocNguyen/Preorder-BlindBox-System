@@ -89,9 +89,60 @@ const ApiWithdrawMoney = async ({ payload }) => {
     }
 }
 
+const GetListOfAllTransactionByUser = async (accessToken, PageIndex, PageSize) => {
+    try {
+        const response = await api.get('/Transaction/GetListOfAllTransactionByUser',
 
+            {
+                ...axiosConfigHeader,
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+                params: { PageIndex, PageSize },
+                paramsSerializer: (params) => {
+                    return new URLSearchParams(params).toString();
+                }
+            }
+        );
+        const data = response.data;
+        const paginationHeader = response.headers["x-pagination"];
+        console.log("Pagination Header:", paginationHeader);
+
+        const pagination = paginationHeader ? JSON.parse(paginationHeader) : null;
+
+        return { data, pagination };
+    } catch (error) {
+        console.log('>>> Lấy danh sách giao dịch của khacsk hàng thất bại: ', error);
+        return null;
+    }
+}
+
+const GetTransactionDetailVerifyUserPayment = async (accessToken, transactionId) => {
+    try {
+        const response = await api.get("/Transaction/GetTransactionDetailVerifyUserPayment",
+
+            {
+                ...axiosConfigHeader,
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+                params: { transactionId },
+                paramsSerializer: (params) => {
+                    return new URLSearchParams(params).toString();
+                }
+            }
+        );
+        const data = response.data;
+        console.log("fetch data:", data);
+        return data;
+    } catch (error) {
+        console.log('>>> Lấy danh sách giao dịch của khách hàng thất bại: ', error);
+        return null;
+    }
+}
 
 export {
     GetTheWithdrawTransactionRequest, GetWithdrawTransactionDetailRequest, ApproveWithdrawTransactionRequest
-    , GetListOfAllTransaction, ApiWithdrawMoney
+    , GetListOfAllTransaction, ApiWithdrawMoney, GetListOfAllTransactionByUser,
+    GetTransactionDetailVerifyUserPayment
 };

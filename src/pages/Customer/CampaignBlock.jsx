@@ -17,7 +17,7 @@ function CampaignBlock({ block, selectedVoucherMap, onUpdateQuantity, onRemoveIt
   useEffect(() => {
     // Lấy voucherCampaignId từ mapping dựa theo campaignId
     const selectedVoucherCampaignId = selectedVoucherMap[campaignId];
-    const voucher = selectedVoucherCampaignId 
+    const voucher = selectedVoucherCampaignId
       ? vouchers.find(v => v.voucherCampaignId === selectedVoucherCampaignId)
       : null;
     setAppliedVoucher(voucher);
@@ -72,16 +72,16 @@ function CampaignBlock({ block, selectedVoucherMap, onUpdateQuantity, onRemoveIt
       <table className="table-fixed w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="w-[40%] px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="w-[40%] px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">
               Sản phẩm
             </th>
-            <th className="w-[15%] px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="w-[15%] px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">
               Giá
             </th>
-            <th className="w-[20%] px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="w-[20%] px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">
               Số lượng
             </th>
-            <th className="w-[15%] px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="w-[15%] px-6 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">
               Tổng
             </th>
             <th className="w-[10%] px-6 py-3"></th>
