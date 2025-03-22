@@ -5,13 +5,13 @@ import { MoreOutlined, EyeOutlined } from '@ant-design/icons'
 import { GetListOfAllTransactionByUser } from "../../api/Transaction/ApiTransaction";
 import { GetTransactions, GetWallet } from "../../api/Wallet/ApiWallet";
 import { Link } from "react-router-dom";
-import moment from "moment";
+import dayjs from 'dayjs';
 import { formatMoney } from '../../utils/FormatMoney';
 const DepositHistory = () => {
     const [pageSize, setPageSize] = useState(5);
     const [pageIndex, setPageIndex] = useState(1);
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedYear, setSelectedYear] = useState(dayjs().year());
     const [wallet, setWallet] = useState({});
     const [selectedTransaction, setSelectedTransaction] = useState({});
     const Month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -59,6 +59,7 @@ const DepositHistory = () => {
             }
         };
 
+
         // const fetchWallet = async () => {
         //     try {
         //         // Lấy accessToken từ cookie
@@ -81,7 +82,12 @@ const DepositHistory = () => {
         // fetchWallet();
         fetchTransaction();
     }, [selectedMonth, selectedYear]);
-
+    const handleDateChange = (date, dateString) => {
+        console.log("Selected Date:", date, dateString);
+        if (date) {
+            setSelectedYear(dayjs(date).year()); // Get the year
+        }
+    };
     const columns = [
         {
             title: "STT",
@@ -203,10 +209,9 @@ const DepositHistory = () => {
 
                         {/* DatePicker chọn năm */}
                         <DatePicker
-                            picker="year"
-                            value={selectedYear ? moment(selectedYear, "YYYY") : null}
-                            onChange={(date, dateString) => setSelectedYear(Number(dateString))}
-                            placeholder="Chọn năm"
+                            onChange={handleDateChange}
+                            picker="year" // Ensure correct picker type
+                            format="YYYY"
                         />
                     </div>
 

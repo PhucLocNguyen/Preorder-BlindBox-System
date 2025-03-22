@@ -220,7 +220,7 @@ const Dashboard = () => {
                                 <div
                                     className="w-20 flex items-center justify-center text-white font-bold text-xl rounded-lg shadow-lg"
                                     style={{
-                                        height: `${Math.max(40, campaign.totalOrder * 40)}px`,
+                                        height: `${Math.max(10, campaign.totalOrder * 10)}px`,
                                         background: campaign.color
                                     }}
                                 >
