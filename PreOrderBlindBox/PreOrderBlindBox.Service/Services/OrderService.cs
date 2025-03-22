@@ -18,7 +18,7 @@ using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.Services.Services
 {
-	public class OrderService : IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailService _orderDetailService;
@@ -122,16 +122,16 @@ namespace PreOrderBlindBox.Services.Services
                     if (userVoucher != null)
                         await _userVoucherService.UpdateUserVoucherAsync(new RequestUpdateUserVoucher() { VoucherCampaignId = (int)userVoucher.VoucherCampaignId });
                     preorderCampaign.PlacedOrderCount += item.responseCarts.Sum(x => x.Quantity);
-
+                    requestCustomerTransactionCreateModel.Money = item.Total;
                     if (!await _transactionService.CreateTransaction(requestCustomerTransactionCreateModel))
                         throw new Exception("Not enough money in your wallet !");
-                 _hubContextOrderInCampaignHub.Clients.Group(preorderCampaign.Slug).SendAsync("ReceiveOrderUpdate", preorderCampaign.PlacedOrderCount);
                     await _preorderCampaignRepository.UpdateAsync(preorderCampaign);
                     await _unitOfWork.SaveChanges();
+                    _hubContextOrderInCampaignHub.Clients.Group(preorderCampaign.Slug).SendAsync("ReceiveOrderUpdate", preorderCampaign.PlacedOrderCount);
+
                 }
                 if (requestCreateOrder.RequestCreateCart.PreorderCampaignId == null)
                     await _cartService.UpdateStatusOfCartByCustomerID(customerId);
-
                 foreach (var staff in staffs)
                 {
                     var notificationForStaff = (new RequestCreateNotification()
@@ -140,10 +140,15 @@ namespace PreOrderBlindBox.Services.Services
                         Title = "Successfully pre-ordered",
                         Description = $"Customer {customer.FullName} has successfully placed an order.",
                     });
-					await _notificationService.CreatNotification(notificationForStaff);
-				}
-				await _notificationService.CreatNotification(notificationForCustomer);
+                    await _notificationService.CreatNotification(notificationForStaff);
+                }
+                await _notificationService.CreatNotification(notificationForCustomer);
                 await _unitOfWork.CommitTransactionAsync();
+                foreach (var item in priceForCarts)
+                {
+                    int preorderCampaignId = (int)item.responseCarts.FirstOrDefault().PreorderCampaignId;
+                    await _hubContextOrderInCampaignHub.Clients.Group("Cart_Preordercampaign").SendAsync("CampaignUpdated", preorderCampaignId);
+                }
             }
             catch (Exception ex)
             {
@@ -208,33 +213,33 @@ namespace PreOrderBlindBox.Services.Services
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-				var staffs = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).ToList();
-				var order = await _orderRepository.GetByIdAsync(orderId);
+                var staffs = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).ToList();
+                var order = await _orderRepository.GetByIdAsync(orderId);
                 if (order == null)
                 {
                     throw new ArgumentException("Order not found");
                 }
-				var notificationForCustomer = (new RequestCreateNotification()
-				{
-					ReceiverId = order.CustomerId,
-					Title = $"Order #{orderId} has changed status",
-					Description = $"Your order has changed from '{order.Status}' to '{requestUpdateOrder.Status}'.",
-				});
-				await _notificationService.CreatNotification(notificationForCustomer);
-				foreach (var staff in staffs)
-				{
-					var notificationForStaff = (new RequestCreateNotification()
-					{
-						ReceiverId = staff.UserId,
-						Title = "Change order status",
-						Description = $"Staff has changed the status of order #{orderId}.",
-					});
-					await _notificationService.CreatNotification(notificationForStaff);
-				}
-				order.Status = requestUpdateOrder.Status;
-				
+                var notificationForCustomer = (new RequestCreateNotification()
+                {
+                    ReceiverId = order.CustomerId,
+                    Title = $"Order #{orderId} has changed status",
+                    Description = $"Your order has changed from '{order.Status}' to '{requestUpdateOrder.Status}'.",
+                });
+                await _notificationService.CreatNotification(notificationForCustomer);
+                foreach (var staff in staffs)
+                {
+                    var notificationForStaff = (new RequestCreateNotification()
+                    {
+                        ReceiverId = staff.UserId,
+                        Title = "Change order status",
+                        Description = $"Staff has changed the status of order #{orderId}.",
+                    });
+                    await _notificationService.CreatNotification(notificationForStaff);
+                }
+                order.Status = requestUpdateOrder.Status;
 
-				await _orderRepository.UpdateAsync(order);
+
+                await _orderRepository.UpdateAsync(order);
                 await _unitOfWork.SaveChanges();
                 await _unitOfWork.CommitTransactionAsync();
                 return order.toOrderRespone();
