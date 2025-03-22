@@ -18,7 +18,7 @@ using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.Services.Services
 {
-	public class OrderService : IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailService _orderDetailService;
@@ -70,7 +70,7 @@ namespace PreOrderBlindBox.Services.Services
             {
                 var customer = await _userRepository.GetByIdAsync(customerId);
                 var staffs = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).ToList();
-                var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin"&& x.WalletId!=null, includes: [x => x.Role])).FirstOrDefault();
+                var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin" && x.WalletId != null, includes: [x => x.Role])).FirstOrDefault();
 
                 var notificationForCustomer = (new RequestCreateNotification()
                 {
@@ -86,7 +86,7 @@ namespace PreOrderBlindBox.Services.Services
                 {
                     var requestCustomerTransactionCreateModel = new RequestTransactionCreateModel()
                     {
-                        
+
                         Money = 0,
                         WalletId = customer.WalletId,
                         Type = TypeOfTransactionEnum.Purchase,
@@ -95,14 +95,14 @@ namespace PreOrderBlindBox.Services.Services
                     int preorderCampaignId = (int)item.responseCarts.FirstOrDefault().PreorderCampaignId;
                     requestCreateOrder.DiscountMoney = item.DiscountMoney;
                     var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById(preorderCampaignId);
-                    var userVoucher = item.UserVoucher != null ? await _userVoucherService.GetUserVoucherById(item.UserVoucher.UserVoucherId) : null ;
+                    var userVoucher = item.UserVoucher != null ? await _userVoucherService.GetUserVoucherById(item.UserVoucher.UserVoucherId) : null;
                     requestCreateOrder.Amount = item.Total;
 
                     if (preorderCampaign.Type.Equals("BulkOrder"))
                     {
-                        var tempCampaignBulkOrderEntity = requestCreateOrder.toTempCampaignBulkOrder(customerId) ;
-                        
-                        if(userVoucher != null) tempCampaignBulkOrderEntity.UserVoucherId = userVoucher.UserVoucherId;
+                        var tempCampaignBulkOrderEntity = requestCreateOrder.toTempCampaignBulkOrder(customerId);
+
+                        if (userVoucher != null) tempCampaignBulkOrderEntity.UserVoucherId = userVoucher.UserVoucherId;
                         tempCampaignBulkOrderEntity = await _tempCampaignBulkOrderService.CreateOrder(tempCampaignBulkOrderEntity);
                         await _unitOfWork.SaveChanges();
                         await _tempCampaignBulkOrderDetailService.CreateTempCampaignBulkOrderDetail(item.responseCarts, tempCampaignBulkOrderEntity.TempCampaignBulkOrderId);
@@ -112,22 +112,26 @@ namespace PreOrderBlindBox.Services.Services
                     else
                     {
                         var orderEntity = requestCreateOrder.toOrderEntity(customerId);
-						if (userVoucher != null) orderEntity.UserVoucherId = userVoucher.UserVoucherId;
-						await _orderRepository.InsertAsync(orderEntity);
+                        if (userVoucher != null) orderEntity.UserVoucherId = userVoucher.UserVoucherId;
+                        await _orderRepository.InsertAsync(orderEntity);
                         await _unitOfWork.SaveChanges();
                         await _orderDetailService.CreateOrderDetail(item.responseCarts, orderEntity.OrderId);
                         requestCustomerTransactionCreateModel.OrderId = orderEntity.OrderId;
-						requestCustomerTransactionCreateModel.Description = $"When the user makes a payment for Order #{orderEntity.OrderId}, an amount of {item.Total} has been deducted from the user {customer.FullName}'s wallet.";
-					}
+                        requestCustomerTransactionCreateModel.Description = $"When the user makes a payment for Order #{orderEntity.OrderId}, an amount of {item.Total} has been deducted from the user {customer.FullName}'s wallet.";
+                    }
                     if (userVoucher != null)
                         await _userVoucherService.UpdateUserVoucherAsync(new RequestUpdateUserVoucher() { VoucherCampaignId = (int)userVoucher.VoucherCampaignId });
                     preorderCampaign.PlacedOrderCount += item.responseCarts.Sum(x => x.Quantity);
-
+                    requestCustomerTransactionCreateModel.Money = item.Total;
                     if (!await _transactionService.CreateTransaction(requestCustomerTransactionCreateModel))
                         throw new Exception("Not enough money in your wallet !");
-                 _hubContextOrderInCampaignHub.Clients.Group(preorderCampaign.Slug).SendAsync("ReceiveOrderUpdate", preorderCampaign.PlacedOrderCount);
                     await _preorderCampaignRepository.UpdateAsync(preorderCampaign);
-                    await _unitOfWork.SaveChanges();
+                    int resultExecuted = await _unitOfWork.SaveChanges();
+                    if (resultExecuted > 0)
+                    {
+                        _hubContextOrderInCampaignHub.Clients.Group(preorderCampaign.Slug).SendAsync("ReceiveOrderUpdate", preorderCampaign.PlacedOrderCount);
+                      
+                    }
                 }
                 if (requestCreateOrder.RequestCreateCart.PreorderCampaignId == null)
                     await _cartService.UpdateStatusOfCartByCustomerID(customerId);
@@ -140,10 +144,15 @@ namespace PreOrderBlindBox.Services.Services
                         Title = "Successfully pre-ordered",
                         Description = $"Customer {customer.FullName} has successfully placed an order.",
                     });
-					await _notificationService.CreatNotification(notificationForStaff);
-				}
-				await _notificationService.CreatNotification(notificationForCustomer);
+                    await _notificationService.CreatNotification(notificationForStaff);
+                }
+                await _notificationService.CreatNotification(notificationForCustomer);
                 await _unitOfWork.CommitTransactionAsync();
+                foreach (var item in priceForCarts)
+                {
+                    int preorderCampaignId = (int)item.responseCarts.FirstOrDefault().PreorderCampaignId;
+                    await _hubContextOrderInCampaignHub.Clients.Group("Cart_Preordercampaign").SendAsync("CampaignUpdated", preorderCampaignId);
+                }
             }
             catch (Exception ex)
             {
@@ -208,33 +217,33 @@ namespace PreOrderBlindBox.Services.Services
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-				var staffs = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).ToList();
-				var order = await _orderRepository.GetByIdAsync(orderId);
+                var staffs = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).ToList();
+                var order = await _orderRepository.GetByIdAsync(orderId);
                 if (order == null)
                 {
                     throw new ArgumentException("Order not found");
                 }
-				var notificationForCustomer = (new RequestCreateNotification()
-				{
-					ReceiverId = order.CustomerId,
-					Title = $"Order #{orderId} has changed status",
-					Description = $"Your order has changed from '{order.Status}' to '{requestUpdateOrder.Status}'.",
-				});
-				await _notificationService.CreatNotification(notificationForCustomer);
-				foreach (var staff in staffs)
-				{
-					var notificationForStaff = (new RequestCreateNotification()
-					{
-						ReceiverId = staff.UserId,
-						Title = "Change order status",
-						Description = $"Staff has changed the status of order #{orderId}.",
-					});
-					await _notificationService.CreatNotification(notificationForStaff);
-				}
-				order.Status = requestUpdateOrder.Status;
-				
+                var notificationForCustomer = (new RequestCreateNotification()
+                {
+                    ReceiverId = order.CustomerId,
+                    Title = $"Order #{orderId} has changed status",
+                    Description = $"Your order has changed from '{order.Status}' to '{requestUpdateOrder.Status}'.",
+                });
+                await _notificationService.CreatNotification(notificationForCustomer);
+                foreach (var staff in staffs)
+                {
+                    var notificationForStaff = (new RequestCreateNotification()
+                    {
+                        ReceiverId = staff.UserId,
+                        Title = "Change order status",
+                        Description = $"Staff has changed the status of order #{orderId}.",
+                    });
+                    await _notificationService.CreatNotification(notificationForStaff);
+                }
+                order.Status = requestUpdateOrder.Status;
 
-				await _orderRepository.UpdateAsync(order);
+
+                await _orderRepository.UpdateAsync(order);
                 await _unitOfWork.SaveChanges();
                 await _unitOfWork.CommitTransactionAsync();
                 return order.toOrderRespone();
