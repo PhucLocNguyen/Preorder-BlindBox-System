@@ -13,5 +13,6 @@ namespace PreOrderBlindBox.Data.IRepositories
 	{
 		public Task<List<RevenueDto>> GetListRevenueByTime(DateTime fromDate, DateTime toDate);
 		public Task<List<Order>> GetListOrderByMonth(DateTime currentTime);
+		public Task<List<Order>> GetListOrderByYear(int year);
 	}
 }
