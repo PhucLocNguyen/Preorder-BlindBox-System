@@ -3,10 +3,13 @@ import Chart from "react-apexcharts";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { GetRevenueByTime, GetTopThreeCampaign, GetLastMonthComparison } from "../../api/DashBoard/ApiDashBoard";
+import { GetWallet } from "../../api/Wallet/ApiWallet";
 import { FaMedal } from "react-icons/fa";
+import { formatMoney } from "../../utils/formatMoney";
 const { RangePicker } = DatePicker;
 const Dashboard = () => {
     const [lastMonthComparison, setLastMonthComparison] = useState({});
+    const [wallet, setWallet] = useState({});
     // Bar Chart (Total orders per month)
     const barChartOptions = {
         chart: { id: "monthly-total_orders" },
@@ -61,6 +64,28 @@ const Dashboard = () => {
                 console.error("Failed to fetch last month comparison", error);
             }
         }
+
+        const fetchWallet = async () => {
+            try {
+                // Lấy accessToken từ cookie
+                const authData = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('auth='))
+                    ?.split('=')[1];
+
+                if (!authData) {
+                    console.error("Không tìm thấy accessToken!");
+                    return;
+                }
+                const { accessToken } = JSON.parse(authData);
+                const data = await GetWallet(accessToken);
+                setWallet(data);
+            } catch (error) {
+                console.error("Lỗi khi lấy ví điện tử:", error);
+            }
+        };
+
+        fetchWallet();
         fetchLastMonthComparison();
         fetchRevenueData();
         fetchTopCampaigns();
@@ -155,10 +180,10 @@ const Dashboard = () => {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="p-4 bg-white rounded-lg shadow">
                             <p className="text-gray-600">Số dư ví điện tử</p>
-                            <h3 className="text-2xl font-bold">3,782,000 VNĐ</h3>
-                            <span className="text-green-500">↑ 11.01%</span>
+                            <span className="text-red-600 flex justify-start">
+                                <h3 className="text-2xl font-bold mt-4">{formatMoney(wallet?.balance)}</h3>
+                            </span>
                         </div>
-
                         <div className="p-4 bg-white rounded-lg shadow">
                             <p className="text-gray-600">Đơn hàng trong tháng</p>
                             <h3 className="text-2xl font-bold">{lastMonthComparison.currentMonthOrder}</h3>
