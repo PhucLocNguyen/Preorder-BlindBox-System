@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Data.Commons;
+﻿using Microsoft.AspNetCore.SignalR;
+using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.IRepositories;
@@ -9,6 +10,7 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.UserVoucherModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.OrderResponseModel;
+using PreOrderBlindBox.Services.Hubs;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Mappers.OrderMapper;
 using PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper;
@@ -30,6 +32,7 @@ namespace PreOrderBlindBox.Services.Services
         private readonly ITempCampaignBulkOrderService _tempCampaignBulkOrderService;
         private readonly ITempCampaignBulkOrderDetailService _tempCampaignBulkOrderDetailService;
         private readonly IPreorderCampaignRepository _preorderCampaignRepository;
+        private readonly IHubContext<OrderInCampaignHub> _hubContextOrderInCampaignHub;
 
         public OrderService(
             IOrderRepository orderRepository, ICartService cartService,
@@ -40,7 +43,8 @@ namespace PreOrderBlindBox.Services.Services
             ITransactionService transactionService,
             ITempCampaignBulkOrderService tempCampaignBulkOrderService,
             ITempCampaignBulkOrderDetailService tempCampaignBulkOrderDetailService,
-        IPreorderCampaignRepository preorderCampaignRepository
+        IPreorderCampaignRepository preorderCampaignRepository,
+        IHubContext<OrderInCampaignHub> hubContextOrderInCampaignHub
             )
         {
             _orderRepository = orderRepository;
@@ -55,6 +59,7 @@ namespace PreOrderBlindBox.Services.Services
             _tempCampaignBulkOrderService = tempCampaignBulkOrderService;
             _preorderCampaignRepository = preorderCampaignRepository;
             _tempCampaignBulkOrderDetailService = tempCampaignBulkOrderDetailService;
+            _hubContextOrderInCampaignHub = hubContextOrderInCampaignHub;
         }
 
         public async Task CreateOrder(RequestCreateOrder requestCreateOrder)
@@ -117,9 +122,10 @@ namespace PreOrderBlindBox.Services.Services
                     if (userVoucher != null)
                         await _userVoucherService.UpdateUserVoucherAsync(new RequestUpdateUserVoucher() { VoucherCampaignId = (int)userVoucher.VoucherCampaignId });
                     preorderCampaign.PlacedOrderCount += item.responseCarts.Sum(x => x.Quantity);
-                    requestCustomerTransactionCreateModel.Money = item.Total;
+
                     if (!await _transactionService.CreateTransaction(requestCustomerTransactionCreateModel))
                         throw new Exception("Not enough money in your wallet !");
+                 _hubContextOrderInCampaignHub.Clients.Group(preorderCampaign.Slug).SendAsync("ReceiveOrderUpdate", preorderCampaign.PlacedOrderCount);
                     await _preorderCampaignRepository.UpdateAsync(preorderCampaign);
                     await _unitOfWork.SaveChanges();
                 }
