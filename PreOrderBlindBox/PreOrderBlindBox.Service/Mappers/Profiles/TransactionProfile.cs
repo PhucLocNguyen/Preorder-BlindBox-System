@@ -16,7 +16,6 @@ namespace PreOrderBlindBox.Services.Mappers.Profiles
         {
             CreateMap<Transaction, ResponseTransactionResult>();
             CreateMap<RequestTransactionCreateModel, Transaction>();
-
         }
     }
 }

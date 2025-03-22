@@ -52,8 +52,26 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 		}
 
+		[HttpGet("user-information")]
+		public async Task<IActionResult> GetUserInformation()
+		{
+			try
+			{
+				var result = await _userService.GetUserInformation();
+				if (result != null)
+				{
+					return Ok(result);
+				}
+				return BadRequest("Cannot get user");
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
 		[HttpPut("UpdateCustomerInformation")]
-		public async Task<IActionResult> UpdateCustomerInformation(RequestUpdateCustomerInformation customerInformation)
+		public async Task<IActionResult> UpdateCustomerInformation([FromForm] RequestUpdateCustomerInformation customerInformation)
 		{
 			try
 			{

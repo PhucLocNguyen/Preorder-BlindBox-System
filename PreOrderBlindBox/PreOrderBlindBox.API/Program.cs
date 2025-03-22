@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -6,6 +7,7 @@ using PreOrderBlindBox.API;
 using PreOrderBlindBox.Data.DBContext;
 using PreOrderBlindBox.Services;
 using PreOrderBlindBox.Services.Helpers;
+using PreOrderBlindBox.Services.Hubs;
 using PreOrderBlindBox.Services.Utils;
 using System.Text;
 
@@ -30,7 +32,7 @@ namespace PreOrderBlindBox.Api
             //});
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-
+            builder.Services.AddSignalR();
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pre-order Blind Box Api", Version = "v1" });
@@ -122,7 +124,7 @@ namespace PreOrderBlindBox.Api
 
             app.UseHttpsRedirection();
             app.UseMiddleware<JwtCookieMiddleware>();
-
+            app.MapHub<OrderInCampaignHub>("/Hubs/OrderInCampaign");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors("AllowAll");

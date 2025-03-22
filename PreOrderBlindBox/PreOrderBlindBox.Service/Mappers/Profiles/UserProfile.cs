@@ -14,6 +14,7 @@ namespace PreOrderBlindBox.Services.Mappers.Profiles
 		public UserProfile()
 		{
 			CreateMap<User, ResponseUserInfomation>();
+			CreateMap<User, ResponseUserBankingInformation>();
 		}
 	}
 }

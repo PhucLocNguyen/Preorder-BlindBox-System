@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.UserModel
 		public string Phone { get; set; } = string.Empty;
 
 		[Required(ErrorMessage = "Thumbnail is required")]
-		public string Thumbnail { get; set; } = string.Empty;
+		public IFormFile Thumbnail { get; set; }
 
 		[Required(ErrorMessage = "Address is required")]
 		public string Address { get; set; } = string.Empty;

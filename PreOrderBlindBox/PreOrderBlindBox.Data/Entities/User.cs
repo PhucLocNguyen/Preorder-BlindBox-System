@@ -45,6 +45,8 @@ public partial class User
 
     public DateTime? ForgotPasswordTokenExpiry { get; set; }
 
+    public string GoogleId { get; set; }
+
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();

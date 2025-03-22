@@ -65,7 +65,7 @@ namespace PreOrderBlindBox.Services.Services
             {
                 var customer = await _userRepository.GetByIdAsync(customerId);
                 var staffs = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).ToList();
-                var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin", includes: x => x.Role)).FirstOrDefault();
+                var admin = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Admin"&& x.WalletId!=null, includes: [x => x.Role])).FirstOrDefault();
 
                 var notificationForCustomer = (new RequestCreateNotification()
                 {

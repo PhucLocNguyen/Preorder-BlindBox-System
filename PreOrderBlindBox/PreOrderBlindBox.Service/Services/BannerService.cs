@@ -34,7 +34,8 @@ namespace PreOrderBlindBox.Services.Services
 
         public async Task<Pagination<Banner>> GetAllBanner(PaginationParameter page)
         {
-            var item = await _bannerRepo.GetAll(page);
+            var item = await _bannerRepo.GetAll(pagination: page,
+                                                orderBy: q => q.OrderByDescending(b => b.Priority));
             var countItem = _bannerRepo.Count();
 
             var responseData = new Pagination<Banner>(item, countItem, page.PageIndex, page.PageSize);

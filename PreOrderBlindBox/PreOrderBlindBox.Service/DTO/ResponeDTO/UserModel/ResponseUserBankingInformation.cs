@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PreOrderBlindBox.Services.DTO.ResponeDTO.UserModel
 {
-	public class ResponseUserInfomation
+	public class ResponseUserBankingInformation
 	{
 		public int UserId { get; set; }
 		public string FullName { get; set; } = string.Empty;
@@ -16,8 +16,5 @@ namespace PreOrderBlindBox.Services.DTO.ResponeDTO.UserModel
 		public string Thumbnail { get; set; }
 		public string BankName { get; set; }
 		public string BankAccountNumber { get; set; }
-		public bool IsActive { get; set; }
-		public string GoogleId { get; set; }
-
 	}
 }
