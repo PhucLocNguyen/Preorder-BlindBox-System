@@ -80,5 +80,22 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 
 		}
+
+		[HttpGet("mark-read-all")]
+		public async Task<IActionResult> MarkAllNotificationsAsRead()
+		{
+			try
+			{
+				var isSuccess = await _notificationService.MarkAllNotificationsAsRead();
+				if(isSuccess)
+					return Ok(new { Message = "All notifications are read" });
+				return BadRequest(new { Message = "Something wrong when mark all notifications read" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = (ex.Message) });
+			}
+
+		}
 	}
 }
