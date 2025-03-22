@@ -109,10 +109,10 @@ export const CreatePreorderMilestones = ({
                             new Error("Số tiền phải >= 1000")
                           );
                         }
-                        if(value>loadMainProduct.listedPrice){
+                        if(value>=loadMainProduct.listedPrice){
                           return Promise.reject(
                             new Error(
-                              `Giá phải nhỏ hơn hoặc bằng giá niêm yết của sản phẩm`
+                              `Giá phải nhỏ hơn giá niêm yết của sản phẩm`
                             )
                           );
                         }

@@ -1,14 +1,21 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useState } from "react";
-import { GetTheActiveVoucherCampaign } from "../../api/VoucherCampaign/ApiVoucherCampaign";
+import { GetTheActiveVoucherCampaign, GetTheActiveVoucherCampaignBaseUser } from "../../api/VoucherCampaign/ApiVoucherCampaign";
 import Voucher from "../Voucher";
 import { Spin } from "antd";
 import VoucherCampaignBackground from "../../assets/Background/voucherCampaignBackgroundImage.png";
+import { AuthContext } from "../../context/AuthContext";
 function VoucherCampaignSection() {
   const [voucherCampaigns,setVoucherCampaigns] = useState([]);
   const [loading,setLoading] = useState(true);
+  const {auth} = useContext(AuthContext);
   const fetchVoucherCampaigns = async ()=>{
-    var data = await GetTheActiveVoucherCampaign();
+    var data =[];
+    if(auth.roleName==="Guest"){
+      data = await GetTheActiveVoucherCampaign(); 
+    }else{
+      data =await GetTheActiveVoucherCampaignBaseUser();
+    }
     setVoucherCampaigns(data);
     setLoading(false);
   }

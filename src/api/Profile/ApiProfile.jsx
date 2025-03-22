@@ -11,6 +11,23 @@ const UpdateProfile = async ({ formData: payload }) => {
     }
 };
 
+const GetUserInformation = async (accessToken) => {
+    try {
+        const result = await api.get('/User/user-information', {
+            ...axiosConfigHeader,
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+            }
+        });
+        return result.data; // Trả về dữ liệu người dùng
+    } catch (error) {
+        console.log('>>> GetUserInformation error: ', error);
+        return null;
+    }
+};
+
 export {
-    UpdateProfile
+    UpdateProfile, GetUserInformation
 }
+
+

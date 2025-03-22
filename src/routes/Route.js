@@ -25,7 +25,7 @@ const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Vouc
 const VoucherDetails = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherDetails"));
 const VoucherCreate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherCreate"));
 const VoucherUpdate = lazy(() => import("../pages/Admin/VoucherCampaign/VoucherEdit"));
-const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions"));
+const HistoryTransactions = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactions"));
 const BannerManagement = lazy(() => import("../pages/Admin/BannerManagement/BannerView"));
 const BannerViewDetails = lazy(() => import("../pages/Admin/BannerManagement/BannerViewDetails"));
 const ConfirmEmailAccount = lazy(() => import("../pages/ConfirmEmailAccount/ConfirmEmailAccount"));
@@ -54,6 +54,17 @@ const ViewPendingOrderDetail = lazy(() => import("../pages/Customer/Orders/ViewP
 const ViewDetailOrder = lazy(() => import("../pages/Customer/Orders/ViewDetailOrder"));
 const Profile = lazy(() => import("../pages/Customer/Profile"));
 const IntroductionPage = lazy(() => import("../pages/IntroductionPage/IntroductionPage"));
+const WithdrawTransactionDetail = lazy(() => import("../pages/Admin/WithdrawTransaction/WithdrawTransactionDetail"));
+const WithdrawTransaction = lazy(() => import("../pages/Admin/WithdrawTransaction/WithdrawTransaction"));
+const UpdatePassword = lazy(() => import("../pages/Account/UpdatePassword"));
+const DepositHistory = lazy(() => import("../pages/Wallet/DepositHistory"));
+const DepositHistoryDetails = lazy(() => import("../pages/Wallet/DepositHistoryDetails"));
+
+const HistoryTransactionsAll = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsAll"));
+const HistoryTransactionsRecharge = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsRecharge"));
+const HistoryTransactionsPurchase = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsPurchase"));
+const HistoryTransactionsWithdraw = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsWithdraw"));
+const HistoryTransactionsRefund = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsRefund"));
 
 const publicRoutes = [
   {
@@ -103,7 +114,7 @@ const publicRoutes = [
   },
   {
     path: '/gioi-thieu',
-    layout:DefaultLayout,
+    layout: DefaultLayout,
     component: IntroductionPage
   }
 ];
@@ -116,6 +127,8 @@ const privateRoutes = [
     children: [
       { index: true, component: DepositPage, layout: null },
       { path: 'deposit', component: Withdraw, layout: null },
+      { path: 'deposit-history', component: DepositHistory, layout: null },
+      { path: 'deposit-history/details/:id', component: DepositHistoryDetails, layout: null },
     ],
     role: ['Customer']
   },
@@ -133,6 +146,7 @@ const privateRoutes = [
   {
     path: '/profile',
     component: Profile,
+    layout: DefaultLayout,
     role: ['Customer']
   },
   {
@@ -181,11 +195,26 @@ const privateRoutes = [
       { path: "voucher/add", component: VoucherCreate },
       { path: "voucher-details/:id", component: VoucherDetails },
       { path: "voucher/update/:id", component: VoucherUpdate },
-      { path: "history-transactions", component: HistoryTransactions },
       { path: "preordercampaignApproval", component: ApprovalCampaign },
       { path: "preordercampaignApproval/confirm/:slug", component: ApprovalCampaignDetail },
+      { path: "withdraw-request", component: WithdrawTransaction },
+      { path: "withdraw-request/:id", component: WithdrawTransactionDetail },
     ],
     role: ['Admin']
+  },
+  {
+    path: "/admin/history-transactions",
+    component: HistoryTransactions,
+    layout: AdminLayout,
+
+    children: [
+      { path: "all", component: HistoryTransactionsAll }, // Mặc định là All
+      { path: "recharge", component: HistoryTransactionsRecharge },
+      { path: "purchase", component: HistoryTransactionsPurchase },
+      { path: "withdraw", component: HistoryTransactionsWithdraw },
+      { path: "refund", component: HistoryTransactionsRefund },
+    ],
+    role: ["Admin"],
   },
   {
     path: "/staff",
@@ -211,6 +240,12 @@ const privateRoutes = [
   {
     path: '/myvoucher',
     component: MyVoucher,
+    layout: DefaultLayout,
+    role: ['Customer']
+  },
+  {
+    path: '/change-password',
+    component: UpdatePassword,
     layout: DefaultLayout,
     role: ['Customer']
   }

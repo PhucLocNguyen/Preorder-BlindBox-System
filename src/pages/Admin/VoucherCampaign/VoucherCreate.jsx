@@ -31,11 +31,14 @@ const VoucherCreate = () => {
             const config = { headers: { 'Content-Type': 'application/json' } };
 
             const result = await CreateVoucher(payload, config);
-            toast.success('Voucher created successfully!');
-            navigate('/admin/voucher');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            if (result) {
+                toast.success('Voucher created successfully!');
+                navigate('/admin/voucher');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+
         } catch (error) {
             message.error("Tạo voucher thất bại: " + (error.response?.data?.message || error.message));
         }

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Upload, message, Card } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { GetActiveStaff, EditStaff } from "../../../api/StaffManagement/ApiStaffManager";
-
+import noThumbnailImage from "../../../assets/noThumbnailImage.jpg";
 const StaffManagementEdit = ({ userId, onSuccess }) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(true);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [imagePreviewStaff, setImagePreviewStaff] = useState({});
     const [staffImage, setStaffImage] = useState(null);
     const handleStaffImageChange = ({ file }) => {
         setStaffImage(file);
@@ -15,15 +15,15 @@ const StaffManagementEdit = ({ userId, onSuccess }) => {
         const fetchStaff = async () => {
             try {
                 const staffData = await GetActiveStaff(userId);
-                if (staffData) {
-                    form.setFieldsValue({
-                        fullName: staffData.fullName,
-                        address: staffData.address,
-                        phone: staffData.phone || "",
 
-                    });
-                }
-                setImagePreview(staffData.thumbnail);
+                form.setFieldsValue({
+                    fullName: staffData.fullName,
+                    address: staffData.address,
+                    phone: staffData.phone || "",
+                    thumbnail: staffData.thumbnail || ""
+                });
+                setImagePreviewStaff(staffData);
+
                 console.log("check data", staffData);
             } catch (error) {
                 message.error("Failed to fetch staff details!");
@@ -46,12 +46,15 @@ const StaffManagementEdit = ({ userId, onSuccess }) => {
 
 
         try {
-            await EditStaff({ formData, userId });
-            message.success("Staff updated successfully!");
-            onSuccess();
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            const result = await EditStaff({ formData, userId });
+            if (result) {
+                message.success("Staff updated successfully!");
+                onSuccess();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+
         } catch (error) {
             message.error("Update failed!");
         }
@@ -86,23 +89,33 @@ const StaffManagementEdit = ({ userId, onSuccess }) => {
                     >
                         <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                     </Upload>
-                    {staffImage ? (
+                    {imagePreviewStaff == null ? (
                         <div className="mt-2">
                             <img
-                                src={URL.createObjectURL(staffImage)}
+                                src={noThumbnailImage}
                                 alt="Main"
                                 className="w-full h-[300px] object-contain mt-2 rounded-md"
                             />
                         </div>
-                    ) : imagePreview ? (
-                        <div className="mt-2">
-                            <img
-                                src={imagePreview}
-                                alt="Current Staff"
-                                className="w-full h-[300px] object-contain mt-2 rounded-md"
-                            />
-                        </div>
-                    ) : null}
+                    )
+                        : imagePreviewStaff != null &&
+                            staffImage == null ? (
+                            <div className="mt-2">
+                                <img
+                                    src={imagePreviewStaff.thumbnail}
+                                    alt="Main"
+                                    className="w-full h-[300px] object-contain mt-2 rounded-md"
+                                />
+                            </div>
+                        ) : (
+                            <div className="mt-2">
+                                <img
+                                    src={URL.createObjectURL(staffImage)}
+                                    alt="Main"
+                                    className="w-full h-[300px] object-contain mt-2 rounded-md"
+                                />
+                            </div>
+                        )}
                 </Form.Item>
 
                 <div className="flex justify-center gap-4 mt-4">

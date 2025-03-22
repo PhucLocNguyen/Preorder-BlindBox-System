@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GetSimilarCampaigns } from '../../api/SimilarCampaign/ApiSimilarCampaign';
 import { Link } from 'react-router';
 
-const SimilarCampaign = () => {
+const SimilarCampaign = ({id}) => {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,7 +10,7 @@ const SimilarCampaign = () => {
   useEffect(() => {
     const fetchSimilarCampaigns = async () => {
       try {
-        const data = await GetSimilarCampaigns(1); // Replace with dynamic ID if needed
+        const data = await GetSimilarCampaigns(id); // Replace with dynamic ID if needed
         if (data.length > 0) {
           setCampaigns(data);
         } else {

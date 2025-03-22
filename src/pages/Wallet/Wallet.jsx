@@ -13,9 +13,9 @@ function Wallet() {
                   <Link to='/wallet/deposit' className='text-[16px] font-normal leading-[40px] px-[10px] py-[5px] cursor-pointer'>
                      Rút tiền
                   </Link>
-                  <div className='text-[16px] font-normal leading-[40px] px-[10px] py-[5px] cursor-pointer'>
+                  <Link to='/wallet/deposit-history' className='text-[16px] font-normal leading-[40px] px-[10px] py-[5px] cursor-pointer'>
                      Lịch sử nạp tiền
-                  </div>
+                  </Link>
                </div>
             </div>
          </div>
