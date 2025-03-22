@@ -35,7 +35,7 @@ namespace PreOrderBlindBox.Services.Mappers.OrderMapper
                CustomerId = order.CustomerId,
                Amount = order.Amount,
                //DiscountMoney =(decimal) order.DiscountMoney,
-               CreatedDate =  order.CreatedDate.ToString("mm:HH dd/MM/yyyy"),
+               CreatedDate =  order.CreatedDate.ToString("HH:mm dd/MM/yyyy"),
                Receiver = order.ReceiverName,
                ReceiverPhone = order.ReceiverPhone,
                ReceiverAddress = order.ReceiverAddress,

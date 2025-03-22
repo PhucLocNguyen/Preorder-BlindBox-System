@@ -14,24 +14,5 @@ namespace PreOrderBlindBox.Services.DTO.RequestDTO.NotificationRequestModel
 
         public string Description { get; set; }
 
-        public RequestCreateNotification NotificationForCustomer(int customerID)
-        {
-            return new RequestCreateNotification()
-            {
-                ReceiverId = customerID,
-                Title = "Placing Order",
-                Description = "You have successfully placed your order.",
-            };
-        }
-
-        public RequestCreateNotification NotificationForStaff(string customerName, int staffID)
-        {
-            return new RequestCreateNotification()
-            {
-                ReceiverId = staffID,
-                Title = "Successfully pre-ordered",
-                Description = $"Customer {customerName} has successfully placed an order.",
-            };
-        }
     }
 }
