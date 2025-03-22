@@ -28,7 +28,9 @@ namespace PreOrderBlindBox.Services.Hubs
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await Clients.All.SendAsync("ReceiveMessage", $"{Context.ConnectionId} đã ngắt kết nối.");
+            Console.WriteLine($"{Context.ConnectionId} đã ngắt kết nối.");
             await base.OnDisconnectedAsync(exception);
         }
+
     }
 }
