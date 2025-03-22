@@ -6,17 +6,16 @@ import BannerCreate from "./BannerCreate";
 import useFetchDataPagination from "../../../hooks/useFetchDataPagination";
 import { Link } from "react-router-dom";
 
-
 const BannerView = () => {
     const [sortOrder, setSortOrder] = useState(null);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [pageSize, setPageSize] = useState(6);
+    const [pageSize, setPageSize] = useState(4);
     const [pageIndex, setPageIndex] = useState(1);
 
     // Fetch dữ liệu từ API
     const fetchBanner = useCallback(() => GetAllBanner(pageSize, pageIndex), [pageSize, pageIndex]);
     const { data, loading, refetch, pagination } = useFetchDataPagination(fetchBanner, [pageSize, pageIndex]);
-    console.log(">>> check data: ", data);
+
     // Sắp xếp dữ liệu theo priority
     const sortedBanners = [...data].sort((a, b) => {
         if (sortOrder === "priority-asc") return a.priority - b.priority;
@@ -26,8 +25,8 @@ const BannerView = () => {
 
     const filterMenu = (
         <Menu onClick={(e) => setSortOrder(e.key)}>
-            <Menu.Item key="priority-asc">Độ ưu tiên(Thấp tới cao)</Menu.Item>
-            <Menu.Item key="priority-desc">Độ ưu tiên(Cao tới thấp)</Menu.Item>
+            <Menu.Item key="priority-asc">Độ ưu tiên (Thấp đến cao)</Menu.Item>
+            <Menu.Item key="priority-desc">Độ ưu tiên (Cao đến thấp)</Menu.Item>
         </Menu>
     );
 
@@ -48,12 +47,20 @@ const BannerView = () => {
                 </Dropdown>
             </div>
 
-            {/* Cards Layout */}
-            <div className="grid grid-cols-3 gap-4">
+            {/* Cards Layout - Banners thon dài */}
+            <div className="grid grid-cols-2 gap-4">  {/* Chỉnh thành 2 cột */}
                 {sortedBanners.map((banner) => (
-                    <Card key={banner.bannerId} hoverable className="rounded-lg shadow-md overflow-hidden">
+                    <Card
+                        key={banner.bannerId}
+                        hoverable
+                        className="rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl"
+                    >
                         <Link to={`/admin/banner-management-details/${banner.bannerId}`}>
-                            <img src={banner.imageUrl} alt={banner.title} className="w-full h-full object-cover cursor-pointer" />
+                            <img
+                                src={banner.imageUrl}
+                                alt={banner.title}
+                                className="w-full h-[200px] object-cover rounded-md"  // Giữ tỷ lệ thon dài
+                            />
                         </Link>
                     </Card>
                 ))}
