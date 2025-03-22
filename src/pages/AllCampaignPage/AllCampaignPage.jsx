@@ -1,30 +1,31 @@
-import { Link, useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router'
 import { Pagination } from 'antd';
-import { useEffect, useState } from 'react';
 
-import SortIcon from '../../assets/SearchInHeader/sort.webp'
 import Background from '../../assets/SearchInHeader/background.jpg'
-import SearchResultItem from '../../components/SearchCampaign/SearchResultItem';
+import SortIcon from '../../assets/SearchInHeader/sort.webp'
+import SearchResultItem from '../../components/SearchCampaign/SearchResultItem'
 import { ApiSearchCampaign } from '../../api/SearchCampaign/ApiSearchCampaign';
 
-function SearchResultPage() {
-   const [searchParams] = useSearchParams()
-   const query = searchParams.get('q');
-   const [searchCampaignData, setSearchCampaignData] = useState([])
+function AllCampaignPage() {
    const [filter, setFilter] = useState(0)
-   const [pageIndex, setPageIndex] = useState(1)
    const [pagination, setPagination] = useState({
       PageSize: 12,
       TotalPage: 0,
       TotalCount: 0
    })
+   const [pageIndex, setPageIndex] = useState(1)
+   const [campaignData, setCampaignData] = useState([])
+
+   const handlePageChange = (page) => {
+      setPageIndex(page)
+   };
 
    const CallApiSearchCampaign = async (BlindBoxName, PageIndex, PageSize, SortOrder) => {
       const result = await ApiSearchCampaign({ BlindBoxName, PageIndex, PageSize, SortOrder })
-      setSearchCampaignData(result?.data)
+      setCampaignData(result?.data)
       if (result.status === 200) {
          const paginationData = JSON.parse(result?.headers?.get('x-pagination'))
-         console.log('Pagination Data: ', paginationData);
          setPagination({
             ...pagination,
             TotalPage: paginationData.TotalPages,
@@ -33,15 +34,9 @@ function SearchResultPage() {
       }
    }
 
-   const handlePageChange = (page) => {
-      setPageIndex(page)
-   };
-
    useEffect(() => {
-      CallApiSearchCampaign(query, pageIndex, pagination.PageSize, filter)
-   }, [filter, query, pageIndex])
-
-   console.log(filter);
+      CallApiSearchCampaign(undefined, pageIndex, pagination.PageSize, filter)
+   }, [filter, pageIndex])
 
    return (
       <div style={{ backgroundImage: `url(${Background})` }}>
@@ -49,11 +44,9 @@ function SearchResultPage() {
             {/* Thông tin kết quả tìm kiếm */}
             <div className="p-[15px]]">
                <h1 className="text-[36px] mb-[10px] pt-[20px] font-bold">
-                  Tìm thấy {searchCampaignData?.length || 0} sản phẩm Blind Box
+                  Tất cả sản phẩm Blind Box
                </h1>
             </div>
-            {/* Phần cho voucher */}
-
 
             {/* Phần giao diện filter */}
             <div className="max-w-[36rem] mt-[40px] mb-[70px] mx-auto flex justify-center items-center">
@@ -122,9 +115,9 @@ function SearchResultPage() {
             <div className='mx-[-10px] grid grid-cols-4 grid-rows-3 gap-y-[1.5rem]'>
                {/*  Ô kết quả tìm kiếm */}
                {
-                  searchCampaignData?.map((item, index) => {
+                  campaignData?.map((item, index) => {
                      return (
-                        <Link key={index} to={"/preordercampaign/"+item?.slug}>
+                        <Link key={index} to={"/preordercampaign/" + item?.slug}>
                            <SearchResultItem data={item} />
                         </Link>
                      )
@@ -133,7 +126,7 @@ function SearchResultPage() {
             </div>
 
             {/* Phân trang */}
-            <div className={`${searchCampaignData?.length === 0 || searchCampaignData == undefined ? 'hidden' : ''} text-center py-[50px] flex justify-center scale-150`}>
+            <div className={`${campaignData?.length === 0 || campaignData == undefined ? 'hidden' : ''} text-center py-[50px] flex justify-center scale-150`}>
                <Pagination defaultCurrent={pageIndex} total={pagination.TotalCount}
                   defaultPageSize={pagination.PageSize}
                   onChange={handlePageChange}
@@ -145,4 +138,4 @@ function SearchResultPage() {
    )
 }
 
-export default SearchResultPage;
+export default AllCampaignPage
