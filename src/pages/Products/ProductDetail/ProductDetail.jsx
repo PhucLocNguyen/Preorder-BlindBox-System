@@ -8,6 +8,7 @@ import OrderSection from '../../../components/OrderSectionInDetailProduct/OrderS
 import SimilarCampaign from '../../../components/SimilarCampaign/SimilarCampaign';
 import { Package, CheckCircle } from 'lucide-react';
 import MyPreorderSteps from '../../../components/Steps/MyPreorderSteps';
+import PreorderCampaignDetailService from '../../../Services/SignalR/PreorderCampaignDetailService';
 
 const ProductDetail = () => {
 	const params = useParams();
@@ -37,8 +38,28 @@ const ProductDetail = () => {
 
 	useEffect(()=>{
 		productDetailBlind();
-
 	},[slug])
+	useEffect(()=>{
+if(data!=null){
+	PreorderCampaignDetailService.startConnection().then(() => {
+		PreorderCampaignDetailService.joinGroup(data.slug);
+	});
+	PreorderCampaignDetailService.addMessageListener((message)=>{
+		console.log(message)
+	})
+	// Nghe sự kiện cập nhật đơn hàng
+	PreorderCampaignDetailService.addOrderUpdateListener((orderInfo) => {
+		console.log(`Đơn hàng mới nhận được trong chiến dịch ${data.slug}:`, orderInfo);
+		setData({...data,placedOrderCount:Number(orderInfo)});
+	});
+
+	// Rời khỏi Group khi rời trang
+	return () => {
+		PreorderCampaignDetailService.leaveGroup(data.slug);
+	};
+}
+
+	},[loading])
 	if (loading) {
 		return (
 			<div className='flex items-center justify-center min-h-screen'>
@@ -67,7 +88,7 @@ const ProductDetail = () => {
 							<h1 className='mb-6 text-3xl font-bold'>{data?.blindBox.name}</h1>
 
 							{/* Milestone pricing display */}
-							{data.type==="TimedPricing"&& data?.preorderMilestones && data?.preorderMilestones.length > 0 && (
+							{data?.type==="TimedPricing"&& data?.preorderMilestones && data?.preorderMilestones.length > 0 && (
 								<PreorderMilestones
 								originalPrice={data.blindBox.listedPrice}
 									milestones={data.preorderMilestones}
@@ -113,7 +134,7 @@ const ProductDetail = () => {
 				{/* Similar Campaign Section */}
 				<div className="bg-white rounded-[24px] py-[30px] px-[50px] relative">
 					{/* Adding margin-top to create space between Image section and Similar Campaign */}
-					{data.type!="TimedPricing"?<>
+					{data?.type!="TimedPricing"?<>
 					
 						<div className='w-fit absolute -top-5 left-14 py-3 px-12 font-bold text-xl transition-colors bg-yellow-400 rounded-full hover:bg-yellow-500 text-white'>
 						Cập nhật chiến dịch
