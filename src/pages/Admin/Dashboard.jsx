@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { GetRevenueByTime, GetTopThreeCampaign, GetLastMonthComparison } from "../../api/DashBoard/ApiDashBoard";
 import { GetWallet } from "../../api/Wallet/ApiWallet";
 import { FaMedal } from "react-icons/fa";
-import { formatMoney } from "../../utils/formatMoney";
+import { formatMoney } from "../../utils/FormatMoney";
 const { RangePicker } = DatePicker;
 const Dashboard = () => {
     const [lastMonthComparison, setLastMonthComparison] = useState({});

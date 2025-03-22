@@ -46,7 +46,7 @@ const VoucherEdit = () => {
                     percentDiscount: data.percentDiscount,
                     maximumMoneyDiscount: data.maximumMoneyDiscount,
                     setNumberExpirationDate: data.startDate && data.endDate
-                        ? dayjs(data.endDate).diff(dayjs(data.startDate), 'day') - 1
+                        ? dayjs(data.endDate).diff(dayjs(data.startDate), 'day')
                         : null,
                     status: statusValue,
                 });
