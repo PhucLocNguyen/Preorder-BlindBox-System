@@ -2,7 +2,7 @@ import axios from "axios";
 import { GetAccessToken } from "./User/ApiAuthentication";
 
 const api = axios.create({
-   baseURL: import.meta.env.VITE_PREORDERBLINDBOX_API_URL
+   baseURL: import.meta.env.VITE_PREORDERBLINDBOX_API_DEV_URL
 })
 api.interceptors.request.use(
    (config) => {

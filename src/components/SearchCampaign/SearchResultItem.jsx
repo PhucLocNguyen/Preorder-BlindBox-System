@@ -3,21 +3,24 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { formatMoney } from '../../utils/FormatMoney';
 
 function SearchResultItem({ data }) {
-   console.log('Data: ', data);
 
    return (
       <div className='px-[10px] cursor-pointer group'>
          <div className='shadow-[0_2px_10px_-3px_rgba(0,0,0,0.65)] group-hover:shadow-[0_6px_20px_-5px_rgba(0,0,0,0.65)] rounded-[22px] '>
             {/* Phần trên */}
             <div className='relative'>
-               <div>
-                  <div className='absolute z-10 text-center uppercase text-[#fff] bg-[#e02417] rounded-[50%] w-[3.75rem] h-[3.75rem] right-[6px] top-[-12px] text-[12px] flex items-center justify-center
+               {data?.type == 'BulkOrder' ?
+                  (<div>
+                     <div className='absolute z-10 text-center uppercase text-[#fff] bg-[#e02417] rounded-[50%] w-[3.75rem] h-[3.75rem] right-[6px] top-[-12px] text-[12px] flex items-center justify-center
                             before:content-[""] before:absolute before:top-[2px] before:left-[2.6px] before:w-[3.4rem] before:h-[3.4rem] before:rounded-[50%] before:border-dashed before:border-[#fff] before:border-[1px]' >
-                     <span className='leading-[1.4] text-center'>
-                        PRE <br></br> ORDER
-                     </span>
-                  </div>
-               </div>
+                        <span className='leading-[1.4] text-center'>
+                           PRE <br></br> ORDER
+                        </span>
+                     </div>
+                  </div>)
+                  :
+                  (<div></div>)}
+
                <a href="" className='absolute z-10 bottom-0 right-0 block bg-transparent '>
                   <div className='text-right'>
                      <div className='rounded-tl-[20px] py-[9px] px-[13px] bg-[rgba(0,0,0,0.6)] text-right w-auto'>
