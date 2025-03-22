@@ -571,6 +571,7 @@ namespace PreOrderBlindBox.Services.Services
                 await _preorderCampaignRepo.InsertAsync(campaign);
                 await _unitOfWork.SaveChanges(); // Giả sử sau SaveChanges, campaign.Id được gán
 
+                var milestoneList = new List<CreatePreorderMilestoneRequest>();
                 // Lặp qua từng milestone, gán PreorderCampaignId và tạo milestone
                 for (int i = 0; i < campaignRequest.MilestoneRequests.Count; i++)
                 {
@@ -587,9 +588,10 @@ namespace PreOrderBlindBox.Services.Services
                         Quantity = campaignRequest.MilestoneRequests[i].Quantity,
                         Price = campaignRequest.MilestoneRequests[i].Price
                     };
-
-                    await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
+                    milestoneList.Add(milestone);
+                    //await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
                 }
+                await _preorderMilestoneService.AddPreorderMilestonesAsync(milestoneList);
 
                 await _unitOfWork.CommitTransactionAsync();
                 return true;
@@ -597,7 +599,6 @@ namespace PreOrderBlindBox.Services.Services
             catch (Exception)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                //return false;
                 throw;
             }
         }
@@ -643,6 +644,7 @@ namespace PreOrderBlindBox.Services.Services
                 throw new ArgumentException("Invalid campaign type. Must be TimedPricing (0) or BulkOrder (1).");
             }
 
+            var blindBox = await _blindBoxRepo.GetDetailBlindBoxById(preorderCampaign.BlindBoxId.Value);
             await _unitOfWork.BeginTransactionAsync();
             try
             {
@@ -660,11 +662,12 @@ namespace PreOrderBlindBox.Services.Services
                         //milestone.IsDeleted = true;
                         await _preorderMilestoneService.DeletePreorderMilestone(milestone.PreorderMilestoneId);
                     }
+
                     // Lặp qua từng milestone, gán PreorderCampaignId và tạo milestone
+                    var milestoneAddList = new List<CreatePreorderMilestoneRequest>();
                     for (int i = 0; i < request.PreorderMilestoneRequests.Count; i++)
                     {
-                        var listedPrice = preorderCampaign.BlindBox.ListedPrice;
-
+                        var listedPrice = blindBox.ListedPrice;
                         if (request.PreorderMilestoneRequests[i].Price >= listedPrice)
                         {
                             throw new ArgumentException("Price in campaign cannot greater than or equal with listed price");
@@ -676,10 +679,10 @@ namespace PreOrderBlindBox.Services.Services
                             Quantity = (int)request.PreorderMilestoneRequests[i].Quantity,
                             Price = (decimal)request.PreorderMilestoneRequests[i].Price
                         };
-
-                        await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
+                        milestoneAddList.Add(milestone);
+                        //await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
                     }
-
+                    await _preorderMilestoneService.AddPreorderMilestonesAsync(milestoneAddList);
                 }
                 await _unitOfWork.CommitTransactionAsync();
                 return true;
