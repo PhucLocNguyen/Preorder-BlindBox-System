@@ -110,5 +110,27 @@ namespace PreOrderBlindBox.Services.Services
 
 		}
 
+		public async Task<List<ResponseDashboardOrderByYear>> GetOrderByYear(int year)
+		{
+			if (year <= 0)
+			{
+				throw new Exception("Invalid time");
+			}
+			var listOrder = await _orderRepository.GetListOrderByYear(year);
+
+			var monthCount = listOrder.GroupBy(x => x.CreatedDate.Month).Select(g => new
+			{
+				Month = g.Key,
+				Count = g.Count()
+			}).ToList();
+
+			var result = Enumerable.Range(1, 12).Select(m => new ResponseDashboardOrderByYear
+			{
+				Month = m,
+				Order = monthCount.FirstOrDefault(x => x.Month == m)?.Count ?? 0
+			}).ToList();
+
+			return result;
+		}
 	}
 }

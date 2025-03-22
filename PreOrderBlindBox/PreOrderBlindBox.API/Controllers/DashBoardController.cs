@@ -59,5 +59,19 @@ namespace PreOrderBlindBox.API.Controllers
 			}
 		}
 
+		[HttpGet("monthly-report/{year}")]
+		public async Task<IActionResult> GetOrderByYear(int year)
+		{
+			try
+			{
+				var result = await _dashBoardService.GetOrderByYear(year);
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { Message = $"{ex.Message}" });
+			}
+		}
+
 	}
 }

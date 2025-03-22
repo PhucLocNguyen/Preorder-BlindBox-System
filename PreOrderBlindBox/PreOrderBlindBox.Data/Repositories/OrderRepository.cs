@@ -35,6 +35,10 @@ namespace PreOrderBlindBox.Data.Repositories
 			return await _context.Orders.Where(x => x.CreatedDate.Month == currentTime.Month && x.CreatedDate.Year == currentTime.Year).ToListAsync();
 		}
 
+		public async Task<List<Order>> GetListOrderByYear(int year)
+		{
+			return await _context.Orders.Where(x => x.CreatedDate.Year == year).ToListAsync();
+		}
 	}
 
 	public class RevenueDto
