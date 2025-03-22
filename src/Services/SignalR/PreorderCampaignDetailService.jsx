@@ -11,6 +11,12 @@ class PreorderCampaignDetailService extends SignalRService {
             callback(orderInfo); 
         });
     }
+    addOrderCartPageListener(callback) {
+        this.hubConnection.on("CampaignUpdated", (preorderCampaginUpdate) => {
+            console.log("Tổng đơn mới của chiến dịch là ", preorderCampaginUpdate);
+            callback(preorderCampaginUpdate); 
+        });
+    }
 }
 
 export default new PreorderCampaignDetailService();
