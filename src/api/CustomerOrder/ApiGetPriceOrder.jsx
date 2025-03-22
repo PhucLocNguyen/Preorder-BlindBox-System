@@ -14,6 +14,7 @@ const ApiGetPriceOrder = async ({ buyData }) => {
       }
    } catch (error) {
       console.log('Api Get Price Order Error: ', error)
+      return null;
    }
 }
 

@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import ConfirmBuyBLock from "../../components/ConfirmBuy/ConfirmBuyBlock"
 import { ApiGetPriceOrder, ApiOrderCampaign } from '../../api/CustomerOrder/ApiGetPriceOrder';
 import { formatMoney } from '../../utils/FormatMoney';
+import PreorderCampaignDetailService from '../../Services/SignalR/PreorderCampaignDetailService';
 
 function ConfirmBuy() {
    const location = useLocation()
@@ -44,7 +45,11 @@ function ConfirmBuy() {
    }
 
    const CallApiGetPriceOrder = async () => {
-      const response = await ApiGetPriceOrder({ buyData })
+      const response = await ApiGetPriceOrder({ buyData });
+      if(response==null){
+         toast.error('Lấy thông tin giỏ hàng thất bại!');
+         navigate("/",{replace:true});
+      }
       setOrderData(response)
       const result = CaculateMoney(response)
       setCaculateMoney(result)
@@ -61,6 +66,37 @@ function ConfirmBuy() {
          toast.error('Tài khoản không đủ tiền')
       }
    }
+   const CheckingNewOrderIsInCart = (idCampaign)=>{
+      if(orderData!=null){
+        for(let i=0; i<orderData.length; i++){
+          if(orderData[i].responseCarts[0].preorderCampaignId===idCampaign){
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+   useEffect(()=>{
+      console.log(orderData);
+      if(orderData!=null){
+            PreorderCampaignDetailService.startConnection().then(() => {
+              PreorderCampaignDetailService.joinGroup("Cart_Preordercampaign");
+            });
+            PreorderCampaignDetailService.addMessageListener((message)=>{
+              console.log(message)
+            })
+            PreorderCampaignDetailService.addOrderCartPageListener((preorderCampaginUpdate) => {
+              console.log(preorderCampaginUpdate);
+              if(CheckingNewOrderIsInCart(preorderCampaginUpdate)){
+               CallApiGetPriceOrder();
+              };
+            });
+        
+            return () => {
+              PreorderCampaignDetailService.leaveGroup("Cart_Preordercampaign");
+            };
+      }
+   },[orderData])
 
    const handleConfirmBuy = async () => {
       setLoading(true)

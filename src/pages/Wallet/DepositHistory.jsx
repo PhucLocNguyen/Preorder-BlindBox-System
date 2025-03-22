@@ -239,12 +239,12 @@ const DepositHistory = () => {
                 </div>
                 {/* Circular Chart */}
                 <div className="mt-6 flex items-center justify-center relative scale-100">
-                    <div className="relative w-60 h-60 flex items-center justify-center">
+                    <div className="relative w-72 h-72 flex items-center justify-center">
                         <svg className="absolute w-full h-full" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="45" stroke="#E67E22" strokeWidth="6" fill="none" strokeDasharray="40,100" />
                             <circle cx="50" cy="50" r="45" stroke="#3498DB" strokeWidth="6" fill="none" strokeDasharray="60,100" strokeDashoffset="-40" />
                         </svg>
-                        <div className="text-center">
+                        <div className="text-center px-2">
                             <p className="text-4xl font-bold text-gray-900">{formatMoney(selectedTransaction.balanceAtTime)}</p>
                             <p className="text-base text-gray-500">Số dư hiện tại</p>
                         </div>

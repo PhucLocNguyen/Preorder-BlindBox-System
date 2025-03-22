@@ -65,6 +65,7 @@ const HistoryTransactionsRecharge = lazy(() => import("../pages/Admin/HistoryTra
 const HistoryTransactionsPurchase = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsPurchase"));
 const HistoryTransactionsWithdraw = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsWithdraw"));
 const HistoryTransactionsRefund = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsRefund"));
+const AllCampaignPage = lazy(() => import("../pages/AllCampaignPage/AllCampaignPage"));
 
 const publicRoutes = [
   {
@@ -116,6 +117,11 @@ const publicRoutes = [
     path: '/gioi-thieu',
     layout: DefaultLayout,
     component: IntroductionPage
+  },
+  {
+    path: '/san-pham',
+    layout: DefaultLayout,
+    component: AllCampaignPage
   }
 ];
 
