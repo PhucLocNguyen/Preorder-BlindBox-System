@@ -10,14 +10,15 @@ export default function Footer() {
                     <div className='space-y-4'>
                         <img src={logo} alt='Logo' className='w-32 h-auto' />
                         <p className='text-gray-700 text-sm'>
-                            Preorder Blindbox System - the place for blind box collectors! We offer the opportunity to pre-order the hottest collections at discounted prices and in limited quantities.
+                        Preorder Blindbox System - nơi dành cho những người sưu tầm blindbox! 
+                        Chúng tôi cung cấp cơ hội đặt hàng trước những bộ sưu tập hot nhất với mức giá ưu đãi và số lượng có hạn.
                         </p>
-                        <p className='text-gray-600 text-sm'>Pre-order today to enjoy the discount</p>
+                        <p className='text-gray-600 text-sm'>Đặt hàng trước ngay hôm nay để được hưởng ưu đãi</p>
                     </div>
 
                     {/* Links Section */}
                     <div className='space-y-4'>
-                        <h3 className='text-lg font-semibold'>FOLLOW US</h3>
+                        <h3 className='text-lg font-semibold'>THEO DÕI CHÚNG TÔI</h3>
                         <nav className='space-y-2'>
                             {['Facebook', 'Twitter', 'Instagram', 'Tiktok'].map((item) => (
                                 <a
@@ -55,9 +56,10 @@ export default function Footer() {
 
                     {/* About Us Section */}
                     <div className='space-y-4'>
-                        <h3 className='text-lg font-semibold'>About Us</h3>
+                        <h3 className='text-lg font-semibold'>VỀ CHÚNG TÔI</h3>
                         <p className='text-gray-700'>
-                            Committed to providing an independent shopping experience, each product in the store is carefully selected, ensuring surprise and excitement for customers. Join now to not miss the opportunity to own exclusive items!
+                        Cam kết mang đến trải nghiệm mua sắm độc lập, mỗi sản phẩm trong cửa hàng đều được lựa chọn kỹ lưỡng,
+                         đảm bảo sự bất ngờ và thú vị cho khách hàng. Tham gia ngay để không bỏ lỡ cơ hội sở hữu những sản phẩm độc quyền!
                         </p>
                     </div>
                 </div>
