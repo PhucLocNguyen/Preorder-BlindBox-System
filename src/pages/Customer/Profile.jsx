@@ -57,6 +57,10 @@ const Profile = () => {
 
 
     const onFinish = async (values) => {
+        if (!profileImage) {
+            message.error("Vui lòng chọn lại ảnh hoặc chọn ảnh khác!");
+            return;
+        }
         const formData = new FormData();
         formData.append("fullName", values.fullName);
         formData.append("phone", values.phone);
@@ -116,37 +120,89 @@ const Profile = () => {
                     </Form.Item>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <Form.Item label="Họ và Tên*" name="fullName" rules={[{ required: true, message: "Vui lòng nhập họ và tên!" }]}>
+                        <Form.Item label="Họ và Tên*" name="fullName"
+                            rules={[{ required: true, message: "Vui lòng nhập họ và tên!" },
+                            {
+                                pattern: /^[\p{L}\s]+$/u,
+                                message: "Họ và Tên chỉ được chứa chữ cái!"
+                            }]}>
                             <Input size="large" className="rounded-lg border-gray-300" />
                         </Form.Item>
 
-                        <Form.Item label="Số điện thoại" name="phone" rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" },
-                        { max: 10, message: "Tối đa 10 số!" },
-                        ]
-                        }>
+                        <Form.Item
+                            label="Số điện thoại"
+                            name="phone"
+                            rules={[
+                                {
+                                    validator: (_, value) => {
+                                        if (!value) {
+                                            return Promise.reject("Vui lòng nhập số điện thoại!");
+                                        }
+                                        if (!/^[0-9]+$/.test(value)) {
+                                            return Promise.reject("Số điện thoại chỉ được chứa số!");
+                                        }
+                                        if (!/^0/.test(value)) {
+                                            return Promise.reject("Số điện thoại phải bắt đầu bằng số 0!");
+                                        }
+                                        if (value.length < 10) {
+                                            return Promise.reject("Số điện thoại phải có ít nhất 10 số!");
+                                        }
+                                        if (value.length > 10) {
+                                            return Promise.reject("Số điện thoại chỉ được chứa tối đa 10 số!");
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
+                            ]}
+                        >
                             <Input size="large" className="rounded-lg border-gray-300" />
                         </Form.Item>
 
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <Form.Item label="Ngân hàng" name="bankName" rules={[{ required: true, message: "Vui lòng nhập tên ngân hàng!" }]}>
+                        <Form.Item label="Ngân hàng" name="bankName" rules={[{ required: true, message: "Vui lòng nhập tên ngân hàng!" },
+                        {
+                            pattern: /^[a-zA-Z]+$/,
+                            message: "Tên Ngân Hàng chỉ được chứa chữ cái!"
+                        }
+                        ]}>
                             <Input size="large" className="rounded-lg border-gray-300" />
                         </Form.Item>
 
                         <Form.Item
                             label="Số tài khoản"
                             name="bankAccountNumber"
+
                             rules={[
-                                { required: true, message: "Vui lòng nhập số tài khoản!" },
-                                { max: 10, message: "Tối đa 10 số!" },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value) {
+                                            return Promise.reject("Vui lòng nhập số tài khoản!");
+                                        }
+                                        if (!/^[0-9]+$/.test(value)) {
+                                            return Promise.reject("Số điện thoại chỉ được chứa số!");
+                                        }
+                                        if (value.length > 10) {
+                                            return Promise.reject("Số tài khoản chỉ được chứa tối đa 10 số!");
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                },
                             ]}
                         >
                             <Input size="large" className="rounded-lg border-gray-300" />
                         </Form.Item>
                     </div>
 
-                    <Form.Item label="Địa chỉ" name="address" rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}>
+                    <Form.Item label="Địa chỉ" name="address"
+                        rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" },
+                        {
+                            pattern: /^[\p{L}\d\s/,.-]+$/u,
+                            message: "Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng và các ký tự (/ , . -)!"
+                        }
+                        ]
+                        }>
                         <Input size="large" className="rounded-lg border-gray-300" />
                     </Form.Item>
                     {/* Buttons */}

@@ -44,7 +44,7 @@ const Pre_orderCampaignDetails = () => {
             
             <div className="w-full max-w-2xl bg-white border rounded-lg shadow-lg overflow-hidden p-8">
                 {/* Hình ảnh lớn hơn */}
-                <Link to="/admin/pre-ordercampaign">
+                <Link to="/admin/preordercampaign">
                     <ArrowLeftOutlined
                       style={{
                         width: "fit-content",
@@ -77,10 +77,10 @@ const Pre_orderCampaignDetails = () => {
                     {/* Ngày & Trạng thái */}
                     <div className="mt-6 flex flex-wrap gap-3 text-lg">
                         <span className="bg-blue-100 text-blue-600 px-5 py-2 rounded-md">
-                            Start: {detailPre_orderCampaign.startDate ? new Date(detailPre_orderCampaign.startDate).toLocaleDateString() : "N/A"}
+                            Ngày bắt đầu: {detailPre_orderCampaign.startDate ? new Date(detailPre_orderCampaign.startDate).toLocaleDateString() : "N/A"}
                         </span>
                         <span className="bg-red-100 text-red-600 px-5 py-2 rounded-md">
-                            End: {detailPre_orderCampaign.endDate ? new Date(detailPre_orderCampaign.endDate).toLocaleDateString() : "N/A"}
+                            Ngày kết thúc: {detailPre_orderCampaign.endDate ? new Date(detailPre_orderCampaign.endDate).toLocaleDateString() : "N/A"}
                         </span>
                         <span
                             className={`px-5 py-2 rounded-md ${detailPre_orderCampaign.status === "Pending"
@@ -97,7 +97,7 @@ const Pre_orderCampaignDetails = () => {
 
                     {/* Kích thước */}
                     <p className="mt-8 text-2xl font-semibold">
-                        Size: {detailPre_orderCampaign_Id?.blindBox?.size || "No size available"}
+                        Kích thước: {detailPre_orderCampaign_Id?.blindBox?.size || "No size available"}
                     </p>
                 </div>
             </div>

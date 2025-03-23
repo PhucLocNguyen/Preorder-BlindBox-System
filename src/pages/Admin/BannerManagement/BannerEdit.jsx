@@ -40,14 +40,21 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
 
     const handleSubmit = async (values) => {
         try {
+            if (!bannerImage) {
+                message.error("Vui lòng chọn lại ảnh hoặc chọn ảnh khác!");
+                return;
+            }
+
             const formData = new FormData();
             formData.append("title", values.title);
             formData.append("callToActionUrl", values.callToActionUrl);
             formData.append("priority", parseInt(values.priority, 10));
-            formData.append("file", bannerImage); // Gửi file gốc
+            formData.append("file", bannerImage);
+
             console.log(">>> check formData: ", formData);
             var result = await EditBanner({ formData, bannerId });
             console.log(">>> check result: ", result);
+
             if (result) {
                 toast.success("Banner edited successfully!");
                 onSuccess();
@@ -57,9 +64,10 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
             }
             navigate("/admin/banner-management");
         } catch (error) {
-            message.error("Edit banner failed");
+            message.error("Chỉnh sửa banner thất bại!");
         }
     };
+
 
     return (
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
@@ -67,14 +75,32 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
                 <ArrowLeftOutlined className="text-2xl mr-4" />
                 <h1 className="text-3xl font-bold">Chỉnh sửa Banner</h1>
             </div>
-            <Form.Item name="title" label="Tiêu Đề" rules={[{ required: true, message: "Please enter banner title" }]}>
-                <Input placeholder="Enter banner title" />
+            <Form.Item name="title" label="Tiêu đề" rules={
+                [{ required: true, message: "Vui lòng nhập tiêu đề banner!" },
+                {
+                    pattern: /^[\p{L}\d\s-]+$/u,
+                    message: "Tiêu đề banner chỉ được chứa chữ cái, số, khoảng trắng và các ký tự (-)!"
+                }
+
+                ]
+            }>
+                <Input placeholder="Nhập tiêu đề banner" />
             </Form.Item>
-            <Form.Item name="callToActionUrl" label="Url thực hiện" rules={[{ required: true, message: "Please enter Action Url" }]}>
-                <Input placeholder="Enter Action Url" />
+            <Form.Item
+                name="callToActionUrl"
+                label="Action URL"
+                rules={[
+                    { required: true, message: "Vui lòng nhập Action URL" },
+                    {
+                        pattern: /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/,
+                        message: "Vui lòng nhập một Action URL!"
+                    }
+                ]}
+            >
+                <Input placeholder="Nhập Action URL" />
             </Form.Item>
-            <Form.Item name="priority" label="Độ ưu tiên" rules={[{ required: true, message: "Please enter Priority" }]}>
-                <Input type="number" min={1} placeholder="Enter Priority" />
+            <Form.Item name="priority" label="Độ ưu tiên" rules={[{ required: true, message: "Vui lòng nhập độ ưu tiên" }]}>
+                <Input type="number" min={1} placeholder="Nhập độ ưu tiên" />
             </Form.Item>
             <Form.Item label="File">
                 <Upload
@@ -112,8 +138,6 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
                         </div>
                     )}
             </Form.Item>
-
-
 
             <div className="flex justify-between gap-4">
                 <Button

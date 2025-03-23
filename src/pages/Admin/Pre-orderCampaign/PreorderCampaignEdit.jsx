@@ -35,10 +35,11 @@ function PreorderCampaignEdit() {
   const [isUpdated, setIsUpdated] = useState(false);
 
   const [typeOfCampaign, setTypeOfCampaign] = useState(null);
-  // State để xác định form có hợp lệ hay không
   const [isFormValid, setIsFormValid] = useState(false);
   const [detailPre_orderCampaign, setDetailPre_orderCampaign] = useState({});
   const [isValidMilestones, setIsValidMilestones] = useState(true);
+  const [errorMessageForSelectTime, setErrorMessageForSelectTime] = useState(null);
+  const [isAllowed, setIsAllowed]= useState(false);
   const navigate = useNavigate();
 
   const fetchCampaign_BySlug = async () => {
@@ -47,9 +48,6 @@ function PreorderCampaignEdit() {
 
       setLoadMainProduct(data.blindBox);
       setDetailPre_orderCampaign(data);
-
-      // Giả sử server trả về định dạng "YYYY-MM-DD HH:mm"
-      // Nếu server trả về ISO, bạn chỉ cần moment(data.startDate) là đủ
       form.setFieldsValue({
         type: data.type === "TimedPricing" ? 0 : 1,
         dateRange: [
@@ -67,12 +65,14 @@ function PreorderCampaignEdit() {
   };
   useEffect(() => {
     fetchCampaign_BySlug();
+    if(detailPre_orderCampaign.status !=="Pending"){
+      setIsAllowed(false);
+    }
   }, [slug]);
 
   // Mỗi khi field thay đổi, kiểm tra xem form có hợp lệ không
   const onFieldsChange = async () => {
     const fieldsError = form.getFieldsError();
-
     // Kiểm tra xem đã chọn loại campaign và sản phẩm chưa
     if (typeOfCampaign == null || !loadMainProduct) {
       setIsFormValid(false);
@@ -93,36 +93,32 @@ function PreorderCampaignEdit() {
       setIsFormValid(false);
       return;
     }
-    // Lấy giá trị dateRange
+ 
     const dateRange = form.getFieldValue("dateRange");
     const [startDate, endDate] = dateRange.map((d) => dayjs(d));
 
     // So sánh với ngày hiện tại
     if (startDate.isSameOrBefore(dayjs())) {
       setIsFormValid(false);
+      setErrorMessageForSelectTime("Ngày bắt đầu bắt buộc phải bắt đầu trong tương lai");
       return;
     }
 
-    // Kiểm tra endDate cách startDate ít nhất 3 ngày
-    if (endDate.isBefore(startDate.add(3, "day"))) {
+    if (endDate.isBefore(startDate.add(5, "day"))) {
       setIsFormValid(false);
+      setErrorMessageForSelectTime("Thời gian hoạt động của chiến dịch không được ít hơn 5 ngày !");
       return;
     }
-    if(detailPre_orderCampaign.status !=="Pending"){
-      setIsFormValid(false);
-      return;
-    }
+    setErrorMessageForSelectTime(null);
+
     // Nếu mọi thứ OK
     setIsFormValid(true);
-    console.log("By pass isUpdate");
-    // Kiểm tra xem có lỗi ở bất kỳ field nào không
     const hasErrors = fieldsError.some((field) => field.errors.length > 0);
 
     setIsFormValid(!hasErrors);
     setIsUpdated(true);
   };
 
-  // Khi người dùng chọn loại chiến dịch, reset milestones
   const handleChangeTypeCampaign = (value) => {
     setTypeOfCampaign(value);
     setErrorLog(null);
@@ -162,7 +158,7 @@ function PreorderCampaignEdit() {
             <div className="col-span-9">
               <div className="bg-white p-4 rounded-xl py-10">
                 <div className="flex items-center mb-4">
-                  <Link to="/admin/pre-ordercampaign" className="h-full flex">
+                  <Link to="/admin/preordercampaign" className="h-full flex">
                     <ArrowLeftOutlined
                       style={{
                         width: "fit-content",
@@ -287,6 +283,7 @@ function PreorderCampaignEdit() {
                     format="YYYY-MM-DD HH:mm"
                     placeholder={['Ngày bắt đầu', 'Ngày kết thúc']}
                   />
+                        {errorMessageForSelectTime!=null && <p className="text-red-600">{errorMessageForSelectTime}</p>}
                 </Form.Item>
 
                 <Form.Item>
@@ -295,7 +292,7 @@ function PreorderCampaignEdit() {
                     htmlType="submit"
                     loading={loading}
                     // Sửa lại điều kiện disable
-                    disabled={!isFormValid || !isUpdated || !isValidMilestones}
+                    disabled={!isFormValid || !isUpdated || !isValidMilestones|| !isAllowed}
                     className="w-full"
                   >
                     Cập nhật

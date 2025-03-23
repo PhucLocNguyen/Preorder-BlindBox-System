@@ -1,11 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import LogoutButton from "../../assets/Logout/logoutbutton.jpg";
 import { Link, useLocation } from "react-router-dom";
 import useLogout from "../../hooks/useLogout";
+import { AuthContext } from "../../context/AuthContext";
+import StaffIcon from "../../assets/icons/staffIcon.png";
 import { ApiGetUserInFormation } from "../../api/User/ApiGetUserInformation";
-import { use } from "react";
 
 const SideBarStaff = (props) => {
+    const [currentInformation, setCurrentInformation] = useState({});
+
     const location = useLocation();
     const logout = useLogout()
     const [user, setUser] = useState("");
@@ -20,6 +24,7 @@ const SideBarStaff = (props) => {
     useEffect(() => {
         fetchUserInformation();
     }, [fetchUserInformation]);
+
 
     return (
         //<SlideBarStaff />
@@ -54,7 +59,7 @@ const SideBarStaff = (props) => {
             <div className="mt-auto flex items-center justify-between w-full p-2">
                 <div className="flex items-center">
                     <img
-                        src="https://placehold.co/40x40"
+                        src={currentInformation.thumbnail != null ? currentInformation.thumbnail : StaffIcon}
                         alt="Profile picture of Emily Jonson"
                         className="rounded-full"
                         width="40"

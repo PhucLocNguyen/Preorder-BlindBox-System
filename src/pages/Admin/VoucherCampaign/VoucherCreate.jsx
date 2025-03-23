@@ -34,9 +34,9 @@ const VoucherCreate = () => {
             if (result) {
                 toast.success('Voucher created successfully!');
                 navigate('/admin/voucher');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+                // setTimeout(() => {
+                //     window.location.reload();
+                // }, 1000);
             }
 
         } catch (error) {
@@ -63,21 +63,26 @@ const VoucherCreate = () => {
                     </Button>
                     <Row gutter={[32, 20]}>
                         <Col span={12}>
-                            <Form.Item label="Tên" name="name" rules={[{ required: true, message: "Please enter the name!" }]}>
-                                <Input placeholder="Enter voucher name" className="rounded-xl h-12 text-lg" />
+                            <Form.Item label="Tên" name="name" rules={[{ required: true, message: "Vui lòng nhập tên của Voucher!" },
+                            {
+                                pattern: /^[a-zA-Z\d]+$/,
+                                message: "Tên Voucher chỉ được chứa chữ cái và số!"
+                            }]
+                            }>
+                                <Input placeholder="Nhập tên của voucher" className="rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item
                                 label="Mức giảm giá tối đa"
                                 name="maximumMoneyDiscount"
-                                rules={[{ required: true, message: "Please enter maximum money discount!" }]}
+                                rules={[{ required: true, message: "Vui lòng nhập mức giảm giá tối đa!" }]}
                             >
                                 <InputNumber
                                     style={{ width: "100%", height: "48px" }}
                                     min={0}
                                     disabled={status === "Active"}
-                                    placeholder="Enter maximum money discount"
+                                    placeholder="Nhập Mức giảm giá tối đa"
                                     formatter={(value) =>
                                         value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND" : "0 VND"
                                     }
@@ -93,20 +98,20 @@ const VoucherCreate = () => {
 
                     <Row gutter={[32, 20]}>
                         <Col span={12}>
-                            <Form.Item label="Số Lượng" name="quantity" rules={[{ required: true, message: "Please enter the quantity!" }]}>
-                                <Input type="number" placeholder="Enter quantity" min={1} className="rounded-xl h-12 text-lg" />
+                            <Form.Item label="Số Lượng" name="quantity" rules={[{ required: true, message: "Vui lòng nhập số lượng!" }]}>
+                                <Input type="number" placeholder="Nhập số lượng" min={1} className="rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Thời hạn hiệu lực" name="setNumberExpirationDate" rules={[{ required: true, message: "Please enter the quantity!" }]}>
-                                <Input type="number" placeholder="Enter Validity Duration" min={1} className="rounded-xl h-12 text-lg" />
+                            <Form.Item label="Thời hạn hiệu lực" name="setNumberExpirationDate" rules={[{ required: true, message: "Vui lòng nhập  thời hạn hiệu lực!" }]}>
+                                <Input type="number" placeholder="Nhập  thời hạn hiệu lực" min={1} className="rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
                     </Row>
 
                     <Row gutter={[32, 20]}>
                         <Col span={24}>
-                            <Form.Item label="Ngày bắt đầu và kết thúc" name="dateRange" rules={[{ required: true, message: "Please select date range!" }]}>
+                            <Form.Item label="Ngày bắt đầu và kết thúc" name="dateRange" rules={[{ required: true, message: "Vui lòng nhập  Ngày bắt đầu và kết thúc!" }]}>
                                 <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" className="w-full rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
