@@ -1,14 +1,23 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import LogoutButton from "../../assets/Logout/logoutbutton.jpg";
 import { Link, useLocation } from "react-router-dom";
 import useLogout from "../../hooks/useLogout";
 import { AuthContext } from "../../context/AuthContext";
 import StaffIcon from "../../assets/icons/staffIcon.png";
+import { ApiGetUserInFormation } from "../../api/User/ApiGetUserInformation";
 
 const SideBarStaff = (props) => {
-    const {currentInformation} =  useContext(AuthContext);
+    const [currentInformation, setCurrentInformation] = useState({});
+
     const location = useLocation();
     const logout = useLogout();
+    const getCurrentInformation = async ()=>{
+        const getUserInformation = await ApiGetUserInFormation();
+        setCurrentInformation(getUserInformation);
+    }
+    useEffect(()=>{
+        getCurrentInformation();
+    },[])
     return (
         //<SlideBarStaff />
         <div className="bg-white w-64 h-full shadow-lg p-4 flex flex-col">
