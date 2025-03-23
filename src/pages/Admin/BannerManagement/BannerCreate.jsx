@@ -5,6 +5,7 @@ import { CreateBanner } from "../../../api/Banner/ApiBanner";
 import { toast } from "react-toastify";
 const BannerCreate = ({ onSuccess }) => {
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
     const [bannerImage, setBannerImage] = useState(null);
     const handleBannerImageChange = ({ file }) => {
@@ -12,7 +13,7 @@ const BannerCreate = ({ onSuccess }) => {
     };
 
     const handleSubmit = async (values) => {
-
+        setLoading(true);
         const formData = new FormData();
         formData.append("title", values.title);
         formData.append("callToActionUrl", values.callToActionUrl);
@@ -26,11 +27,10 @@ const BannerCreate = ({ onSuccess }) => {
             console.log("Create banner result:", result);
             if (result) {
                 toast.success("Banner created successfully!");
-                onSuccess();
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
             }
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
 
         } catch (error) {
             console.error("Upload error:", error);

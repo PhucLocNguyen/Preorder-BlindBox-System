@@ -120,7 +120,10 @@ const Profile = () => {
                             <Input size="large" className="rounded-lg border-gray-300" />
                         </Form.Item>
 
-                        <Form.Item label="Số điện thoại" name="phone" rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}>
+                        <Form.Item label="Số điện thoại" name="phone" rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" },
+                        { max: 10, message: "Tối đa 10 số!" },
+                        ]
+                        }>
                             <Input size="large" className="rounded-lg border-gray-300" />
                         </Form.Item>
 

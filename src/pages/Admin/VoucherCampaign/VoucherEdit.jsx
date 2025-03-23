@@ -5,9 +5,7 @@ import { toast } from 'react-toastify';
 import { Link, useNavigate, useParams } from 'react-router';
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-
-const { RangePicker } = DatePicker;
-
+const { RangePicker } = DatePicker
 const VoucherEdit = () => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
@@ -21,7 +19,6 @@ const VoucherEdit = () => {
                 const data = await GetTheActiveVoucherCampaignByID(id);
                 setStatus(data.status);
 
-                // Xác định giá trị status
                 let statusValue;
                 switch (data.status) {
                     case "Pending":
@@ -46,7 +43,7 @@ const VoucherEdit = () => {
                     percentDiscount: data.percentDiscount,
                     maximumMoneyDiscount: data.maximumMoneyDiscount,
                     setNumberExpirationDate: data.startDate && data.endDate
-                        ? dayjs(data.endDate).diff(dayjs(data.startDate), 'day') - 1
+                        ? dayjs(data.endDate).diff(dayjs(data.startDate), 'day')
                         : null,
                     status: statusValue,
                 });
@@ -54,43 +51,31 @@ const VoucherEdit = () => {
                 console.error("Lỗi khi lấy dữ liệu từ API:", error);
             }
         };
-
         fetchVouchers();
     }, [id]);
 
     const handleSubmit = async (values) => {
-        const currentDate = dayjs();  // Ngày hiện tại
-        const endDate = dayjs(values.dateRange[1]);  // Ngày kết thúc
-
-        if (status === "Close" && currentDate.isBefore(endDate)) {
-            toast.error("Voucher đang đóng và vẫn còn hiệu lực. Không thể cập nhật!");
+        if (status !== "Pending") {
+            toast.error("Chỉ có thể chỉnh sửa khi Voucher ở trạng thái 'Pending'!");
             return;
         }
 
         const payload = {
+            startDate: values.dateRange[0].toISOString(),
             endDate: values.dateRange[1].toISOString(),
+            percentDiscount: values.percentDiscount,
+            maximumMoneyDiscount: values.maximumMoneyDiscount,
+            setNumberExpirationDate: values.setNumberExpirationDate,
+            quantity: values.quantity,
+            status: Number(values.status),
         };
 
-        if (status !== "Active") {
-            payload.startDate = values.dateRange[0].toISOString();
-            payload.quantity = values.quantity;
-            payload.percentDiscount = values.percentDiscount;
-            payload.maximumMoneyDiscount = values.maximumMoneyDiscount;
-            payload.status = Number(values.status);
-            payload.setNumberExpirationDate = values.setNumberExpirationDate;
-        }
-
         try {
-            const config = { headers: { 'Content-Type': 'application/json' } };
-            const result = await UpdateVoucher(id, payload, config);
+            const result = await UpdateVoucher(id, payload);
             if (result) {
                 toast.success("Voucher cập nhật thành công!");
                 navigate('/admin/voucher');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
             }
-
         } catch (error) {
             toast.error("Lỗi khi cập nhật voucher:", error);
         }
@@ -112,7 +97,7 @@ const VoucherEdit = () => {
                         htmlType="submit"
                         size="large"
                         className="rounded-xl px-8 py-3 text-xl"
-                        disabled={status === "Close" && dayjs().isBefore(form.getFieldValue("dateRange")?.[1])}
+                        disabled={status !== "Pending"}
                     >
                         Lưu
                     </Button>
@@ -122,29 +107,18 @@ const VoucherEdit = () => {
                             <Form.Item label="Trạng Thái" name="status">
                                 <InputNumber
                                     min={0}
-                                    disabled={status === "Active"}
+                                    disabled={status !== "Pending"}
                                     style={{ width: "100%", height: "48px" }}
                                     className="rounded-xl text-lg"
                                 />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item
-                                label="Mức giảm giá tối đa"
-                                name="maximumMoneyDiscount"
-                                rules={[{ required: true, message: "Please enter maximum money discount!" }]}
-                            >
+                            <Form.Item label="Mức giảm giá tối đa" name="maximumMoneyDiscount">
                                 <InputNumber
                                     style={{ width: "100%", height: "48px" }}
                                     min={0}
-                                    disabled={status === "Active"}
-                                    placeholder="Enter maximum money discount"
-                                    formatter={(value) =>
-                                        value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND" : "0 VND"
-                                    }
-                                    parser={(value) =>
-                                        value.replace(/[^0-9]/g, "")
-                                    }
+                                    disabled={status !== "Pending"}
                                     className="rounded-xl text-lg"
                                 />
                             </Form.Item>
@@ -154,7 +128,8 @@ const VoucherEdit = () => {
                         <Col span={12}>
                             <Form.Item label="Số Lượng" name="quantity">
                                 <InputNumber
-                                    disabled={status === "Active"}
+                                    min={0}
+                                    disabled={status !== "Pending"}
                                     style={{ width: "100%", height: "48px" }}
                                     className="rounded-xl text-lg"
                                 />
@@ -165,6 +140,7 @@ const VoucherEdit = () => {
                                 <InputNumber
                                     style={{ width: "100%", height: "48px" }}
                                     className="rounded-xl text-lg"
+                                    disabled={status !== "Pending"}
                                 />
                             </Form.Item>
                         </Col>
@@ -176,7 +152,8 @@ const VoucherEdit = () => {
                                     showTime
                                     format="YYYY-MM-DD HH:mm:ss"
                                     className="w-full text-lg p-3 rounded-lg"
-                                    disabled={status === "Active" ? [true, false] : false} // Active: chỉ cập nhật EndDate
+                                    disabled={status !== "Pending"}
+
                                 />
                             </Form.Item>
                         </Col>
@@ -190,7 +167,7 @@ const VoucherEdit = () => {
                                     marks={{ 0: '0%', 50: '50%', 100: '100%' }}
                                     tooltipVisible
                                     className="h-8"
-                                    disabled={status === "Active"}
+                                    disabled={status !== "Pending"}
                                 />
                             </Form.Item>
                         </Col>
