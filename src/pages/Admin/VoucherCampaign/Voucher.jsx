@@ -62,7 +62,7 @@ const Voucher = () => {
         };
 
         fetchVouchers();
-    }, []);
+    }, [projectList]);
 
     const handleAddVoucher = () => {
         navigate("/admin/voucher/add");

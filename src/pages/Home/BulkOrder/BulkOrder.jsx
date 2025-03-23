@@ -4,6 +4,7 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css/effect-fade';
 import 'swiper/css';
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import decoration from '../../../assets/BulkOrder/decoration.png'
 import rocket from '../../../assets/BulkOrder/rocket.png'
@@ -11,7 +12,6 @@ import LeftButton from '../../../assets/BulkOrder/LeftButton.png'
 import RightButton from '../../../assets/BulkOrder/RightButton.png'
 import ItemBulkOrder from './ItemBulkOrder';
 import { ApiGetPreOrderCampaign } from '../../../api/PreOrderCampaign/ApiPreOrderCampaign';
-import { Link } from 'react-router';
 
 
 function BulkOrder() {
@@ -49,11 +49,13 @@ function BulkOrder() {
                            </span>
                         </h2>
                      </div>
-                     <div className='relative z-10 mt-[-7px] text-center leading-[1.6] cursor-pointer'>
-                        <div className='text-[#fff] px-[20px] py-[7px] inline-block uppercase text-[13px] rounded-[20px] bg-[#535353] shadow-[0px_-4px_0px_0px_#898888] font-bold'>
-                           Khám phá thêm <RightOutlined />
+                     <Link to='/san-pham'>
+                        <div className='relative z-10 mt-[-7px] text-center leading-[1.6] cursor-pointer'>
+                           <div className='text-[#fff] px-[20px] py-[7px] inline-block uppercase text-[13px] rounded-[20px] bg-[#535353] shadow-[0px_-4px_0px_0px_#898888] font-bold'>
+                              Khám phá thêm <RightOutlined />
+                           </div>
                         </div>
-                     </div>
+                     </Link>
                   </div>
                   {/* Phần slide sản phẩm */}
                   <div className='relative '>
@@ -74,7 +76,7 @@ function BulkOrder() {
                            {listBulkOrder?.map((item, index) => {
                               return (
                                  <SwiperSlide key={index} className='group'>
-                                    <Link to={"/preordercampaign/"+item.slug}>
+                                    <Link to={"/preordercampaign/" + item.slug}>
                                        <ItemBulkOrder data={item} />
                                     </Link>
                                  </SwiperSlide>

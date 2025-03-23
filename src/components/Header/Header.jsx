@@ -57,7 +57,7 @@ export default function Header() {
                                 <p className=" text-[#333] text-[16px]">Sản phẩm</p> <ChevronDown className="w-4 h-4" />
                             </Link>
                         </div>
-                        <div className="relative group">
+                        <div className="relative group hidden">
                             <Link to="/bai-viet" className="text-[15px] font-medium hover:text-gray-600 flex items-center px-[20px] py-[10px] leading-[20px]">
                                 <p className=" text-[#333] text-[16px]">Bài viết</p> <ChevronDown className="w-4 h-4" />
                             </Link>

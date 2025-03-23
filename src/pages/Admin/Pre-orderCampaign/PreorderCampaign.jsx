@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Table, Tag, Space, Input, Button, Modal, Checkbox, Spin, Pagination, notification } from "antd";
+import React, { useState, useCallback } from "react";
+import { Table, Space, Input, Button, Modal, Spin, Pagination, notification } from "antd";
 import { EyeOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from 'react-router-dom';
-import Pre_orderCampaignEdit from "./Pre-orderCampaignEdit";
 import {
     GetTheActivePreorderCampaign, GetActivePreorderCampaignBySlug,
     DeletePendingCampaign,
@@ -14,15 +13,12 @@ const { Search } = Input;
 const Pre_orderCampaign = () => {
 
         const [search, setSearch] = useState("");
-        const [isEditModalVisible, setIsEditModalVisible] = useState(false);
         const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
         const [warning, setWarning] = useState('');
         const [pageSize, setPageSize] = useState(5);
         const [pageIndex, setPageIndex] = useState(1);
         const navigate = useNavigate();
         const [detailPre_orderCampaign_bySlug, setDetailPre_orderCampaign_bySlug] = useState([]);
-        const [selectedPreorderCampaignId, setSelectedPreorderCampaignId] = useState(null);
-
         const fetchPreorderCampaign = useCallback(
             () => GetTheActivePreorderCampaign(pageSize, pageIndex),
             [pageSize, pageIndex]
@@ -37,12 +33,9 @@ const Pre_orderCampaign = () => {
         };
 
         const handleViewPre_orderCampaign = (record) => {
-            navigate(`/admin/pre-ordercampaign-details/${record.slug}`);
+            navigate(`/admin/preordercampaign/details/${record.slug}`);
         };
 
-        const handleCancelEdit = () => {
-            setIsEditModalVisible(false);
-        };
 
         const handleDeletePre_orderCampaign = async (record) => {
             try {
@@ -187,13 +180,9 @@ const Pre_orderCampaign = () => {
             },
         ];
 
-
         const filteredData = data.filter((item) =>
             item.blindBox?.name?.toLowerCase().includes(search.toLowerCase())
         );
-
-
-
 
         return (
             <div className="dashboard-container overflow-auto h-screen pr-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-thumb-opacity-80">
@@ -222,7 +211,7 @@ const Pre_orderCampaign = () => {
                                 columns={columns}
                                 dataSource={filteredData}
                                 pagination={false}
-                                rowKey="id"
+                                rowKey={(row) => row.preorderCampaignId}
 
                                 className="border rounded-md mt-5"
                             />
@@ -247,32 +236,19 @@ const Pre_orderCampaign = () => {
                         </>
                     )}
                     <Modal
-                        open={isEditModalVisible}
-                        onCancel={handleCancelEdit}
-                        footer={null}
-                        width={720}
-                        closable={false}
-                    >
-                        <Pre_orderCampaignEdit
-                            preorderCampaignId={selectedPreorderCampaignId}
-                            onSuccess={handleCancelEdit}
-                        />
-                    </Modal>
-
-                    <Modal
                         title="Delete product"
                         open={isDeleteModalVisible}
                     onCancel={() => setIsDeleteModalVisible(false)}
                     footer={[
                         <Button key="cancel" onClick={() => setIsDeleteModalVisible(false)}>
-                            Cancel
+                            Từ chối
                         </Button>,
                         <Button key="delete" type="primary" danger onClick={confirmDeletePre_orderCampaign} disabled={detailPre_orderCampaign_bySlug.status!=="Pending"}>
                             Delete
                         </Button>,
                     ]}
                 >
-                    <p>Do you want to delete the pre-oder campaign "{detailPre_orderCampaign_bySlug.blindBox?.name}"?</p>
+                    <p>Bạn có muốn xoá chiến dịch "{detailPre_orderCampaign_bySlug.blindBox?.name}"?</p>
                 </Modal>
             </div>
         </div>

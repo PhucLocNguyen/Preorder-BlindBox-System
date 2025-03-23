@@ -18,7 +18,6 @@ const AdminView = lazy(() => import("../pages/Admin/AdminView"));
 const Dashboard = lazy(() => import("../pages/Admin/Dashboard"));
 const StaffManagement = lazy(() => import("../pages/Admin/StaffManagement/StaffManagement"));
 const StaffManagementDetails = lazy(() => import("../pages/Admin/StaffManagement/StaffManagementDetails"));
-const PreorderMilestone = lazy(() => import("../pages/Admin/PreorderMilestone"));
 const Pre_orderCampaign = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaign"));
 const Pre_orderCampaignDetails = lazy(() => import("../pages/Admin/Pre-orderCampaign/Pre_orderCampaignDetails"));
 const VoucherManagement = lazy(() => import("../pages/Admin/VoucherCampaign/Voucher"));
@@ -65,6 +64,7 @@ const HistoryTransactionsRecharge = lazy(() => import("../pages/Admin/HistoryTra
 const HistoryTransactionsPurchase = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsPurchase"));
 const HistoryTransactionsWithdraw = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsWithdraw"));
 const HistoryTransactionsRefund = lazy(() => import("../pages/Admin/HistoryTransactions/HistoryTransactionsRefund"));
+const AllCampaignPage = lazy(() => import("../pages/AllCampaignPage/AllCampaignPage"));
 
 const publicRoutes = [
   {
@@ -116,6 +116,11 @@ const publicRoutes = [
     path: '/gioi-thieu',
     layout: DefaultLayout,
     component: IntroductionPage
+  },
+  {
+    path: '/san-pham',
+    layout: DefaultLayout,
+    component: AllCampaignPage
   }
 ];
 
@@ -180,9 +185,8 @@ const privateRoutes = [
       { index: true, component: StaffManagement },
       { path: "staffmanagement", component: StaffManagement },
       { path: "staffmanagement-details/:id", component: StaffManagementDetails },
-      { path: "preordermilestone", component: PreorderMilestone },
-      { path: "pre-ordercampaign", component: Pre_orderCampaign },
-      { path: "pre-ordercampaign-details/:slug", component: Pre_orderCampaignDetails },
+      { path: "preordercampaign", component: Pre_orderCampaign },
+      { path: "preordercampaign/details/:slug", component: Pre_orderCampaignDetails },
       { path: "preordercampaign/create", component: PreorderCampaignCreate },
       { path: "preordercampaign/edit/:slug", component: PreorderCampaignEdit },
 

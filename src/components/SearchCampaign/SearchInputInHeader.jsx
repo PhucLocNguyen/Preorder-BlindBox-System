@@ -1,6 +1,6 @@
 import { Search } from 'lucide-react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { ApiSearchCampaign } from '../../api/SearchCampaign/ApiSearchCampaign';
 import { formatMoney } from '../../utils/FormatMoney';
@@ -10,6 +10,7 @@ function SearchInputInHeader() {
    const [searchCampaignData, setSearchCampaignData] = useState([])
    const [isInputFocus, setIsInputFocus] = useState(false)
    const navigate = useNavigate()
+   const location = useLocation();
 
    const CallApiSearchCampaign = async (BlindBoxName, PageIndex, PageSize) => {
       const result = await ApiSearchCampaign({ BlindBoxName, PageIndex, PageSize })
@@ -33,6 +34,13 @@ function SearchInputInHeader() {
       }
    }
 
+   useEffect(() => {
+      setIsInputFocus(false);
+   }, [location]);
+
+   useEffect(() => {
+      console.log(isInputFocus);
+   }, [isInputFocus])
 
    return (
       <div className="relative hidden md:block">
@@ -67,21 +75,23 @@ function SearchInputInHeader() {
                         {
                            searchCampaignData?.map((item, index) => {
                               return (
-                                 <li className="cursor-pointer" key={index}>
-                                    <div className="flex hover:bg-[#eee] px-[10px] py-[6px] rounded-[15px]">
-                                       <div className="float-left mr-[10px] w-[62px] h-[62px] overflow-hidden">
-                                          <img className="w-full h-auto align-middle object-contain" src={item?.blindBox?.images?.mainImage?.url} alt="hinh anh chinh cua san pham campaign" />
+                                 <Link key={index} to={"/preordercampaign/" + item.slug} onMouseDown={(e) => e.preventDefault()}>
+                                    <li className="cursor-pointer" >
+                                       <div className="flex hover:bg-[#eee] px-[10px] py-[6px] rounded-[15px]">
+                                          <div className="float-left mr-[10px] w-[62px] h-[62px] overflow-hidden">
+                                             <img className="w-full h-auto align-middle object-contain" src={item?.blindBox?.images?.mainImage?.url} alt="hinh anh chinh cua san pham campaign" />
+                                          </div>
+                                          <div>
+                                             <h5 className="font-bold mt-[3px] text-[15px] line-clamp-1 mb-[2px] ">
+                                                {item?.blindBox?.name}
+                                             </h5>
+                                             <span className="text-[15px]">
+                                                {formatMoney(item?.priceFrom)} - {formatMoney(item?.priceTo)}
+                                             </span>
+                                          </div>
                                        </div>
-                                       <div>
-                                          <h5 className="font-bold mt-[3px] text-[15px] line-clamp-1 mb-[2px] ">
-                                             {item?.blindBox?.name}
-                                          </h5>
-                                          <span className="text-[15px]">
-                                             {formatMoney(item?.priceFrom)} - {formatMoney(item?.priceTo)}
-                                          </span>
-                                       </div>
-                                    </div>
-                                 </li>
+                                    </li>
+                                 </Link>
                               )
                            })
                         }

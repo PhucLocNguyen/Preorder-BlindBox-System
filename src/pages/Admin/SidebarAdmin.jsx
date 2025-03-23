@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import {
     DashboardOutlined,
@@ -14,56 +14,59 @@ import {
 } from "@ant-design/icons";
 import AdminIcon from "../../assets/Admin/AdminIcon.png"
 import useLogout from "../../hooks/useLogout";
+import { ApiGetUserInFormation } from "../../api/User/ApiGetUserInformation";
 
 const { Sider } = Layout;
 
 const SideBarAdmin = () => {
+    const [currentInformation, setCurrentInformation] = useState({});
     const location = useLocation();
     const logout = useLogout()
-
+    const navigate = useNavigate();
     const menuItems = [
         { key: "/admin/dashboard", label: "Thống kê", icon: <DashboardOutlined /> },
         { key: "/admin/staffmanagement", label: "Quản lý nhân viên", icon: <UserOutlined /> },
         { key: "/admin/history-transactions/all", label: "Lịch sử giao dịch", icon: <HistoryOutlined /> },
-        { key: "/admin/pre-ordercampaign", label: "Quản lý các chiến dịch", icon: <ShoppingCartOutlined /> },
+        { key: "/admin/preordercampaign", label: "Quản lý các chiến dịch", icon: <ShoppingCartOutlined /> },
         { key: "/admin/voucher", label: "Mã giảm giá", icon: <TagOutlined /> },
         { key: "/admin/banner-management", label: "Quản lý Banner", icon: <PictureOutlined /> },
         { key: "/admin/preordercampaignApproval", label: "Xét duyệt chiến dịch", icon: <CheckSquareOutlined /> },
         { key: "/admin/withdraw-request", label: "Các yêu cầu rút tiền", icon: <MoneyCollectOutlined /> }
-
-
     ];
-
+    const getCurrentInformation = async ()=>{
+        const getUserInformation = await ApiGetUserInFormation();
+        setCurrentInformation(getUserInformation);
+    }
+    useEffect(()=>{
+        getCurrentInformation();
+    },[])
     return (
         <Sider width={220} className="h-full shadow-lg bg-white">
             <div className="flex items-center justify-center py-6 text-xl font-bold">
                 Admin
             </div>
-
             <Menu
-                mode="vertical"
-                selectedKeys={[location.pathname]}
-                className="border-none"
-            >
-                {menuItems.map(({ key, label, icon }) => (
-                    <Menu.Item key={key} icon={icon}>
-                        <Link to={key}>{label}</Link>
-                    </Menu.Item>
-                ))}
-            </Menu>
+        mode="vertical"
+        selectedKeys={[location.pathname]}
+        items={menuItems} 
+        onClick={({ key }) => navigate(key)}
+        className="border-none"
+      />
 
             {/* Profile & Logout */}
             <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between p-3 bg-gray-100 rounded-lg">
                 <div className="flex items-center">
                     <img
-                        src={AdminIcon}
-                        alt="Profile"
-                        className="rounded-full w-10 h-10"
-                    />
-                    <div className="ml-3">
-                        <div className="text-sm font-semibold">Admin</div>
-                        <div className="text-xs text-gray-500">admin@fpt.edu.vn</div>
-                    </div>
+                       src={currentInformation.thumbnail!=null?currentInformation.thumbnail:AdminIcon}
+                       alt="Profile picture of Emily Jonson"
+                       className="rounded-full"
+                       width="40"
+                       height="40"
+                   />
+                   <div className="ml-2">
+                       <div className="text-sm font-semibold">{currentInformation.fullName}</div>
+                       <div className="text-xs text-gray-500">{currentInformation.email}</div>
+                   </div>                    
                 </div>
                 <button
                     onClick={() => logout()}

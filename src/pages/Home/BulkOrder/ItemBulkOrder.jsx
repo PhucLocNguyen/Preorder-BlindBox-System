@@ -43,19 +43,19 @@ function ItemBulkOrder({ data }) {
                   {/* Hình bên trái */}
                   <div className="w-[43%] flex-[0_0_43%] relative">
                      {/* Hình 1 */}
-                     <div className="relative ">
+                     <div className="relative w-[160px] h-[189px]">
                         <img className="rotate-[3deg] z-10 object-cover rounded-[5px] top-0 left-0 h-full w-full align-middle"
                            src={data?.blindBox?.images?.galleryImages[0]?.url} alt="" />
                      </div>
                      {/* Hình 2 */}
-                     <div className='relative'>
-                        <img className=' object-cover rounded-[5px]  top-0 left-0 h-full w-full align-middle max-w-full '
+                     <div className='relative w-[150px] h-[150px]'>
+                        <img className='object-cover rounded-[5px] top-0 left-0 h-full w-full align-middle max-w-full '
                            src={data?.blindBox?.images?.galleryImages[1]?.url} alt="" />
                      </div>
                   </div>
                   {/* Hình bên phải */}
                   <div className='w-[57%] flex-[0_0_57%] relative'>
-                     <img className='z-[2] rotate-[-3deg] object-cover rounded-[5px]  top-0 left-0 h-[218px] w-full align-middle'
+                     <img className='w-[212px] h-[260px] z-[2] rotate-[-3deg] object-cover rounded-[5px]  top-0 left-0 align-middle'
                         src={data?.blindBox?.images?.mainImage?.url} alt="" />
                   </div>
                </div>

@@ -50,4 +50,18 @@ const GetLastMonthComparison = async () => {
     }
 };
 
-export { GetRevenueByTime, GetTopThreeCampaign, GetLastMonthComparison };
+const GetMonthlyReport_byYear = async (accessToken, Year) => {
+    try {
+        const result = await api.get(`/DashBoard/monthly-report/${Year}`, {
+            ...axiosConfigHeader,
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+            },
+        });
+        return result.data;
+    } catch (error) {
+        console.log('>>> GetUserInformation error: ', error);
+        return null;
+    }
+};
+export { GetRevenueByTime, GetTopThreeCampaign, GetLastMonthComparison, GetMonthlyReport_byYear };

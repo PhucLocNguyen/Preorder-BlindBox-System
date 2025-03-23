@@ -6,6 +6,7 @@ import CampaignBlock from '../Customer/CampaignBlock';
 import { formatMoney } from '../../utils/FormatMoney';
 import EmptyCartImage from '../../assets/empty-shopping-cart.png';
 import { useCart } from '../../context/CartContext';
+import PreorderCampaignDetailService from '../../Services/SignalR/PreorderCampaignDetailService';
 
 function Cart() {
 
@@ -13,7 +14,9 @@ function Cart() {
   const [userVouchers, setUserVoucher] = useState([]);
 
   const [selectedVoucherMap, setSelectedVoucherMap] = useState({});
-  const { CallGetAllCart } = useCart()
+  const { CallGetAllCart } = useCart();
+	const [loading, setLoading] = useState(true);
+
   const [buyData, setBuyData] = useState({
     PreorderCampaignId: undefined,
     Quantity: undefined,
@@ -21,18 +24,27 @@ function Cart() {
       ...selectedVoucherMap
     }
   });
-
   const fetchCartsApi = useCallback(async (voucherMap = {}) => {
     try {
       // Giả sử requestCreateCart có thể là {} hoặc các tham số khác nếu cần
       const result = await GetPriceInCart({}, voucherMap);
       setCartBlocks(result);
+      setLoading(false);
     } catch (error) {
       console.error('Fetch Carts Error:', error);
       setCartBlocks([]);
     }
   }, []);
-
+  const CheckingNewOrderIsInCart = (idCampaign)=>{
+    if(cartBlocks!=null){
+      for(let i=0; i<cartBlocks.length; i++){
+        if(cartBlocks[i].responseCarts[0].preorderCampaignId===idCampaign){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
   const fetchUserVoucherApi = async () => {
     try {
       const data = await GetAllUserVoucher();
@@ -69,6 +81,29 @@ function Cart() {
     })
   }, [selectedVoucherMap])
 
+  useEffect(()=>{
+  if(!loading){
+    PreorderCampaignDetailService.startConnection().then(() => {
+      PreorderCampaignDetailService.joinGroup("Cart_Preordercampaign");
+    });
+    PreorderCampaignDetailService.addMessageListener((message)=>{
+      console.log(message)
+    })
+    // Nghe sự kiện cập nhật đơn hàng
+    PreorderCampaignDetailService.addOrderCartPageListener((preorderCampaginUpdate) => {
+      if(CheckingNewOrderIsInCart(preorderCampaginUpdate)){
+        fetchCartsApi();
+        CallGetAllCart();
+      };
+    });
+
+    // Rời khỏi Group khi rời trang
+    return () => {
+      PreorderCampaignDetailService.leaveGroup("Cart_Preordercampaign");
+    };
+  }
+
+  },[loading])
   // console.log('Cart Items:', cartItems);
   // console.log('Voucher Campaigns:', userVouchers);
 
@@ -197,7 +232,11 @@ function Cart() {
       })
     );
   };
-
+  if(loading){
+    return <div className='flex items-center justify-center min-h-screen'>
+    <div className='w-12 h-12 border-t-2 border-b-2 border-yellow-400 rounded-full animate-spin'></div>
+  </div>
+  }
   // Kiểm tra nếu cartBlocks trống thì hiển thị giao diện "empty cart"
   if (!cartBlocks || cartBlocks.length === 0) {
     return (
