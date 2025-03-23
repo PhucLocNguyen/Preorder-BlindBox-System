@@ -56,6 +56,7 @@ namespace PreOrderBlindBox.Services.Services
 
 		public async Task<bool> AcceptTempOrder(int preorderCampaignId)
 		{
+			List<RequestCreateNotification> listRequestCreateNotifications = new List<RequestCreateNotification>();
 			await _unitOfWork.BeginTransactionAsync();
 			try
 			{
@@ -115,7 +116,7 @@ namespace PreOrderBlindBox.Services.Services
 						Title = $"The campaign {preorderCampaign.BlindBox.Name} has been accepted.",
 						Description = $"Order #{orderEntity.OrderId} in campaign {preorderCampaign.BlindBox.Name} has been accepted by the admin.",
 					};
-					await _notificationService.CreatNotification(notificationForCustomer);
+					listRequestCreateNotifications.Add(notificationForCustomer);
 
 					if (item.Amount - orderEntity.Amount > 0)
 					{
@@ -132,7 +133,8 @@ namespace PreOrderBlindBox.Services.Services
 					Title = $"Accept campaign {preorderCampaign.BlindBox.Name}.",
 					Description = $"Admin has accepted the campaign {preorderCampaign.BlindBox.Name}.",
 				});
-				await _notificationService.CreatNotification(notificationForAdmin);
+				listRequestCreateNotifications.Add(notificationForAdmin);
+				await _notificationService.CreateNotification(listRequestCreateNotifications);
 				await _unitOfWork.CommitTransactionAsync();
 				return true;
 			}
@@ -196,6 +198,7 @@ namespace PreOrderBlindBox.Services.Services
 
 		public async Task<bool> RejectTempOrder(int preorderCampaignId)
 		{
+			List<RequestCreateNotification> listRequestCreateNotifications = new List<RequestCreateNotification>();
 			await _unitOfWork.BeginTransactionAsync();
 			try
 			{
@@ -231,7 +234,7 @@ namespace PreOrderBlindBox.Services.Services
 						Title = $"The campaign {preorderCampaign.BlindBox.Name} has been rejected.",
 						Description = $"Order #{item.TempCampaignBulkOrderId} in campaign {preorderCampaign.BlindBox.Name} has been rejected by the admin.",
 					};
-					await _notificationService.CreatNotification(notificationForCustomer);
+					listRequestCreateNotifications.Add(notificationForCustomer);
 
 					requestCustomerTransactionCreateModel.TempCampaignBulkOrderId = item.TempCampaignBulkOrderId;
 					requestCustomerTransactionCreateModel.Money = item.Amount;
@@ -245,7 +248,8 @@ namespace PreOrderBlindBox.Services.Services
 					Title = $"Reject campaign {preorderCampaign.BlindBox.Name}.",
 					Description = $"Admin has rejected the campaign {preorderCampaign.BlindBox.Name}.",
 				});
-				await _notificationService.CreatNotification(notificationForAdmin);
+				listRequestCreateNotifications.Add(notificationForAdmin);
+				await _notificationService.CreateNotification(listRequestCreateNotifications);
 				await _unitOfWork.CommitTransactionAsync();
 				return true;
 			}
