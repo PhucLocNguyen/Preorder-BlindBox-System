@@ -1,12 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LogoutButton from "../../assets/Logout/logoutbutton.jpg";
 import { Link, useLocation } from "react-router-dom";
 import useLogout from "../../hooks/useLogout";
-
+import { AuthContext } from "../../context/AuthContext";
+import StaffIcon from "../../assets/icons/staffIcon.png";
+import { ApiGetUserInFormation } from "../../api/User/ApiGetUserInformation";
 
 const SideBarStaff = (props) => {
+    const [currentInformation, setCurrentInformation] = useState({});
+
     const location = useLocation();
-    const logout = useLogout()
+    const logout = useLogout();
+    const getCurrentInformation = async ()=>{
+        const getUserInformation = await ApiGetUserInFormation();
+        setCurrentInformation(getUserInformation);
+    }
+    useEffect(()=>{
+        getCurrentInformation();
+    },[])
     return (
         //<SlideBarStaff />
         <div className="bg-white w-64 h-full shadow-lg p-4 flex flex-col">
@@ -40,15 +51,15 @@ const SideBarStaff = (props) => {
             <div className="mt-auto flex items-center justify-between w-full p-2">
                 <div className="flex items-center">
                     <img
-                        src="https://placehold.co/40x40"
+                        src={currentInformation.thumbnail!=null?currentInformation.thumbnail:StaffIcon}
                         alt="Profile picture of Emily Jonson"
                         className="rounded-full"
                         width="40"
                         height="40"
                     />
                     <div className="ml-2">
-                        <div className="text-sm font-semibold">Emily Jonson</div>
-                        <div className="text-xs text-gray-500">jonson@bress.com</div>
+                        <div className="text-sm font-semibold">{currentInformation.fullName}</div>
+                        <div className="text-xs text-gray-500">{currentInformation.email}</div>
                     </div>
                 </div>
 
