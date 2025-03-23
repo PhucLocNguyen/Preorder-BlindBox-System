@@ -12,7 +12,7 @@ namespace PreOrderBlindBox.Services.IServices
 {
     public interface INotificationService
     {
-        Task<ResponseNotification> CreatNotification(RequestCreateNotification requestCreateNotification);
+        Task<bool> CreateNotification(List<RequestCreateNotification> requestCreateNotifications);
         Task<Pagination<ResponseNotification>> GetAllNotificationByUserId(int userId, PaginationParameter paginationParameter);
         Task<ResponseNotification?> MarkNotificationAsRead(int notificationId);
         Task<bool> MarkAllNotificationsAsRead();
