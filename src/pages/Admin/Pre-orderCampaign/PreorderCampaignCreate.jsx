@@ -27,12 +27,10 @@ function PreorderCampaignCreate() {
   const [form] = Form.useForm();
   const [loadMainProduct, setLoadMainProduct] = useState(null);
   const [typeOfCampaign, setTypeOfCampaign] = useState(null);
-  // State để xác định form có hợp lệ hay không (đã chạm và không có lỗi)
   const [isFormValid, setIsFormValid] = useState(false);
-
+  const [errorMessageForSelectTime, setErrorMessageForSelectTime] = useState(null);
   const navigate = useNavigate();
 
-  // Cập nhật trạng thái form mỗi khi các field thay đổi
   const onFieldsChange = () => {
     const fieldsError = form.getFieldsError();
     if (typeOfCampaign == null) {
@@ -48,7 +46,7 @@ function PreorderCampaignCreate() {
       setIsFormValid(false);
       return;
     }
-    // Kiểm tra xem có milestone nào bị thiếu số lượng hoặc số tiền không
+
     const milestoneHasEmpty = milestoneValues.some((m) => {
       return (
         !m ||
@@ -67,29 +65,33 @@ function PreorderCampaignCreate() {
     var dateNow = new Date();
     if (dateRange == null) {
       setIsFormValid(false);
+      setErrorMessageForSelectTime("Ngày bắt đầu và kết thúc không được chừa trống !");
       return;
     }
     if (dateRange[0] <= dateNow) {
+      setErrorMessageForSelectTime("Ngày bắt đầu bắt buộc phải bắt đầu trong tương lai");
       setIsFormValid(false);
       return;
     }
-    // validate 3 ngay sau khi start date
-    if (dateRange[1].isBefore(dateRange[0].clone().add(3, "days"))) {
+
+    if (dateRange[1].isBefore(dateRange[0].clone().add(5, "days"))) {
+      setErrorMessageForSelectTime("Thời gian hoạt động của chiến dịch không được ít hơn 5 ngày !");
       setIsFormValid(false);
 
       return;
     }
+    setErrorMessageForSelectTime(null);
     const hasErrors = fieldsError.some((field) => field.errors.length > 0);
     setIsFormValid(!hasErrors);
   };
 
-  // Khi người dùng chọn loại chiến dịch, cập nhật state và reset field milestones
   const handleChangeTypeCampaign = (value) => {
     setTypeOfCampaign(value);
     form.setFieldsValue({ typeOfCampaign: value, milestones: [] });
   };
 
   const handleSubmit = async (values) => {
+    setLoading(true);
     const data = {
       blindBoxId: parseInt(loadMainProduct?.blindBoxId) || 0,
       type: parseInt(values.type || typeOfCampaign),
@@ -102,9 +104,7 @@ function PreorderCampaignCreate() {
           }))
         : [],
     };
-    
     var result = await CreatePreorderCampaign(data);
-    console.log(result)
     if(result){
 
       navigate("/admin/pre-ordercampaign");
@@ -124,7 +124,7 @@ function PreorderCampaignCreate() {
             <div className="col-span-9 ">
               <div className="bg-white p-4 rounded-xl py-10">
                 <div className="flex items-center mb-4">
-                  <Link to="/admin/pre-ordercampaign" className="h-full flex">
+                  <Link to="/admin/preordercampaign" className="h-full flex">
                     <ArrowLeftOutlined
                       style={{
                         width: "fit-content",
@@ -403,6 +403,7 @@ function PreorderCampaignCreate() {
                       placeholder={['Ngày bắt đầu', 'Ngày kết thúc']}
                     />
                   </Form.Item>
+                  {errorMessageForSelectTime!=null && <p className="text-red-600">{errorMessageForSelectTime}</p>}
                 </div>
                 <Form.Item>
                   <Button

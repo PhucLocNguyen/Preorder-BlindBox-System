@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import {
@@ -14,10 +14,12 @@ import {
 } from "@ant-design/icons";
 import AdminIcon from "../../assets/Admin/AdminIcon.png"
 import useLogout from "../../hooks/useLogout";
+import { AuthContext } from "../../context/AuthContext";
 
 const { Sider } = Layout;
 
 const SideBarAdmin = () => {
+    const {currentInformation} =  useContext(AuthContext);
     const location = useLocation();
     const logout = useLogout()
 
@@ -41,29 +43,26 @@ const SideBarAdmin = () => {
             </div>
 
             <Menu
-                mode="vertical"
-                selectedKeys={[location.pathname]}
-                className="border-none"
-            >
-                {menuItems.map(({ key, label, icon }) => (
-                    <Menu.Item key={key} icon={icon}>
-                        <Link to={key}>{label}</Link>
-                    </Menu.Item>
-                ))}
-            </Menu>
+        mode="vertical"
+        selectedKeys={[location.pathname]}
+        items={menuItems} 
+        className="border-none"
+      />
 
             {/* Profile & Logout */}
             <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between p-3 bg-gray-100 rounded-lg">
                 <div className="flex items-center">
                     <img
-                        src={AdminIcon}
-                        alt="Profile"
-                        className="rounded-full w-10 h-10"
-                    />
-                    <div className="ml-3">
-                        <div className="text-sm font-semibold">Admin</div>
-                        <div className="text-xs text-gray-500">admin@fpt.edu.vn</div>
-                    </div>
+                       src={currentInformation.thumbnail!=null?currentInformation.thumbnail:AdminIcon}
+                       alt="Profile picture of Emily Jonson"
+                       className="rounded-full"
+                       width="40"
+                       height="40"
+                   />
+                   <div className="ml-2">
+                       <div className="text-sm font-semibold">{currentInformation.fullName}</div>
+                       <div className="text-xs text-gray-500">{currentInformation.email}</div>
+                   </div>                    
                 </div>
                 <button
                     onClick={() => logout()}
