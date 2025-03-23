@@ -112,7 +112,9 @@ const VoucherCreate = () => {
                     <Row gutter={[32, 20]}>
                         <Col span={24}>
                             <Form.Item label="Ngày bắt đầu và kết thúc" name="dateRange" rules={[{ required: true, message: "Vui lòng nhập  Ngày bắt đầu và kết thúc!" }]}>
-                                <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" className="w-full rounded-xl h-12 text-lg" />
+                                <RangePicker showTime format="YYYY-MM-DD HH:mm:ss"
+                                    placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
+                                    className="w-full rounded-xl h-12 text-lg" />
                             </Form.Item>
                         </Col>
                     </Row>
