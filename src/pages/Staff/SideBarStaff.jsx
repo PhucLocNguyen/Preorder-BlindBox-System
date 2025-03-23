@@ -58,7 +58,7 @@ const SideBarStaff = (props) => {
             <div className="mt-auto flex items-center justify-between w-full p-2">
                 <div className="flex items-center">
                     <img
-                        src={user.thumbnail != null ? currentInformation.thumbnail : StaffIcon}
+                        src={user.thumbnail != null ? user.thumbnail : StaffIcon}
                         alt="Profile picture of Emily Jonson"
                         className="rounded-full"
                         width="40"
