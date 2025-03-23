@@ -42,6 +42,35 @@ namespace PreOrderBlindBox.Services.Services
             _imageRepo = imageRepo;
         }
 
+        private async Task<ResponseImageSplit> BuildResponseImageSplit(int blindBoxId)
+        {
+            var mainImage = await _imageRepo.GetMainImageByBlindBoxID(blindBoxId);
+            var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(blindBoxId);
+
+            return new ResponseImageSplit
+            {
+                MainImage = mainImage != null
+                    ? new ResponseImageModel
+                    {
+                        ImageId = mainImage.ImageId,
+                        Url = mainImage.Url,
+                        IsMainImage = mainImage.IsMainImage,
+                        CreatedAt = mainImage.CreatedAt
+                    }
+                    : null,
+                GalleryImages = galleryImages
+                    .Where(img => !img.IsMainImage)
+                    .Select(img => new ResponseImageModel
+                    {
+                        ImageId = img.ImageId,
+                        Url = img.Url,
+                        IsMainImage = img.IsMainImage,
+                        CreatedAt = img.CreatedAt
+                    }).ToList()
+            };
+        }
+
+
         public async Task<Pagination<ResponsePreorderCampaign>> GetAllValidPreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request)
         {
             string? type = null;
@@ -73,41 +102,13 @@ namespace PreOrderBlindBox.Services.Services
                 // Xử lý BlindBox nếu có
                 if (campaign.BlindBox != null)
                 {
-                    var blindBox = new ResponseBlindBox
-                    {
-                        BlindBoxId = campaign.BlindBox.BlindBoxId,
-                        Name = campaign.BlindBox.Name,
-                        Description = campaign.BlindBox.Description,
-                        ListedPrice = campaign.BlindBox.ListedPrice,
-                        Size = campaign.BlindBox.Size,
-                        CreatedAt = campaign.BlindBox.CreatedAt
-                    };
+                    // Mapping BlindBox (không chứa hình ảnh)
+                    var blindBox = campaign.BlindBox;
+                    var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
 
-                    // Lấy hình ảnh chính và thư viện ảnh song song để tối ưu hiệu suất
-                    var mainImage = await _imageRepo.GetMainImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
-                    var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
-
-                    blindBox.Images = new ResponseImageSplit
-                    {
-                        MainImage = mainImage != null ? new ResponseImageModel
-                        {
-                            ImageId = mainImage.ImageId,
-                            Url = mainImage.Url,
-                            IsMainImage = mainImage.IsMainImage,
-                            CreatedAt = mainImage.CreatedAt
-                        } : null,
-                        GalleryImages = galleryImages
-                            .Where(img => !img.IsMainImage)
-                            .Select(img => new ResponseImageModel
-                            {
-                                ImageId = img.ImageId,
-                                Url = img.Url,
-                                IsMainImage = img.IsMainImage,
-                                CreatedAt = img.CreatedAt
-                            }).ToList()
-                    };
-
-                    responseCampaign.BlindBox = blindBox;
+                    // Lấy hình ảnh qua ImageRepository
+                    responseBlindBox.Images = await BuildResponseImageSplit(blindBox.BlindBoxId);
+                    responseCampaign.BlindBox = responseBlindBox;
                 }
 
                 result.Add(responseCampaign);
@@ -115,6 +116,65 @@ namespace PreOrderBlindBox.Services.Services
 
             var countItem = _preorderCampaignRepo.Count(x => !x.IsDeleted);
             return new Pagination<ResponsePreorderCampaign>(result, countItem, page.PageIndex, page.PageSize);
+        }
+
+        // Helper method cho TimedPricing
+        private decimal CalculateTimedPricingPrice(List<PreorderMilestone> orderedMilestones, int placedOrderCount)
+        {
+            decimal priceAtTime = 0m;
+            int cumulativeQuantity = 0;
+            // Chạy vòng lặp, cộng dồn quantity, nếu PlacedOrderCount nằm trong khoảng mốc, lấy price của mốc đó
+            foreach (var milestone in orderedMilestones)
+            {
+                cumulativeQuantity += milestone.Quantity;
+                if (placedOrderCount <= cumulativeQuantity)
+                {
+                    priceAtTime = milestone.Price;
+                    break;
+                }
+            }
+            // Nếu số lượng đặt vượt qua tổng cuối cùng của milestones, lấy giá của mốc cuối
+            if (placedOrderCount > cumulativeQuantity && orderedMilestones.Any())
+            {
+                priceAtTime = orderedMilestones.Last().Price;
+            }
+            return priceAtTime;
+        }
+
+        // Helper method cho BulkOrder
+        private decimal CalculateBulkOrderPrice(List<PreorderMilestone> orderedMilestones, int placedOrderCount)
+        {
+            // Tạo danh sách cumulativeQuantities
+            // cumulativeQuantities[i] = tổng quantity của milestone từ 0 đến i
+            decimal priceAtTime = 0m;
+            var cumulativeQuantities = new List<int>();
+            int runningSum = 0;
+            foreach (var milestone in orderedMilestones)
+            {
+                runningSum += milestone.Quantity;
+                cumulativeQuantities.Add(runningSum);
+            }
+            // Vòng lặp xác định priceAtTime dựa trên PlacedOrderCount
+            // Ta sẽ duyệt đến mốc kế tiếp để so sánh
+            for (int i = 0; i < orderedMilestones.Count; i++)
+            {
+                // Nếu chưa phải mốc cuối, so sánh với cumulativeQuantities[i+1]
+                if (i < orderedMilestones.Count - 1)
+                {
+                    // Nếu PlacedOrderCount <= c[i+1], lấy giá milestone[i] rồi dừng
+                    if (placedOrderCount <= cumulativeQuantities[i + 1])
+                    {
+                        priceAtTime = orderedMilestones[i].Price;
+                        break;
+                    }
+                }
+                else
+                {
+                    // Nếu chưa break, nghĩa là đặt vượt quá tất cả các mốc, dùng giá mốc cuối
+                    priceAtTime = orderedMilestones[i].Price;
+                }
+            }
+            return priceAtTime;
         }
 
         public async Task<Pagination<ResponsePreorderCampaign>> GetAllActivePreorderCampaign(PaginationParameter page, PreorderCampaignGetRequest request)
@@ -151,62 +211,12 @@ namespace PreOrderBlindBox.Services.Services
                 int placedOrderCount = campaign.PlacedOrderCount ?? 0; // Chỉ đề phòng Null
                 if (campaign.Type == PreorderCampaignType.TimedPricing.ToString())
                 {
-                    int cumulativeQuantity = 0;
-
-                    // Chạy vòng lặp, cộng dồn quantity, nếu PlacedOrderCount nằm trong khoảng mốc, lấy price của mốc đó
-                    foreach (var milestone in orderedMilestones)
-                    {
-                        cumulativeQuantity += milestone.Quantity;
-
-                        if (placedOrderCount <= cumulativeQuantity)
-                        {
-                            priceAtTime = milestone.Price;
-                            break;
-                        }
-                    }
-
-                    // Nếu PlacedOrderCount lớn hơn tổng cuối cùng của milestones (trường hợp user đã đặt vượt mốc cuối),
-                    // bạn có thể giữ nguyên priceAtTime = 0 hoặc set bằng price của mốc cuối:
-                    if (placedOrderCount > cumulativeQuantity)
-                    {
-                        priceAtTime = orderedMilestones.Last().Price;
-                    }
+                    priceAtTime = CalculateTimedPricingPrice(orderedMilestones, placedOrderCount);
                 }
 
                 if (campaign.Type == PreorderCampaignType.BulkOrder.ToString())
                 {
-                    // Tạo danh sách cumulativeQuantities
-                    // cumulativeQuantities[i] = tổng quantity của milestone từ 0 đến i
-                    var cumulativeQuantities = new List<int>();
-                    int runningSum = 0;
-                    foreach (var mile in orderedMilestones)
-                    {
-                        runningSum += mile.Quantity;
-                        cumulativeQuantities.Add(runningSum);
-                    }
-
-                    // Vòng lặp xác định priceAtTime dựa trên PlacedOrderCount
-                    // Ta sẽ duyệt đến mốc kế tiếp để so sánh
-                    for (int i = 0; i < orderedMilestones.Count; i++)
-                    {
-                        // Nếu chưa phải mốc cuối, so sánh với cumulativeQuantities[i+1]
-                        if (i < orderedMilestones.Count - 1)
-                        {
-                            // Nếu PlacedOrderCount <= c[i+1], lấy giá milestone[i] rồi dừng
-                            if (placedOrderCount <= cumulativeQuantities[i + 1])
-                            {
-                                priceAtTime = orderedMilestones[i].Price;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            // Đến mốc cuối cùng:
-                            // Nếu vòng lặp chưa break, nghĩa là PlacedOrderCount lớn hơn tất cả ngưỡng cũ
-                            // => ta dùng giá của milestone cuối.
-                            priceAtTime = orderedMilestones[i].Price;
-                        }
-                    }
+                    priceAtTime = CalculateBulkOrderPrice(orderedMilestones, placedOrderCount);
                 }
                 responseCampaign.PriceAtTime = priceAtTime;
 
@@ -219,41 +229,13 @@ namespace PreOrderBlindBox.Services.Services
                 // Xử lý BlindBox nếu có
                 if (campaign.BlindBox != null)
                 {
-                    var blindBox = new ResponseBlindBox
-                    {
-                        BlindBoxId = campaign.BlindBox.BlindBoxId,
-                        Name = campaign.BlindBox.Name,
-                        Description = campaign.BlindBox.Description,
-                        ListedPrice = campaign.BlindBox.ListedPrice,
-                        Size = campaign.BlindBox.Size,
-                        CreatedAt = campaign.BlindBox.CreatedAt
-                    };
+                    // Mapping BlindBox (không chứa hình ảnh)
+                    var blindBox = campaign.BlindBox;
+                    var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
 
-                    // Lấy hình ảnh chính và thư viện ảnh song song để tối ưu hiệu suất
-                    var mainImage = await _imageRepo.GetMainImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
-                    var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
-
-                    blindBox.Images = new ResponseImageSplit
-                    {
-                        MainImage = mainImage != null ? new ResponseImageModel
-                        {
-                            ImageId = mainImage.ImageId,
-                            Url = mainImage.Url,
-                            IsMainImage = mainImage.IsMainImage,
-                            CreatedAt = mainImage.CreatedAt
-                        } : null,
-                        GalleryImages = galleryImages
-                            .Where(img => !img.IsMainImage)
-                            .Select(img => new ResponseImageModel
-                            {
-                                ImageId = img.ImageId,
-                                Url = img.Url,
-                                IsMainImage = img.IsMainImage,
-                                CreatedAt = img.CreatedAt
-                            }).ToList()
-                    };
-
-                    responseCampaign.BlindBox = blindBox;
+                    // Lấy hình ảnh qua ImageRepository
+                    responseBlindBox.Images = await BuildResponseImageSplit(blindBox.BlindBoxId);
+                    responseCampaign.BlindBox = responseBlindBox;
                 }
 
                 result.Add(responseCampaign);
@@ -282,33 +264,14 @@ namespace PreOrderBlindBox.Services.Services
                 return null;
             }
 
-            // Nếu có BlindBox, lấy danh sách hình ảnh của nó
-            ResponseImageSplit images = null;
+            // Mapping BlindBox (không chứa hình ảnh)
+            var blindBox = preorderCampaign.BlindBox;
+            var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
+
             if (preorderCampaign.BlindBox != null)
             {
-                var mainImage = await _imageRepo.GetMainImageByBlindBoxID(preorderCampaign.BlindBox.BlindBoxId);
-                var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(preorderCampaign.BlindBox.BlindBoxId);
-
-                images = new ResponseImageSplit
-                {
-                    MainImage = mainImage != null ? new ResponseImageModel
-                    {
-                        ImageId = mainImage.ImageId,
-                        Url = mainImage.Url,
-                        IsMainImage = mainImage.IsMainImage,
-                        CreatedAt = mainImage.CreatedAt
-                    } : null,
-                    GalleryImages = galleryImages
-                        .Where(img => !img.IsMainImage)
-                        .Select(img => new ResponseImageModel
-                        {
-                            ImageId = img.ImageId,
-                            Url = img.Url,
-                            IsMainImage = img.IsMainImage,
-                            CreatedAt = img.CreatedAt
-                        })
-                        .ToList()
-                };
+                // Lấy hình ảnh qua ImageRepository
+                responseBlindBox.Images = await BuildResponseImageSplit(blindBox.BlindBoxId);
             }
 
             // Ánh xạ sang ResponsePreorderCampaignDetail
@@ -322,15 +285,7 @@ namespace PreOrderBlindBox.Services.Services
                 Status = preorderCampaign.Status,
                 Type = preorderCampaign.Type,
                 IsDeleted = preorderCampaign.IsDeleted,
-                BlindBox = preorderCampaign.BlindBox != null ? new ResponseBlindBox
-                {
-                    BlindBoxId = preorderCampaign.BlindBox.BlindBoxId,
-                    Name = preorderCampaign.BlindBox.Name,
-                    Description = preorderCampaign.BlindBox.Description,
-                    Size = preorderCampaign.BlindBox.Size,
-                    CreatedAt = preorderCampaign.BlindBox.CreatedAt,
-                    Images = images
-                } : null
+                BlindBox = responseBlindBox
             };
 
             return response;
@@ -344,33 +299,15 @@ namespace PreOrderBlindBox.Services.Services
             {
                 return null;
             }
+
+            // Mapping BlindBox (không chứa hình ảnh)
+            var blindBox = preorderCampaign.BlindBox;
+            var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
+
             // Nếu có BlindBox, lấy danh sách hình ảnh của nó
-            ResponseImageSplit images = null;
             if (preorderCampaign.BlindBox != null)
             {
-                var mainImage = await _imageRepo.GetMainImageByBlindBoxID(preorderCampaign.BlindBox.BlindBoxId);
-                var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(preorderCampaign.BlindBox.BlindBoxId);
-
-                images = new ResponseImageSplit
-                {
-                    MainImage = mainImage != null ? new ResponseImageModel
-                    {
-                        ImageId = mainImage.ImageId,
-                        Url = mainImage.Url,
-                        IsMainImage = mainImage.IsMainImage,
-                        CreatedAt = mainImage.CreatedAt
-                    } : null,
-                    GalleryImages = galleryImages
-                        .Where(img => !img.IsMainImage)
-                        .Select(img => new ResponseImageModel
-                        {
-                            ImageId = img.ImageId,
-                            Url = img.Url,
-                            IsMainImage = img.IsMainImage,
-                            CreatedAt = img.CreatedAt
-                        })
-                        .ToList()
-                };
+                responseBlindBox.Images = await BuildResponseImageSplit(blindBox.BlindBoxId);
             }
 
             var milestoneList = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID(preorderCampaign.PreorderCampaignId);
@@ -382,62 +319,12 @@ namespace PreOrderBlindBox.Services.Services
             int placedOrderCount = preorderCampaign.PlacedOrderCount ?? 0; // Chỉ đề phòng Null
             if (preorderCampaign.Type == PreorderCampaignType.TimedPricing.ToString())
             {
-                int cumulativeQuantity = 0;
-
-                // Chạy vòng lặp, cộng dồn quantity, nếu PlacedOrderCount nằm trong khoảng mốc, lấy price của mốc đó
-                foreach (var milestone in orderedMilestones)
-                {
-                    cumulativeQuantity += milestone.Quantity;
-
-                    if (placedOrderCount <= cumulativeQuantity)
-                    {
-                        priceAtTime = milestone.Price;
-                        break;
-                    }
-                }
-
-                // Nếu PlacedOrderCount lớn hơn tổng cuối cùng của milestones (trường hợp user đã đặt vượt mốc cuối),
-                // bạn có thể giữ nguyên priceAtTime = 0 hoặc set bằng price của mốc cuối:
-                if (placedOrderCount > cumulativeQuantity)
-                {
-                    priceAtTime = orderedMilestones.Last().Price;
-                }
+                priceAtTime = CalculateTimedPricingPrice(orderedMilestones, placedOrderCount);
             }
 
             if (preorderCampaign.Type == PreorderCampaignType.BulkOrder.ToString())
             {
-                // Tạo danh sách cumulativeQuantities
-                // cumulativeQuantities[i] = tổng quantity của milestone từ 0 đến i
-                var cumulativeQuantities = new List<int>();
-                int runningSum = 0;
-                foreach (var mile in orderedMilestones)
-                {
-                    runningSum += mile.Quantity;
-                    cumulativeQuantities.Add(runningSum);
-                }
-
-                // Vòng lặp xác định priceAtTime dựa trên PlacedOrderCount
-                // Ta sẽ duyệt đến mốc kế tiếp để so sánh
-                for (int i = 0; i < orderedMilestones.Count; i++)
-                {
-                    // Nếu chưa phải mốc cuối, so sánh với cumulativeQuantities[i+1]
-                    if (i < orderedMilestones.Count - 1)
-                    {
-                        // Nếu PlacedOrderCount <= c[i+1], lấy giá milestone[i] rồi dừng
-                        if (placedOrderCount <= cumulativeQuantities[i + 1])
-                        {
-                            priceAtTime = orderedMilestones[i].Price;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        // Đến mốc cuối cùng:
-                        // Nếu vòng lặp chưa break, nghĩa là PlacedOrderCount lớn hơn tất cả ngưỡng cũ
-                        // => ta dùng giá của milestone cuối.
-                      priceAtTime = orderedMilestones[i].Price;
-                    }
-                }
+                priceAtTime = CalculateBulkOrderPrice(orderedMilestones, placedOrderCount);
             }
 
             // Ánh xạ sang ResponsePreorderCampaignDetail
@@ -454,16 +341,7 @@ namespace PreOrderBlindBox.Services.Services
                 PriceAtTime = priceAtTime,
                 TotalQuantity = quantityCount,
                 PlacedOrderCount = preorderCampaign.PlacedOrderCount,
-                BlindBox = preorderCampaign.BlindBox != null ? new ResponseBlindBox
-                {
-                    BlindBoxId = preorderCampaign.BlindBox.BlindBoxId,
-                    Name = preorderCampaign.BlindBox.Name,
-                    Description = preorderCampaign.BlindBox.Description,
-                    Size = preorderCampaign.BlindBox.Size,
-                    CreatedAt = preorderCampaign.BlindBox.CreatedAt,
-                    ListedPrice = preorderCampaign.BlindBox.ListedPrice,
-                    Images = images
-                } : null,
+                BlindBox = responseBlindBox,
                 PreorderMilestones = milestoneList.Select(m => new ResponsePreorderMilestone
                 {
                     PreorderMilestoneId = m.PreorderMilestoneId,
@@ -620,29 +498,7 @@ namespace PreOrderBlindBox.Services.Services
                 var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
 
                 // Lấy hình ảnh qua ImageRepository
-                var mainImage = await _imageRepo.GetMainImageByBlindBoxID(blindBox.BlindBoxId);
-                var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(blindBox.BlindBoxId);
-
-                responseBlindBox.Images = new ResponseImageSplit
-                {
-                    MainImage = mainImage != null ? new ResponseImageModel
-                    {
-                        ImageId = mainImage.ImageId,
-                        Url = mainImage.Url,
-                        IsMainImage = mainImage.IsMainImage,
-                        CreatedAt = mainImage.CreatedAt
-                    } : null,
-                    GalleryImages = galleryImages
-                        .Where(img => !img.IsMainImage)
-                        .Select(img => new ResponseImageModel
-                        {
-                            ImageId = img.ImageId,
-                            Url = img.Url,
-                            IsMainImage = img.IsMainImage,
-                            CreatedAt = img.CreatedAt
-                        })
-                        .ToList()
-                };
+                responseBlindBox.Images = await BuildResponseImageSplit(blindBox.BlindBoxId);
 
                 result.Add(new ResponseSearchPreorderCampaign
                 {
@@ -715,6 +571,7 @@ namespace PreOrderBlindBox.Services.Services
                 await _preorderCampaignRepo.InsertAsync(campaign);
                 await _unitOfWork.SaveChanges(); // Giả sử sau SaveChanges, campaign.Id được gán
 
+                var milestoneList = new List<CreatePreorderMilestoneRequest>();
                 // Lặp qua từng milestone, gán PreorderCampaignId và tạo milestone
                 for (int i = 0; i < campaignRequest.MilestoneRequests.Count; i++)
                 {
@@ -731,9 +588,10 @@ namespace PreOrderBlindBox.Services.Services
                         Quantity = campaignRequest.MilestoneRequests[i].Quantity,
                         Price = campaignRequest.MilestoneRequests[i].Price
                     };
-
-                    await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
+                    milestoneList.Add(milestone);
+                    //await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
                 }
+                await _preorderMilestoneService.AddPreorderMilestonesAsync(milestoneList);
 
                 await _unitOfWork.CommitTransactionAsync();
                 return true;
@@ -741,7 +599,6 @@ namespace PreOrderBlindBox.Services.Services
             catch (Exception)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                //return false;
                 throw;
             }
         }
@@ -787,6 +644,7 @@ namespace PreOrderBlindBox.Services.Services
                 throw new ArgumentException("Invalid campaign type. Must be TimedPricing (0) or BulkOrder (1).");
             }
 
+            var blindBox = await _blindBoxRepo.GetDetailBlindBoxById(preorderCampaign.BlindBoxId.Value);
             await _unitOfWork.BeginTransactionAsync();
             try
             {
@@ -804,11 +662,12 @@ namespace PreOrderBlindBox.Services.Services
                         //milestone.IsDeleted = true;
                         await _preorderMilestoneService.DeletePreorderMilestone(milestone.PreorderMilestoneId);
                     }
+
                     // Lặp qua từng milestone, gán PreorderCampaignId và tạo milestone
+                    var milestoneAddList = new List<CreatePreorderMilestoneRequest>();
                     for (int i = 0; i < request.PreorderMilestoneRequests.Count; i++)
                     {
-                        var listedPrice = preorderCampaign.BlindBox.ListedPrice;
-
+                        var listedPrice = blindBox.ListedPrice;
                         if (request.PreorderMilestoneRequests[i].Price >= listedPrice)
                         {
                             throw new ArgumentException("Price in campaign cannot greater than or equal with listed price");
@@ -820,10 +679,10 @@ namespace PreOrderBlindBox.Services.Services
                             Quantity = (int)request.PreorderMilestoneRequests[i].Quantity,
                             Price = (decimal)request.PreorderMilestoneRequests[i].Price
                         };
-
-                        await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
+                        milestoneAddList.Add(milestone);
+                        //await _preorderMilestoneService.AddPreorderMilestoneAsync(milestone);
                     }
-
+                    await _preorderMilestoneService.AddPreorderMilestonesAsync(milestoneAddList);
                 }
                 await _unitOfWork.CommitTransactionAsync();
                 return true;
@@ -836,72 +695,6 @@ namespace PreOrderBlindBox.Services.Services
 
         }
 
-        /*public async Task<Pagination<ResponseSearchPreorderCampaign>> FilterPreorderCampaignAsync(FilterPreorderCampaignRequest request, PaginationParameter pagination)
-        {
-            // Gọi repository để lấy danh sách PreorderCampaign theo yêu cầu
-            var campaigns = await _preorderCampaignRepo.FilterPreorderCampaignsAsync(request.isEndingSoon, request.isNewlyLaunched, request.isTrending, pagination);
-
-            var result = new List<ResponseSearchPreorderCampaign>();
-
-            // Với mỗi campaign, thực hiện mapping và gọi riêng ImageRepository để lấy hình ảnh của BlindBox
-            foreach (var campaign in campaigns)
-            {
-                // Tính khoảng giá dựa trên milestone của campaign
-                var priceFrom = campaign.PreorderMilestones.Any()
-                                    ? campaign.PreorderMilestones.Min(m => m.Price)
-                                    : 0;
-                var priceTo = campaign.PreorderMilestones.Any()
-                                    ? campaign.PreorderMilestones.Max(m => m.Price)
-                                    : 0;
-
-                // Mapping BlindBox (không chứa hình ảnh)
-                var blindBox = campaign.BlindBox;
-                var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
-
-                // Lấy hình ảnh qua ImageRepository
-                var mainImage = await _imageRepo.GetMainImageByBlindBoxID(blindBox.BlindBoxId);
-                var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(blindBox.BlindBoxId);
-
-                responseBlindBox.Images = new ResponseImageSplit
-                {
-                    MainImage = mainImage != null ? new ResponseImageModel
-                    {
-                        ImageId = mainImage.ImageId,
-                        Url = mainImage.Url,
-                        IsMainImage = mainImage.IsMainImage,
-                        CreatedAt = mainImage.CreatedAt
-                    } : null,
-                    GalleryImages = galleryImages
-                        .Where(img => !img.IsMainImage)
-                        .Select(img => new ResponseImageModel
-                        {
-                            ImageId = img.ImageId,
-                            Url = img.Url,
-                            IsMainImage = img.IsMainImage,
-                            CreatedAt = img.CreatedAt
-                        })
-                        .ToList()
-                };
-
-                result.Add(new ResponseSearchPreorderCampaign
-                {
-                    PreorderCampaignId = campaign.PreorderCampaignId,
-                    BlindBoxId = campaign.BlindBoxId,
-                    Slug = campaign.Slug,
-                    StartDate = campaign.StartDate,
-                    EndDate = campaign.EndDate,
-                    Status = campaign.Status,
-                    Type = campaign.Type,
-                    IsDeleted = campaign.IsDeleted,
-                    BlindBox = responseBlindBox,
-                    PriceFrom = priceFrom,
-                    PriceTo = priceTo,
-                });
-            }
-            var countItem = _preorderCampaignRepo.Count(x => x.Status == "Active");
-            return new Pagination<ResponseSearchPreorderCampaign>(result, countItem, pagination.PageIndex, pagination.PageSize);
-        }*/
-
         public async Task<Pagination<ResponsePreorderCampaignDetail>> GetAllCompleteBulkCampaign (PaginationParameter pagination)
         {
             // Lấy danh sách campaign bulk đã hoàn thành theo phân trang
@@ -912,36 +705,13 @@ namespace PreOrderBlindBox.Services.Services
             {
                 if (campaign == null)
                     continue;
+                var blindBox = campaign.BlindBox;
+                var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
 
-                ResponseImageSplit images = null;
                 // Nếu có BlindBox, lấy thông tin hình ảnh
                 if (campaign.BlindBox != null)
                 {
-                    var mainImage = await _imageRepo.GetMainImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
-                    var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(campaign.BlindBox.BlindBoxId);
-
-                    images = new ResponseImageSplit
-                    {
-                        MainImage = mainImage != null
-                            ? new ResponseImageModel
-                            {
-                                ImageId = mainImage.ImageId,
-                                Url = mainImage.Url,
-                                IsMainImage = mainImage.IsMainImage,
-                                CreatedAt = mainImage.CreatedAt
-                            }
-                            : null,
-                        GalleryImages = galleryImages
-                            .Where(img => !img.IsMainImage)
-                            .Select(img => new ResponseImageModel
-                            {
-                                ImageId = img.ImageId,
-                                Url = img.Url,
-                                IsMainImage = img.IsMainImage,
-                                CreatedAt = img.CreatedAt
-                            })
-                            .ToList()
-                    };
+                    responseBlindBox.Images = await BuildResponseImageSplit(campaign.BlindBox.BlindBoxId);
                 }
 
                 // Lấy danh sách PreorderMilestones (đã include trong repository)
@@ -955,31 +725,7 @@ namespace PreOrderBlindBox.Services.Services
                 // Vì ở repository đã lọc theo BulkOrder nên chúng ta chỉ cần xử lý nhánh BulkOrder
                 if (campaign.Type == PreorderCampaignType.BulkOrder.ToString())
                 {
-                    var cumulativeQuantities = new List<int>();
-                    int runningSum = 0;
-                    foreach (var mile in orderedMilestones)
-                    {
-                        runningSum += mile.Quantity;
-                        cumulativeQuantities.Add(runningSum);
-                    }
-
-                    // Duyệt danh sách để xác định mức giá dựa trên số lượng đã đặt
-                    for (int i = 0; i < orderedMilestones.Count; i++)
-                    {
-                        if (i < orderedMilestones.Count - 1)
-                        {
-                            if (placedOrderCount <= cumulativeQuantities[i + 1])
-                            {
-                                priceAtTime = orderedMilestones[i].Price;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            // Nếu số lượng đặt vượt qua tất cả các mốc, lấy giá của mốc cuối cùng
-                            priceAtTime = orderedMilestones[i].Price;
-                        }
-                    }
+                    priceAtTime = CalculateBulkOrderPrice(orderedMilestones, placedOrderCount);
                 }
 
                 // Ánh xạ sang ResponsePreorderCampaignDetail
@@ -996,16 +742,7 @@ namespace PreOrderBlindBox.Services.Services
                     PriceAtTime = priceAtTime,
                     TotalQuantity = totalQuantity,
                     PlacedOrderCount = campaign.PlacedOrderCount,
-                    BlindBox = campaign.BlindBox != null ? new ResponseBlindBox
-                    {
-                        BlindBoxId = campaign.BlindBox.BlindBoxId,
-                        Name = campaign.BlindBox.Name,
-                        Description = campaign.BlindBox.Description,
-                        Size = campaign.BlindBox.Size,
-                        ListedPrice = campaign.BlindBox.ListedPrice,
-                        CreatedAt = campaign.BlindBox.CreatedAt,
-                        Images = images
-                    } : null,
+                    BlindBox = responseBlindBox,
                     PreorderMilestones = milestoneList
                         .Select(m => new ResponsePreorderMilestone
                         {
@@ -1048,30 +785,7 @@ namespace PreOrderBlindBox.Services.Services
                 var blindBox = campaign.BlindBox;
                 var responseBlindBox = _mapper.Map<ResponseBlindBox>(blindBox);
 
-                // Lấy hình ảnh qua ImageRepository
-                var mainImage = await _imageRepo.GetMainImageByBlindBoxID(blindBox.BlindBoxId);
-                var galleryImages = await _imageRepo.GetAllImageByBlindBoxID(blindBox.BlindBoxId);
-
-                responseBlindBox.Images = new ResponseImageSplit
-                {
-                    MainImage = mainImage != null ? new ResponseImageModel
-                    {
-                        ImageId = mainImage.ImageId,
-                        Url = mainImage.Url,
-                        IsMainImage = mainImage.IsMainImage,
-                        CreatedAt = mainImage.CreatedAt
-                    } : null,
-                    GalleryImages = galleryImages
-                        .Where(img => !img.IsMainImage)
-                        .Select(img => new ResponseImageModel
-                        {
-                            ImageId = img.ImageId,
-                            Url = img.Url,
-                            IsMainImage = img.IsMainImage,
-                            CreatedAt = img.CreatedAt
-                        })
-                        .ToList()
-                };
+                responseBlindBox.Images = await BuildResponseImageSplit(blindBox.BlindBoxId);
 
                 result.Add(new ResponseSearchPreorderCampaign
                 {

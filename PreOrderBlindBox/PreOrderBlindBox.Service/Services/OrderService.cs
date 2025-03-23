@@ -1,4 +1,5 @@
-﻿using PreOrderBlindBox.Data.Commons;
+﻿using Microsoft.AspNetCore.SignalR;
+using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Data.Entities;
 using PreOrderBlindBox.Data.Enum;
 using PreOrderBlindBox.Data.IRepositories;
@@ -9,6 +10,7 @@ using PreOrderBlindBox.Services.DTO.RequestDTO.TransactionRequestModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.UserVoucherModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.CartResponseModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.OrderResponseModel;
+using PreOrderBlindBox.Services.Hubs;
 using PreOrderBlindBox.Services.IServices;
 using PreOrderBlindBox.Services.Mappers.OrderMapper;
 using PreOrderBlindBox.Services.Mappers.TempCampaignBulkOrderMapper;
@@ -16,7 +18,7 @@ using PreOrderBlindBox.Services.Utils;
 
 namespace PreOrderBlindBox.Services.Services
 {
-	public class OrderService : IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailService _orderDetailService;
@@ -30,6 +32,7 @@ namespace PreOrderBlindBox.Services.Services
         private readonly ITempCampaignBulkOrderService _tempCampaignBulkOrderService;
         private readonly ITempCampaignBulkOrderDetailService _tempCampaignBulkOrderDetailService;
         private readonly IPreorderCampaignRepository _preorderCampaignRepository;
+        private readonly IHubContext<OrderInCampaignHub> _hubContextOrderInCampaignHub;
 
         public OrderService(
             IOrderRepository orderRepository, ICartService cartService,
@@ -40,7 +43,8 @@ namespace PreOrderBlindBox.Services.Services
             ITransactionService transactionService,
             ITempCampaignBulkOrderService tempCampaignBulkOrderService,
             ITempCampaignBulkOrderDetailService tempCampaignBulkOrderDetailService,
-        IPreorderCampaignRepository preorderCampaignRepository
+        IPreorderCampaignRepository preorderCampaignRepository,
+        IHubContext<OrderInCampaignHub> hubContextOrderInCampaignHub
             )
         {
             _orderRepository = orderRepository;
@@ -55,6 +59,7 @@ namespace PreOrderBlindBox.Services.Services
             _tempCampaignBulkOrderService = tempCampaignBulkOrderService;
             _preorderCampaignRepository = preorderCampaignRepository;
             _tempCampaignBulkOrderDetailService = tempCampaignBulkOrderDetailService;
+            _hubContextOrderInCampaignHub = hubContextOrderInCampaignHub;
         }
 
         public async Task CreateOrder(RequestCreateOrder requestCreateOrder)
@@ -124,10 +129,11 @@ namespace PreOrderBlindBox.Services.Services
                         throw new Exception("Not enough money in your wallet !");
                     await _preorderCampaignRepository.UpdateAsync(preorderCampaign);
                     await _unitOfWork.SaveChanges();
+                    _hubContextOrderInCampaignHub.Clients.Group(preorderCampaign.Slug).SendAsync("ReceiveOrderUpdate", preorderCampaign.PlacedOrderCount);
+
                 }
                 if (requestCreateOrder.RequestCreateCart.PreorderCampaignId == null)
                     await _cartService.UpdateStatusOfCartByCustomerID(customerId);
-
                 foreach (var staff in staffs)
                 {
                     var notificationForStaff = (new RequestCreateNotification()
@@ -140,6 +146,11 @@ namespace PreOrderBlindBox.Services.Services
 				}
                 await _notificationService.CreateNotification(listRequestCreateNotifications);
                 await _unitOfWork.CommitTransactionAsync();
+                foreach (var item in priceForCarts)
+                {
+                    int preorderCampaignId = (int)item.responseCarts.FirstOrDefault().PreorderCampaignId;
+                    await _hubContextOrderInCampaignHub.Clients.Group("Cart_Preordercampaign").SendAsync("CampaignUpdated", preorderCampaignId);
+                }
             }
             catch (Exception ex)
             {
@@ -205,8 +216,8 @@ namespace PreOrderBlindBox.Services.Services
 			await _unitOfWork.BeginTransactionAsync();
             try
             {
-				var staffs = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).ToList();
-				var order = await _orderRepository.GetByIdAsync(orderId);
+                var staffs = (await _userRepository.GetAll(filter: x => x.Role.RoleName == "Staff", includes: x => x.Role)).ToList();
+                var order = await _orderRepository.GetByIdAsync(orderId);
                 if (order == null)
                 {
                     throw new ArgumentException("Order not found");

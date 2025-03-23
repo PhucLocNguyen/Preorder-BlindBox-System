@@ -53,12 +53,6 @@ namespace PreOrderBlindBox.Services.Services
                 throw new ArgumentException("Preorder campaign not found or has been deleted.");
             }
 
-            // Kiểm tra MilestoneNumber chỉ có thể là 1, 2 hoặc 3
-            /*if (createPreorderMilestoneRequest.MilestoneNumber < 1 || createPreorderMilestoneRequest.MilestoneNumber > 3)
-            {
-                throw new ArgumentException("MilestoneNumber must be 1, 2, or 3.");
-            }*/
-
             if (createPreorderMilestoneRequest.Quantity <= 0 || createPreorderMilestoneRequest.Price <= 0)
             {
                 throw new ArgumentException("Quantity and Price must be larger than 0.");
@@ -90,6 +84,78 @@ namespace PreOrderBlindBox.Services.Services
             await _preorderMilestoneRepo.InsertAsync(milestone);
             return await _unitOfWork.SaveChanges();
 
+        }
+
+        public async Task<int> AddPreorderMilestonesAsync(List<CreatePreorderMilestoneRequest> createPreorderMilestoneRequests)
+        {
+            if (createPreorderMilestoneRequests == null || !createPreorderMilestoneRequests.Any())
+            {
+                throw new ArgumentNullException("Invalid request data");
+            }
+
+            // Danh sách chứa các milestone sẽ được thêm vào cơ sở dữ liệu
+            var milestonesToInsert = new List<PreorderMilestone>();
+
+            // Nhóm các request theo PreorderCampaignId để xử lý riêng từng campaign
+            var groupedRequests = createPreorderMilestoneRequests.GroupBy(x => x.PreorderCampaignId);
+
+            foreach (var group in groupedRequests)
+            {
+                var campaignId = group.Key;
+                // Lấy thông tin campaign của group hiện tại
+                var campaign = await _preorderCampaignRepo.GetByIdAsync(campaignId);
+                if (campaign == null || campaign.IsDeleted)
+                {
+                    throw new ArgumentException("Preorder campaign not found or has been deleted.");
+                }
+
+                // Lấy danh sách các milestone đã có cho campaign này
+                var existingMilestones = await GetAllPreorderMilestoneByPreorderCampaignID(campaignId);
+                var existingMilestoneNumbers = new HashSet<int>(existingMilestones.Select(m => m.MilestoneNumber));
+
+                // Duyệt qua từng request của campaign hiện tại để validate
+                foreach (var request in group)
+                {
+                    if (request == null)
+                    {
+                        throw new ArgumentNullException("One of the requests is invalid.");
+                    }
+
+                    if (request.Quantity <= 0 || request.Price <= 0)
+                    {
+                        throw new ArgumentException("Quantity and Price must be larger than 0.");
+                    }
+
+                    // Kiểm tra milestone đã tồn tại trong database chưa
+                    if (existingMilestoneNumbers.Contains(request.MilestoneNumber))
+                    {
+                        throw new ArgumentException($"Milestone number {request.MilestoneNumber} had exist for campaign {campaignId}.");
+                    }
+
+                    // Validate theo loại campaign
+                    if (campaign.Type == PreorderCampaignType.TimedPricing.ToString())
+                    {
+                        ValidatePreorderMilestone(request, existingMilestones);
+                    }
+                    else if (campaign.Type == PreorderCampaignType.BulkOrder.ToString())
+                    {
+                        ValidatePreorderMilestoneTypeTow(request, existingMilestones);
+                    }
+                }
+
+                // Sau khi validate thành công, ánh xạ các request thành đối tượng milestone và thêm vào danh sách cần insert
+                foreach (var request in group)
+                {
+                    var milestone = _mapper.Map<PreorderMilestone>(request);
+                    milestonesToInsert.Add(milestone);
+                    // Cập nhật danh sách đã có để các validate sau có thể tham chiếu nếu cần
+                    existingMilestones.Add(milestone);
+                }
+            }
+
+            // Insert tất cả các milestone một lần
+            await _preorderMilestoneRepo.InsertAsync(milestonesToInsert);
+            return await _unitOfWork.SaveChanges();
         }
 
         public async Task<bool> DeletePreorderMilestone(int id)
