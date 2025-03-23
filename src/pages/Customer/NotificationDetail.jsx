@@ -1,17 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { GetNotificationById } from '../../../api/Notification/ApiNotification';
-import { Bell } from 'lucide-react';
-import { CountNotificationIsNotRead } from '../../../api/Notification/ApiNotification';
+import { GetNotificationById } from '../../api/Notification/ApiNotification';
+import { CountNotificationIsNotRead } from '../../api/Notification/ApiNotification';
 
-const NotificationDetailView = () => {
+const NotificationDetail = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const { id } = useParams();
     const [notificationById, setNotificationById] = useState([]);
     const [createdDate, setCreatedDate] = useState([]);
-    const [unreadCount, setUnreadCount] = useState(0);
     const fetchNotificationById = useCallback(async () => {
         try {
             const result = await GetNotificationById(id);
@@ -19,7 +16,8 @@ const NotificationDetailView = () => {
                 console.log("result: ", result)
                 setNotificationById(result);
                 setCreatedDate(formatDate(result.createdDate));
-                console.log("unreadCount: ", unreadCount)
+
+                window.dispatchEvent(new Event('notificationRead'));
             }
 
         } catch (error) {
@@ -27,18 +25,8 @@ const NotificationDetailView = () => {
             setNotificationById([]);
         }
     })
-    const fetchUnreadCount = useCallback(async () => {
-        try {
-            const result = await CountNotificationIsNotRead();
-            setUnreadCount(result);
-        } catch (error) {
-            console.error("Fetch unread count Error:", error);
-            setUnreadCount(0);
-        }
-    }, []);
     useEffect(() => {
         fetchNotificationById()
-        fetchUnreadCount()
     }, []);
 
     const formatDate = (dateString) => {
@@ -55,18 +43,10 @@ const NotificationDetailView = () => {
 
 
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-white h-auto">
             <div className="container mx-auto px-4 py-6">
                 <header className="flex items-center justify-between mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">Thông báo nhân viên</h1>
-                    <div className="relative">
-                        <Bell className="h-6 w-6 text-gray-600" />
-                        {unreadCount > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                {unreadCount > 99 ? '99+' : unreadCount}
-                            </span>
-                        )}
-                    </div>
+                    <h1 className="text-2xl font-bold text-gray-800">Thông báo của khách hàng</h1>
                 </header>
                 <div className="bg-white rounded-lg shadow">
                     <div className="p-4 border-b border-gray-200 flex items-center">
@@ -98,6 +78,6 @@ const NotificationDetailView = () => {
             </div>
         </div>
     )
-}
+};
 
-export default NotificationDetailView
+export default NotificationDetail
