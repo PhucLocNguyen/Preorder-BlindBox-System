@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
-import { GetRevenueByTime, GetTopThreeCampaign, GetLastMonthComparison } from "../../api/DashBoard/ApiDashBoard";
+import { GetRevenueByTime, GetTopThreeCampaign, GetLastMonthComparison, GetMonthlyReport_byYear } from "../../api/DashBoard/ApiDashBoard";
 import { GetWallet } from "../../api/Wallet/ApiWallet";
 import { FaMedal } from "react-icons/fa";
 import { formatMoney } from "../../utils/FormatMoney";
@@ -10,22 +10,38 @@ const { RangePicker } = DatePicker;
 const Dashboard = () => {
     const [lastMonthComparison, setLastMonthComparison] = useState({});
     const [wallet, setWallet] = useState({});
-    // Bar Chart (Total orders per month)
-    const barChartOptions = {
-        chart: { id: "monthly-total_orders" },
-        xaxis: {
-            categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        },
-    };
+    const [monthlyReport, setMonthlyReport] = useState([]);
 
-    const barChartSeries = [
-        { name: "Total orders", data: [100, 300, 150, 250, 170, 200, 260, 120, 180, 320, 220, 90] },
-    ];
-
-    // Line Chart (Statistics)
     const [dateRange, setDateRange] = useState([null, null]);
     const [revenueData, setRevenueData] = useState([]);
     const [TopCampaigns, setTopCampaigns] = useState([])
+    // call Api 
+
+    const fetchMonthlyReport_byYear = async (selectedYear) => {
+        try {
+            const authData = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('auth='))?.split('=')[1];
+
+            if (!authData) {
+                console.error("Không tìm thấy accessToken!");
+                return;
+            }
+
+            const { accessToken } = JSON.parse(authData);
+            const data = await GetMonthlyReport_byYear(accessToken, selectedYear);
+
+            const ordersPerMonth = Array(12).fill(0);
+            data.forEach((item) => {
+                const monthIndex = item.month - 1;
+                ordersPerMonth[monthIndex] = item.order;
+            });
+
+            setMonthlyReport(ordersPerMonth);
+        } catch (error) {
+            console.error("Lỗi khi lấy báo cáo hàng tháng:", error);
+        }
+    };
     useEffect(() => {
         const fetchRevenueData = async () => {
             if (dateRange[0] && dateRange[1]) {
@@ -85,6 +101,11 @@ const Dashboard = () => {
             }
         };
 
+        // Gọi API khi dateRange thay đổi
+        if (Array.isArray(dateRange) && dateRange.length > 0 && dateRange[0]) {
+            const selectedYear = dateRange[0].year();
+            fetchMonthlyReport_byYear(selectedYear);
+        }
         fetchWallet();
         fetchLastMonthComparison();
         fetchRevenueData();
@@ -92,6 +113,34 @@ const Dashboard = () => {
 
     }, [dateRange]);
 
+    // Bar Chart (Total orders per month)
+    const barChartOptions = {
+        chart: { id: "monthly-total_orders" },
+        xaxis: {
+            categories: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], // Sử dụng số thay vì chữ
+            labels: {
+                formatter: (value) => value.toString(), // Chuyển thành chuỗi để hiển thị đúng
+            },
+        },
+        yaxis: {
+            min: 0,
+            max: 30, // Điều chỉnh theo giá trị lớn nhất
+            tickAmount: 6, // Chia trục y thành các phần 0, 5, 10, 15, 20, 25, 30
+            labels: {
+                formatter: (value) => Math.round(value), // Đảm bảo hiển thị số nguyên
+            },
+        },
+        dataLabels: {
+            enabled: false, // Tắt hiển thị số trên thanh
+        },
+    };
+
+
+
+    const barChartSeries = [
+        { name: "Total orders", data: monthlyReport },
+    ];
+    // Line Chart (Statistics)
     // // Generate sample data for last 5 years to next 5 years
     // const startDate = dayjs().subtract(5, "year");
     // const endDate = dayjs().add(5, "year");
@@ -125,7 +174,7 @@ const Dashboard = () => {
         },
         tooltip: {
             y: {
-                formatter: (value) => value.toLocaleString(), // Hiển thị giá trị trong tooltip đúng format
+                formatter: (value) => value.toLocaleString(),
             },
         },
     };
@@ -220,7 +269,7 @@ const Dashboard = () => {
                                 <div
                                     className="w-20 flex items-center justify-center text-white font-bold text-xl rounded-lg shadow-lg"
                                     style={{
-                                        height: `${Math.max(40, campaign.totalOrder * 40)}px`,
+                                        height: `${Math.max(10, campaign.totalOrder * 10)}px`,
                                         background: campaign.color
                                     }}
                                 >

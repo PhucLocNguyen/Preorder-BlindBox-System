@@ -46,7 +46,7 @@ function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
             alt="Product"
           />
           <div className="ml-4">
-            <p className="text-gray-700"><Text className="font-medium text-md" >{name}</Text></p>
+            <p className="text-gray-700 line-clamp-2"><Text className="font-medium text-md" >{name}</Text></p>
           </div>
         </div>
       </td>
