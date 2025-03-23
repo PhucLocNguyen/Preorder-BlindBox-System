@@ -110,7 +110,7 @@ const OrdersView = () => {
                                             className={`px-2 py-2 ${data.status === 'Delivered' ? 'text-green-500' : 'text-red-500'
                                                 }`}
                                         >
-                                            {data.status === 'Delivered' ? 'Đã giao hàng' : 'Chưa giao hàng'}
+                                            {data.status}
                                         </td>
                                         <td className="px-2 py-2 text-center align-middle">
                                             <Dropdown
