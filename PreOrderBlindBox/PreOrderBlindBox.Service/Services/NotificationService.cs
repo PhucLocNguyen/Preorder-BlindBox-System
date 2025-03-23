@@ -32,14 +32,17 @@ namespace PreOrderBlindBox.Services.Services
 			return result.Count();
 		}
 
-		public async Task<ResponseNotification> CreatNotification(RequestCreateNotification requestCreateNotification)
+		public async Task<bool> CreateNotification(List<RequestCreateNotification> requestCreateNotifications)
         {
             try
             {
-                var NotificationEntity = requestCreateNotification.toNotificationEntity();
-                await _notificationRepository.InsertAsync(NotificationEntity);
+                foreach (var item in requestCreateNotifications)
+                {
+					var NotificationEntity = item.toNotificationEntity();
+					await _notificationRepository.InsertAsync(NotificationEntity);
+				}
                 await _unitOfWork.SaveChanges();
-                return NotificationEntity.toNotificationResponse();
+                return true;
             }
             catch (Exception ex)
             {
