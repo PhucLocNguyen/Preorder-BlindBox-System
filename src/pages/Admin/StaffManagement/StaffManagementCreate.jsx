@@ -1,17 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, Input, Card } from "antd";
-import { CreateStaffAccount } from "../../../api/StaffManagement/ApiStaffManager";
+import { CreateStaffAccount, GetAllStaff } from "../../../api/StaffManagement/ApiStaffManager";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const StaffManagementCreate = ({ onSuccess }) => {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [form] = Form.useForm();
     const navigate = useNavigate();
+    const [existingEmails, setExistingEmails] = useState([]);
+    const fetchAllStaffEmails = async () => {
+        try {
+            const response = await GetAllStaff();
 
+            return response.map((staff) => staff.email); // Trả về mảng email
+        } catch (error) {
+            console.error("Lỗi lấy danh sách nhân viên:", error);
+            return [];
+        }
+    };
+
+    useEffect(() => {
+        const loadEmails = async () => {
+            const emails = await fetchAllStaffEmails();
+            setExistingEmails(emails);
+        };
+        loadEmails();
+    }, []);
     const handleSubmit = async (values) => {
-        setLoading(true);
+        // setLoading(true);
 
         const payload = {
             fullName: values.fullName,
@@ -26,8 +44,9 @@ const StaffManagementCreate = ({ onSuccess }) => {
 
             const response = await CreateStaffAccount(payload, config);
             console.log(response);
-            toast.success("Staff account created successfully!");
+
             if (response) {
+                toast.success("Staff account created successfully!");
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
@@ -57,10 +76,14 @@ const StaffManagementCreate = ({ onSuccess }) => {
                     <Form.Item
                         label="Họ và tên"
                         name="fullName"
-                        rules={[{ required: true, message: "Please enter full name!" }]}
+                        rules={[{ required: true, message: "Vui lòng nhập họ và tên!" },
+                        {
+                            pattern: /^[\p{L}\s]+$/u,
+                            message: "Họ và Tên chỉ được chứa chữ cái!"
+                        }]}
                     >
                         <Input
-                            placeholder="Enter full name"
+                            placeholder="Nhập họ và tên"
                             className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
                         />
                     </Form.Item>
@@ -69,26 +92,35 @@ const StaffManagementCreate = ({ onSuccess }) => {
                         label="Email"
                         name="email"
                         rules={[
-                            { required: true, message: "Please enter email!" },
-                            { type: "email", message: "Invalid email format!" },
+                            { required: true, message: "Vui lòng nhập email!" },
+                            { type: "email", message: "Email không hợp lệ!" },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value) return Promise.resolve();
+                                    if (existingEmails.includes(value)) {
+                                        return Promise.reject(new Error("Email này đã tồn tại!"));
+                                    }
+                                    return Promise.resolve();
+                                },
+                            }),
                         ]}
                     >
-                        <Input
-                            placeholder="Enter email"
+                        <Input placeholder="Nhập email"
                             className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
                         />
                     </Form.Item>
+
 
                     <Form.Item
                         label="Mật khẩu"
                         name="password"
                         rules={[
-                            { required: true, message: "Please enter password!" },
+                            { required: true, message: "Vui lòng nhập mật khẩu!" },
                             { min: 6, message: "Password must be at least 6 characters!" },
                         ]}
                     >
                         <Input.Password
-                            placeholder="Enter password"
+                            placeholder="Nhập mật khẩu"
                             className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
                         />
                     </Form.Item>
@@ -99,20 +131,20 @@ const StaffManagementCreate = ({ onSuccess }) => {
                         name="confirmPassword"
                         dependencies={["password"]}
                         rules={[
-                            { required: true, message: "Please confirm password!" },
-                            { min: 6, message: "Password must be at least 6 characters!" },
+                            { required: true, message: "Vui lòng  xác nhận mật khẩu!" },
+                            { min: 6, message: "Mật khẩu bắt buộc ít nhất phải có 6 kí tự!" },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
                                     if (!value || getFieldValue("password") === value) {
                                         return Promise.resolve();
                                     }
-                                    return Promise.reject(new Error("Passwords do not match!"));
+                                    return Promise.reject(new Error("Mật khẩu không có khớp!"));
                                 },
                             }),
                         ]}
                     >
                         <Input.Password
-                            placeholder="Confirm password"
+                            placeholder="Xác nhận mật khẩu"
                             className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
                         />
                     </Form.Item>
@@ -120,10 +152,15 @@ const StaffManagementCreate = ({ onSuccess }) => {
                     <Form.Item
                         label="Địa chỉ"
                         name="address"
-                        rules={[{ required: true, message: "Please enter address!" }]}
+                        rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" },
+                        {
+                            pattern: /^[\p{L}\d\s/,.-]+$/u,
+                            message: "Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng và các ký tự (/ , . -)!"
+                        }
+                        ]}
                     >
                         <Input
-                            placeholder="Enter address"
+                            placeholder="Nhập địa chỉ"
                             className="rounded-lg h-12 text-lg px-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
                         />
                     </Form.Item>

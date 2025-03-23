@@ -7,46 +7,24 @@ import { GetWallet } from "../../api/Wallet/ApiWallet";
 import { FaMedal } from "react-icons/fa";
 import { formatMoney } from "../../utils/FormatMoney";
 const { RangePicker } = DatePicker;
+
 const Dashboard = () => {
     const [lastMonthComparison, setLastMonthComparison] = useState({});
     const [wallet, setWallet] = useState({});
     const [monthlyReport, setMonthlyReport] = useState([]);
-
-    const [dateRange, setDateRange] = useState([null, null]);
+    const [selectedYear, setSelectedYear] = useState(null);
+    const [dateRangeLineChart, setDateRangeLineChart] = useState([null, null]);
+    const [dateRangeTopCampaigns, setDateRangeTopCampaigns] = useState([null, null]);
     const [revenueData, setRevenueData] = useState([]);
     const [TopCampaigns, setTopCampaigns] = useState([])
+
+
     // call Api 
-
-    const fetchMonthlyReport_byYear = async (selectedYear) => {
-        try {
-            const authData = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('auth='))?.split('=')[1];
-
-            if (!authData) {
-                console.error("Không tìm thấy accessToken!");
-                return;
-            }
-
-            const { accessToken } = JSON.parse(authData);
-            const data = await GetMonthlyReport_byYear(accessToken, selectedYear);
-
-            const ordersPerMonth = Array(12).fill(0);
-            data.forEach((item) => {
-                const monthIndex = item.month - 1;
-                ordersPerMonth[monthIndex] = item.order;
-            });
-
-            setMonthlyReport(ordersPerMonth);
-        } catch (error) {
-            console.error("Lỗi khi lấy báo cáo hàng tháng:", error);
-        }
-    };
     useEffect(() => {
         const fetchRevenueData = async () => {
-            if (dateRange[0] && dateRange[1]) {
-                const fromDate = dateRange[0].format("YYYY-MM-DD");
-                const toDate = dateRange[1].format("YYYY-MM-DD");
+            if (dateRangeLineChart[0] && dateRangeLineChart[1]) {
+                const fromDate = dateRangeLineChart[0].format("YYYY-MM-DD");
+                const toDate = dateRangeLineChart[1].format("YYYY-MM-DD");
 
                 try {
                     const data = await GetRevenueByTime(fromDate, toDate);
@@ -58,9 +36,9 @@ const Dashboard = () => {
         };
 
         const fetchTopCampaigns = async () => {
-            if (dateRange[0] && dateRange[1]) {
-                const fromDate = dateRange[0].format("YYYY-MM-DD");
-                const toDate = dateRange[1].format("YYYY-MM-DD");
+            if (dateRangeTopCampaigns[0] && dateRangeTopCampaigns[1]) {
+                const fromDate = dateRangeTopCampaigns[0].format("YYYY-MM-DD");
+                const toDate = dateRangeTopCampaigns[1].format("YYYY-MM-DD");
 
                 try {
                     const data = await GetTopThreeCampaign(fromDate, toDate);
@@ -101,17 +79,78 @@ const Dashboard = () => {
             }
         };
 
+        const fetchMonthlyReport_byYear = async () => {
+            try {
+                const authData = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('auth='))?.split('=')[1];
+
+                if (!authData) {
+                    console.error("Không tìm thấy accessToken!");
+                    return;
+                }
+
+                const { accessToken } = JSON.parse(authData);
+                const data = await GetMonthlyReport_byYear(accessToken, selectedYear);
+
+                const ordersPerMonth = Array(12).fill(0);
+                data.forEach((item) => {
+                    const monthIndex = item.month - 1;
+                    ordersPerMonth[monthIndex] = item.order;
+                });
+
+                setMonthlyReport(ordersPerMonth);
+            } catch (error) {
+                console.error("Lỗi khi lấy báo cáo hàng tháng:", error);
+            }
+        };
         // Gọi API khi dateRange thay đổi
-        if (Array.isArray(dateRange) && dateRange.length > 0 && dateRange[0]) {
-            const selectedYear = dateRange[0].year();
-            fetchMonthlyReport_byYear(selectedYear);
-        }
+        fetchMonthlyReport_byYear();
         fetchWallet();
         fetchLastMonthComparison();
         fetchRevenueData();
         fetchTopCampaigns();
 
-    }, [dateRange]);
+    }, [dateRangeLineChart, dateRangeTopCampaigns, selectedYear]);
+
+    // Get the year
+    const handleDateChange = (date, dateString) => {
+        console.log("Selected Date:", date, dateString);
+        if (date) {
+            setSelectedYear(dayjs(date).year()); // Get the year
+        }
+        if (!date) {
+            setMonthlyReport([]);
+        }
+
+    }
+
+    // Giới hạn năm từ năm hiện tại đến 2 năm sau
+    const DisabledDate = (current) => {
+        const currentYear = dayjs().year();
+        return current.year() < currentYear || current.year() > currentYear + 2;
+    };
+    // Get Date in date range
+    const handleDateLineChart = (dates) => {
+        if (dates)
+            setDateRangeLineChart(dates); // Nếu bỏ chọn
+        else if (!dates) {
+            setDateRangeLineChart([null, null]);
+            setRevenueData([]);
+        }
+
+    };
+
+    const handleDateTopCampaign = (dates) => {
+        if (dates)
+            setDateRangeTopCampaigns(dates); // Nếu bỏ chọn
+        else if (!dates) {
+            setDateRangeTopCampaigns([null, null]);
+            setTopCampaigns([]);
+        }
+
+    };
+
 
     // Bar Chart (Total orders per month)
     const barChartOptions = {
@@ -174,6 +213,7 @@ const Dashboard = () => {
         },
         tooltip: {
             y: {
+
                 formatter: (value) => value.toLocaleString(),
             },
         },
@@ -213,15 +253,9 @@ const Dashboard = () => {
         <div className="dashboard-container overflow-auto h-screen pr-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 scrollbar-thumb-opacity-80">
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Dashboard</h2>
+                <h2 className="text-2xl font-bold">Thống Kê</h2>
             </div>
-            {/* Date Range Picker */}
-            <div className="my-4">
-                <RangePicker
-                    onChange={(dates) => setDateRange(dates)}
-                    format="YYYY-MM-DD"
-                />
-            </div>
+
             {/* Main Content */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch h-[500px]">
                 {/* Left Side */}
@@ -244,15 +278,34 @@ const Dashboard = () => {
 
                     </div>
 
-                    {/* Monthly Sales Chart */}
+                    {/* Total orders Chart */}
                     <div className="p-4 bg-white rounded-lg shadow flex-1 overflow-hidden">
-                        <h3 className="text-lg font-bold">Tổng số đơn hàng trong 1 năm </h3>
+                        <div className="flex justify-start space-x-4">
+                            <h3 className="text-lg font-bold">Tổng số đơn hàng trong 1 năm </h3>
+
+                            <DatePicker
+                                onChange={handleDateChange}
+                                picker="year" // Ensure correct picker type
+                                format="YYYY"
+                                allowClear
+                                disabledDate={DisabledDate} // Giới hạn năm chọn
+                            />
+                        </div>
                         <Chart options={barChartOptions} series={barChartSeries} type="bar" height={250} />
                     </div>
                 </div>
 
                 {/* Right Side - Top 3 Campaigns */}
                 <div className="p-6 bg-white rounded-lg shadow text-center flex flex-col h-full">
+                    {/* Date Range Picker */}
+                    <div className="mb-10 flex justify-center">
+                        <RangePicker
+                            onChange={handleDateTopCampaign}
+                            format="YYYY-MM-DD"
+                            allowClear
+                            disabledDate={DisabledDate} // Giới hạn năm chọn
+                        />
+                    </div>
                     <h2 className="text-3xl font-bold mb-2">Top 3 chiến dịch nổi bật</h2>
                     <p className="text-gray-600 text-sm mb-4">Các Chiến dịch có số đơn hàng cao nhất</p>
 
@@ -285,9 +338,14 @@ const Dashboard = () => {
             <div className="p-4 bg-white rounded-lg shadow mt-6">
                 <h3 className="text-lg font-bold">Thống kê doanh thu</h3>
                 <p className="text-gray-600">Xem doanh thu trong khoảng thời gian cụ thể</p>
-
-
-
+                <div className="mt-2">
+                    <RangePicker
+                        allowClear
+                        onChange={handleDateLineChart}
+                        format="YYYY-MM-DD"
+                        disabledDate={DisabledDate} // Giới hạn năm chọn
+                    />
+                </div>
                 {/* Revenue Line Chart */}
                 <Chart options={lineChartOptions} series={lineChartSeries} type="line" height={300} />
             </div>
