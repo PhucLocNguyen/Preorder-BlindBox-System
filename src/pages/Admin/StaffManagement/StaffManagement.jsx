@@ -17,21 +17,21 @@ const StaffManagement = () => {
     const [isModalVisibleCreate, setIsModalVisibleCreate] = useState(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [sortOrder, setSortOrder] = useState(null);
 
+    const fetchStaffData = async () => {
+        setLoading(true);
+        try {
+            const response = await GetAllStaff();
+            setStaffData(response);
+            console.log(response);
+        } catch (error) {
+            console.error("Error fetching staff data:", error);
+        }
+        setLoading(false);
+    };
     useEffect(() => {
-        const fetchStaffData = async () => {
-            setLoading(true);
-            try {
-                const response = await GetAllStaff();
-                setStaffData(response);
-                console.log(response);
-            } catch (error) {
-                console.error("Error fetching staff data:", error);
-            }
-            setLoading(false);
-        };
         fetchStaffData();
     }, []);
 
@@ -60,9 +60,11 @@ const StaffManagement = () => {
         try {
             const response = await DeleteStaff(userToDelete.userId);
             message.success(`User "${userToDelete.fullName}" has been deleted.`);
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 1000);
+            fetchStaffData();
+
         } catch (error) {
             message.error("Failed to delete staff!");
             console.error("Lỗi khi xóa staff:", error);

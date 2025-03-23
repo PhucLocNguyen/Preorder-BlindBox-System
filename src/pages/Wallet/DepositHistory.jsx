@@ -7,11 +7,14 @@ import { GetTransactions, GetWallet } from "../../api/Wallet/ApiWallet";
 import { Link } from "react-router-dom";
 import dayjs from 'dayjs';
 import { formatMoney } from '../../utils/FormatMoney';
+import CircularChart from "../../components/Chart/CircularChart";
 const DepositHistory = () => {
     const [pageSize, setPageSize] = useState(5);
     const [pageIndex, setPageIndex] = useState(1);
+    // Nếu hôm nay là tháng 3 thì sẽ in ra 2 (vì chỉ mục bắt đầu từ 0)
+    // In ra 3, tức là tháng thực tế
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-    const [selectedYear, setSelectedYear] = useState(dayjs().year());
+    const [selectedYear, setSelectedYear] = useState(null);
     const [wallet, setWallet] = useState({});
     const [selectedTransaction, setSelectedTransaction] = useState({});
     const Month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -82,11 +85,17 @@ const DepositHistory = () => {
         // fetchWallet();
         fetchTransaction();
     }, [selectedMonth, selectedYear]);
+    // Get the year
     const handleDateChange = (date, dateString) => {
         console.log("Selected Date:", date, dateString);
         if (date) {
-            setSelectedYear(dayjs(date).year()); // Get the year
+            setSelectedYear(dayjs(date).year());
         }
+    };
+    // Giới hạn năm từ năm hiện tại đến 2 năm sau
+    const DisabledDate = (current) => {
+        const currentYear = dayjs().year();
+        return current.year() < currentYear || current.year() > currentYear + 2;
     };
     const columns = [
         {
@@ -212,14 +221,15 @@ const DepositHistory = () => {
                             onChange={handleDateChange}
                             picker="year" // Ensure correct picker type
                             format="YYYY"
+                            disabledDate={DisabledDate} // Giới hạn năm chọn
                         />
                     </div>
 
                 </div>
 
-                {/* Daily, Weekly, Monthly Stats */}
+
                 <div className="mt-6 grid grid-cols-3 gap-6 text-center text-gray-600">
-                    {/* Số dư hiện tại */}
+                    {/* Tổng số tiền đã hoàn trả */}
                     <div className="border rounded-lg p-4 shadow-md flex flex-col items-center">
                         <p className="text-xl">Tổng số tiền đã hoàn trả</p>
                         <p className="text-2xl font-bold min-h-[50px] mt-2">{formatMoney(selectedTransaction.totalRefundAtTime)}</p>
@@ -237,21 +247,24 @@ const DepositHistory = () => {
                         <p className="text-2xl font-bold min-h-[50px]">{formatMoney(selectedTransaction.totalPayAtTime)}</p>
                     </div>
                 </div>
+                {/* Số dư hiện tại */}
                 {/* Circular Chart */}
                 <div className="mt-6 flex items-center justify-center relative scale-100">
                     <div className="relative w-72 h-72 flex items-center justify-center">
-                        <svg className="absolute w-full h-full" viewBox="0 0 100 100">
+                        {/* <svg className="absolute w-full h-full" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="45" stroke="#E67E22" strokeWidth="6" fill="none" strokeDasharray="40,100" />
                             <circle cx="50" cy="50" r="45" stroke="#3498DB" strokeWidth="6" fill="none" strokeDasharray="60,100" strokeDashoffset="-40" />
-                        </svg>
+                        </svg> */}
                         <div className="text-center px-2">
-                            <p className="text-4xl font-bold text-gray-900">{formatMoney(selectedTransaction.balanceAtTime)}</p>
-                            <p className="text-base text-gray-500">Số dư hiện tại</p>
+                            <CircularChart value={selectedTransaction.balanceAtTime} />
+
+                            {/* <p className="text-4xl font-bold text-gray-900">{formatMoney(selectedTransaction.balanceAtTime)}</p>
+                            <p className="text-base text-gray-500">Số dư hiện tại</p> */}
                         </div>
                     </div>
                 </div>
 
-                {/* Income & Expense */}
+                {/* Tổng tiền đã rút & Tổng tiền đã nạp */}
                 <div className="mt-20 flex justify-between items-center space-x-4 scale-100">
                     <div className="flex items-center bg-orange-100 text-orange-700 px-6 py-4 rounded-xl">
                         <span className="text-2xl">↓</span>
