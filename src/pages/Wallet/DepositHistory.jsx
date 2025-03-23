@@ -221,6 +221,7 @@ const DepositHistory = () => {
                             onChange={handleDateChange}
                             picker="year" // Ensure correct picker type
                             format="YYYY"
+                            placeholder="Chọn năm"
                             disabledDate={DisabledDate} // Giới hạn năm chọn
                         />
                     </div>

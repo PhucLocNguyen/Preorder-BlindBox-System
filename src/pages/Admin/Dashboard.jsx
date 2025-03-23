@@ -288,6 +288,7 @@ const Dashboard = () => {
                                 picker="year" // Ensure correct picker type
                                 format="YYYY"
                                 allowClear
+                                placeholder="Chọn năm"
                                 disabledDate={DisabledDate} // Giới hạn năm chọn
                             />
                         </div>
@@ -303,6 +304,7 @@ const Dashboard = () => {
                             onChange={handleDateTopCampaign}
                             format="YYYY-MM-DD"
                             allowClear
+                            placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
                             disabledDate={DisabledDate} // Giới hạn năm chọn
                         />
                     </div>
@@ -343,6 +345,7 @@ const Dashboard = () => {
                         allowClear
                         onChange={handleDateLineChart}
                         format="YYYY-MM-DD"
+                        placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
                         disabledDate={DisabledDate} // Giới hạn năm chọn
                     />
                 </div>

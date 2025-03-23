@@ -151,6 +151,7 @@ const VoucherEdit = () => {
                                 <RangePicker
                                     showTime
                                     format="YYYY-MM-DD HH:mm:ss"
+                                    placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
                                     className="w-full text-lg p-3 rounded-lg"
                                     disabled={status !== "Pending"}
 
