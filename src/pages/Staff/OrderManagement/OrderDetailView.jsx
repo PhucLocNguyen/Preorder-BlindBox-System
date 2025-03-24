@@ -302,9 +302,9 @@ const OrderDetailView = () => {
                                         </div>
                                         <div className="flex justify-between">
                                             <p>Giảm giá ({userVoucherById.length === 0 ? '0' : userVoucherById.percentDiscount}%)</p>
-                                            <p>{userVoucherById.length === 0 ? '0' :
+                                            <p>({userVoucherById.length === 0 ? '0' :
                                                 (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100) > userVoucherById.maximumMoneyDiscount
-                                                    ? userVoucherById.maximumMoneyDiscount : (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100)} VND
+                                                    ? userVoucherById.maximumMoneyDiscount : (orderDetails.reduce((acc, item) => acc + item.amount, 0)) * (userVoucherById.percentDiscount / 100)}) VND
                                             </p>
                                         </div>
                                         <div className="flex justify-between font-bold">

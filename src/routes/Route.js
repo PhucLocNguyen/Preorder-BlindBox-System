@@ -1,3 +1,4 @@
+import { path } from "framer-motion/client";
 import { Fragment, lazy } from "react";
 
 const PreorderCampaignCreate = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignCreate"));
@@ -40,6 +41,8 @@ const ForgotPassword = lazy(() => import("../pages/Account/ForgotPassword"));
 const SendEmailForgotPassword = lazy(() => import("../pages/Account/SendEmailForgotPassword"));
 const AddNewPassword = lazy(() => import("../pages/Account/AddNewPassword"));
 const MyVoucher = lazy(() => import("../pages/Customer/MyVoucher"));
+const Notifications = lazy(() => import("../pages/Customer/Notifications"));
+const NotificationDetail = lazy(() => import("../pages/Customer/NotificationDetail"));
 
 const PreorderCampaignEdit = lazy(() => import("../pages/Admin/Pre-orderCampaign/PreorderCampaignEdit"));
 const ConfirmBuy = lazy(() => import("../pages/ConfirmBuy/ConfirmBuy"));
@@ -234,6 +237,18 @@ const privateRoutes = [
       { path: "product/edit/:id", component: ProductEditPage },
     ],
     role: ['Staff']
+  },
+  {
+    path: '/notifications',
+    component: Notifications,
+    layout: DefaultLayout,
+    role: ['Customer']
+  },
+  {
+    path: '/notifications/:id',
+    component: NotificationDetail,
+    layout: DefaultLayout,
+    role: ['Customer']
   },
   {
     path: '/cart',

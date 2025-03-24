@@ -1,13 +1,15 @@
 import { ChevronDown, LogOut, Search, ShoppingCart, User, Wallet } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
-import { useContext, useEffect } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 
 import logo from "../../assets/Header/logo.png"
+import { Bell } from 'lucide-react';
 import { AuthContext } from "../../context/AuthContext"
 import SearchImage from '../../assets/SearchInHeader/SanPham.jpg'
 import SearchInputInHeader from "../SearchCampaign/SearchInputInHeader"
 import { useCart } from "../../context/CartContext"
 import useLogout from "../../hooks/useLogout"
+import { CountNotificationIsNotRead } from "../../api/Notification/ApiNotification";
 
 export default function Header() {
 
@@ -15,6 +17,7 @@ export default function Header() {
     const { cartData, CallGetAllCart } = useCart()
     const navigation = useNavigate();
     const logout = useLogout();
+    const [unreadCount, setUnreadCount] = useState(0);
 
     console.log(auth);
 
@@ -26,11 +29,34 @@ export default function Header() {
     const handleMyOrder = () => {
         navigation("/my-order")
     }
+
+    const fetchUnreadCount = useCallback(async () => {
+        try {
+            const result = await CountNotificationIsNotRead();
+            console.log("result: ", result)
+            setUnreadCount(result);
+        } catch (error) {
+            console.error("Fetch unread count Error:", error);
+            setUnreadCount(0);
+        }
+    }, []);
+
     useEffect(() => {
         if (auth.roleName.toLowerCase() === 'customer') {
             CallGetAllCart()
+            fetchUnreadCount()
         }
-    }, [])
+        const handleNotificationRead = () => {
+            fetchUnreadCount(); // Gọi lại API để cập nhật số lượng chưa đọc
+        };
+
+        window.addEventListener('notificationRead', handleNotificationRead);
+
+        // Cleanup khi component unmount
+        return () => {
+            window.removeEventListener('notificationRead', handleNotificationRead);
+        };
+    }, [fetchUnreadCount])
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-white">
@@ -42,7 +68,7 @@ export default function Header() {
                         className="h-10 w-auto"
                     />
                 </Link>
-                <nav className="w-[50%]">
+                <nav className="w-[40%]">
                     <div className="hidden md:flex space-x-8 items-center float-right">
                         <Link to="/" className="text-[15px] font-medium hover:text-gray-600 flex items-center px-[20px] py-[10px] leading-[20px] ">
                             <p className=" text-[#333] text-[16px]">Trang chủ</p> <ChevronDown className="w-4 h-4" />
@@ -65,7 +91,7 @@ export default function Header() {
                     </div>
                 </nav>
 
-                <div className="w-[33%]">
+                <div className="w-[43%]">
                     <div className="float-right flex items-center space-x-4">
 
                         <SearchInputInHeader />
@@ -86,6 +112,18 @@ export default function Header() {
                                         <Wallet />
                                     </Link>
                                 </button>
+
+                                <button className="h-10 px-[5px] relative">
+                                    <Link to='/notifications'>
+                                        <Bell />
+                                        {unreadCount > 0 && (
+                                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                                {unreadCount > 99 ? '99+' : unreadCount}
+                                            </span>
+                                        )}
+                                    </Link>
+                                </button>
+
 
                                 <div className="pr-[2rem] group h-10 flex items-center">
                                     <Link

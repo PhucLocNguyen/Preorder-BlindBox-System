@@ -1,5 +1,6 @@
 import api from '../instance';
 import { axiosConfigHeader } from '../axiosConfigHeader';
+import { toast } from 'react-toastify';
 
 const GetAllCart = async () => {
   try {
@@ -30,6 +31,7 @@ const GetPriceInCart = async (requestCreateCart = {}, userVoucherDict = {}) => {
     }
   } catch (error) {
     console.error('>>> Api GetPriceInCart Error: ', error);
+    toast.error(error?.response?.data?.message);
     return []; // Trả về mảng rỗng để tránh lỗi khi sử dụng .map()
   }
 };
@@ -43,6 +45,7 @@ const UpdateQuantityInCart = async (requestCreateCart) => {
     }
   } catch (error) {
     console.error('>>> API UpdateQuantityInCart Error: ', error);
+    toast.error(error?.response?.data?.message);
     throw error;
   }
 };
