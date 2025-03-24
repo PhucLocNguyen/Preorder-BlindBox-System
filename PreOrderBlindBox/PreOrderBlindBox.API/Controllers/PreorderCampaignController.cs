@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
@@ -130,6 +131,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> DeletePreorderCampaign(int id)
         {
             try
@@ -148,6 +150,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPut("CancelPreorderCampaign/{id}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> CancelPreorderCampaign(int id)
         {
             try
@@ -172,6 +175,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPost("CreatePreorderCampaignWithMilestone")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> CreatePreoderCampaignWithMilestone([FromBody] CreatePreorderCampaignRequest requestCampaign)
         {
             try
@@ -198,6 +202,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPut("UpdatePreorderCampaignWithMilestone/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePreoderCampaignWithMilestone(int id, [FromBody] UpdatePreorderCampaignRequest requestCampaign)
         {
             try
@@ -223,35 +228,6 @@ namespace PreOrderBlindBox.API.Controllers
             }
         }
 
-        /*[HttpGet("Filter")]
-        public async Task<IActionResult> FilterPreorderCampaign([FromQuery] FilterPreorderCampaignRequest request, [FromQuery] PaginationParameter pagination)
-        {
-            try
-            {
-                var preorderCampaign = await _preorderCampaignService.FilterPreorderCampaignAsync(request, pagination);
-                if (preorderCampaign == null)
-                {
-                    return NotFound(new { message = "Preorder campaign not found." });
-                }
-                var metadata = new
-                {
-                    preorderCampaign.TotalCount,
-                    preorderCampaign.PageSize,
-                    preorderCampaign.CurrentPage,
-                    preorderCampaign.TotalPages,
-                    preorderCampaign.HasNext,
-                    preorderCampaign.HasPrevious
-                };
-
-                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-                return Ok(preorderCampaign);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-
-        }*/
 
         [HttpGet("similar-campaign/{id}")]
         public async Task<IActionResult> GetSimilarPreorderCampaign(int id)
