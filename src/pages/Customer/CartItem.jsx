@@ -11,28 +11,6 @@ function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
     setQuantity(item.quantity);
   }, [item.quantity]);
 
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    const num = parseInt(value, 10);
-    if (!isNaN(num)) {
-      setQuantity(num);
-    } else {
-      setQuantity(''); // Xóa nếu nhập không phải số
-    }
-  };
-
-  const handleInputBlur = () => {
-    // Sử dụng giá trị từ state, tức là số mới mà người dùng đã nhập.
-    const newQuantity = Math.max(quantity, 1);
-    console.log(newQuantity);
-    if (newQuantity !== item.quantity) {
-      // Gọi hàm updateQuantity ở parent với delta là hiệu giữa newQuantity và item.quantity
-      onUpdateQuantity(item.preorderCampaignId, newQuantity - item.quantity);
-    }
-    // Cập nhật lại state local, nếu backend trả về dữ liệu mới thì useEffect sẽ đồng bộ
-    setQuantity(newQuantity);
-  };
-
   const imageUrl = item.blindBox?.images?.mainImage?.url || '';
   const name = item.blindBox?.name || '';
 
@@ -66,8 +44,6 @@ function CartItem({ item, onUpdateQuantity, onRemoveItem }) {
             name="qty"
             value={quantity}
             readOnly
-            // onChange={handleInputChange}
-            // onBlur={handleInputBlur}
             className="h-full py-2 w-16 text-center border-t border-b border-gray-300"
           />
           <button

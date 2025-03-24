@@ -55,18 +55,6 @@ function Cart() {
     }
   };
 
-  // Hàm giảm số lượng voucher khi voucher được áp dụng
-  const handleApplyVoucher = (voucherId) => {
-    setUserVoucher(prevVouchers =>
-      prevVouchers.map(v => {
-        if (v.userVoucherId === voucherId && v.quantity > 0) {
-          return { ...v, quantity: v.quantity - 1 };
-        }
-        return v;
-      })
-    );
-  };
-
   useEffect(() => {
     fetchCartsApi();
     fetchUserVoucherApi();
@@ -279,7 +267,6 @@ function Cart() {
             onUpdateQuantity={updateQuantityApi}
             onRemoveItem={removeItem}
             onVoucherSelected={onVoucherSelected}
-            //onApplyVoucher={handleApplyVoucher}
             onRemoveVoucher={onRemoveVoucher}
           />
         ))}

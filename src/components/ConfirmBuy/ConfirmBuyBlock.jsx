@@ -53,7 +53,7 @@ function ConfirmBuyBLock({ data }) {
             </div>
             <div className="col-start-5 row-start-2 col-span-2 text-right">
                <span>
-                  - {formatMoney(data?.discountMoney)}
+                  ({formatMoney(data?.discountMoney)})
                </span>
             </div>
 
