@@ -232,7 +232,7 @@ function ConfirmBuy() {
                               Tổng giảm:
                            </span>
                            <span>
-                              - {formatMoney(caculateMoney?.totalDiscount)}
+                              ({formatMoney(caculateMoney?.totalDiscount)})
                            </span>
                         </div>
 
