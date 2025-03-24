@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Service.Services;
 using PreOrderBlindBox.Services.DTO.RequestDTO.UserModel;
@@ -179,6 +180,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpPost("RegisterStaff")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> CreateStaffByEmailAndPassword(RequestRegisterAccount registerModel)
 		{
 			try

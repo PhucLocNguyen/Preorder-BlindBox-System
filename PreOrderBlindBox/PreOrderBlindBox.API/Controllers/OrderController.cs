@@ -24,7 +24,6 @@ namespace PreOrderBlindBox.API.Controllers
             _currentUserService = currentUserService;
         }
         [HttpGet]
-		[Authorize(Roles = "Staff")]
 		public async Task<IActionResult> GetAllOrders([FromQuery] PaginationParameter pagination, [FromQuery] string? searchKeyWords, [FromQuery] string orderBy = "increase")
         {
             try

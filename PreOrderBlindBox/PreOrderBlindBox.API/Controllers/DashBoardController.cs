@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Services.DTO.RequestDTO.DashBoardModel;
 using PreOrderBlindBox.Services.IServices;
@@ -18,6 +19,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpGet("GetRevenueByTime")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> GetRevenueByTime(DateTime fromDate, DateTime toDate)
 		{
 			try
@@ -32,6 +34,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpGet("GetTopThreeCampaign")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> GetTopThreeCampaign(DateTime fromDate, DateTime toDate)
 		{
 			try
@@ -46,6 +49,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpGet("last-month-comparison")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> GetOrderInFormationComparedToLastMonth()
 		{
 			try
@@ -60,6 +64,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpGet("monthly-report/{year}")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> GetOrderByYear(int year)
 		{
 			try
