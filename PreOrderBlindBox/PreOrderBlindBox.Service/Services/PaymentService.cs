@@ -61,11 +61,12 @@ namespace PreOrderBlindBox.Services.Services
                 Transaction transaction = new Transaction()
                 {
                     Money = amount,
-                    CreatedDate = DateTime.Now,
+                    CreatedDate =DateTime.UtcNow.AddHours(7),
                     Description = "Recharge with Momo",
                     Type = TypeOfTransactionEnum.Recharge.ToString(),
                     Status = TransactionStatusEnum.Pending.ToString(),
                     WalletId = user.WalletId,
+                    
                 };
                 _transaction.AddTransaction(transaction);
                 // Đọc cấu hình từ _configuration
@@ -234,6 +235,7 @@ namespace PreOrderBlindBox.Services.Services
                     Type = TypeOfTransactionEnum.Recharge.ToString(),
                     Status = TransactionStatusEnum.Pending.ToString(),
                     WalletId = user.WalletId,
+                    CreatedDate = DateTime.UtcNow.AddHours(7)
                 });
 
                 // Lúc này transaction.Id mới chính xác
@@ -311,7 +313,8 @@ namespace PreOrderBlindBox.Services.Services
                             Description = "Recharge money to system wallet after customer recharge VNPAY",
                             Type = TypeOfTransactionEnum.Recharge,
                             BalanceAtTime = systemWallet.Balance,
-                            Status = TransactionStatusEnum.Success
+                            Status = TransactionStatusEnum.Success,
+                            CreatedDate = DateTime.UtcNow.AddHours(7)
                         };
                         await _transactionService.CreateTransaction(systemTransaction);
 
