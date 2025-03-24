@@ -47,16 +47,9 @@ namespace PreOrderBlindBox.Services.Services
 
 		public async Task<Cart> ChangeQuantityOfCartByCustomerID(RequestCreateCart requestCreateCart)
 		{
-			var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)requestCreateCart.PreorderCampaignId);
-			if (preorderCampaign.Type.Equals("TimedPricing"))
+			if (!await CheckCampaignHasEnoughQuantityAsync(requestCreateCart))
 			{
-				var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
-				int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
-				bool isEnoughQuantity = quantityForMilestone >= (preorderCampaign.PlacedOrderCount + requestCreateCart.Quantity);
-				if (!isEnoughQuantity)
-				{
-					throw new Exception("The quantity has exceeded the limit allowed by that campaign.");
-				}
+				throw new Exception("The quantity has exceeded the limit allowed by that campaign.");
 			}
 
 			int userId = _currentUserService.GetUserId();
@@ -101,16 +94,9 @@ namespace PreOrderBlindBox.Services.Services
 				else
 				{
 					await _unitOfWork.BeginTransactionAsync();
-					var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)requestCreateCart.PreorderCampaignId);
-					if (preorderCampaign.Type.Equals("TimedPricing"))
+					if (!await CheckCampaignHasEnoughQuantityAsync(requestCreateCart))
 					{
-						var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
-						int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
-						bool isEnoughQuantity = quantityForMilestone >= (preorderCampaign.PlacedOrderCount + requestCreateCart.Quantity);
-						if (!isEnoughQuantity)
-						{
-							throw new Exception("The quantity has exceeded the limit allowed by that campaign.");
-						}
+						throw new Exception("The quantity has exceeded the limit allowed by that campaign.");
 					}
 					if (requestCreateCart.Quantity > 0)
 					{
@@ -156,23 +142,26 @@ namespace PreOrderBlindBox.Services.Services
 			}
 			else
 			{
-				var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)requestCreateCart.PreorderCampaignId);
-				if (preorderCampaign.Type.Equals("TimedPricing"))
+				if (!await CheckCampaignHasEnoughQuantityAsync(requestCreateCart))
 				{
-					var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
-					int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
-					bool isEnoughQuantity = quantityForMilestone >= (preorderCampaign.PlacedOrderCount + requestCreateCart.Quantity);
-					if (!isEnoughQuantity)
-					{
-						throw new Exception("The quantity has exceeded the limit allowed by that campaign.");
-					}
+					throw new Exception("The quantity has exceeded the limit allowed by that campaign.");
 				}
 				listCart.Add(requestCreateCart.toCartEntity(customerID));
 			}
+
 			foreach (var cart in listCart)
 			{
-				
 				var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)cart.PreorderCampaignId);
+				if (!await CheckCampaignHasEnoughQuantityAsync(new RequestCreateCart()
+				{
+					PreorderCampaignId = cart.PreorderCampaignId,
+					Quantity = cart.Quantity,
+				}
+				))
+				{
+					throw new Exception($"The quantity of products from the campaign {preorderCampaign.BlindBox.Name} in your cart has exceeded the allowed campaign limit.");
+				}
+
 				var cartItem = new Cart()
 				{
 					CartId = cart.CartId,
@@ -333,6 +322,22 @@ namespace PreOrderBlindBox.Services.Services
 				throw new Exception("Something went wrong when updating with cart", ex);
 			}
 
+		}
+
+		private async Task<bool> CheckCampaignHasEnoughQuantityAsync(RequestCreateCart requestCreateCart)
+		{
+			var preorderCampaign = await _preorderCampaignRepository.GetDetailPreorderCampaignById((int)requestCreateCart.PreorderCampaignId);
+			if (preorderCampaign.Type.Equals("TimedPricing"))
+			{
+				var preorderMilestones = await _preorderMilestoneService.GetAllPreorderMilestoneByPreorderCampaignID((int)requestCreateCart.PreorderCampaignId);
+				int quantityForMilestone = preorderMilestones.Sum(x => x.Quantity);
+				bool isEnoughQuantity = quantityForMilestone >= (preorderCampaign.PlacedOrderCount + requestCreateCart.Quantity);
+				if (!isEnoughQuantity)
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 }
