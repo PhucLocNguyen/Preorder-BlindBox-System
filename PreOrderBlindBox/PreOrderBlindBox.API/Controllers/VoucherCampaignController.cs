@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Services.DTO.RequestDTO.VoucherCampaignModel;
 using PreOrderBlindBox.Services.DTO.ResponeDTO.VoucherCampaignModel;
@@ -18,6 +19,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> CreateVoucherCampaign(RequestCreateVoucherCompaign voucerCompaign)
 		{
 			try
@@ -36,6 +38,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpDelete("{voucherCampaignId}")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> DeleteVoucherCampaign(int voucherCampaignId)
 		{
 			try
@@ -54,6 +57,7 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpPut("{voucherCampaignId}")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> UpdateVoucherCampaign(int voucherCampaignId, [FromBody] RequestUpdateVoucherCampaign voucherCampaign)
 		{
 			try

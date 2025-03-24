@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Data.Commons;
 using PreOrderBlindBox.Services.DTO.RequestDTO.PreorderMilestoneModel;
@@ -37,6 +38,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPost("CreatePreorderMilestone")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> CreatePreorderMilestone(CreatePreorderMilestoneRequest createPreorderMilestoneRequest)
         {
             try
@@ -65,6 +67,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> DeletePreorderCampaign(int id)
         {
             if (await _preorderMilestoneService.DeletePreorderMilestone(id) == false)
@@ -75,6 +78,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPut("UpdatePreorderMilestone/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePreorderMilestone(int id, [FromBody] UpdatePreorderMilestoneRequest request)
         {
             if (!ModelState.IsValid)

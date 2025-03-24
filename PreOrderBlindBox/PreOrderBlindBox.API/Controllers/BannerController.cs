@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
@@ -54,6 +55,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateBanner([FromForm] CreateBannerRequest request)
         {
             if (!ModelState.IsValid)
@@ -69,6 +71,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromForm] UpdateBannerRequest request)
         {
             if (!ModelState.IsValid)
@@ -84,6 +87,7 @@ namespace PreOrderBlindBox.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _bannerService.DeleteBanner(id);
