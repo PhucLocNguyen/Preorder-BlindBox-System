@@ -47,24 +47,6 @@ function CampaignBlock({ block, selectedVoucherMap, onUpdateQuantity, onRemoveIt
     setShowVoucherModal(false);
   };
 
-  // Người dùng nhập mã thủ công
-  // const handleApplyInputVoucher = () => {
-  //   if (inputVoucherCode.trim() !== '') {
-  //     // Ở đây bạn có thể gọi API kiểm tra mã, hoặc tạm tạo object "giả"
-  //     const manualVoucher = {
-  //       id: -1,
-  //       title: inputVoucherCode,
-  //       description: 'Mã nhập tay',
-  //       discountType: 'percentage', // ví dụ
-  //       discountValue: 0.05,        // ví dụ: giảm 5%
-  //       minOrder: 0,
-  //     };
-  //     setAppliedVoucher(manualVoucher);
-  //     setInputVoucherCode('');
-  //     setShowVoucherModal(false);
-  //   }
-  // };
-
   return (
     <div className="bg-white shadow rounded-lg mb-6 p-4">
 
@@ -90,7 +72,6 @@ function CampaignBlock({ block, selectedVoucherMap, onUpdateQuantity, onRemoveIt
         <tbody className="bg-white divide-y divide-gray-200 ">
           {items.map((item, index) => (
             <CartItem
-              //key={`${item.preorderCampaignId}-${item.price}-${item.quantity}`}
               key={index}
               item={item}
               onUpdateQuantity={onUpdateQuantity}
@@ -153,9 +134,6 @@ function CampaignBlock({ block, selectedVoucherMap, onUpdateQuantity, onRemoveIt
       {showVoucherModal && (
         <VoucherModal
           vouchers={availableVouchers}
-          //inputVoucherCode={inputVoucherCode}
-          //setInputVoucherCode={setInputVoucherCode}
-          //handleApplyInputVoucher={handleApplyInputVoucher}
           applyVoucherFromList={applyVoucherFromList}
           onClose={() => setShowVoucherModal(false)}
         />
