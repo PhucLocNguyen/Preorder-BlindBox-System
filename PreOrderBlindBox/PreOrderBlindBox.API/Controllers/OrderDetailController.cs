@@ -20,7 +20,6 @@ namespace PreOrderBlindBox.API.Controllers
 		}
 
 		[HttpGet("{orderID}")]
-		[Authorize(Roles = "Staff")]
 		public async Task<IActionResult> GetAllOrderDetailsByOrderID([FromRoute] int orderID, [FromQuery] PaginationParameter paginationParameter)
 		{
 			try
