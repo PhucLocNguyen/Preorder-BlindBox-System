@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PreOrderBlindBox.Services.DTO.RequestDTO.MomoModel;
 using PreOrderBlindBox.Services.DTO.RequestDTO.VnPayModel;
@@ -47,6 +48,7 @@ namespace PreOrderBlindBox.API.Controllers
             var result = await _walletService.ShowDetailWalletAtTime(userId, model);
             return Ok(result);
         }
+        [Authorize(Roles = "Customer")]
         [HttpPost("CreatePaymentUrlMomo")]
         public async Task<IActionResult> CreateDepositUrl([FromBody] RequestDepositWallet request)
         {
@@ -84,6 +86,7 @@ namespace PreOrderBlindBox.API.Controllers
                 message = result.Message
             });
         }
+        [Authorize(Roles = "Customer")]
         [HttpPost("CreatePaymentUrlVnpay")]
         public async Task<IActionResult> CreateDepositUrlVnpay([FromBody] RequestDepositWallet request)
         {
