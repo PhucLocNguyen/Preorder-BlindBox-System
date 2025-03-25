@@ -111,15 +111,15 @@ namespace PreOrderBlindBox.Service.Services
             var startDate = new DateTime(model.Year, model.Month, 1);
             var endDate = startDate.AddMonths(1).AddSeconds(-1);
 
-            var listTransactionAtTime = await _transactionRepository.GetAllFullIncludeTransaction(filter: x => x.WalletId==userDetail.WalletId && (x.CreatedDate >= startDate && x.CreatedDate <= endDate),orderBy:x=>x.OrderByDescending(x =>x.CreatedDate));
+            var listTransactionAtTime = await _transactionRepository.GetAllFullIncludeTransaction(filter: x => x.WalletId==userDetail.WalletId && (x.CreatedDate >= startDate && x.CreatedDate <= endDate),orderBy:x=>x.OrderByDescending(x =>x.TransactionId));
             decimal closingBalance;
             if (listTransactionAtTime.Count == 0)
             {
-                var previousTransaction = await _transactionRepository.GetAllFullIncludeTransaction(filter:x=> x.WalletId == userDetail.WalletId && x.Status.Equals(TransactionStatusEnum.Success.ToString()) && (x.CreatedDate<=startDate),orderBy:x=>x.OrderByDescending(x=>x.CreatedDate));
+                var previousTransaction = await _transactionRepository.GetAllFullIncludeTransaction(filter:x=> x.WalletId == userDetail.WalletId && x.Status.Equals(TransactionStatusEnum.Success.ToString()) && (x.CreatedDate<=startDate),orderBy:x=>x.OrderByDescending(x=>x.TransactionId));
                 if (previousTransaction.Any())
                 {
                     decimal previousBalance = previousTransaction.First().BalanceAtTime ?? 0;
-                    if (previousTransaction.First().Type.Equals(TypeOfTransactionEnum.Recharge.ToString()))
+                    if (previousTransaction.First().Type.Equals(TypeOfTransactionEnum.Recharge.ToString()) || previousTransaction.First().Type.Equals(TypeOfTransactionEnum.Refund.ToString()))
                     {
                         closingBalance = previousBalance + previousTransaction.First().Money;
                     }
@@ -135,7 +135,7 @@ namespace PreOrderBlindBox.Service.Services
             }
             else
             {
-                if (listTransactionAtTime.First().Type.Equals(TypeOfTransactionEnum.Recharge.ToString()))
+                if (listTransactionAtTime.First().Type.Equals(TypeOfTransactionEnum.Recharge.ToString())|| listTransactionAtTime.First().Type.Equals(TypeOfTransactionEnum.Refund.ToString()))
                 {
                     closingBalance = listTransactionAtTime.First().BalanceAtTime.Value + listTransactionAtTime.First().Money;
                 }
@@ -144,7 +144,7 @@ namespace PreOrderBlindBox.Service.Services
                     closingBalance = listTransactionAtTime.First().BalanceAtTime.Value - listTransactionAtTime.First().Money;
                 }
             }
-            var listTransactionAtTimeWithStatus = await _transactionRepository.GetAllFullIncludeTransaction(filter: x => x.WalletId == userDetail.WalletId && (x.CreatedDate >= startDate && x.CreatedDate <= endDate), orderBy: x => x.OrderByDescending(x => x.CreatedDate));
+            var listTransactionAtTimeWithStatus = await _transactionRepository.GetAllFullIncludeTransaction(filter: x => x.WalletId == userDetail.WalletId && (x.CreatedDate >= startDate && x.CreatedDate <= endDate), orderBy: x => x.OrderByDescending(x => x.TransactionId));
 
             var totalWithdrawPending = listTransactionAtTimeWithStatus.Where(t => t.Type.Equals(TypeOfTransactionEnum.Withdraw.ToString()) && t.Status.Equals(TransactionStatusEnum.Pending.ToString())).Sum(t => t.Money);
             var totalPurchase = listTransactionAtTimeWithStatus.Where(t => t.Type.Equals(TypeOfTransactionEnum.Purchase.ToString()) && t.Status.Equals(TransactionStatusEnum.Success.ToString())).Sum(t => t.Money);

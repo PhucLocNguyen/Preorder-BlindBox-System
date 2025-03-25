@@ -85,9 +85,14 @@ namespace PreOrderBlindBox.Services.Services
 
 					var temCampaignBulkOrderDetailList = await _tempCampaignBulkOrderDetailRepository.GetAll(filter: x => x.TempCampaignBulkOrderId == item.TempCampaignBulkOrderId);
 					decimal totalTempPreorderDetail = temCampaignBulkOrderDetailList.Sum(x => x.Quantity) * endPriceOfCampaign;
-					var userVoucher = await _userVoucherService.GetUserVoucherById((int)item.UserVoucherId);
-					decimal discountMoney = (decimal)(totalTempPreorderDetail * (userVoucher.PercentDiscount / 100) > userVoucher.MaximumMoneyDiscount ? userVoucher.MaximumMoneyDiscount : totalTempPreorderDetail * (userVoucher.PercentDiscount / 100));
-					var orderEntity = new Order()
+                    var userVoucher = item.UserVoucherId != null ? await _userVoucherService.GetUserVoucherById((int)item.UserVoucherId) : null;
+                    decimal discountMoney = 0;
+
+                    if (userVoucher != null)
+                    {
+                        discountMoney = (decimal)(totalTempPreorderDetail * (userVoucher.PercentDiscount / 100) > userVoucher.MaximumMoneyDiscount ? userVoucher.MaximumMoneyDiscount : totalTempPreorderDetail * (userVoucher.PercentDiscount / 100));
+                    }
+                    var orderEntity = new Order()
 					{
 						Amount = totalTempPreorderDetail - discountMoney,
 						DiscountMoney = discountMoney,

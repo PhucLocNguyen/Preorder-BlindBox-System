@@ -63,7 +63,7 @@ namespace PreOrderBlindBox.Api
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
-            builder => builder.WithOrigins("http://localhost:5173", "https://test-fe-cookie.vercel.app")
+            builder => builder.WithOrigins("http://localhost:5173", "https://pre-order-blindbox-system-sp25.vercel.app")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials()

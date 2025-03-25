@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PreOrderBlindBox.Data.Commons;
@@ -38,6 +39,7 @@ namespace PreOrderBlindBox.API.Controllers
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(model);
         }
+        [Authorize(Roles ="Staff")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -50,6 +52,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
             return Ok(item);
         }
+        [Authorize(Roles = "Staff")]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] RequestCreateBlindBox request)
         {
@@ -64,6 +67,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
             return BadRequest();
         }
+        [Authorize(Roles = "Staff")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] RequestUpdateBlindBox request)
         {
@@ -78,7 +82,7 @@ namespace PreOrderBlindBox.API.Controllers
             }
             return BadRequest();
         }
-
+        [Authorize(Roles = "Staff")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
