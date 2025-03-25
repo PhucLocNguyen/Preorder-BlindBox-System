@@ -46,7 +46,7 @@ const StaffManagementCreate = ({ onSuccess }) => {
             console.log(response);
 
             if (response) {
-                toast.success("Staff account created successfully!");
+                toast.success("Tài khoản nhân viên đã được tạo thành công!");
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);

@@ -28,7 +28,6 @@ const GetAllBanner = async (pageSize, pageIndex) => {
 const EditBanner = async ({ formData: payload, bannerId }) => {
     try {
         const respone = await api.put(`/Banner/${bannerId}`, payload, axiosConfigSendFileHeader);
-        toast.success("Update successful!");
         return respone.data;
     } catch (error) {
         console.log('>>> Api Edit banner Error: ', error)
@@ -40,7 +39,6 @@ const EditBanner = async ({ formData: payload, bannerId }) => {
 const CreateBanner = async ({ formData: payload }) => {
     try {
         const respone = await api.post('/Banner', payload, axiosConfigSendFileHeader);
-        toast.success("Create successful!");
         return respone.data;
     } catch (error) {
         console.log('>>> Api create banner Error: ', error)

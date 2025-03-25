@@ -26,7 +26,7 @@ const BannerCreate = ({ onSuccess }) => {
             console.log("File binary:", file);
             console.log("Create banner result:", result);
             if (result) {
-                toast.success("Banner created successfully!");
+                toast.success("Banner đã được tạo thành công!");
             }
             setTimeout(() => {
                 window.location.reload();
