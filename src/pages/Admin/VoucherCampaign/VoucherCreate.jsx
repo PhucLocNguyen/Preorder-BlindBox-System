@@ -32,7 +32,7 @@ const VoucherCreate = () => {
 
             const result = await CreateVoucher(payload, config);
             if (result) {
-                toast.success('Voucher created successfully!');
+                toast.success('Phiếu giảm giá đã được tạo thành công!');
                 navigate('/admin/voucher');
                 // setTimeout(() => {
                 //     window.location.reload();

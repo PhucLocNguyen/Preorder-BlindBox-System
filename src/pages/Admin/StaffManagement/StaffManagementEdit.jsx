@@ -52,7 +52,7 @@ const StaffManagementEdit = ({ userId, onSuccess }) => {
         try {
             const result = await EditStaff({ formData, userId });
             if (result) {
-                message.success("Staff updated successfully!");
+                message.success("thông tin của nhân viên đã được cập nhật thành công!");
                 onSuccess();
                 setTimeout(() => {
                     window.location.reload();

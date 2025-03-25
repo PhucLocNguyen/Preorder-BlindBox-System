@@ -56,7 +56,7 @@ const BannerEdit = ({ bannerId, onSuccess }) => {
             console.log(">>> check result: ", result);
 
             if (result) {
-                toast.success("Banner edited successfully!");
+                toast.success("Banner đã được cập nhật thành công!");
                 onSuccess();
                 setTimeout(() => {
                     window.location.reload();
