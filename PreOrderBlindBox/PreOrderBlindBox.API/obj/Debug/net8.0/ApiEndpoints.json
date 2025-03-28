@@ -1,0 +1,1969 @@
+[
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "AddNewPasswordForCustomer",
+    "RelativePath": "api/Authen/AddNewPassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "addNewPassword",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.UserModel.RequestAddNewPassword",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/Authen/ChangePassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "changePassword",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.UserModel.RequestChangePassword",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "ConfirmEmail",
+    "RelativePath": "api/Authen/confirm-email",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "confirmToken",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "GetCurrentAccountRole",
+    "RelativePath": "api/Authen/CurrentAccountRole",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/Authen/ForgotPassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "forgotPassword",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.UserModel.RequestForgotPassword",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "LoginWithEmailAndPassword",
+    "RelativePath": "api/Authen/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "loginModel",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.UserModel.RequestLoginByEmailAndPassword",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "LoginWithGoogle",
+    "RelativePath": "api/Authen/LoginGoogle",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "credential",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "Logout",
+    "RelativePath": "api/Authen/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "CreateUserByEmailAndPassword",
+    "RelativePath": "api/Authen/RegisterCustomer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "registerModel",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.UserModel.RequestRegisterAccount",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.AuthenController",
+    "Method": "CreateStaffByEmailAndPassword",
+    "RelativePath": "api/Authen/RegisterStaff",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "registerModel",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.UserModel.RequestRegisterAccount",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BannerController",
+    "Method": "GetAll",
+    "RelativePath": "api/Banner",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BannerController",
+    "Method": "CreateBanner",
+    "RelativePath": "api/Banner",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Title",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CallToActionUrl",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Priority",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "File",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BannerController",
+    "Method": "GetBannerById",
+    "RelativePath": "api/Banner/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BannerController",
+    "Method": "Update",
+    "RelativePath": "api/Banner/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Title",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "CallToActionUrl",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Priority",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "File",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BannerController",
+    "Method": "Delete",
+    "RelativePath": "api/Banner/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BlindBoxController",
+    "Method": "GetAllActiveBlindBox",
+    "RelativePath": "api/BlindBox",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "keyword",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BlindBoxController",
+    "Method": "Create",
+    "RelativePath": "api/BlindBox",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "listedPrice",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Size",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MainImage",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "GalleryImages",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BlindBoxController",
+    "Method": "GetById",
+    "RelativePath": "api/BlindBox/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BlindBoxController",
+    "Method": "Update",
+    "RelativePath": "api/BlindBox/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "listedPrice",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Size",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MainImage",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "GalleryImages",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DeletedGalleryImagesID",
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.BlindBoxController",
+    "Method": "Delete",
+    "RelativePath": "api/BlindBox/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.CartController",
+    "Method": "GetAllCartByUserID",
+    "RelativePath": "api/Cart",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.CartController",
+    "Method": "UpdateQuantityInCart",
+    "RelativePath": "api/Cart",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestCreateCart",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel.RequestCreateCart",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.CartController",
+    "Method": "CreateCartItem",
+    "RelativePath": "api/Cart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestCreateCart",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.CartRequestModel.RequestCreateCart",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.CartController",
+    "Method": "ClearAllCart",
+    "RelativePath": "api/Cart/ClearAllCart",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.CartController",
+    "Method": "GetPriceInCart",
+    "RelativePath": "api/Cart/GetPriceInCart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PreorderCampaignId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Quantity",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "UserVoucherIdForPreorderCampaign",
+        "Type": "System.Collections.Generic.Dictionary\u00602[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.DashBoardController",
+    "Method": "GetRevenueByTime",
+    "RelativePath": "api/DashBoard/GetRevenueByTime",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fromDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "toDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.DashBoardController",
+    "Method": "GetTopThreeCampaign",
+    "RelativePath": "api/DashBoard/GetTopThreeCampaign",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fromDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "toDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.DashBoardController",
+    "Method": "GetOrderInFormationComparedToLastMonth",
+    "RelativePath": "api/DashBoard/last-month-comparison",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.DashBoardController",
+    "Method": "GetOrderByYear",
+    "RelativePath": "api/DashBoard/monthly-report/{year}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.ImageController",
+    "Method": "GetImageById",
+    "RelativePath": "api/Image/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.ImageController",
+    "Method": "DeleteImage",
+    "RelativePath": "api/Image/{imageId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "imageId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.ImageController",
+    "Method": "GetAllByBlindBoxId",
+    "RelativePath": "api/Image/GetAllByBlindBoxId/{blindBoxId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "blindBoxId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.ImageController",
+    "Method": "UploadImage",
+    "RelativePath": "api/Image/upload",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Files",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "BlindBoxId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.ImageController",
+    "Method": "UploadMainImage",
+    "RelativePath": "api/Image/upload-main",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "File",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "BlindBoxId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.NotificationController",
+    "Method": "GetAllNotification",
+    "RelativePath": "api/Notification",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.NotificationController",
+    "Method": "GetNotificationById",
+    "RelativePath": "api/Notification/{notificationId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "notificationId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.NotificationController",
+    "Method": "MarkAllNotificationsAsRead",
+    "RelativePath": "api/Notification/mark-read-all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.NotificationController",
+    "Method": "CountNotificationIsNotRead",
+    "RelativePath": "api/Notification/unread-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.OrderController",
+    "Method": "GetAllOrders",
+    "RelativePath": "api/Order",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "searchKeyWords",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "orderBy",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.OrderController",
+    "Method": "CreateOrder",
+    "RelativePath": "api/Order",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestCreateOrder",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel.RequestCreateOrder",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.OrderController",
+    "Method": "UpdateStatusOfOrder",
+    "RelativePath": "api/Order/{orderId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestUpdateOrder",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.OrderRequestModel.RequestUpdateOrder",
+        "IsRequired": true
+      },
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.OrderController",
+    "Method": "GetOrderByIdForCustomer",
+    "RelativePath": "api/Order/customer/{orderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.OrderController",
+    "Method": "GetOrderByIdForStaff",
+    "RelativePath": "api/Order/staff/{orderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.OrderController",
+    "Method": "ViewOrderHistory",
+    "RelativePath": "api/Order/view-history-orders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.OrderDetailController",
+    "Method": "GetAllOrderDetailsByOrderID",
+    "RelativePath": "api/OrderDetail/{orderID}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderID",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "GetAllValidPreorderCampaign",
+    "RelativePath": "api/PreorderCampaign",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "isEndingSoon",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "isNewlyLaunched",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "isTrending",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "GetPreorderCampaignById",
+    "RelativePath": "api/PreorderCampaign/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "DeletePreorderCampaign",
+    "RelativePath": "api/PreorderCampaign/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "GetAllActivePreorderCampaign",
+    "RelativePath": "api/PreorderCampaign/active",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "isEndingSoon",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "isNewlyLaunched",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "isTrending",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "GetPreorderCampaignBySlug",
+    "RelativePath": "api/PreorderCampaign/campaign/{slug}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "slug",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "CancelPreorderCampaign",
+    "RelativePath": "api/PreorderCampaign/CancelPreorderCampaign/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "CreatePreoderCampaignWithMilestone",
+    "RelativePath": "api/PreorderCampaign/CreatePreorderCampaignWithMilestone",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestCampaign",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.PreorderCampaignModel.CreatePreorderCampaignRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "GetAllCompleteBulkCampaign",
+    "RelativePath": "api/PreorderCampaign/GetAllCompleteBulkCampaign",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "SearchPreorderCampaign",
+    "RelativePath": "api/PreorderCampaign/Search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BlindBoxName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SortOrder",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "GetSimilarPreorderCampaign",
+    "RelativePath": "api/PreorderCampaign/similar-campaign/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderCampaignController",
+    "Method": "UpdatePreoderCampaignWithMilestone",
+    "RelativePath": "api/PreorderCampaign/UpdatePreorderCampaignWithMilestone/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "requestCampaign",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.PreorderCampaignModel.UpdatePreorderCampaignRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderMilestoneController",
+    "Method": "GetPreorderMilestoneById",
+    "RelativePath": "api/PreorderMilestone/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderMilestoneController",
+    "Method": "DeletePreorderCampaign",
+    "RelativePath": "api/PreorderMilestone/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderMilestoneController",
+    "Method": "CreatePreorderMilestone",
+    "RelativePath": "api/PreorderMilestone/CreatePreorderMilestone",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createPreorderMilestoneRequest",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.PreorderMilestoneModel.CreatePreorderMilestoneRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderMilestoneController",
+    "Method": "GetAllPreorderMilestoneByPreorderCampaignID",
+    "RelativePath": "api/PreorderMilestone/GetAllPreorderMilestoneByPreorderCampaignID",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.PreorderMilestoneController",
+    "Method": "UpdatePreorderMilestone",
+    "RelativePath": "api/PreorderMilestone/UpdatePreorderMilestone/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.PreorderMilestoneModel.UpdatePreorderMilestoneRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.RoleController",
+    "Method": "CreateRole",
+    "RelativePath": "api/Role",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.RoleController",
+    "Method": "UpdateRoleById",
+    "RelativePath": "api/Role",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "role",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.RoleModel.RequestRole",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.RoleController",
+    "Method": "GetRoleById",
+    "RelativePath": "api/Role/{roleId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.RoleController",
+    "Method": "DeleteRoleById",
+    "RelativePath": "api/Role/{roleId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TempCampaignBulkOrderController",
+    "Method": "GetAllTempOrders",
+    "RelativePath": "api/TempCampaignBulkOrder",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "searchKeyWords",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "orderBy",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TempCampaignBulkOrderController",
+    "Method": "AcceptTempOrder",
+    "RelativePath": "api/TempCampaignBulkOrder/{preorderCampaignId}/accept",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "preorderCampaignId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TempCampaignBulkOrderController",
+    "Method": "RejectTempOrder",
+    "RelativePath": "api/TempCampaignBulkOrder/{preorderCampaignId}/reject",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "preorderCampaignId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TempCampaignBulkOrderController",
+    "Method": "GetTempOrderById",
+    "RelativePath": "api/TempCampaignBulkOrder/customer/{tempOrderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tempOrderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TempCampaignBulkOrderController",
+    "Method": "ViewTempOrderHistory",
+    "RelativePath": "api/TempCampaignBulkOrder/view-history-temp-orders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TempCampaignBulkOrderDetailController",
+    "Method": "GetAllOrderDetailsByOrderID",
+    "RelativePath": "api/TempCampaignBulkOrderDetail/{tempCampaignBulkOrderIdTempCampaignBulkOrderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tempCampaignBulkOrderIdTempCampaignBulkOrderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TransactionController",
+    "Method": "GetListOfAllTransaction",
+    "RelativePath": "api/Transaction/GetListOfAllTransaction",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FromDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "EndDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "PaginationParameter.PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PaginationParameter.PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TransactionController",
+    "Method": "GetListOfAllTransactionByUser",
+    "RelativePath": "api/Transaction/GetListOfAllTransactionByUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TransactionController",
+    "Method": "GetTransactionDetailVerifyUserPayment",
+    "RelativePath": "api/Transaction/GetTransactionDetailVerifyUserPayment",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "transactionId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TransactionController",
+    "Method": "GetListOfWithdrawRequest",
+    "RelativePath": "api/Transaction/withdrawals",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageIndex",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TransactionController",
+    "Method": "CreateWithdrawMoneyFromWallet",
+    "RelativePath": "api/Transaction/withdrawals",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.WalletModel.RequestDepositWallet",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TransactionController",
+    "Method": "GetListOfWithdrawRequest",
+    "RelativePath": "api/Transaction/withdrawals/{transactionId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "transactionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.TransactionController",
+    "Method": "ApproveWithdrawal",
+    "RelativePath": "api/Transaction/withdrawals/{withdrawalId}/approval",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "withdrawalId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserController",
+    "Method": "DeleteAccountStaff",
+    "RelativePath": "api/User/{staffId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "staffId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserController",
+    "Method": "GetUserById",
+    "RelativePath": "api/User/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserController",
+    "Method": "GetAllStaff",
+    "RelativePath": "api/User/GetAllStaff",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserController",
+    "Method": "UpdateCustomerInformation",
+    "RelativePath": "api/User/UpdateCustomerInformation",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FullName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Thumbnail",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BankName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BankAccountNumber",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserController",
+    "Method": "UpdateStaffInformation",
+    "RelativePath": "api/User/UpdateStaffInformation/{staffId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "staffId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "FullName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Phone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Thumbnail",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserController",
+    "Method": "GetUserInformation",
+    "RelativePath": "api/User/user-information",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserVouchersController",
+    "Method": "CreateUserVoucherByVoucherCampaignId",
+    "RelativePath": "api/UserVouchers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userVoucher",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.UserVoucherModel.RequestCreateUserVoucher",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserVouchersController",
+    "Method": "UseVoucher",
+    "RelativePath": "api/UserVouchers",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateUserVoucher",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.UserVoucherModel.RequestUpdateUserVoucher",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserVouchersController",
+    "Method": "GetAllUserVoucerCanUse",
+    "RelativePath": "api/UserVouchers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserVouchersController",
+    "Method": "DeleteUserVoucher",
+    "RelativePath": "api/UserVouchers/{userVoucherId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userVoucherId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.UserVouchersController",
+    "Method": "GetUserVoucherById",
+    "RelativePath": "api/UserVouchers/{userVoucherId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userVoucherId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.VoucherCampaignController",
+    "Method": "CreateVoucherCampaign",
+    "RelativePath": "api/VoucherCampaign",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "voucerCompaign",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.VoucherCampaignModel.RequestCreateVoucherCompaign",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.VoucherCampaignController",
+    "Method": "DeleteVoucherCampaign",
+    "RelativePath": "api/VoucherCampaign/{voucherCampaignId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "voucherCampaignId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.VoucherCampaignController",
+    "Method": "UpdateVoucherCampaign",
+    "RelativePath": "api/VoucherCampaign/{voucherCampaignId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "voucherCampaignId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "voucherCampaign",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.VoucherCampaignModel.RequestUpdateVoucherCampaign",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.VoucherCampaignController",
+    "Method": "GetVoucherCampaignById",
+    "RelativePath": "api/VoucherCampaign/{voucherCampaignId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "voucherCampaignId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.VoucherCampaignController",
+    "Method": "GetAllVoucherCampaign",
+    "RelativePath": "api/VoucherCampaign/GetAllVoucherCampaign",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.VoucherCampaignController",
+    "Method": "GetAllVoucherCampaignBaseId",
+    "RelativePath": "api/VoucherCampaign/GetAllVoucherCampaignBaseUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "GetWallet",
+    "RelativePath": "api/Wallet",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "CreateDepositUrl",
+    "RelativePath": "api/Wallet/CreatePaymentUrlMomo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.WalletModel.RequestDepositWallet",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "CreateDepositUrlVnpay",
+    "RelativePath": "api/Wallet/CreatePaymentUrlVnpay",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "PreOrderBlindBox.Services.DTO.RequestDTO.WalletModel.RequestDepositWallet",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "DepositConfirmFromMomo",
+    "RelativePath": "api/Wallet/DepositConfirmFromMomo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "partnerCode",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "orderId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "requestId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "amount",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "orderInfo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "orderType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "transId",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "resultCode",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "message",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "payType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "responseTime",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "extraData",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "signature",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "DepositConfirmFromVnPay",
+    "RelativePath": "api/Wallet/DepositConfirmFromVnPay",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PreOrderBlindBox.API.Controllers.WalletController",
+    "Method": "GetDetailWalletBySelectedTime",
+    "RelativePath": "api/Wallet/transactions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Month",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Year",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

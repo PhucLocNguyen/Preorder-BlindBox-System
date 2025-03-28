@@ -1,0 +1,15 @@
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\bin\Debug\net8.0\PreOrderBlindBox.Data.deps.json
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\bin\Debug\net8.0\PreOrderBlindBox.Data.runtimeconfig.json
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\bin\Debug\net8.0\PreOrderBlindBox.Data.dll
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\bin\Debug\net8.0\PreOrderBlindBox.Data.pdb
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\PreOrderBlindBox.Data.csproj.AssemblyReference.cache
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\PreOrderBlindBox.Data.GeneratedMSBuildEditorConfig.editorconfig
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\PreOrderBlindBox.Data.AssemblyInfoInputs.cache
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\PreOrderBlindBox.Data.AssemblyInfo.cs
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\PreOrderBlindBox.Data.csproj.CoreCompileInputs.cache
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\PreOrderBlindBox.Data.sourcelink.json
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\PreOrderBlindBox.Data.dll
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\refint\PreOrderBlindBox.Data.dll
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\PreOrderBlindBox.Data.pdb
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\PreOrderBlindBox.Data.genruntimeconfig.cache
+E:\DataDiskInD\HocTap\3_MyGithubRepository\PreorderBlindBoxSystem\Preorder-BlindBox-System-Resolve-Branch\PreOrderBlindBox\PreOrderBlindBox.Data\obj\Debug\net8.0\ref\PreOrderBlindBox.Data.dll
